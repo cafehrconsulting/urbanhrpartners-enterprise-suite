@@ -1,0 +1,19 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Unit test / log reports
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.log
+
+# Database files
+*.db
+*.sqlite3
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class

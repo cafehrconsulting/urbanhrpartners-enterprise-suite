@@ -1,171 +1,91 @@
 import os
-import csv
-from datetime import datetime
-from io import StringIO
-
-from flask import (
-    Flask,
-    render_template,
-    redirect,
-    url_for,
-    request,
-    Response,
-    flash,
-    current_app,   # ✅ ADDED
-)
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'urban_hr_master_suite_2026'
 
+# --- 1. DATABASE CONFIGURATION (RENDER + LOCAL) ---
+if os.environ.get('DATABASE_URL'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urbanhr.db'
 
-def normalize_database_url(raw: str) -> str:
-    if not raw:
-        return ""
-    if raw.startswith("postgres://"):
-        return raw.replace("postgres://", "postgresql://", 1)
-    return raw
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
+# --- 2. CUMULATIVE DATABASE MODELS ---
 
-def create_app() -> Flask:
-    app = Flask(__name__, static_folder="static", template_folder="templates")
-    app.secret_key = os.environ.get("SECRET_KEY", "CHANGE_ME_LOCAL_DEV")
+class Client(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    source = db.Column(db.String(50)) 
+    budget = db.Column(db.Float, default=0.0)
 
-    # ---------------------------
-    # Database (SQLite local / DATABASE_URL for Render)
-    # ---------------------------
-    database_url = normalize_database_url(os.environ.get("DATABASE_URL", ""))
-    if not database_url:
-        database_url = "sqlite:///urbanhr.db"
+class Employee(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    position = db.Column(db.String(50))
+    points = db.Column(db.Integer, default=100)
+    status = db.Column(db.String(20), default='Active')
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.init_app(app)
+class Risk(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    hazard = db.Column(db.String(200), nullable=False)
+    level = db.Column(db.String(20)) # High, Medium, Low
+    resolved = db.Column(db.Boolean, default=False)
 
-    # ---------------------------
-    # Branding (ALWAYS available)
-    # ---------------------------
-    BRAND = {
-        "company": os.environ.get("BRAND_COMPANY", "UrbanHRPartners Consulting"),
-        "owner_name": os.environ.get("BRAND_OWNER_NAME", "Juan Carlos Urbano"),
-        "owner_title": os.environ.get("BRAND_OWNER_TITLE", "PhD(c) Business Psychology"),
-        "contact_email": os.environ.get("BRAND_CONTACT_EMAIL", "urbanhrpartnersconsulting@gmail.com"),
-        "contact_phone_usa": os.environ.get("BRAND_CONTACT_PHONE_USA", "+15168709645"),
-        "contact_phone_co": os.environ.get("BRAND_CONTACT_PHONE_CO", "+573160533654"),
-        "logo_static_path": os.environ.get("BRAND_LOGO_PATH", "images/logo.png"),  # static/images/logo.png
-    }
+# --- 3. ALL ROUTES (CUMULATIVE) ---
 
-    CONTACT_LINE = (
-        f"USA WhatsApp: {BRAND['contact_phone_usa']} • "
-        f"Colombia WhatsApp: {BRAND['contact_phone_co']} • "
-        f"{BRAND['contact_email']}"
-    )
+@app.route('/')
+def dashboard():
+    return render_template('dashboard.html')
 
-    @app.context_processor
-    def inject_branding():
-        return {
-            "BRAND": BRAND,
-            "CONTACT_LINE": CONTACT_LINE,
-            "LOGO_URL": url_for("static", filename=BRAND.get("logo_static_path", "images/logo.png")),
-        }
+# CRM Logic
+@app.route('/crm')
+def crm():
+    clients = Client.query.all()
+    return render_template('crm.html', clients=clients)
 
-    # ---------------------------
-    # ✅ Route flags (what you asked for)
-    # ---------------------------
-    @app.context_processor
-    def inject_flags():
-        return {"has_crm_csv": "crm_csv" in current_app.view_functions}
+@app.route('/add_client', methods=['POST'])
+def add_client():
+    name = request.form.get('name')
+    source = request.form.get('source')
+    budget = float(request.form.get('budget') or 0)
+    db.session.add(Client(name=name, source=source, budget=budget))
+    db.session.commit()
+    return redirect(url_for('crm'))
 
-    # ---------------------------
-    # Helpers
-    # ---------------------------
-    def csv_response(filename: str, header: list[str], rows: list[list]):
-        buf = StringIO()
-        w = csv.writer(buf)
-        w.writerow(header)
-        for r in rows:
-            w.writerow(r)
-        return Response(
-            buf.getvalue(),
-            mimetype="text/csv",
-            headers={"Content-Disposition": f"attachment; filename={filename}"},
-        )
+# HRIS Logic
+@app.route('/hris')
+def hris():
+    employees = Employee.query.all()
+    return render_template('hris.html', employees=employees)
 
-    # ---------------------------
-    # safe_url (REGISTERED TWO WAYS)
-    # ---------------------------
-    def safe_url(endpoint: str) -> str:
-        if endpoint in app.view_functions:
-            return url_for(endpoint)
-        return "#"
+# SGSST Logic
+@app.route('/sgsst')
+def sgsst():
+    risks = Risk.query.all()
+    return render_template('sgsst.html', risks=risks)
 
-    @app.context_processor
-    def inject_safe_url():
-        return {"safe_url": safe_url}
+@app.route('/add_risk', methods=['POST'])
+def add_risk():
+    hazard = request.form.get('hazard')
+    level = request.form.get('level')
+    db.session.add(Risk(hazard=hazard, level=level))
+    db.session.commit()
+    return redirect(url_for('sgsst'))
 
-    app.jinja_env.globals["safe_url"] = safe_url
+# ATS & Analytics Placeholders
+@app.route('/ats')
+def ats(): return render_template('ats.html')
 
-    # ---------------------------
-    # Models
-    # ---------------------------
-    class CrmAccount(db.Model):
-        __tablename__ = "crm_accounts"
-        id = db.Column(db.Integer, primary_key=True)
-        account_name = db.Column(db.String(255), nullable=False)
-        industry = db.Column(db.String(255), nullable=True)
-        status = db.Column(db.String(50), nullable=False, default="Active")
-        created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+@app.route('/analytics')
+def analytics(): return render_template('analytics.html')
 
-    with app.app_context():
-        db.create_all()
+# --- 4. SYSTEM INITIALIZATION ---
+with app.app_context():
+    db.create_all()
 
-    # ---------------------------
-    # Routes (PUBLIC / NO LOGIN)
-    # ---------------------------
-    @app.get("/health")
-    def health():
-        return {"status": "ok", "time": datetime.utcnow().isoformat()}
-
-    @app.get("/")
-    def home():
-        return redirect(url_for("dashboard"))
-
-    @app.get("/dashboard")
-    def dashboard():
-        totals = {"crm_accounts": CrmAccount.query.count()}
-        return render_template("dashboard.html", page_title="Dashboard", totals=totals)
-
-    @app.route("/crm", methods=["GET", "POST"])
-    def crm():
-        if request.method == "POST":
-            name = (request.form.get("account_name") or "").strip()
-            industry = (request.form.get("industry") or "").strip()
-
-            if not name:
-                flash("Account name is required.", "danger")
-            else:
-                db.session.add(CrmAccount(account_name=name, industry=industry or None))
-                db.session.commit()
-                flash("Account added.", "success")
-
-            return redirect(url_for("crm"))
-
-        accounts = CrmAccount.query.order_by(CrmAccount.created_at.desc()).limit(200).all()
-        return render_template("crm.html", page_title="CRM", accounts=accounts)
-
-    @app.get("/crm.csv")
-    def crm_csv():
-        accounts = CrmAccount.query.order_by(CrmAccount.created_at.desc()).all()
-        rows = [[a.id, a.account_name, a.industry or "", a.status, a.created_at.isoformat()] for a in accounts]
-        return csv_response(
-            "crm_accounts.csv",
-            ["id", "account_name", "industry", "status", "created_at"],
-            rows,
-        )
-
-    return app
-
-
-app = create_app()
-
-if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

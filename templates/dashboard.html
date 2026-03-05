@@ -1,30 +1,67 @@
 {% extends "base.html" %}
+
 {% block content %}
-
-  <div class="card" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;">
-    <div>
-      <div style="font-size:22px;font-weight:900;">Dashboard</div>
-      <div style="margin-top:6px;color:var(--muted);">Public mode (no login). Add CRM accounts to start.</div>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">UrbanHR Partners Suite</h1>
+        <p class="lead text-muted">Integrated Management System: CRM, HRIS, ATS & SGSST</p>
     </div>
 
-    <div class="spacer"></div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">🤝</div>
+                    <h5 class="card-title fw-bold">CRM & Marketing</h5>
+                    <p class="card-text small text-muted">Lead tracking, budgets, and marketing sources.</p>
+                    <a href="/crm" class="btn btn-primary w-100">Enter CRM</a>
+                </div>
+            </div>
+        </div>
 
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="{{ url_for('crm') }}">Open CRM</a>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">👥</div>
+                    <h5 class="card-title fw-bold">HRIS & Points</h5>
+                    <p class="card-text small text-muted">Employee records, attendance, and gamification.</p>
+                    <a href="/hris" class="btn btn-success w-100">Enter HRIS</a>
+                </div>
+            </div>
+        </div>
 
-      {% if has_crm_csv is defined and has_crm_csv %}
-        <a class="btn" href="{{ url_for('crm_csv') }}">Download CSV</a>
-      {% endif %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">🎯</div>
+                    <h5 class="card-title fw-bold">ATS & Hiring</h5>
+                    <p class="card-text small text-muted">Job vacancies, SOPs, and talent acquisition.</p>
+                    <a href="/ats" class="btn btn-info w-100 text-white">Enter ATS</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">🛡️</div>
+                    <h5 class="card-title fw-bold">SGSST Compliance</h5>
+                    <p class="card-text small text-muted">Occupational health, risk matrix, and safety audits.</p>
+                    <a href="/sgsst" class="btn btn-danger w-100">Safety Center</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center">
+                    <div class="fs-1 mb-2">📊</div>
+                    <h5 class="card-title fw-bold">Reports & Analytics</h5>
+                    <p class="card-text small text-muted">Market projections and performance data.</p>
+                    <a href="/analytics" class="btn btn-dark w-100">View Reports</a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <div style="height:14px;"></div>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">CRM Accounts</div>
-      <div class="val">{{ totals.crm_accounts if totals is defined and totals.crm_accounts is defined else 0 }}</div>
-    </div>
-  </div>
-
+</div>
 {% endblock %}
