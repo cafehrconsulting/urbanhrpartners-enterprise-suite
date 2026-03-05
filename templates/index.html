@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>CRM Clients</h2>
+
+  <form action="{{ url_for('crm_add') }}" method="POST">
+    <div class="row">
+      <div>
+        <div>Client ID</div><input name="client_id" required>
+        <div>Company Name</div><input name="company" required>
+        <div>Contact Person</div><input name="contact" required>
+        <div>Email</div><input type="email" name="email" required>
+        <div>Phone</div><input name="phone" required>
+      </div>
+      <div>
+        <div>Service</div>
+        <select name="service">
+          <option>HRIS</option>
+          <option>SG-SST</option>
+          <option>Consulting</option>
+        </select>
+
+        <div>Status</div>
+        <select name="status">
+          <option>Prospect</option>
+          <option>Active</option>
+          <option>Closed</option>
+        </select>
+        <br><br>
+        <button type="submit">Add Client</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<table>
+  <tr>
+    <th>Client ID</th><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Service</th><th>Status</th><th>Created</th>
+  </tr>
+  {% for c in clients %}
+  <tr>
+    <td>{{ c["Client ID"] }}</td>
+    <td>{{ c["Company Name"] }}</td>
+    <td>{{ c["Contact Person"] }}</td>
+    <td>{{ c["Email"] }}</td>
+    <td>{{ c["Phone"] }}</td>
+    <td>{{ c["Service"] }}</td>
+    <td>{{ c["Status"] }}</td>
+    <td>{{ c["Created At"] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

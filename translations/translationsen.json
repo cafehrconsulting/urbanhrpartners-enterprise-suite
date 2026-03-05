@@ -1,0 +1,39 @@
+{
+  "app_title": "UrbanHRPartners | Enterprise Suite",
+  "dashboard": "Dashboard",
+  "logout": "Logout",
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "sign_in": "Sign in",
+
+  "hris": "HRIS",
+  "crm": "CRM",
+  "ats": "ATS",
+  "sgsst": "SG-SST",
+  "reports": "Reports",
+
+  "employees": "Employees",
+  "departments": "Departments",
+  "positions": "Positions",
+
+  "accounts": "Accounts",
+  "contacts": "Contacts",
+  "leads": "Leads",
+  "opportunities": "Opportunities",
+
+  "jobs": "Jobs",
+  "candidates": "Candidates",
+  "applications": "Applications",
+
+  "hazards": "Hazards",
+  "risks": "Risk Assessments",
+  "controls": "Controls",
+  "inspections": "Inspections",
+  "incidents": "Incidents",
+  "capa": "CAPA",
+
+  "create": "Create",
+  "list": "List",
+  "back": "Back"
+}

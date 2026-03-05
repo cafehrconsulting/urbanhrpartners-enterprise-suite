@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <div class="card" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;">
+    <div>
+      <div style="font-size:22px;font-weight:900;">Dashboard</div>
+      <div style="margin-top:6px;color:var(--muted);">Public mode (no login). Add CRM accounts to start.</div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a class="btn" href="{{ url_for('crm') }}">Open CRM</a>
+
+      {% if has_crm_csv is defined and has_crm_csv %}
+        <a class="btn" href="{{ url_for('crm_csv') }}">Download CSV</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="height:14px;"></div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">CRM Accounts</div>
+      <div class="val">{{ totals.crm_accounts if totals is defined and totals.crm_accounts is defined else 0 }}</div>
+    </div>
+  </div>
+
+{% endblock %}
