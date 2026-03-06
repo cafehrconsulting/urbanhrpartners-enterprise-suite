@@ -1,53 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary fw-bold">👥 HRIS & Employee Performance</h2>
-        <span class="badge bg-info p-2">HR Module: Active</span>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 bg-light p-4 text-center">
-                <h4 class="h6 text-muted">ATTENDANCE SYSTEM</h4>
-                <div class="d-grid gap-2 d-md-block mt-3">
-                    <button class="btn btn-success btn-lg">Clock IN</button>
-                    <button class="btn btn-danger btn-lg">Clock OUT</button>
-                </div>
-            </div>
+    <h2>👥 HRIS: Employee Management</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <form action="/add_employee" method="POST" class="card p-3 shadow-sm">
+                <input type="text" name="name" class="form-control mb-2" placeholder="Employee Name" required>
+                <input type="text" name="position" class="form-control mb-2" placeholder="Position">
+                <input type="number" name="points" class="form-control mb-2" placeholder="Starting Points (100)">
+                <button type="submit" class="btn btn-success w-100">Add Employee</button>
+            </form>
         </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 bg-dark text-white p-4 text-center">
-                <h4 class="h6 text-warning">GAMIFICATION POINTS</h4>
-                <div class="display-4 fw-bold text-warning">1,450</div>
-                <p class="small">Leaderboard: <strong>Juan C.</strong></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card shadow-sm border-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Employee</th>
-                        <th>Position</th>
-                        <th>Status</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
+        <div class="col-md-8">
+            <table class="table border">
+                <thead><tr><th>Name</th><th>Position</th><th>Points</th></tr></thead>
                 <tbody>
                     {% for emp in employees %}
-                    <tr>
-                        <td><strong>{{ emp.name }}</strong></td>
-                        <td>{{ emp.position }}</td>
-                        <td><span class="badge bg-success">Active</span></td>
-                        <td><span class="badge bg-primary">{{ emp.points }} pts</span></td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4" class="text-center py-4">No employees registered yet.</td>
-                    </tr>
+                    <tr><td>{{ emp.name }}</td><td>{{ emp.position }}</td><td>{{ emp.points }}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

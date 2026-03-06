@@ -1,0 +1,49 @@
+/* RESET AND MASTER BRANDING */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --navy: #00122e;
+    --gold: #D4AF37;
+    --bg: #0d1117;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+.system-header {
+    height: 12vh;
+    background-color: var(--navy);
+    border-bottom: 4px solid var(--gold);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+}
+
+.system-header .logo {
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.system-header nav a {
+    color: var(--white);
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+.system-header nav a:hover {
+    color: var(--gold);
+}

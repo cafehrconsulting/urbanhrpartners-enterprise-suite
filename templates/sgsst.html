@@ -1,96 +1,55 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-  <h2>{{ t["page_sgsst"] }}</h2>
-
-  <form action="{{ url_for('sgsst_add', lang=lang) }}" method="POST">
+<div class="container mt-5">
+    <h2 class="text-danger fw-bold mb-4">🛡️ SGSST: Risk & Safety Management</h2>
     <div class="row">
-      <div>
-        <div>Record ID</div><input name="record_id" required>
-        <div>Company</div><input name="company" required>
-
-        <div>{{ t["filter_category"] }}</div>
-        <select name="category">
-          <option>Inspection</option>
-          <option>Incident</option>
-          <option>Training</option>
-          <option>Risk Assessment</option>
-          <option>Corrective Action</option>
-        </select>
-
-        <div>Event Date</div><input type="date" name="event_date" required>
-      </div>
-
-      <div>
-        <div>Severity</div>
-        <select name="severity">
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-          <option>Critical</option>
-        </select>
-
-        <div>{{ t["status"] }}</div>
-        <select name="status">
-          <option>Open</option>
-          <option>In Progress</option>
-          <option>Closed</option>
-        </select>
-
-        <div>Description</div>
-        <textarea name="description" required></textarea>
-        <br>
-        <button type="submit">{{ t["add"] }}</button>
-      </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4 bg-light">
+                <h5>Report New Hazard</h5>
+                <hr>
+                <form action="/add_risk" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Hazard Description</label>
+                        <input type="text" name="hazard" class="form-control" placeholder="e.g. Fire exit blocked" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Risk Level</label>
+                        <select name="level" class="form-select">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Log Risk</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Hazard</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for risk in risks %}
+                        <tr>
+                            <td>{{ risk.hazard }}</td>
+                            <td><span class="badge {% if risk.level == 'High' %}bg-danger{% else %}bg-warning{% endif %}">{{ risk.level }}</span></td>
+                            <td><span class="text-danger small fw-bold">OPEN</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">No risks reported.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </form>
-
-  <hr>
-  <form method="GET" action="{{ url_for('sgsst') }}">
-    <input type="hidden" name="lang" value="{{ lang }}">
-    <div class="row">
-      <div>
-        <div>{{ t["filter_category"] }}</div>
-        <select name="category">
-          <option value="">(All)</option>
-          <option value="Inspection">Inspection</option>
-          <option value="Incident">Incident</option>
-          <option value="Training">Training</option>
-          <option value="Risk Assessment">Risk Assessment</option>
-          <option value="Corrective Action">Corrective Action</option>
-        </select>
-      </div>
-      <div>
-        <div>{{ t["filter_status"] }}</div>
-        <select name="status">
-          <option value="">(All)</option>
-          <option value="Open">Open</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Closed">Closed</option>
-        </select>
-      </div>
-      <div style="padding-top:22px;">
-        <button type="submit">{{ t["apply_filters"] }}</button>
-      </div>
-    </div>
-  </form>
 </div>
-
-<table>
-  <tr>
-    <th>Record ID</th><th>Company</th><th>Category</th><th>Event Date</th><th>Description</th><th>Severity</th><th>{{ t["status"] }}</th><th>{{ t["created"] }}</th>
-  </tr>
-  {% for r in records %}
-  <tr>
-    <td>{{ r["record_id"] }}</td>
-    <td>{{ r["company"] }}</td>
-    <td>{{ r["category"] }}</td>
-    <td>{{ r["event_date"] }}</td>
-    <td>{{ r["description"] }}</td>
-    <td>{{ r["severity"] }}</td>
-    <td>{{ r["status"] }}</td>
-    <td>{{ r["created_at"] }}</td>
-  </tr>
-  {% endfor %}
-</table>
 {% endblock %}

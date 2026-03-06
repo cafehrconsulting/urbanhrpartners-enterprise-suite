@@ -1,62 +1,82 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="card">
-    <div style="font-size:20px;font-weight:900;">Analytics</div>
-    <div style="margin-top:6px;color:var(--muted);font-size:13px;">
-      Filter by period and optional date range (YYYY-MM-DD).
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="text-dark fw-bold">📊 Executive Analytics Hub</h2>
+        <button class="btn btn-outline-dark btn-sm" onclick="window.print()">🖨️ Export PDF</button>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 text-center bg-primary text-white">
+                <small class="text-uppercase opacity-75">Pipeline Budget</small>
+                <h3 class="fw-bold">${{ "{:,.0f}".format(budget) }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 text-center bg-success text-white">
+                <small class="text-uppercase opacity-75">Team Score</small>
+                <h3 class="fw-bold">{{ points }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 text-center bg-danger text-white">
+                <small class="text-uppercase opacity-75">Safety Risks</small>
+                <h3 class="fw-bold">{{ risks }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 text-center bg-info text-white">
+                <small class="text-uppercase opacity-75">Open Jobs</small>
+                <h3 class="fw-bold">{{ jobs }}</h3>
+            </div>
+        </div>
     </div>
 
-    <form method="get" style="margin-top:14px;">
-      <div class="row">
-        <div>
-          <div class="label" style="margin-bottom:6px;">Period</div>
-          <input name="period" value="{{ period }}" placeholder="monthly | quarterly | semiannual | yearly">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm p-4">
+                <h5 class="fw-bold mb-4">Module Distribution</h5>
+                <canvas id="mainChart" height="150"></canvas>
+            </div>
         </div>
-        <div>
-          <div class="label" style="margin-bottom:6px;">Start date (optional)</div>
-          <input name="start" value="{{ start }}" placeholder="2026-01-01">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4">
+                <h5 class="fw-bold mb-4">Health Check</h5>
+                <canvas id="healthChart"></canvas>
+            </div>
         </div>
-      </div>
-      <div class="row" style="margin-top:10px;">
-        <div>
-          <div class="label" style="margin-bottom:6px;">End date (optional)</div>
-          <input name="end" value="{{ end }}" placeholder="2026-12-31">
-        </div>
-        <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;">
-          <button class="btn" type="submit">Apply</button>
-          <a class="btn" href="{{ url_for('reports_analytics_csv', period=period, start=start, end=end) }}">Export CSV</a>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div style="height:14px;"></div>
-
-  <div class="card">
-    <div style="font-weight:900;margin-bottom:10px;">Results</div>
-
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Metric</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>HRIS Employees (grouped)</td><td>{{ analytics.hris_employees }}</td></tr>
-        <tr><td>CRM Accounts (grouped)</td><td>{{ analytics.crm_accounts }}</td></tr>
-        <tr><td>CRM Opportunities (grouped)</td><td>{{ analytics.crm_opps }}</td></tr>
-        <tr><td>CRM Value Sum (grouped)</td><td>{{ analytics.crm_value }}</td></tr>
-        <tr><td>ATS Jobs (grouped)</td><td>{{ analytics.ats_jobs }}</td></tr>
-        <tr><td>ATS Applications (grouped)</td><td>{{ analytics.ats_apps }}</td></tr>
-        <tr><td>SG-SST Hazards (grouped)</td><td>{{ analytics.sgsst_hazards }}</td></tr>
-        <tr><td>SG-SST Incidents (grouped)</td><td>{{ analytics.sgsst_incidents }}</td></tr>
-        <tr><td>SG-SST CAPA (grouped)</td><td>{{ analytics.sgsst_capa }}</td></tr>
-      </tbody>
-    </table>
-
-    <div style="margin-top:10px;color:var(--muted);font-size:12px;">
-      Note: This template prints arrays as JSON-like text. If you want charts/graphs, I’ll format these into tables and add simple chart rendering.
     </div>
-  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Bar Chart Logic
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['CRM ($)', 'HRIS (Pts)', 'Risks', 'Jobs'],
+            datasets: [{
+                label: 'System Performance Metrics',
+                data: [{{ budget }}, {{ points }}, {{ risks }}, {{ jobs }}],
+                backgroundColor: ['#0d6efd', '#198754', '#dc3545', '#0dcaf0']
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Doughnut Chart Logic
+    const healthCtx = document.getElementById('healthChart').getContext('2d');
+    new Chart(healthCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Active', 'Pending'],
+            datasets: [{
+                data: [94, 6],
+                backgroundColor: ['#198754', '#e9ecef']
+            }]
+        }
+    });
+</script>
 {% endblock %}
