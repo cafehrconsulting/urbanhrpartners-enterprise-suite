@@ -7,22 +7,185 @@
         <p>Human Resources Information System</p>
     </div>
 
-    <div class="module-info-grid">
+    <div class="crm-layout">
         <div class="info-card">
-            <h3>Employee Profiles</h3>
-            <p>Store identity, role, department, and employment details.</p>
+            <h3>Create Employee</h3>
+
+            <form method="POST" action="{{ url_for('create_employee') }}" class="crm-form">
+                <label for="employee_number">Employee Number</label>
+                <input type="text" id="employee_number" name="employee_number">
+
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required>
+
+                <label for="role_title">Role Title</label>
+                <input type="text" id="role_title" name="role_title">
+
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department">
+
+                <label for="employment_status">Employment Status</label>
+                <input type="text" id="employment_status" name="employment_status" placeholder="Active / Leave / Probation">
+
+                <label for="hire_date">Hire Date</label>
+                <input type="date" id="hire_date" name="hire_date">
+
+                <button type="submit" class="action-button">Save Employee</button>
+            </form>
         </div>
+
         <div class="info-card">
-            <h3>Point System</h3>
-            <p>Record additions and deductions for workforce management.</p>
+            <h3>Create Point Log</h3>
+
+            <form method="POST" action="{{ url_for('create_point_log') }}" class="crm-form">
+                <label for="employee_id_points">Employee</label>
+                <select id="employee_id_points" name="employee_id" class="crm-select" required>
+                    <option value="">Select Employee</option>
+                    {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="points">Points</label>
+                <input type="number" id="points" name="points" required>
+
+                <label for="reason">Reason</label>
+                <input type="text" id="reason" name="reason" required>
+
+                <button type="submit" class="action-button">Save Point Log</button>
+            </form>
         </div>
+
         <div class="info-card">
-            <h3>SOP Compliance</h3>
-            <p>Map SOP requirements to job roles and responsibilities.</p>
+            <h3>Create Disciplinary Record</h3>
+
+            <form method="POST" action="{{ url_for('create_disciplinary_record') }}" class="crm-form">
+                <label for="employee_id_disciplinary">Employee</label>
+                <select id="employee_id_disciplinary" name="employee_id" class="crm-select" required>
+                    <option value="">Select Employee</option>
+                    {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="case_type">Case Type</label>
+                <input type="text" id="case_type" name="case_type" required>
+
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="crm-textarea"></textarea>
+
+                <label for="status">Status</label>
+                <input type="text" id="status" name="status" placeholder="Open / Closed / Pending">
+
+                <button type="submit" class="action-button">Save Disciplinary Record</button>
+            </form>
         </div>
-        <div class="info-card">
-            <h3>Disciplinary Records</h3>
-            <p>Track formal employee cases and resolution history.</p>
+    </div>
+
+    <div class="info-card table-card">
+        <h3>Employee Directory</h3>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee #</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Hire Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if employees %}
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ employee.id }}</td>
+                            <td>{{ employee.employee_number or "-" }}</td>
+                            <td>{{ employee.full_name }}</td>
+                            <td>{{ employee.role_title or "-" }}</td>
+                            <td>{{ employee.department or "-" }}</td>
+                            <td>{{ employee.employment_status or "-" }}</td>
+                            <td>{{ employee.hire_date or "-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No employees created yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="module-info-grid marketing-tables">
+        <div class="info-card table-card">
+            <h3>Recent Point Logs</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Points</th>
+                            <th>Reason</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if point_logs %}
+                            {% for point_log, employee_name in point_logs %}
+                            <tr>
+                                <td>{{ employee_name }}</td>
+                                <td>{{ point_log.points }}</td>
+                                <td>{{ point_log.reason }}</td>
+                                <td>{{ point_log.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No point logs created yet.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card table-card">
+            <h3>Recent Disciplinary Records</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Case Type</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if disciplinary_records %}
+                            {% for record, employee_name in disciplinary_records %}
+                            <tr>
+                                <td>{{ employee_name }}</td>
+                                <td>{{ record.case_type }}</td>
+                                <td>{{ record.status or "-" }}</td>
+                                <td>{{ record.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No disciplinary records created yet.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </section>
