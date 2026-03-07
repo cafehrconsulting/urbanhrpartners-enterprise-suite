@@ -1,26 +1,29 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>👥 HRIS: Employee Management</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <form action="/add_employee" method="POST" class="card p-3 shadow-sm">
-                <input type="text" name="name" class="form-control mb-2" placeholder="Employee Name" required>
-                <input type="text" name="position" class="form-control mb-2" placeholder="Position">
-                <input type="number" name="points" class="form-control mb-2" placeholder="Starting Points (100)">
-                <button type="submit" class="btn btn-success w-100">Add Employee</button>
-            </form>
+<section class="module-page">
+    <div class="module-header">
+        <h1>HRIS</h1>
+        <p>Human Resources Information System</p>
+    </div>
+
+    <div class="module-info-grid">
+        <div class="info-card">
+            <h3>Employee Profiles</h3>
+            <p>Store identity, role, department, and employment details.</p>
         </div>
-        <div class="col-md-8">
-            <table class="table border">
-                <thead><tr><th>Name</th><th>Position</th><th>Points</th></tr></thead>
-                <tbody>
-                    {% for emp in employees %}
-                    <tr><td>{{ emp.name }}</td><td>{{ emp.position }}</td><td>{{ emp.points }}</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="info-card">
+            <h3>Point System</h3>
+            <p>Record additions and deductions for workforce management.</p>
+        </div>
+        <div class="info-card">
+            <h3>SOP Compliance</h3>
+            <p>Map SOP requirements to job roles and responsibilities.</p>
+        </div>
+        <div class="info-card">
+            <h3>Disciplinary Records</h3>
+            <p>Track formal employee cases and resolution history.</p>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

@@ -1,8 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="text-align: center;">
-    <h2>SYSTEM OPERATIONAL</h2>
-    <p>If you see this header and background, the CSS is correctly loaded.</p>
+<div class="command-center">
+    <div class="logo-center">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="UrbanHRPartners Logo" class="main-logo">
+    </div>
+
+    <h1>UrbanHRPartners Command Center</h1>
+    <p class="subtitle">
+        Integrated CRM · HRIS · ATS · Orientation · SG-SST · Finance · Inventory · SAMI
+    </p>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3>Clients</h3>
+            <p id="clientCount">0</p>
+        </div>
+        <div class="metric-card">
+            <h3>Employees</h3>
+            <p id="employeeCount">0</p>
+        </div>
+        <div class="metric-card">
+            <h3>Revenue</h3>
+            <p id="revenue">$0</p>
+        </div>
+        <div class="metric-card">
+            <h3>Safety Incidents</h3>
+            <p id="incidentCount">0</p>
+        </div>
+    </div>
+
+    <div class="module-grid">
+        <a class="module-button" href="/crm">CRM</a>
+        <a class="module-button" href="/hris">HRIS</a>
+        <a class="module-button" href="/ats">ATS</a>
+        <a class="module-button" href="/orientation">Orientation</a>
+        <a class="module-button" href="/sgsst">SG-SST</a>
+        <a class="module-button" href="/inventory">Inventory</a>
+        <a class="module-button" href="/finance">Finance</a>
+        <a class="module-button" href="/sami">SAMI AI</a>
+    </div>
+
+    <section class="chart-panel">
+        <h2>Business Analytics</h2>
+        <canvas id="revenueChart"></canvas>
+    </section>
+
+    <div id="samiWidget" onclick="window.location.href='/sami'">
+        SAMI
+    </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

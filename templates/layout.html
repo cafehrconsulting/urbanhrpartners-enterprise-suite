@@ -25,23 +25,11 @@
                 <a href="/sgsst">SG-SST</a>
                 <a href="/inventory">Inventory</a>
                 <a href="/finance">Finance</a>
-                <a href="/marketing">Marketing</a>
-                <a href="/calendar">Calendar</a>
                 <a href="/sami">SAMI AI</a>
             </nav>
         </aside>
 
         <main class="main-content">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="flash-wrap">
-                        {% for category, message in messages %}
-                            <div class="flash-message {{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-
             {% block content %}{% endblock %}
         </main>
     </div>

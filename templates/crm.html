@@ -1,31 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body { background-color: #0d1117; color: #fff; font-family: 'Segoe UI', sans-serif; padding: 40px; }
-        .form-container { 
-            max-width: 500px; margin: auto; padding: 30px; 
-            border: 2px solid #D4AF37; border-radius: 12px; background: #00122e; 
-        }
-        input { 
-            width: 100%; padding: 12px; margin: 10px 0; 
-            background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; 
-        }
-        button { 
-            width: 100%; padding: 15px; background: #D4AF37; color: #000; 
-            border: none; font-weight: bold; cursor: pointer; border-radius: 5px; 
-        }
-    </style>
-</head>
-<body>
-    <div class="form-container">
-        <h2 style="text-align: center; color: #D4AF37;">NEW CRM LEAD</h2>
-        <form action="/add_lead" method="POST">
-            <input type="text" name="company_name" placeholder="Company Name" required>
-            <input type="number" name="estimated_budget" placeholder="Estimated Budget" step="0.01">
-            <button type="submit">SAVE LEAD TO PIPELINE</button>
-        </form>
+{% extends "base.html" %}
+
+{% block content %}
+<section class="module-page">
+    <div class="module-header">
+        <h1>CRM</h1>
+        <p>Client Relationship & Revenue Engine</p>
     </div>
-</body>
-</html>
+
+    <div class="crm-layout">
+        <div class="info-card">
+            <h3>Create Client</h3>
+
+            <form method="POST" action="{{ url_for('create_client') }}" class="crm-form">
+                <label for="name">Client Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="industry">Industry</label>
+                <input type="text" id="industry" name="industry">
+
+                <label for="region">Region</label>
+                <input type="text" id="region" name="region">
+
+                <label for="risk_level">Risk Level</label>
+                <input type="text" id="risk_level" name="risk_level">
+
+                <button type="submit" class="action-button">Save Client</button>
+            </form>
+        </div>
+
+        <div class="info-card">
+            <h3>CRM Summary</h3>
+            <p>This is the first live module of the platform.</p>
+            <p>It already supports:</p>
+            <ul class="module-list">
+                <li>Client creation</li>
+                <li>Database storage</li>
+                <li>Live client listing</li>
+                <li>Render-safe routing</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="info-card table-card">
+        <h3>Client Directory</h3>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Industry</th>
+                        <th>Region</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if clients %}
+                        {% for client in clients %}
+                        <tr>
+                            <td>{{ client.id }}</td>
+                            <td>{{ client.name }}</td>
+                            <td>{{ client.industry or "-" }}</td>
+                            <td>{{ client.region or "-" }}</td>
+                            <td>{{ client.risk_level or "-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No clients created yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

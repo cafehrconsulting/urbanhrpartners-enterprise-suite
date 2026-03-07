@@ -1,55 +1,29 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-danger fw-bold mb-4">🛡️ SGSST: Risk & Safety Management</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 p-4 bg-light">
-                <h5>Report New Hazard</h5>
-                <hr>
-                <form action="/add_risk" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label">Hazard Description</label>
-                        <input type="text" name="hazard" class="form-control" placeholder="e.g. Fire exit blocked" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Risk Level</label>
-                        <select name="level" class="form-select">
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-danger w-100">Log Risk</button>
-                </form>
-            </div>
+<section class="module-page">
+    <div class="module-header">
+        <h1>SG-SST</h1>
+        <p>Occupational Safety & Health Engine</p>
+    </div>
+
+    <div class="module-info-grid">
+        <div class="info-card">
+            <h3>Risk Matrix</h3>
+            <p>Manage hazards, severity, probability, and controls.</p>
         </div>
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Hazard</th>
-                            <th>Level</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for risk in risks %}
-                        <tr>
-                            <td>{{ risk.hazard }}</td>
-                            <td><span class="badge {% if risk.level == 'High' %}bg-danger{% else %}bg-warning{% endif %}">{{ risk.level }}</span></td>
-                            <td><span class="text-danger small fw-bold">OPEN</span></td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="3" class="text-center py-4 text-muted">No risks reported.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="info-card">
+            <h3>Incident Reporting</h3>
+            <p>Capture and review workplace incidents and near misses.</p>
+        </div>
+        <div class="info-card">
+            <h3>Inspections</h3>
+            <p>Schedule and document findings for workplace safety reviews.</p>
+        </div>
+        <div class="info-card">
+            <h3>Corrective Actions</h3>
+            <p>Track response actions, deadlines, and compliance results.</p>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
