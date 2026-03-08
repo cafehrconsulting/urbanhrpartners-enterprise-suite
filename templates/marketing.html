@@ -1,29 +1,139 @@
 {% extends "base.html" %}
 
-{% block content %}
-<section class="module-page">
-    <div class="module-header">
-        <h1>Marketing</h1>
-        <p>Lead Funnel, Campaign ROI, and Growth Intelligence</p>
-    </div>
+{% block title %}Marketing | UrbanHRPartners{% endblock %}
 
-    <div class="module-info-grid">
-        <div class="info-card">
-            <h3>Lead Funnel</h3>
-            <p>Track prospects from interest to paying client conversion.</p>
+{% block content %}
+<div class="container">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create Lead</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('create_lead') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Lead Name *</label>
+                            <input type="text" class="form-control" name="lead_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Source</label>
+                            <input type="text" class="form-control" name="source">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Stage</label>
+                            <input type="text" class="form-control" name="stage">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Expected Value</label>
+                            <input type="number" step="0.01" class="form-control" name="expected_value" value="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Save Lead</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Create Campaign</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('create_campaign') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Campaign Name *</label>
+                            <input type="text" class="form-control" name="campaign_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Channel</label>
+                            <input type="text" class="form-control" name="channel">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cost</label>
+                            <input type="number" step="0.01" class="form-control" name="cost" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ROI</label>
+                            <input type="text" class="form-control" name="roi">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Save Campaign</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="info-card">
-            <h3>Campaign ROI</h3>
-            <p>Connect campaign spending to results and acquisition performance.</p>
-        </div>
-        <div class="info-card">
-            <h3>Growth Projections</h3>
-            <p>Estimate future growth and pipeline expansion from marketing activity.</p>
-        </div>
-        <div class="info-card">
-            <h3>Market Analytics</h3>
-            <p>Support strategic outreach and business development decisions.</p>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Leads</h4>
+                </div>
+                <div class="card-body">
+                    {% if leads %}
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Lead</th>
+                                        <th>Source</th>
+                                        <th>Stage</th>
+                                        <th>Expected Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for lead in leads %}
+                                    <tr>
+                                        <td>{{ lead.id }}</td>
+                                        <td>{{ lead.lead_name }}</td>
+                                        <td>{{ lead.source or "-" }}</td>
+                                        <td>{{ lead.stage or "-" }}</td>
+                                        <td>{{ lead.expected_value }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No leads saved yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Campaigns</h4>
+                </div>
+                <div class="card-body">
+                    {% if campaigns %}
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Campaign</th>
+                                        <th>Channel</th>
+                                        <th>Cost</th>
+                                        <th>ROI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for campaign in campaigns %}
+                                    <tr>
+                                        <td>{{ campaign.id }}</td>
+                                        <td>{{ campaign.campaign_name }}</td>
+                                        <td>{{ campaign.channel or "-" }}</td>
+                                        <td>{{ campaign.cost }}</td>
+                                        <td>{{ campaign.roi or "-" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No campaigns saved yet.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
