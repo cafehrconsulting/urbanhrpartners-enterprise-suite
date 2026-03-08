@@ -9,10 +9,14 @@ body {
     color: white;
 }
 
+/* ===== Application Layout ===== */
+
 .app-shell {
     display: flex;
     min-height: 100vh;
 }
+
+/* ===== Sidebar ===== */
 
 .sidebar {
     width: 260px;
@@ -24,6 +28,7 @@ body {
     bottom: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     overflow-y: auto;
+    z-index: 100;
 }
 
 .brand-block {
@@ -37,6 +42,8 @@ body {
     margin-bottom: 12px;
 }
 
+/* ===== Navigation ===== */
+
 .nav-menu {
     display: flex;
     flex-direction: column;
@@ -49,7 +56,7 @@ body {
     padding: 12px 14px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.05);
-    transition: 0.2s ease;
+    transition: all 0.25s ease;
 }
 
 .nav-menu a:hover {
@@ -57,11 +64,15 @@ body {
     color: black;
 }
 
+/* ===== Main Content Area ===== */
+
 .main-content {
     margin-left: 260px;
     width: calc(100% - 260px);
     padding: 30px;
 }
+
+/* ===== Flash Messages ===== */
 
 .flash-wrap {
     margin-bottom: 20px;
@@ -86,6 +97,8 @@ body {
     color: #fee2e2;
 }
 
+/* ===== Command Center ===== */
+
 .command-center {
     text-align: center;
 }
@@ -104,6 +117,8 @@ body {
     color: #cbd5e1;
     margin-bottom: 30px;
 }
+
+/* ===== Metrics Cards ===== */
 
 .metrics-grid {
     display: grid;
@@ -130,6 +145,8 @@ body {
     margin-bottom: 0;
 }
 
+/* ===== Module Buttons ===== */
+
 .module-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -147,7 +164,7 @@ body {
     background: linear-gradient(145deg, #0f172a, #1e40af);
     border-radius: 18px;
     box-shadow: 6px 6px 12px #0a0f1a, -4px -4px 10px rgba(255, 255, 255, 0.06);
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 }
 
 .module-button:hover {
@@ -155,6 +172,8 @@ body {
     background: linear-gradient(145deg, #fbbf24, #f97316);
     color: black;
 }
+
+/* ===== Analytics Panel ===== */
 
 .chart-panel {
     background: linear-gradient(145deg, #111827, #1f2937);
@@ -164,7 +183,9 @@ body {
     margin-top: 20px;
 }
 
-#samiWidget {
+/* ===== XIOMY AI Widget ===== */
+
+#xiomyWidget {
     position: fixed;
     right: 28px;
     bottom: 28px;
@@ -179,7 +200,14 @@ body {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease;
 }
+
+#xiomyWidget:hover {
+    transform: scale(1.08);
+}
+
+/* ===== Module Pages ===== */
 
 .module-page {
     max-width: 1200px;
@@ -200,8 +228,11 @@ body {
     margin-top: 0;
 }
 
+/* ===== Card Layouts ===== */
+
 .module-info-grid,
-.crm-layout {
+.crm-layout,
+.marketing-tables {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 22px;
@@ -226,6 +257,8 @@ body {
     margin-bottom: 0;
 }
 
+/* ===== Forms ===== */
+
 .crm-form {
     display: grid;
     gap: 12px;
@@ -236,12 +269,20 @@ body {
     color: #fbbf24;
 }
 
-.crm-form input {
+.crm-form input,
+.crm-select,
+.crm-textarea {
     padding: 12px;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: #0f172a;
     color: white;
+    font-family: Arial, sans-serif;
+}
+
+.crm-textarea {
+    min-height: 110px;
+    resize: vertical;
 }
 
 .action-button {
@@ -260,11 +301,7 @@ body {
     opacity: 0.95;
 }
 
-.module-list {
-    margin-bottom: 0;
-    padding-left: 20px;
-    color: #e2e8f0;
-}
+/* ===== Tables ===== */
 
 .table-card {
     margin-top: 24px;
@@ -298,7 +335,10 @@ td {
     color: #e2e8f0;
 }
 
+/* ===== Responsive ===== */
+
 @media (max-width: 900px) {
+
     .sidebar {
         position: relative;
         width: 100%;
@@ -318,10 +358,11 @@ td {
         width: 28%;
     }
 
-    #samiWidget {
+    #xiomyWidget {
         width: 66px;
         height: 66px;
         right: 18px;
         bottom: 18px;
     }
+
 }

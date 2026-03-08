@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UrbanHRPartners Enterprise Suite</title>
+    <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -17,17 +17,17 @@
             </div>
 
             <nav class="nav-menu">
-                <a href="/">Dashboard</a>
-                <a href="/crm">CRM</a>
-                <a href="/hris">HRIS</a>
-                <a href="/ats">ATS</a>
-                <a href="/orientation">Orientation</a>
-                <a href="/sgsst">SG-SST</a>
-                <a href="/inventory">Inventory</a>
-                <a href="/finance">Finance</a>
-                <a href="/marketing">Marketing</a>
-                <a href="/calendar">Calendar</a>
-                <a href="/sami">SAMI AI</a>
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('crm') }}">CRM</a>
+                <a href="{{ url_for('hris') }}">HRIS</a>
+                <a href="{{ url_for('ats') }}">ATS</a>
+                <a href="{{ url_for('orientation') }}">Orientation</a>
+                <a href="{{ url_for('sgsst') }}">SG-SST</a>
+                <a href="{{ url_for('inventory') }}">Inventory</a>
+                <a href="{{ url_for('finance') }}">Finance</a>
+                <a href="{{ url_for('marketing') }}">Marketing</a>
+                <a href="{{ url_for('calendar') }}">Calendar</a>
+                <a href="{{ url_for('xiomy') }}">XIOMY AI</a>
             </nav>
         </aside>
 
@@ -36,7 +36,9 @@
                 {% if messages %}
                     <div class="flash-wrap">
                         {% for category, message in messages %}
-                            <div class="flash-message {{ category }}">{{ message }}</div>
+                            <div class="flash-message {{ 'error' if category == 'error' else 'success' }}">
+                                {{ message }}
+                            </div>
                         {% endfor %}
                     </div>
                 {% endif %}

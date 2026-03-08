@@ -1,16 +1,239 @@
 {% extends "base.html" %}
 
-{% block title %}Orientation | UrbanHRPartners{% endblock %}
+{% block title %}Orientation | UrbanHRPartners Enterprise Suite{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">Orientation Module</h4>
+<section class="module-page">
+    <div class="module-header">
+        <h1>Orientation</h1>
+        <p>New Employee Orientation and Onboarding Readiness</p>
+    </div>
+
+    <div class="module-info-grid">
+        <div class="metric-card">
+            <h3>Orientation Candidates</h3>
+            <p>{{ candidates|length if candidates else 0 }}</p>
         </div>
-        <div class="card-body">
-            <p class="mb-0">New Employee Orientation module is active and ready for checklist, acknowledgements, and onboarding workflows.</p>
+
+        <div class="metric-card">
+            <h3>Checklist Items</h3>
+            <p>{{ checklist_items|length if checklist_items else 0 }}</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>Policy Acknowledgements</h3>
+            <p>{{ acknowledgements|length if acknowledgements else 0 }}</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>Completed Items</h3>
+            <p>
+                {% if checklist_items %}
+                    {{ checklist_items | selectattr('is_completed', 'equalto', True) | list | length }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
         </div>
     </div>
-</div>
+
+    <div class="crm-layout">
+        <div class="info-card">
+            <h3>Create Orientation Checklist Item</h3>
+
+            <form method="POST" action="{{ url_for('create_orientation_item') }}" class="crm-form">
+                <label for="candidate_id">Candidate</label>
+                <select id="candidate_id" name="candidate_id" class="crm-select" required>
+                    <option value="">Select Candidate</option>
+                    {% for candidate in candidates %}
+                    <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="item_name">Checklist Item</label>
+                <input type="text" id="item_name" name="item_name" required>
+
+                <label for="is_completed">Completed</label>
+                <select id="is_completed" name="is_completed" class="crm-select">
+                    <option value="">No</option>
+                    <option value="1">Yes</option>
+                </select>
+
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" class="crm-textarea"></textarea>
+
+                <button type="submit" class="action-button">Save Checklist Item</button>
+            </form>
+        </div>
+
+        <div class="info-card">
+            <h3>Create Policy Acknowledgement</h3>
+
+            <form method="POST" action="{{ url_for('create_policy_acknowledgement') }}" class="crm-form">
+                <label for="ack_candidate_id">Candidate</label>
+                <select id="ack_candidate_id" name="candidate_id" class="crm-select">
+                    <option value="">Select Candidate</option>
+                    {% for candidate in candidates %}
+                    <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="policy_name">Policy Name</label>
+                <input type="text" id="policy_name" name="policy_name" required>
+
+                <label for="acknowledged">Acknowledged</label>
+                <select id="acknowledged" name="acknowledged" class="crm-select">
+                    <option value="">No</option>
+                    <option value="1">Yes</option>
+                </select>
+
+                <label for="ack_notes">Notes</label>
+                <textarea id="ack_notes" name="notes" class="crm-textarea"></textarea>
+
+                <button type="submit" class="action-button">Save Policy Acknowledgement</button>
+            </form>
+        </div>
+
+        <div class="info-card">
+            <h3>Orientation Readiness Guide</h3>
+            <ul class="module-list">
+                <li>Welcome communication completed</li>
+                <li>Policy handbook delivered</li>
+                <li>SG-SST pre-orientation safety briefing completed</li>
+                <li>Equipment provisioning reviewed</li>
+                <li>Digital employee file prepared</li>
+                <li>Role-specific requirements confirmed</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="info-card table-card">
+        <h3>Orientation Candidates</h3>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Candidate</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Position</th>
+                        <th>Stage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if candidates %}
+                        {% for candidate in candidates %}
+                        <tr>
+                            <td>{{ candidate.id }}</td>
+                            <td>{{ candidate.full_name }}</td>
+                            <td>{{ candidate.email or "-" }}</td>
+                            <td>{{ candidate.phone or "-" }}</td>
+                            <td>{{ candidate.position_applied or "-" }}</td>
+                            <td>{{ candidate.stage or "-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6">No orientation candidates available yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="module-info-grid marketing-tables">
+        <div class="info-card table-card">
+            <h3>Orientation Checklist</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Candidate ID</th>
+                            <th>Item</th>
+                            <th>Status</th>
+                            <th>Completed At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if checklist_items %}
+                            {% for item in checklist_items %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.candidate_id }}</td>
+                                <td>{{ item.item_name }}</td>
+                                <td>{{ "Completed" if item.is_completed else "Pending" }}</td>
+                                <td>
+                                    {% if item.completed_at %}
+                                        {{ item.completed_at.strftime("%Y-%m-%d %H:%M") }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('toggle_orientation_item', item_id=item.id) }}">
+                                        <button type="submit" class="action-button">
+                                            Toggle
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6">No checklist items created yet.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card table-card">
+            <h3>Policy Acknowledgements</h3>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Candidate ID</th>
+                            <th>Policy</th>
+                            <th>Acknowledged</th>
+                            <th>Acknowledged At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if acknowledgements %}
+                            {% for ack in acknowledgements %}
+                            <tr>
+                                <td>{{ ack.id }}</td>
+                                <td>{{ ack.candidate_id or "-" }}</td>
+                                <td>{{ ack.policy_name }}</td>
+                                <td>{{ "Yes" if ack.acknowledged else "No" }}</td>
+                                <td>
+                                    {% if ack.acknowledged_at %}
+                                        {{ ack.acknowledged_at.strftime("%Y-%m-%d %H:%M") }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No policy acknowledgements recorded yet.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

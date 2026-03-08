@@ -1,78 +1,389 @@
 {% extends "base.html" %}
 
+{% block title %}
+UrbanHRPartners Command Center
+{% endblock %}
+
 {% block content %}
 
 <div class="command-center">
 
-    <div class="logo-center">
-        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="UrbanHRPartners Logo" class="main-logo">
-    </div>
+    <!-- ===================================================== -->
+    <!-- HERO / COMMAND CENTER HEADER -->
+    <!-- ===================================================== -->
 
-    <h1>UrbanHRPartners Command Center</h1>
+    <div class="hero-panel">
 
-    <p class="subtitle">
-        Integrated CRM · HRIS · ATS · Orientation · SG-SST · Finance · Marketing · Calendar · Inventory · XIOMY AI
-    </p>
-
-    <div class="metrics-grid">
-
-        <div class="metric-card">
-            <h3>Clients</h3>
-            <p id="clientCount">0</p>
+        <div class="logo-center">
+            <img
+                src="{{ url_for('static', filename='logo.jpg') }}"
+                alt="UrbanHRPartners Logo"
+                class="main-logo"
+            >
         </div>
 
-        <div class="metric-card">
-            <h3>Employees</h3>
-            <p id="employeeCount">0</p>
+        <div class="hero-text">
+
+            <h1>
+                UrbanHRPartners Command Center
+            </h1>
+
+            <p class="subtitle">
+                Integrated CRM · HRIS · ATS · Orientation · SG-SST · Finance · Marketing · Calendar · Inventory · XIOMY AI
+            </p>
+
+            <p class="hero-description">
+                The UrbanHRPartners Enterprise Suite provides a centralized operational environment
+                for managing business operations, human capital, safety compliance,
+                financial oversight, and strategic analytics. All modules operate together
+                through a unified platform powered by XIOMY, the executive artificial intelligence assistant.
+            </p>
+
         </div>
-
-        <div class="metric-card">
-            <h3>Revenue</h3>
-            <p id="revenue">$0</p>
-        </div>
-
-        <div class="metric-card">
-            <h3>Safety Incidents</h3>
-            <p id="incidentCount">0</p>
-        </div>
-
-    </div>
-
-    <div class="module-grid">
-
-        <a class="module-button" href="{{ url_for('crm') }}">CRM</a>
-
-        <a class="module-button" href="{{ url_for('hris') }}">HRIS</a>
-
-        <a class="module-button" href="{{ url_for('ats') }}">ATS</a>
-
-        <a class="module-button" href="{{ url_for('orientation') }}">Orientation</a>
-
-        <a class="module-button" href="{{ url_for('sgsst') }}">SG-SST</a>
-
-        <a class="module-button" href="{{ url_for('inventory') }}">Inventory</a>
-
-        <a class="module-button" href="{{ url_for('finance') }}">Finance</a>
-
-        <a class="module-button" href="{{ url_for('marketing') }}">Marketing</a>
-
-        <a class="module-button" href="{{ url_for('calendar') }}">Calendar</a>
-
-        <a class="module-button" href="{{ url_for('xiomy') }}">XIOMY AI</a>
 
     </div>
 
-    <section class="chart-panel">
-        <h2>Business Analytics</h2>
-        <canvas id="revenueChart"></canvas>
+
+    <!-- ===================================================== -->
+    <!-- EXECUTIVE METRICS -->
+    <!-- ===================================================== -->
+
+    <section class="metrics-section">
+
+        <div class="section-header">
+            <h2>Executive Snapshot</h2>
+            <p>Real-time indicators across your enterprise system.</p>
+        </div>
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    Clients
+                </div>
+
+                <div class="metric-value" id="clientCount">
+                    {{ client_count if client_count is defined else 0 }}
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    Employees
+                </div>
+
+                <div class="metric-value" id="employeeCount">
+                    {{ employee_count if employee_count is defined else 0 }}
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    Revenue
+                </div>
+
+                <div class="metric-value" id="revenue">
+
+                    {% if revenue_total is defined %}
+                        ${{ "{:,.2f}".format(revenue_total|float) }}
+                    {% else %}
+                        $0.00
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-title">
+                    Safety Incidents
+                </div>
+
+                <div class="metric-value" id="incidentCount">
+                    {{ incident_count if incident_count is defined else 0 }}
+                </div>
+
+            </div>
+
+        </div>
+
     </section>
 
-    <div id="xiomyWidget" onclick="window.location.href='{{ url_for('xiomy') }}'">
-        XIOMY
-    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- ENTERPRISE MODULES -->
+    <!-- ===================================================== -->
+
+    <section class="modules-section">
+
+        <div class="section-header">
+
+            <h2>
+                Enterprise Modules
+            </h2>
+
+            <p>
+                Access each operational component of the UrbanHRPartners platform.
+            </p>
+
+        </div>
+
+        <div class="module-grid">
+
+            <a class="module-button" href="{{ url_for('crm') }}">
+                <div class="module-title">CRM</div>
+                <div class="module-desc">
+                    Client relationships, project management, communications.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('hris') }}">
+                <div class="module-title">HRIS</div>
+                <div class="module-desc">
+                    Workforce records, performance tracking, disciplinary management.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('ats') }}">
+                <div class="module-title">ATS</div>
+                <div class="module-desc">
+                    Candidate pipeline, interviews, recruitment analytics.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('orientation') }}">
+                <div class="module-title">Orientation</div>
+                <div class="module-desc">
+                    Onboarding workflows, policy acknowledgement, training.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('sgsst') }}">
+                <div class="module-title">SG-SST</div>
+                <div class="module-desc">
+                    Occupational safety management, risk prevention, compliance.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('inventory') }}">
+                <div class="module-title">Inventory</div>
+                <div class="module-desc">
+                    Equipment tracking, asset assignments, inventory analytics.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('finance') }}">
+                <div class="module-title">Finance</div>
+                <div class="module-desc">
+                    Revenue tracking, budgets, financial forecasting.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('marketing') }}">
+                <div class="module-title">Marketing</div>
+                <div class="module-desc">
+                    Campaign strategy, outreach management, growth analysis.
+                </div>
+            </a>
+
+
+            <a class="module-button" href="{{ url_for('calendar') }}">
+                <div class="module-title">Calendar</div>
+                <div class="module-desc">
+                    Meetings, appointments, scheduling tools.
+                </div>
+            </a>
+
+
+            <a class="module-button xiomy-button" href="{{ url_for('xiomy_page') if 'xiomy_page' in globals() else url_for('xiomy') }}">
+                <div class="module-title">XIOMY AI</div>
+                <div class="module-desc">
+                    Executive artificial intelligence assistant and analytics engine.
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ANALYTICS -->
+    <!-- ===================================================== -->
+
+    <section class="analytics-section">
+
+        <div class="section-header">
+            <h2>Business Analytics</h2>
+            <p>Revenue trends and operational insights.</p>
+        </div>
+
+        <div class="chart-panel">
+
+            <canvas id="revenueChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- XIOMY PANEL -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-panel">
+
+        <div class="xiomy-card">
+
+            <div class="xiomy-header">
+
+                <div>
+
+                    <h2>
+                        XIOMY Executive AI
+                    </h2>
+
+                    <p class="xiomy-status">
+                        <span class="status-dot"></span>
+                        System Online
+                    </p>
+
+                </div>
+
+                <a class="xiomy-open-button"
+                   href="{{ url_for('xiomy_page') if 'xiomy_page' in globals() else url_for('xiomy') }}">
+                    Open XIOMY
+                </a>
+
+            </div>
+
+
+            <div class="xiomy-body">
+
+                <div class="xiomy-avatar-container">
+
+                    <div id="xiomyWidget" class="xiomy-avatar">
+                        XIOMY
+                    </div>
+
+                </div>
+
+
+                <div class="xiomy-description">
+
+                    <h3>
+                        Artificial Intelligence Executive Layer
+                    </h3>
+
+                    <p>
+                        XIOMY is the executive artificial intelligence layer of the
+                        UrbanHRPartners Enterprise Suite. She monitors operational metrics,
+                        assists in executive decision-making, and provides guidance across
+                        CRM, HRIS, ATS, Orientation, SG-SST, Finance, Marketing, Calendar,
+                        and Inventory modules.
+                    </p>
+
+                    <ul>
+
+                        <li>Enterprise analytics monitoring</li>
+                        <li>Executive workflow assistance</li>
+                        <li>Operational recommendations</li>
+                        <li>Module navigation support</li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </div>
 
+
+
+<!-- ===================================================== -->
+<!-- DASHBOARD DATA FOR JAVASCRIPT -->
+<!-- ===================================================== -->
+
+<script>
+
+window.dashboardData = {
+
+    clientCount: {{ client_count if client_count is defined else 0 }},
+
+    employeeCount: {{ employee_count if employee_count is defined else 0 }},
+
+    revenueTotal: {{ revenue_total if revenue_total is defined else 0 }},
+
+    incidentCount: {{ incident_count if incident_count is defined else 0 }},
+
+    revenueLabels: {{ revenue_labels|tojson if revenue_labels is defined else ['Jan','Feb','Mar','Apr','May','Jun']|tojson }},
+
+    revenueValues: {{ revenue_values|tojson if revenue_values is defined else [0,0,0,0,0,0]|tojson }}
+
+};
+
+</script>
+
+
+
+<!-- ===================================================== -->
+<!-- SCRIPTS -->
+<!-- ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{{ url_for('static', filename='js/xiomy.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+
+
+<!-- ===================================================== -->
+<!-- XIOMY GREETING -->
+<!-- ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    if (typeof xiomySpeak === "function") {
+
+        const greeting = "Hello Juan Carlos Urbano. XIOMY is online and monitoring your enterprise systems.";
+
+        setTimeout(function(){
+
+            xiomySpeak(greeting);
+
+        },1200);
+
+    }
+
+});
+
+</script>
+
 
 {% endblock %}

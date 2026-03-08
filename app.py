@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 
@@ -24,6 +24,7 @@ class Client(db.Model):
     industry = db.Column(db.String(120), nullable=True)
     region = db.Column(db.String(120), nullable=True)
     risk_level = db.Column(db.String(120), nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
 class EmployeeProfile(db.Model):
@@ -43,7 +44,9 @@ class PointLog(db.Model):
     __tablename__ = "point_logs"
 
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey("employee_profiles.id"), nullable=False)
+    employee_id = db.Column(
+        db.Integer, db.ForeignKey("employee_profiles.id"), nullable=False
+    )
     points = db.Column(db.Integer, nullable=False, default=0)
     reason = db.Column(db.String(300), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -53,7 +56,9 @@ class DisciplinaryRecord(db.Model):
     __tablename__ = "disciplinary_records"
 
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey("employee_profiles.id"), nullable=False)
+    employee_id = db.Column(
+        db.Integer, db.ForeignKey("employee_profiles.id"), nullable=False
+    )
     case_type = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(100), nullable=True)
@@ -139,13 +144,13 @@ def create_app() -> Flask:
         employee_count = EmployeeProfile.query.count()
         incident_count = IncidentReport.query.count()
 
-        revenue = db.session.query(
-            func.coalesce(func.sum(Project.contract_value), 0)
-        ).scalar() or 0
-
-        invoices = db.session.query(
-            func.coalesce(func.sum(Invoice.amount), 0)
-        ).scalar() or 0
+        revenue = (
+            db.session.query(func.coalesce(func.sum(Project.contract_value), 0)).scalar()
+            or 0
+        )
+        invoices = (
+            db.session.query(func.coalesce(func.sum(Invoice.amount), 0)).scalar() or 0
+        )
 
         return jsonify(
             {
@@ -199,7 +204,7 @@ def create_app() -> Flask:
 
         point_logs = (
             db.session.query(PointLog, EmployeeProfile.full_name)
-            .join(EmployeeProfile, PointLog.employee_id == EmployeeProfile.id)
+            .outerjoin(EmployeeProfile, PointLog.employee_id == EmployeeProfile.id)
             .order_by(PointLog.id.desc())
             .limit(20)
             .all()
@@ -207,7 +212,10 @@ def create_app() -> Flask:
 
         disciplinary_records = (
             db.session.query(DisciplinaryRecord, EmployeeProfile.full_name)
-            .join(EmployeeProfile, DisciplinaryRecord.employee_id == EmployeeProfile.id)
+            .outerjoin(
+                EmployeeProfile,
+                DisciplinaryRecord.employee_id == EmployeeProfile.id,
+            )
             .order_by(DisciplinaryRecord.id.desc())
             .limit(20)
             .all()
@@ -296,7 +304,10 @@ def create_app() -> Flask:
         status = (request.form.get("status") or "").strip()
 
         if not employee_id_raw or not case_type:
-            flash("Employee and case type are required for disciplinary record.", "error")
+            flash(
+                "Employee and case type are required for disciplinary record.",
+                "error",
+            )
             return redirect(url_for("hris"))
 
         try:
@@ -457,9 +468,13 @@ def create_app() -> Flask:
     def finance():
         return render_template("finance.html")
 
+    @app.route("/xiomy")
+    def xiomy():
+        return render_template("xiomy.html")
+
     @app.route("/sami")
-    def sami():
-        return render_template("sami.html")
+    def sami_redirect():
+        return redirect(url_for("xiomy"))
 
     return app
 

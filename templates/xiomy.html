@@ -1,0 +1,550 @@
+{% extends "base.html" %}
+
+{% block title %}
+XIOMY Executive AI
+{% endblock %}
+
+{% block content %}
+
+<div class="xiomy-page">
+
+    <!-- ===================================================== -->
+    <!-- XIOMY HERO -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-hero">
+
+        <div class="xiomy-hero-left">
+
+            <div class="xiomy-badge">
+                UrbanHRPartners Executive Intelligence
+            </div>
+
+            <h1 class="xiomy-main-title">
+                XIOMY Executive AI
+            </h1>
+
+            <p class="xiomy-main-subtitle">
+                Enterprise artificial intelligence for strategic control, executive assistance,
+                analytics, workflow coordination, and operational visibility across the
+                UrbanHRPartners Enterprise Suite.
+            </p>
+
+            <div class="xiomy-main-actions">
+
+                <button type="button"
+                        class="xiomy-action-button primary"
+                        data-xiomy-speak="Hello Juan Carlos Urbano. I am XIOMY, your executive artificial intelligence assistant. All monitored systems are online and ready.">
+                    Speak Introduction
+                </button>
+
+                <button type="button"
+                        class="xiomy-action-button secondary"
+                        data-xiomy-listen>
+                    Start Listening
+                </button>
+
+                <button type="button"
+                        class="xiomy-action-button danger"
+                        data-xiomy-stop>
+                    Stop Speaking
+                </button>
+
+                <a href="{{ url_for('dashboard') }}"
+                   class="xiomy-action-button outline">
+                    Return to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="xiomy-hero-right">
+
+            <div class="xiomy-avatar-shell">
+
+                <div id="xiomyWidget" class="xiomy-avatar-large">
+                    XIOMY
+                </div>
+
+                <div class="xiomy-avatar-ring ring-one"></div>
+                <div class="xiomy-avatar-ring ring-two"></div>
+                <div class="xiomy-avatar-ring ring-three"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- XIOMY STATUS -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-status-grid">
+
+        <div class="xiomy-status-card">
+            <div class="xiomy-status-label">Core Status</div>
+            <div class="xiomy-status-value">Online</div>
+            <div class="xiomy-status-note">
+                Executive intelligence engine is active.
+            </div>
+        </div>
+
+        <div class="xiomy-status-card">
+            <div class="xiomy-status-label">Voice Engine</div>
+            <div class="xiomy-status-value" data-xiomy-status>Online</div>
+            <div class="xiomy-status-note">
+                Browser speech synthesis and command support.
+            </div>
+        </div>
+
+        <div class="xiomy-status-card">
+            <div class="xiomy-status-label">Connected Modules</div>
+            <div class="xiomy-status-value">
+                10
+            </div>
+            <div class="xiomy-status-note">
+                CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, XIOMY.
+            </div>
+        </div>
+
+        <div class="xiomy-status-card">
+            <div class="xiomy-status-label">Executive Session</div>
+            <div class="xiomy-status-value">
+                Active
+            </div>
+            <div class="xiomy-status-note">
+                Session prepared for enterprise control workflows.
+            </div>
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- COMMAND CENTER -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-command-center">
+
+        <div class="xiomy-section-header">
+            <h2>XIOMY Command Center</h2>
+            <p>
+                Speak commands, open modules, review live recommendations, and monitor enterprise activity.
+            </p>
+        </div>
+
+        <div class="xiomy-command-grid">
+
+            <div class="xiomy-panel-card">
+
+                <h3>Voice Command Console</h3>
+
+                <p class="xiomy-panel-text">
+                    Use XIOMY for guided navigation and executive interaction.
+                    Example commands include:
+                </p>
+
+                <ul class="xiomy-command-list">
+                    <li>Open CRM</li>
+                    <li>Open HRIS</li>
+                    <li>Open ATS</li>
+                    <li>Open Orientation</li>
+                    <li>Open SG-SST</li>
+                    <li>Open Finance</li>
+                    <li>Open Inventory</li>
+                    <li>Open Marketing</li>
+                    <li>Open Calendar</li>
+                    <li>Open XIOMY</li>
+                    <li>System status</li>
+                </ul>
+
+                <div class="xiomy-inline-actions">
+                    <button type="button"
+                            class="xiomy-mini-button"
+                            data-xiomy-speak="You may say commands such as open CRM, open HRIS, open ATS, open finance, or system status.">
+                        Read Commands
+                    </button>
+
+                    <button type="button"
+                            class="xiomy-mini-button"
+                            data-xiomy-listen>
+                        Listen Now
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="xiomy-panel-card">
+
+                <h3>Executive Summary</h3>
+
+                <p class="xiomy-panel-text">
+                    XIOMY is designed to coordinate executive functions across the UrbanHRPartners platform,
+                    helping leadership monitor performance, identify operational priorities,
+                    and support decision-making in real time.
+                </p>
+
+                <div class="xiomy-summary-grid">
+
+                    <div class="xiomy-summary-item">
+                        <span class="xiomy-summary-title">Workflow Guidance</span>
+                        <span class="xiomy-summary-value">Active</span>
+                    </div>
+
+                    <div class="xiomy-summary-item">
+                        <span class="xiomy-summary-title">Operational Awareness</span>
+                        <span class="xiomy-summary-value">Enabled</span>
+                    </div>
+
+                    <div class="xiomy-summary-item">
+                        <span class="xiomy-summary-title">Voice Interaction</span>
+                        <span class="xiomy-summary-value">Browser-Based</span>
+                    </div>
+
+                    <div class="xiomy-summary-item">
+                        <span class="xiomy-summary-title">Executive Assistance</span>
+                        <span class="xiomy-summary-value">Ready</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="xiomy-panel-card">
+
+                <h3>Live Recommendation Engine</h3>
+
+                <p class="xiomy-panel-text">
+                    Use XIOMY to support executive priorities across clients, workforce, recruiting,
+                    safety, finance, and growth functions.
+                </p>
+
+                <div class="xiomy-recommendation-box" id="xiomyRecommendationBox">
+                    Review CRM growth opportunities and monitor workforce compliance metrics.
+                </div>
+
+                <div class="xiomy-inline-actions">
+                    <button type="button"
+                            class="xiomy-mini-button"
+                            id="refreshXiomyRecommendation">
+                        Refresh Recommendation
+                    </button>
+
+                    <button type="button"
+                            class="xiomy-mini-button"
+                            data-xiomy-speak="Current recommendation. Review client growth opportunities and monitor workforce compliance metrics.">
+                        Read Recommendation
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- MODULE ACCESS -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-module-access">
+
+        <div class="xiomy-section-header">
+            <h2>Connected Enterprise Modules</h2>
+            <p>
+                Navigate directly to the operational systems controlled by the UrbanHRPartners platform.
+            </p>
+        </div>
+
+        <div class="xiomy-module-grid">
+
+            <a class="xiomy-module-link module-crm" href="{{ url_for('crm') }}">
+                <span class="xiomy-module-name">CRM</span>
+                <span class="xiomy-module-desc">
+                    Client management, pipeline oversight, project intelligence.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-hris" href="{{ url_for('hris') }}">
+                <span class="xiomy-module-name">HRIS</span>
+                <span class="xiomy-module-desc">
+                    Workforce profiles, records, performance, discipline, SOPs.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-ats" href="{{ url_for('ats') }}">
+                <span class="xiomy-module-name">ATS</span>
+                <span class="xiomy-module-desc">
+                    Recruitment pipeline, candidate tracking, hiring workflow.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-orientation" href="{{ url_for('orientation') }}">
+                <span class="xiomy-module-name">Orientation</span>
+                <span class="xiomy-module-desc">
+                    New hire readiness, onboarding, acknowledgements, preparation.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-sgsst" href="{{ url_for('sgsst') }}">
+                <span class="xiomy-module-name">SG-SST</span>
+                <span class="xiomy-module-desc">
+                    Safety system management, hazards, incidents, risk prevention.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-inventory" href="{{ url_for('inventory') }}">
+                <span class="xiomy-module-name">Inventory</span>
+                <span class="xiomy-module-desc">
+                    Assets, equipment assignment, physical control and tracking.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-finance" href="{{ url_for('finance') }}">
+                <span class="xiomy-module-name">Finance</span>
+                <span class="xiomy-module-desc">
+                    Revenue control, budgets, invoicing, reporting, forecasting.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-marketing" href="{{ url_for('marketing') }}">
+                <span class="xiomy-module-name">Marketing</span>
+                <span class="xiomy-module-desc">
+                    Campaign planning, outreach execution, growth positioning.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-calendar" href="{{ url_for('calendar') }}">
+                <span class="xiomy-module-name">Calendar</span>
+                <span class="xiomy-module-desc">
+                    Meetings, scheduling control, time management and coordination.
+                </span>
+            </a>
+
+            <a class="xiomy-module-link module-dashboard" href="{{ url_for('dashboard') }}">
+                <span class="xiomy-module-name">Dashboard</span>
+                <span class="xiomy-module-desc">
+                    Return to command center and executive metrics overview.
+                </span>
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- SYSTEM MONITOR -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-system-monitor">
+
+        <div class="xiomy-section-header">
+            <h2>Enterprise System Monitor</h2>
+            <p>
+                Overview of monitored platform layers and executive intelligence coverage.
+            </p>
+        </div>
+
+        <div class="xiomy-monitor-table-wrap">
+
+            <table class="xiomy-monitor-table">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Status</th>
+                        <th>Coverage</th>
+                        <th>Executive Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Client Intelligence</td>
+                        <td>Online</td>
+                        <td>CRM</td>
+                        <td>Growth, communications, project visibility</td>
+                    </tr>
+                    <tr>
+                        <td>Human Capital</td>
+                        <td>Online</td>
+                        <td>HRIS</td>
+                        <td>Employee control, records, workforce planning</td>
+                    </tr>
+                    <tr>
+                        <td>Recruitment Operations</td>
+                        <td>Online</td>
+                        <td>ATS</td>
+                        <td>Hiring pipeline, talent selection, onboarding readiness</td>
+                    </tr>
+                    <tr>
+                        <td>New Employee Readiness</td>
+                        <td>Online</td>
+                        <td>Orientation</td>
+                        <td>Transition from candidate to productive employee</td>
+                    </tr>
+                    <tr>
+                        <td>Safety and Compliance</td>
+                        <td>Online</td>
+                        <td>SG-SST</td>
+                        <td>Risk mitigation, legal compliance, incident prevention</td>
+                    </tr>
+                    <tr>
+                        <td>Financial Oversight</td>
+                        <td>Online</td>
+                        <td>Finance</td>
+                        <td>Revenue monitoring, projection, control</td>
+                    </tr>
+                    <tr>
+                        <td>Physical Asset Control</td>
+                        <td>Online</td>
+                        <td>Inventory</td>
+                        <td>Equipment, allocation, business property tracking</td>
+                    </tr>
+                    <tr>
+                        <td>Executive Intelligence Layer</td>
+                        <td>Online</td>
+                        <td>XIOMY</td>
+                        <td>Cross-module insight, assistance, direction</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- EXECUTIVE NOTES -->
+    <!-- ===================================================== -->
+
+    <section class="xiomy-executive-notes">
+
+        <div class="xiomy-section-header">
+            <h2>Executive Notes</h2>
+            <p>
+                Strategic role and purpose of XIOMY in the UrbanHRPartners Enterprise Suite.
+            </p>
+        </div>
+
+        <div class="xiomy-notes-grid">
+
+            <div class="xiomy-note-card">
+                <h3>Strategic Function</h3>
+                <p>
+                    XIOMY operates as an executive intelligence layer designed to connect
+                    operational information with leadership decision-making.
+                </p>
+            </div>
+
+            <div class="xiomy-note-card">
+                <h3>Operational Function</h3>
+                <p>
+                    She supports navigation, voice interaction, guidance, and platform coordination
+                    across all major modules of the enterprise suite.
+                </p>
+            </div>
+
+            <div class="xiomy-note-card">
+                <h3>Future Expansion</h3>
+                <p>
+                    XIOMY is structured for future enhancements including analytics dashboards,
+                    predictive recommendations, document review, scheduling intelligence,
+                    and deeper workflow automation.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- XIOMY ROUTE REGISTRY -->
+<!-- ===================================================== -->
+
+<script>
+window.xiomyRoutes = {
+    crm: "{{ url_for('crm') }}",
+    hris: "{{ url_for('hris') }}",
+    ats: "{{ url_for('ats') }}",
+    orientation: "{{ url_for('orientation') }}",
+    sgsst: "{{ url_for('sgsst') }}",
+    inventory: "{{ url_for('inventory') }}",
+    finance: "{{ url_for('finance') }}",
+    marketing: "{{ url_for('marketing') }}",
+    calendar: "{{ url_for('calendar') }}",
+    xiomy: "{{ url_for('xiomy_page') if 'xiomy_page' in globals() else url_for('xiomy') }}",
+    dashboard: "{{ url_for('dashboard') }}"
+};
+</script>
+
+
+
+<!-- ===================================================== -->
+<!-- SCRIPTS -->
+<!-- ===================================================== -->
+
+<script src="{{ url_for('static', filename='js/xiomy.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (typeof xiomySpeak === "function") {
+        setTimeout(function () {
+            xiomySpeak("Hello Juan Carlos Urbano. Welcome to the XIOMY executive interface. All monitored enterprise systems are online.");
+        }, 1000);
+    }
+
+    const recommendationBox = document.getElementById("xiomyRecommendationBox");
+    const refreshButton = document.getElementById("refreshXiomyRecommendation");
+
+    const recommendations = [
+        "Review CRM growth opportunities and monitor workforce compliance metrics.",
+        "Audit orientation readiness to ensure new hires complete onboarding requirements.",
+        "Evaluate SG-SST incident patterns and verify preventive controls.",
+        "Review financial performance and compare current revenue against projections.",
+        "Assess recruitment pipeline movement and interview conversion efficiency.",
+        "Monitor inventory assignments and validate asset accountability records.",
+        "Review employee documentation and verify policy acknowledgement completion.",
+        "Analyze marketing activity and connect campaign efforts to client acquisition."
+    ];
+
+    function refreshRecommendation() {
+        if (!recommendationBox) {
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * recommendations.length);
+        const message = recommendations[randomIndex];
+        recommendationBox.textContent = message;
+    }
+
+    if (refreshButton) {
+        refreshButton.addEventListener("click", function () {
+            refreshRecommendation();
+
+            if (typeof xiomySpeak === "function" && recommendationBox) {
+                xiomySpeak("Updated recommendation. " + recommendationBox.textContent);
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}
