@@ -1,51 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ========================================================= -->
+    <!-- URBANHRPARTNERS ENTERPRISE SUITE -->
+    <!-- templates/base.html -->
+    <!-- Full enterprise base layout -->
+    <!-- ========================================================= -->
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ========================================================= -->
+    <!-- PAGE META -->
+    <!-- ========================================================= -->
+    <meta name="description" content="UrbanHRPartners Enterprise Suite - Integrated CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, Reports, Analytics, and XIOMY Executive AI.">
+    <meta name="author" content="UrbanHRPartners">
+    <meta name="theme-color" content="#0b1f3a">
+
+    <!-- ========================================================= -->
+    <!-- TITLE -->
+    <!-- ========================================================= -->
     <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
+
+    <!-- ========================================================= -->
+    <!-- FONTS -->
+    <!-- ========================================================= -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- ========================================================= -->
+    <!-- GLOBAL STYLES -->
+    <!-- ========================================================= -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ========================================================= -->
+    <!-- PAGE-SPECIFIC HEAD CONTENT -->
+    <!-- ========================================================= -->
+    {% block extra_head %}{% endblock %}
 </head>
-<body>
-    <div class="app-shell">
-        <aside class="sidebar">
-            <div class="brand-block">
-                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="UrbanHRPartners Logo" class="sidebar-logo">
-                <h2>UrbanHRPartners</h2>
-                <p>Juan Carlos Urbano<br>PhD(c) Business Psychology<br>MA-MHRM</p>
+<body class="uhp-body">
+
+    <!-- ========================================================= -->
+    <!-- ENTERPRISE SHELL -->
+    <!-- ========================================================= -->
+    <div class="enterprise-shell">
+
+        <!-- ===================================================== -->
+        <!-- SIDEBAR -->
+        <!-- ===================================================== -->
+        <aside class="enterprise-sidebar" id="enterpriseSidebar">
+
+            <!-- ================================================= -->
+            <!-- BRAND / LOGO -->
+            <!-- ================================================= -->
+            <div class="sidebar-brand-section">
+                <a href="{{ url_for('dashboard') }}" class="brand-link" aria-label="Go to Dashboard">
+                    <div class="brand-logo-panel">
+                        <img
+                            src="{{ url_for('static', filename='img/logo.jpg') }}"
+                            alt="UrbanHRPartners Logo"
+                            class="brand-logo"
+                            onerror="this.style.display='none';"
+                        >
+                    </div>
+
+                    <div class="brand-text-panel">
+                        <div class="brand-overline">Enterprise Platform</div>
+                        <h1 class="brand-name">UrbanHRPartners</h1>
+                        <div class="brand-subname">Consulting Integrated System</div>
+                        <div class="brand-divider"></div>
+                    </div>
+                </a>
             </div>
 
-            <nav class="nav-menu">
-                <a href="{{ url_for('dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('crm') }}">CRM</a>
-                <a href="{{ url_for('hris') }}">HRIS</a>
-                <a href="{{ url_for('ats') }}">ATS</a>
-                <a href="{{ url_for('orientation') }}">Orientation</a>
-                <a href="{{ url_for('sgsst') }}">SG-SST</a>
-                <a href="{{ url_for('inventory') }}">Inventory</a>
-                <a href="{{ url_for('finance') }}">Finance</a>
-                <a href="{{ url_for('marketing') }}">Marketing</a>
-                <a href="{{ url_for('calendar') }}">Calendar</a>
-                <a href="{{ url_for('xiomy') }}">XIOMY AI</a>
+            <!-- ================================================= -->
+            <!-- EXECUTIVE STATUS -->
+            <!-- ================================================= -->
+            <section class="sidebar-executive-card">
+                <div class="executive-card-top">
+                    <span class="executive-status-dot"></span>
+                    <span class="executive-status-label">Executive System Online</span>
+                </div>
+
+                <div class="executive-card-body">
+                    <h3 class="executive-name">Juan Carlos Urbano</h3>
+                    <p class="executive-title">PhD(c) Business Psychology, MA-MHRM</p>
+                    <div class="executive-role-badges">
+                        <span class="executive-badge">Founder</span>
+                        <span class="executive-badge">Strategic Lead</span>
+                        <span class="executive-badge">Enterprise Owner</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================= -->
+            <!-- NAVIGATION -->
+            <!-- ================================================= -->
+            <nav class="sidebar-navigation" aria-label="Primary navigation">
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'dashboard' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Dashboard</span>
+                </a>
+
+                <a
+                    href="{{ url_for('crm') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'crm' or request.endpoint == 'create_client' or request.endpoint == 'create_communication_log' or request.endpoint == 'create_project' or request.endpoint == 'create_task' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">CRM</span>
+                </a>
+
+                <a
+                    href="{{ url_for('hris') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'hris' or request.endpoint == 'create_employee_profile' or request.endpoint == 'create_point_log' or request.endpoint == 'create_disciplinary_record' or request.endpoint == 'create_sop_requirement' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">HRIS</span>
+                </a>
+
+                <a
+                    href="{{ url_for('ats') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'ats' or request.endpoint == 'create_candidate' or request.endpoint == 'promote_candidate_to_orientation' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">ATS</span>
+                </a>
+
+                <a
+                    href="{{ url_for('orientation') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'orientation' or request.endpoint == 'create_orientation_checklist' or request.endpoint == 'create_policy_acknowledgement' or request.endpoint == 'create_asset_assignment' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Orientation</span>
+                </a>
+
+                <a
+                    href="{{ url_for('sgsst') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'sgsst' or request.endpoint == 'create_risk_item' or request.endpoint == 'create_inspection_record' or request.endpoint == 'create_incident_record' or request.endpoint == 'create_training_record' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">SG-SST</span>
+                </a>
+
+                <a
+                    href="{{ url_for('inventory') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'inventory' or request.endpoint == 'create_inventory_item' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Inventory</span>
+                </a>
+
+                <a
+                    href="{{ url_for('finance') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'finance' or request.endpoint == 'create_invoice' or request.endpoint == 'create_ledger_entry' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Finance</span>
+                </a>
+
+                <a
+                    href="{{ url_for('marketing') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'marketing' or request.endpoint == 'create_marketing_campaign' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Marketing</span>
+                </a>
+
+                <a
+                    href="{{ url_for('calendar_page') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'calendar_page' or request.endpoint == 'create_calendar_event' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Calendar</span>
+                </a>
+
+                <a
+                    href="{{ url_for('reports_analytics') }}"
+                    class="nav-3d-btn {% if request.endpoint == 'reports_analytics' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">◆</span>
+                    <span class="nav-3d-text">Reports &amp; Analytics</span>
+                </a>
+
+                <a
+                    href="{{ url_for('xiomy_page') }}"
+                    class="nav-3d-btn nav-3d-btn-xiomy {% if request.endpoint == 'xiomy_page' or request.endpoint == 'xiomy' %}active{% endif %}"
+                >
+                    <span class="nav-3d-icon">✦</span>
+                    <span class="nav-3d-text">XIOMY Executive AI</span>
+                </a>
             </nav>
+
+            <!-- ================================================= -->
+            <!-- SIDEBAR FOOTER PANEL -->
+            <!-- ================================================= -->
+            <div class="sidebar-bottom-panel">
+                <div class="sidebar-mission-card">
+                    <div class="sidebar-card-title">Enterprise Command</div>
+                    <p class="sidebar-card-text">
+                        Unified environment for strategic client management, workforce systems,
+                        recruiting operations, occupational safety, finance intelligence,
+                        marketing growth, reporting, and AI executive assistance.
+                    </p>
+                </div>
+            </div>
         </aside>
 
-        <main class="main-content">
+        <!-- ===================================================== -->
+        <!-- MAIN WRAPPER -->
+        <!-- ===================================================== -->
+        <div class="enterprise-main-wrapper">
+
+            <!-- ================================================= -->
+            <!-- TOPBAR -->
+            <!-- ================================================= -->
+            <header class="enterprise-topbar">
+
+                <div class="topbar-left-zone">
+                    <button
+                        type="button"
+                        class="topbar-menu-toggle"
+                        aria-label="Toggle sidebar"
+                        onclick="document.getElementById('enterpriseSidebar').classList.toggle('open');"
+                    >
+                        ☰
+                    </button>
+
+                    <div class="topbar-title-block">
+                        <div class="topbar-overline">UrbanHRPartners Enterprise Navigation</div>
+                        <h2 class="topbar-main-title">
+                            {% block page_heading %}UrbanHRPartners Enterprise Suite{% endblock %}
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="topbar-right-zone">
+                    <form action="{{ url_for('search') }}" method="GET" class="topbar-search-form">
+                        <input
+                            type="text"
+                            name="q"
+                            class="topbar-search-input"
+                            placeholder="Search clients, employees, candidates, projects, campaigns..."
+                            value="{{ request.args.get('q', '') }}"
+                        >
+                        <button type="submit" class="topbar-search-btn">Search</button>
+                    </form>
+                </div>
+            </header>
+
+            <!-- ================================================= -->
+            <!-- QUICK STATUS STRIP -->
+            <!-- ================================================= -->
+            <section class="enterprise-status-strip">
+                <div class="status-chip">
+                    <span class="chip-label">System</span>
+                    <span class="chip-value">Online</span>
+                </div>
+
+                <div class="status-chip">
+                    <span class="chip-label">Platform</span>
+                    <span class="chip-value">Enterprise</span>
+                </div>
+
+                <div class="status-chip">
+                    <span class="chip-label">AI</span>
+                    <span class="chip-value">XIOMY Ready</span>
+                </div>
+
+                <div class="status-chip">
+                    <span class="chip-label">Date</span>
+                    <span class="chip-value">{{ today if today is defined else '' }}</span>
+                </div>
+            </section>
+
+            <!-- ================================================= -->
+            <!-- FLASH MESSAGES -->
+            <!-- ================================================= -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    <div class="flash-wrap">
+                    <section class="flash-message-section">
                         {% for category, message in messages %}
-                            <div class="flash-message {{ 'error' if category == 'error' else 'success' }}">
-                                {{ message }}
+                            <div class="flash-message-card flash-{{ category }}">
+                                <div class="flash-message-label">
+                                    {{ category|upper }}
+                                </div>
+                                <div class="flash-message-text">
+                                    {{ message }}
+                                </div>
                             </div>
                         {% endfor %}
-                    </div>
+                    </section>
                 {% endif %}
             {% endwith %}
 
-            {% block content %}{% endblock %}
-        </main>
+            <!-- ================================================= -->
+            <!-- PAGE CONTENT -->
+            <!-- ================================================= -->
+            <main class="enterprise-content-area">
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- ================================================= -->
+            <!-- FOOTER -->
+            <!-- ================================================= -->
+            <footer class="enterprise-footer">
+                <div class="enterprise-footer-left">
+                    <div class="footer-brand-line">
+                        <strong>UrbanHRPartners Enterprise Suite</strong>
+                    </div>
+                    <div class="footer-description-line">
+                        Integrated CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, Reports, Analytics, and XIOMY Executive AI.
+                    </div>
+                </div>
+
+                <div class="enterprise-footer-right">
+                    <div class="footer-copy-line">
+                        &copy; {{ current_year if current_year is defined else 2026 }} UrbanHRPartners. All rights reserved.
+                    </div>
+                </div>
+            </footer>
+        </div>
     </div>
+
+    <!-- ========================================================= -->
+    <!-- OPTIONAL GLOBAL SCRIPTS -->
+    <!-- ========================================================= -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const flashMessages = document.querySelectorAll(".flash-message-card");
+            flashMessages.forEach((item) => {
+                setTimeout(() => {
+                    item.classList.add("flash-fade-out");
+                }, 5000);
+            });
+        });
+    </script>
+
+    <!-- ========================================================= -->
+    <!-- PAGE-SPECIFIC SCRIPTS -->
+    <!-- ========================================================= -->
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

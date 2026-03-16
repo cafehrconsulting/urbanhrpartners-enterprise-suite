@@ -1,82 +1,641 @@
 {% extends "base.html" %}
 
-{% block title %}Calendar | UrbanHRPartners{% endblock %}
+{% block title %}
+Calendar | UrbanHRPartners Enterprise Suite
+{% endblock %}
+
+{% block page_heading %}Calendar, Scheduling & Operational Coordination{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Create Calendar Event</h4>
+
+<div class="page-grid">
+
+    <!-- ===================================================== -->
+    <!-- SAFE RENDER VARIABLES -->
+    <!-- ===================================================== -->
+    {% set safe_calendar_stats = calendar_stats if calendar_stats is defined and calendar_stats else {} %}
+    {% set safe_calendar_summary = calendar_summary if calendar_summary is defined and calendar_summary else {} %}
+    {% set safe_calendar_events = calendar_events if calendar_events is defined and calendar_events else [] %}
+    {% set safe_calendar_tasks = calendar_tasks if calendar_tasks is defined and calendar_tasks else [] %}
+    {% set safe_meeting_requests = meeting_requests if meeting_requests is defined and meeting_requests else [] %}
+
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
+
+    <section class="module-header">
+        <h1>Calendar, Scheduling &amp; Operational Coordination</h1>
+        <p>
+            Centralized calendar and operational scheduling hub for executive planning,
+            internal meetings, task deadlines, onboarding events, client coordination,
+            training sessions, and organization-wide time management. This module integrates
+            with CRM, HRIS, ATS, Orientation, SG-SST, Finance, and XIOMY Executive AI
+            for coordinated workflow execution.
+        </p>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CALENDAR SUMMARY -->
+    <!-- ===================================================== -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <h3>Total Events</h3>
+            <p>
+                {% if safe_calendar_summary.total_events is defined %}
+                    {{ safe_calendar_summary.total_events }}
+                {% elif safe_calendar_stats.upcoming_events is defined %}
+                    {{ safe_calendar_stats.upcoming_events }}
+                {% else %}
+                    {{ safe_calendar_events|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Tracked calendar events</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Scheduled Tasks</h3>
+            <p>
+                {% if safe_calendar_summary.total_tasks is defined %}
+                    {{ safe_calendar_summary.total_tasks }}
+                {% else %}
+                    {{ safe_calendar_tasks|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Operational tasks with dates</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Meeting Requests</h3>
+            <p>
+                {% if safe_calendar_summary.total_meetings is defined %}
+                    {{ safe_calendar_summary.total_meetings }}
+                {% else %}
+                    {{ safe_meeting_requests|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Meeting coordination records</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Today’s Activities</h3>
+            <p>
+                {% if safe_calendar_summary.today_activities is defined %}
+                    {{ safe_calendar_summary.today_activities }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Immediate scheduling visibility</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Upcoming Deadlines</h3>
+            <p>
+                {% if safe_calendar_summary.upcoming_deadlines is defined %}
+                    {{ safe_calendar_summary.upcoming_deadlines }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Priority items approaching</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Operational Status</h3>
+            <p>Active</p>
+            <span class="summary-note">Coordination engine online</span>
+        </div>
+
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CREATE EVENT -->
+    <!-- ===================================================== -->
+
+    <section class="panel-card">
+        <div class="module-header">
+            <h1>Create Calendar Event</h1>
+            <p>
+                Register executive, operational, client, onboarding, or compliance events in one coordinated schedule.
+            </p>
+        </div>
+
+        <div class="tab-content-panel mt-4">
+            <form method="POST" action="{{ url_for('create_calendar_event') }}" class="crm-form">
+
+                <div class="form-grid two-col">
+                    <div>
+                        <label for="event_title">Event Title</label>
+                        <input type="text" id="event_title" name="title" required placeholder="Client strategy meeting, onboarding session, compliance review">
+                    </div>
+
+                    <div>
+                        <label for="event_type">Event Type</label>
+                        <input type="text" id="event_type" name="event_type" placeholder="Meeting, Training, Deadline, Review, Orientation, Audit">
+                    </div>
+
+                    <div>
+                        <label for="event_department">Department / Module</label>
+                        <input type="text" id="event_department" name="department" placeholder="CRM, HRIS, ATS, Orientation, SG-SST, Finance">
+                    </div>
+
+                    <div>
+                        <label for="event_owner">Owner / Coordinator</label>
+                        <input type="text" id="event_owner" name="owner" placeholder="Responsible person or executive">
+                    </div>
+
+                    <div>
+                        <label for="event_date">Event Date</label>
+                        <input type="date" id="event_date" name="event_date">
+                    </div>
+
+                    <div>
+                        <label for="event_time">Event Time</label>
+                        <input type="time" id="event_time" name="event_time">
+                    </div>
+
+                    <div>
+                        <label for="start_time">Start Date & Time</label>
+                        <input type="datetime-local" id="start_time" name="start_time" required>
+                    </div>
+
+                    <div>
+                        <label for="end_time">End Date & Time</label>
+                        <input type="datetime-local" id="end_time" name="end_time" required>
+                    </div>
+
+                    <div>
+                        <label for="event_location">Location / Channel</label>
+                        <input type="text" id="event_location" name="location" placeholder="Main office, Zoom, Google Meet, client site">
+                    </div>
+
+                    <div>
+                        <label for="event_status">Status</label>
+                        <select id="event_status" name="status">
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="event_priority">Priority</label>
+                        <select id="event_priority" name="priority">
+                            <option value="Low">Low</option>
+                            <option value="Normal">Normal</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('create_calendar_event') }}">
-                        <div class="mb-3">
-                            <label class="form-label">Title *</label>
-                            <input type="text" class="form-control" name="title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Location</label>
-                            <input type="text" class="form-control" name="location">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Category</label>
-                            <input type="text" class="form-control" name="category">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Start *</label>
-                            <input type="datetime-local" class="form-control" name="start_at" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">End *</label>
-                            <input type="datetime-local" class="form-control" name="end_at" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Save Event</button>
-                    </form>
+
+                <div class="mt-3">
+                    <label for="event_notes">Notes</label>
+                    <textarea id="event_notes" name="description" rows="4" placeholder="Agenda, participants, dependencies, reminders, required documents"></textarea>
                 </div>
+
+                <div class="form-actions mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Save Event
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        Clear Form
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CREATE TASK -->
+    <!-- ===================================================== -->
+
+    <section class="panel-card">
+        <div class="module-header">
+            <h1>Create Scheduled Task</h1>
+            <p>
+                This section is preserved for the full enterprise workflow. The current backend does not yet include a dedicated calendar task creation route.
+            </p>
+        </div>
+
+        <div class="tab-content-panel mt-4">
+            <form method="POST" action="#" class="crm-form">
+
+                <div class="form-grid two-col">
+                    <div>
+                        <label for="task_title">Task Title</label>
+                        <input type="text" id="task_title" name="task_title" required placeholder="Prepare report, follow up with client, complete onboarding checklist">
+                    </div>
+
+                    <div>
+                        <label for="task_module">Related Module</label>
+                        <input type="text" id="task_module" name="module_name" placeholder="CRM, Finance, Orientation, ATS, SG-SST">
+                    </div>
+
+                    <div>
+                        <label for="task_assigned_to">Assigned To</label>
+                        <input type="text" id="task_assigned_to" name="assigned_to" placeholder="Employee, team lead, executive">
+                    </div>
+
+                    <div>
+                        <label for="task_due_date">Due Date</label>
+                        <input type="date" id="task_due_date" name="due_date" required>
+                    </div>
+
+                    <div>
+                        <label for="task_status">Status</label>
+                        <select id="task_status" name="status">
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Waiting">Waiting</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="task_priority">Priority</label>
+                        <select id="task_priority" name="priority">
+                            <option value="Low">Low</option>
+                            <option value="Normal">Normal</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label for="task_notes">Task Notes</label>
+                    <textarea id="task_notes" name="notes" rows="4" placeholder="Describe deliverables, deadlines, blockers, or coordination requirements"></textarea>
+                </div>
+
+                <div class="form-actions mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Save Task
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        Clear Form
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CREATE MEETING REQUEST -->
+    <!-- ===================================================== -->
+
+    <section class="panel-card">
+        <div class="module-header">
+            <h1>Create Meeting Request</h1>
+            <p>
+                This section is preserved for the full enterprise workflow. The current backend does not yet include a dedicated meeting request creation route.
+            </p>
+        </div>
+
+        <div class="tab-content-panel mt-4">
+            <form method="POST" action="#" class="crm-form">
+
+                <div class="form-grid two-col">
+                    <div>
+                        <label for="meeting_subject">Meeting Subject</label>
+                        <input type="text" id="meeting_subject" name="meeting_subject" required placeholder="Client proposal review, HR case discussion, weekly executive briefing">
+                    </div>
+
+                    <div>
+                        <label for="meeting_requester">Requester</label>
+                        <input type="text" id="meeting_requester" name="requester" placeholder="Person requesting the meeting">
+                    </div>
+
+                    <div>
+                        <label for="meeting_participants">Participants</label>
+                        <input type="text" id="meeting_participants" name="participants" placeholder="Names, roles, departments, or external contacts">
+                    </div>
+
+                    <div>
+                        <label for="meeting_date">Preferred Date</label>
+                        <input type="date" id="meeting_date" name="meeting_date">
+                    </div>
+
+                    <div>
+                        <label for="meeting_time">Preferred Time</label>
+                        <input type="time" id="meeting_time" name="meeting_time">
+                    </div>
+
+                    <div>
+                        <label for="meeting_channel">Channel / Location</label>
+                        <input type="text" id="meeting_channel" name="channel" placeholder="Office, Zoom, Meet, phone, client site">
+                    </div>
+
+                    <div>
+                        <label for="meeting_status">Status</label>
+                        <select id="meeting_status" name="status">
+                            <option value="Requested">Requested</option>
+                            <option value="Pending Confirmation">Pending Confirmation</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label for="meeting_notes">Notes</label>
+                    <textarea id="meeting_notes" name="notes" rows="4" placeholder="Purpose, context, expected decisions, attachments, or special requirements"></textarea>
+                </div>
+
+                <div class="form-actions mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Save Meeting Request
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        Clear Form
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- EVENT REGISTRY -->
+    <!-- ===================================================== -->
+
+    <section class="table-shell">
+        <div class="table-toolbar">
+            <div>
+                <h3 class="section-title">Calendar Event Registry</h3>
+                <p class="section-subtitle">Central visibility for scheduled events and operational timing.</p>
             </div>
         </div>
 
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0">Events</h4>
-                </div>
-                <div class="card-body">
-                    {% if events %}
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Title</th>
-                                        <th>Category</th>
-                                        <th>Location</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for event in events %}
-                                    <tr>
-                                        <td>{{ event.id }}</td>
-                                        <td>{{ event.title }}</td>
-                                        <td>{{ event.category or "-" }}</td>
-                                        <td>{{ event.location or "-" }}</td>
-                                        <td>{{ event.start_at }}</td>
-                                        <td>{{ event.end_at }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Event</th>
+                        <th>Type</th>
+                        <th>Department</th>
+                        <th>Owner</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in safe_calendar_events %}
+                    <tr>
+                        <td>{{ event.id if event.id is defined else '' }}</td>
+                        <td>
+                            {% if event.title is defined and event.title %}
+                                {{ event.title }}
+                            {% elif event.event_title is defined and event.event_title %}
+                                {{ event.event_title }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ event.event_type if event.event_type is defined else '' }}</td>
+                        <td>{{ event.department if event.department is defined else '' }}</td>
+                        <td>{{ event.owner if event.owner is defined else '' }}</td>
+                        <td>
+                            {% if event.event_date is defined and event.event_date %}
+                                {{ event.event_date }}
+                            {% elif event.start_time is defined and event.start_time %}
+                                {{ event.start_time }}
+                            {% else %}
+                                ''
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if event.start_time is defined and event.start_time %}
+                                {{ event.start_time }}
+                            {% endif %}
+                            {% if event.start_time is defined or event.end_time is defined %}
+                                -
+                            {% endif %}
+                            {% if event.end_time is defined and event.end_time %}
+                                {{ event.end_time }}
+                            {% endif %}
+                            {% if event.event_time is defined and event.event_time %}
+                                {{ event.event_time }}
+                            {% endif %}
+                        </td>
+                        <td>{{ event.priority if event.priority is defined else 'Normal' }}</td>
+                    </tr>
                     {% else %}
-                        <p class="text-muted mb-0">No calendar events saved yet.</p>
-                    {% endif %}
-                </div>
+                    <tr>
+                        <td colspan="8">No calendar events have been created yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- TASK REGISTRY -->
+    <!-- ===================================================== -->
+
+    <section class="table-shell">
+        <div class="table-toolbar">
+            <div>
+                <h3 class="section-title">Scheduled Task Registry</h3>
+                <p class="section-subtitle">Preserved task scheduling table for future workflow expansion.</p>
             </div>
         </div>
-    </div>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Task</th>
+                        <th>Module</th>
+                        <th>Assigned To</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in safe_calendar_tasks %}
+                    <tr>
+                        <td>{{ task.id if task.id is defined else '' }}</td>
+                        <td>{{ task.task_title if task.task_title is defined else '' }}</td>
+                        <td>{{ task.module_name if task.module_name is defined else '' }}</td>
+                        <td>{{ task.assigned_to if task.assigned_to is defined else '' }}</td>
+                        <td>{{ task.due_date if task.due_date is defined else '' }}</td>
+                        <td>{{ task.status if task.status is defined else 'Pending' }}</td>
+                        <td>{{ task.priority if task.priority is defined else 'Normal' }}</td>
+                        <td>{{ task.notes if task.notes is defined else '' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8">No scheduled tasks have been created yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- MEETING REQUEST REGISTRY -->
+    <!-- ===================================================== -->
+
+    <section class="table-shell">
+        <div class="table-toolbar">
+            <div>
+                <h3 class="section-title">Meeting Request Registry</h3>
+                <p class="section-subtitle">Preserved meeting coordination structure for future backend expansion.</p>
+            </div>
+        </div>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Requester</th>
+                        <th>Participants</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Channel</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for meeting in safe_meeting_requests %}
+                    <tr>
+                        <td>{{ meeting.id if meeting.id is defined else '' }}</td>
+                        <td>{{ meeting.meeting_subject if meeting.meeting_subject is defined else '' }}</td>
+                        <td>{{ meeting.requester if meeting.requester is defined else '' }}</td>
+                        <td>{{ meeting.participants if meeting.participants is defined else '' }}</td>
+                        <td>{{ meeting.meeting_date if meeting.meeting_date is defined else '' }}</td>
+                        <td>{{ meeting.meeting_time if meeting.meeting_time is defined else '' }}</td>
+                        <td>{{ meeting.channel if meeting.channel is defined else '' }}</td>
+                        <td>{{ meeting.status if meeting.status is defined else 'Requested' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8">No meeting requests have been created yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- OPERATIONAL SCHEDULING GUIDANCE -->
+    <!-- ===================================================== -->
+
+    <section class="panel-card">
+        <div class="module-header">
+            <h1>Operational Scheduling Guidance</h1>
+            <p>
+                Cross-module coordination logic for time management, execution discipline, and executive visibility.
+            </p>
+        </div>
+
+        <div class="two-column-grid mt-4">
+
+            <div class="info-card panel-card">
+                <h3>CRM Coordination</h3>
+                <p>
+                    Use scheduling to organize client calls, contract meetings, follow-up
+                    sequences, and project reviews so commercial activity remains aligned
+                    with relationship management and revenue generation.
+                </p>
+            </div>
+
+            <div class="info-card panel-card">
+                <h3>HRIS &amp; Orientation Alignment</h3>
+                <p>
+                    Schedule interviews, onboarding sessions, employee reviews, training,
+                    document submission deadlines, and performance conversations within a
+                    single unified workflow.
+                </p>
+            </div>
+
+            <div class="info-card panel-card">
+                <h3>SG-SST &amp; Compliance Planning</h3>
+                <p>
+                    Track audits, inspections, safety briefings, incident reviews, and
+                    corrective action deadlines to improve compliance and operational discipline.
+                </p>
+            </div>
+
+            <div class="info-card panel-card">
+                <h3>Executive Time Management</h3>
+                <p>
+                    Consolidate priorities, meetings, tasks, and deadlines into a single
+                    calendar structure so leadership can maintain visibility and drive
+                    execution across all modules.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- XIOMY SCHEDULING ANALYTICS -->
+    <!-- ===================================================== -->
+
+    <section class="panel-card">
+        <div class="module-header">
+            <h1>XIOMY Scheduling Intelligence</h1>
+            <p>
+                XIOMY can support workload balancing, deadline monitoring, meeting coordination,
+                dependency visibility, and scheduling optimization to improve operational flow
+                across the full UrbanHRPartners Enterprise Suite.
+            </p>
+        </div>
+
+        <div class="xiomy-panel mt-4">
+            <button type="button" class="btn btn-secondary" onclick="runCalendarAnalysis()">
+                Run XIOMY Scheduling Analysis
+            </button>
+
+            <div id="calendar-analysis-result" class="analysis-output"></div>
+        </div>
+    </section>
+
 </div>
+
+<script>
+function runCalendarAnalysis() {
+    fetch("/xiomy")
+        .then(response => response.json())
+        .then(data => {
+            const target = document.getElementById("calendar-analysis-result");
+            target.innerHTML = `
+                <div class="info-card panel-card" style="margin-top: 15px;">
+                    <h3>XIOMY Response</h3>
+                    <p>Scheduling analysis active. Monitoring task timing, event concentration, meeting coordination, and deadline exposure across enterprise operations.</p>
+                </div>
+            `;
+        })
+        .catch(error => {
+            const target = document.getElementById("calendar-analysis-result");
+            target.innerHTML = `
+                <div class="info-card panel-card" style="margin-top: 15px;">
+                    <h3>XIOMY Response</h3>
+                    <p>Unable to retrieve XIOMY scheduling analysis at this time. Please verify the /xiomy endpoint and backend service availability.</p>
+                </div>
+            `;
+        });
+}
+</script>
+
 {% endblock %}

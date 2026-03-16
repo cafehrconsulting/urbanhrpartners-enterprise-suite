@@ -1,0 +1,35 @@
+<section class="panel-card">
+
+<h2>Cashflow Monitor</h2>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Description</th>
+<th>Inflow</th>
+<th>Outflow</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% if cashflow is defined %}
+{% for c in cashflow %}
+
+<tr>
+<td>{{ c.date }}</td>
+<td>{{ c.description }}</td>
+<td>{{ c.inflow }}</td>
+<td>{{ c.outflow }}</td>
+</tr>
+
+{% endfor %}
+{% endif %}
+
+</tbody>
+
+</table>
+
+</section>

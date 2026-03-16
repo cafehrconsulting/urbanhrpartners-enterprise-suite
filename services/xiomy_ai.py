@@ -1,114 +1,116 @@
-import datetime
+from datetime import datetime
 import random
+
 
 class XiomyAI:
 
-    def __init__(self):
+    def __init__(self, db):
+        self.db = db
         self.name = "XIOMY"
-        self.version = "1.0"
-        self.status = "active"
+        self.version = "2.0"
+        self.status = "online"
+        self.created = datetime.utcnow()
 
-    # ------------------------------------------------
-    # Greeting system
-    # ------------------------------------------------
-
-    def greet(self, user="Juan Carlos Urbano"):
-        hour = datetime.datetime.now().hour
-
-        if hour < 12:
-            period = "Good morning"
-        elif hour < 18:
-            period = "Good afternoon"
-        else:
-            period = "Good evening"
-
-        return f"{period} {user}. I am XIOMY, your executive AI assistant. How can I assist you today?"
-
-    # ------------------------------------------------
-    # System Status
-    # ------------------------------------------------
+    # --------------------------------------------------
+    # SYSTEM STATUS
+    # --------------------------------------------------
 
     def system_status(self):
 
-        modules = {
-            "CRM": "online",
-            "HRIS": "online",
-            "ATS": "online",
-            "Orientation": "online",
-            "SGSST": "online",
-            "Finance": "online",
-            "Inventory": "online",
-            "Analytics": "online"
+        return {
+            "ai_name": self.name,
+            "version": self.version,
+            "status": self.status,
+            "created": self.created.isoformat()
         }
 
-        return modules
+    # --------------------------------------------------
+    # GREETING
+    # --------------------------------------------------
 
-    # ------------------------------------------------
-    # Task suggestion engine
-    # ------------------------------------------------
+    def greeting(self):
 
-    def recommend_tasks(self):
+        hour = datetime.now().hour
 
-        suggestions = [
-            "Review new CRM leads",
-            "Check employee performance analytics",
-            "Verify ATS candidate pipeline",
-            "Review SG-SST compliance reports",
-            "Analyze financial revenue projections",
-            "Audit employee orientation completion"
+        if hour < 12:
+            return "Good morning. I am XIOMY, your UrbanHRPartners executive AI."
+        elif hour < 18:
+            return "Good afternoon. XIOMY online and monitoring your enterprise systems."
+        else:
+            return "Good evening. XIOMY active and ready to assist."
+
+    # --------------------------------------------------
+    # MODULE MONITOR
+    # --------------------------------------------------
+
+    def system_overview(self):
+
+        modules = [
+            "CRM",
+            "HRIS",
+            "ATS",
+            "Orientation",
+            "SG-SST",
+            "Finance",
+            "Inventory",
+            "Analytics"
         ]
 
-        return random.choice(suggestions)
+        status = {}
 
-    # ------------------------------------------------
-    # CRM Insights
-    # ------------------------------------------------
+        for module in modules:
+            status[module] = random.choice(["Operational", "Monitoring", "Optimizing"])
 
-    def crm_insight(self, client_count):
+        return status
 
-        if client_count < 10:
-            return "Client acquisition should be prioritized."
+    # --------------------------------------------------
+    # BUSINESS INSIGHTS
+    # --------------------------------------------------
 
-        if client_count < 50:
-            return "Client growth is stable. Consider marketing expansion."
+    def generate_insight(self):
 
-        return "Client portfolio is strong. Focus on retention."
+        insights = [
+            "Employee engagement indicators suggest reviewing training schedules.",
+            "Recruitment pipeline shows strong candidate flow.",
+            "Compliance monitoring indicates SG-SST documentation review recommended.",
+            "CRM revenue trends indicate potential expansion opportunities."
+        ]
 
-    # ------------------------------------------------
-    # HRIS Insights
-    # ------------------------------------------------
+        return random.choice(insights)
 
-    def workforce_insight(self, employee_count):
+    # --------------------------------------------------
+    # TASK CREATION
+    # --------------------------------------------------
 
-        if employee_count == 0:
-            return "No employees registered in HRIS."
+    def create_task(self, title, description):
 
-        if employee_count < 10:
-            return "Workforce is small. Recruitment may be required."
+        task = {
+            "title": title,
+            "description": description,
+            "created": datetime.utcnow().isoformat(),
+            "status": "pending"
+        }
 
-        return "Workforce capacity is sufficient."
+        return task
 
-    # ------------------------------------------------
-    # Decision engine
-    # ------------------------------------------------
+    # --------------------------------------------------
+    # CONVERSATION ENGINE
+    # --------------------------------------------------
 
-    def analyze_request(self, request):
+    def respond(self, message):
 
-        request = request.lower()
+        message = message.lower()
 
-        if "crm" in request:
-            return "Opening CRM module."
+        if "hello" in message:
+            return self.greeting()
 
-        if "employees" in request:
-            return "Opening HRIS employee records."
+        if "status" in message:
+            return self.system_overview()
 
-        if "candidates" in request:
-            return "Opening ATS candidate pipeline."
+        if "insight" in message:
+            return self.generate_insight()
 
-        if "finance" in request:
-            return "Opening financial analytics."
+        if "modules" in message:
+            return self.system_overview()
 
-        if "inventory" in request:
-            return "Opening inventory system."
-
-        return "Processing request."
+        return "I am analyzing your request. Please refine your command."

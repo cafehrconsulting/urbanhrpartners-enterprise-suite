@@ -1,0 +1,45 @@
+<section class="panel-card">
+
+<h2>Vendor Management</h2>
+
+<form method="POST" action="{{ url_for('create_vendor') if 'create_vendor' is defined else '#' }}">
+
+<input type="text" name="vendor_name" placeholder="Vendor Name">
+
+<input type="text" name="contact">
+
+<input type="text" name="category">
+
+<button class="btn btn-primary">Add Vendor</button>
+
+</form>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Vendor</th>
+<th>Contact</th>
+<th>Category</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% if vendors is defined %}
+{% for v in vendors %}
+
+<tr>
+<td>{{ v.vendor_name }}</td>
+<td>{{ v.contact }}</td>
+<td>{{ v.category }}</td>
+</tr>
+
+{% endfor %}
+{% endif %}
+
+</tbody>
+
+</table>
+
+</section>

@@ -1,0 +1,35 @@
+<section class="panel-card">
+
+<h2>Accounts Receivable</h2>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Client</th>
+<th>Invoice</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% if invoices is defined %}
+{% for inv in invoices %}
+
+<tr>
+<td>{{ inv.client_name }}</td>
+<td>{{ inv.invoice_number }}</td>
+<td>{{ inv.amount }}</td>
+<td>{{ inv.status }}</td>
+</tr>
+
+{% endfor %}
+{% endif %}
+
+</tbody>
+
+</table>
+
+</section>

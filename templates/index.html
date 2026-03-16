@@ -1,53 +1,205 @@
 {% extends "base.html" %}
+
+{% block title %}
+UrbanHRPartners Enterprise Suite
+{% endblock %}
+
 {% block content %}
-<div class="card">
-  <h2>CRM Clients</h2>
 
-  <form action="{{ url_for('crm_add') }}" method="POST">
-    <div class="row">
-      <div>
-        <div>Client ID</div><input name="client_id" required>
-        <div>Company Name</div><input name="company" required>
-        <div>Contact Person</div><input name="contact" required>
-        <div>Email</div><input type="email" name="email" required>
-        <div>Phone</div><input name="phone" required>
-      </div>
-      <div>
-        <div>Service</div>
-        <select name="service">
-          <option>HRIS</option>
-          <option>SG-SST</option>
-          <option>Consulting</option>
-        </select>
+<div class="landing-container">
 
-        <div>Status</div>
-        <select name="status">
-          <option>Prospect</option>
-          <option>Active</option>
-          <option>Closed</option>
-        </select>
-        <br><br>
-        <button type="submit">Add Client</button>
-      </div>
-    </div>
-  </form>
+    <!-- ========================================================= -->
+    <!-- HERO SECTION -->
+    <!-- ========================================================= -->
+
+    <section class="landing-hero">
+
+        <div class="hero-left">
+
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" class="hero-logo">
+
+            <h1 class="hero-title">
+                UrbanHRPartners
+                <span>Enterprise Suite</span>
+            </h1>
+
+            <p class="hero-description">
+                A unified enterprise platform designed for modern organizations.
+                Integrating CRM, HRIS, ATS, Employee Orientation, SG-SST compliance,
+                Finance, Inventory, Marketing intelligence, and XIOMY Executive AI
+                into a single operational ecosystem.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="{{ url_for('dashboard') }}" class="btn-primary">
+                    Enter Dashboard
+                </a>
+
+                <a href="{{ url_for('xiomy_page') }}" class="btn-secondary">
+                    Launch XIOMY AI
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="hero-right">
+
+            <div class="hero-info-card">
+
+                <h3>Platform Overview</h3>
+
+                <ul class="hero-list">
+                    <li>Enterprise CRM Client Management</li>
+                    <li>HRIS Workforce Intelligence</li>
+                    <li>ATS Recruitment Automation</li>
+                    <li>Employee Orientation System</li>
+                    <li>SG-SST Safety Compliance</li>
+                    <li>Inventory & Asset Tracking</li>
+                    <li>Finance Ledger & Invoicing</li>
+                    <li>Marketing Intelligence</li>
+                    <li>Executive Analytics</li>
+                    <li>XIOMY Artificial Intelligence</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================= -->
+    <!-- SYSTEM MODULES -->
+    <!-- ========================================================= -->
+
+    <section class="modules-grid">
+
+        <h2 class="section-title">
+            System Modules
+        </h2>
+
+        <div class="modules-container">
+
+            <a href="{{ url_for('crm') }}" class="module-card">
+                <h3>CRM</h3>
+                <p>Client relationship management and revenue tracking.</p>
+            </a>
+
+            <a href="{{ url_for('hris') }}" class="module-card">
+                <h3>HRIS</h3>
+                <p>Employee records, workforce analytics and HR operations.</p>
+            </a>
+
+            <a href="{{ url_for('ats') }}" class="module-card">
+                <h3>ATS</h3>
+                <p>Applicant tracking system for recruitment pipelines.</p>
+            </a>
+
+            <a href="{{ url_for('orientation') }}" class="module-card">
+                <h3>Orientation</h3>
+                <p>New employee onboarding and policy acknowledgement.</p>
+            </a>
+
+            <a href="{{ url_for('sgsst') }}" class="module-card">
+                <h3>SG-SST</h3>
+                <p>Workplace safety compliance and risk management.</p>
+            </a>
+
+            <a href="{{ url_for('inventory') }}" class="module-card">
+                <h3>Inventory</h3>
+                <p>Asset management and equipment tracking.</p>
+            </a>
+
+            <a href="{{ url_for('finance') }}" class="module-card">
+                <h3>Finance</h3>
+                <p>Invoicing, budgeting and financial forecasting.</p>
+            </a>
+
+            <a href="{{ url_for('marketing') }}" class="module-card">
+                <h3>Marketing</h3>
+                <p>Campaign management and market intelligence.</p>
+            </a>
+
+            <a href="{{ url_for('calendar') }}" class="module-card">
+                <h3>Calendar</h3>
+                <p>Corporate scheduling and activity planning.</p>
+            </a>
+
+            <a href="{{ url_for('reports_analytics') }}" class="module-card">
+                <h3>Reports & Analytics</h3>
+                <p>Executive reporting and performance dashboards.</p>
+            </a>
+
+            <a href="{{ url_for('xiomy_page') }}" class="module-card xiomy-card">
+                <h3>XIOMY AI</h3>
+                <p>Executive artificial intelligence for decision support.</p>
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================= -->
+    <!-- SYSTEM STATUS -->
+    <!-- ========================================================= -->
+
+    <section class="system-status">
+
+        <h2>System Status</h2>
+
+        <div class="status-grid">
+
+            <div class="status-card">
+                <h4>Application</h4>
+                <p>Operational</p>
+            </div>
+
+            <div class="status-card">
+                <h4>Database</h4>
+                <p>Connected</p>
+            </div>
+
+            <div class="status-card">
+                <h4>AI Engine</h4>
+                <p>XIOMY Online</p>
+            </div>
+
+            <div class="status-card">
+                <h4>Security</h4>
+                <p>Protected</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================= -->
+    <!-- FOOTER -->
+    <!-- ========================================================= -->
+
+    <footer class="landing-footer">
+
+        <p>
+            UrbanHRPartners Enterprise Suite
+        </p>
+
+        <p>
+            Developed for intelligent organizational management.
+        </p>
+
+        <p>
+            Founder: Juan Carlos Urbano, PhD(c) Business Psychology, MA-MHRM
+        </p>
+
+    </footer>
+
 </div>
 
-<table>
-  <tr>
-    <th>Client ID</th><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Service</th><th>Status</th><th>Created</th>
-  </tr>
-  {% for c in clients %}
-  <tr>
-    <td>{{ c["Client ID"] }}</td>
-    <td>{{ c["Company Name"] }}</td>
-    <td>{{ c["Contact Person"] }}</td>
-    <td>{{ c["Email"] }}</td>
-    <td>{{ c["Phone"] }}</td>
-    <td>{{ c["Service"] }}</td>
-    <td>{{ c["Status"] }}</td>
-    <td>{{ c["Created At"] }}</td>
-  </tr>
-  {% endfor %}
-</table>
 {% endblock %}

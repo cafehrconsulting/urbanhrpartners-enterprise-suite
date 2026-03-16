@@ -1,139 +1,673 @@
 {% extends "base.html" %}
 
-{% block title %}Marketing | UrbanHRPartners{% endblock %}
+{% block title %}
+Marketing | UrbanHRPartners Enterprise Suite
+{% endblock %}
+
+{% block page_heading %}Marketing Command Center{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Create Lead</h4>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('create_lead') }}">
-                        <div class="mb-3">
-                            <label class="form-label">Lead Name *</label>
-                            <input type="text" class="form-control" name="lead_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Source</label>
-                            <input type="text" class="form-control" name="source">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stage</label>
-                            <input type="text" class="form-control" name="stage">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Expected Value</label>
-                            <input type="number" step="0.01" class="form-control" name="expected_value" value="0">
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Save Lead</button>
-                    </form>
+
+<div class="page-grid">
+
+    <!-- =====================================================
+         SAFE RENDER VARIABLES
+    ====================================================== -->
+    {% set safe_marketing_stats = marketing_stats if marketing_stats is defined and marketing_stats else {} %}
+    {% set safe_campaigns = campaigns if campaigns is defined and campaigns else [] %}
+    {% set safe_leads = leads if leads is defined and leads else [] %}
+    {% set safe_social_posts = social_posts if social_posts is defined and social_posts else [] %}
+    {% set safe_content_calendar = content_calendar if content_calendar is defined and content_calendar else [] %}
+    {% set safe_analytics = analytics if analytics is defined and analytics else [] %}
+
+    <!-- =====================================================
+         HERO PANEL
+    ====================================================== -->
+    <section class="hero-panel">
+
+        <div class="hero-left">
+
+            <span class="hero-badge">
+                Marketing &amp; Growth Platform
+            </span>
+
+            <h1 class="hero-title">
+                Marketing Command Center
+            </h1>
+
+            <p class="hero-text">
+                Enterprise marketing management environment supporting
+                campaign planning, lead generation, social media content,
+                analytics, and growth optimization powered by XIOMY.
+            </p>
+
+            <div class="hero-actions">
+
+                <a class="btn btn-primary btn-lg" href="#campaign-center">
+                    Campaigns
+                </a>
+
+                <a class="btn btn-secondary btn-lg" href="#lead-center">
+                    Leads
+                </a>
+
+                <a class="btn btn-ghost btn-lg" href="#analytics-center">
+                    Analytics
+                </a>
+
+            </div>
+
+            <div class="mt-4">
+                <div class="tabs-bar">
+                    <button class="tab-button active" type="button">Overview</button>
+                    <button class="tab-button" type="button">Campaigns</button>
+                    <button class="tab-button" type="button">Leads</button>
+                    <button class="tab-button" type="button">Content</button>
+                    <button class="tab-button" type="button">Social</button>
+                    <button class="tab-button" type="button">Analytics</button>
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Create Campaign</h4>
+        </div>
+
+        <div class="hero-right">
+
+            <div class="hero-status-card">
+
+                <h3 class="section-title">Marketing Overview</h3>
+                <p class="section-subtitle">
+                    Organized visibility into growth activity, demand capture, and conversion direction.
+                </p>
+
+                <ul class="status-list mt-3">
+
+                    <li><strong>Campaigns:</strong> marketing initiatives and channel execution</li>
+                    <li><strong>Leads:</strong> potential clients captured and nurtured</li>
+                    <li><strong>Channels:</strong> social media, web, and email visibility</li>
+                    <li><strong>Analytics:</strong> performance indicators and growth signals</li>
+                    <li><strong>Optimization:</strong> future XIOMY-driven commercial insights</li>
+
+                </ul>
+
+                <div class="action-row mt-4">
+                    <a class="btn btn-primary" href="{{ url_for('crm') }}">CRM Lead Link</a>
+                    <a class="btn btn-secondary" href="{{ url_for('reports_analytics') }}">Reports</a>
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('create_campaign') }}">
-                        <div class="mb-3">
-                            <label class="form-label">Campaign Name *</label>
-                            <input type="text" class="form-control" name="campaign_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Channel</label>
-                            <input type="text" class="form-control" name="channel">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Cost</label>
-                            <input type="number" step="0.01" class="form-control" name="cost" value="0">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">ROI</label>
-                            <input type="text" class="form-control" name="roi">
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Save Campaign</button>
-                    </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <h3>Active Campaigns</h3>
+            <p>
+                {% if safe_marketing_stats.active_campaigns is defined %}
+                    {{ safe_marketing_stats.active_campaigns }}
+                {% else %}
+                    {{ safe_campaigns|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Marketing campaigns running</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Leads Captured</h3>
+            <p>{{ safe_leads|length }}</p>
+            <span class="summary-note">Potential clients identified</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Conversions</h3>
+            <p>
+                {% if safe_marketing_stats.conversions is defined %}
+                    {{ safe_marketing_stats.conversions }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Converted prospects</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Website Visits</h3>
+            <p>
+                {% if safe_marketing_stats.visits is defined %}
+                    {{ safe_marketing_stats.visits }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Traffic activity</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Social Engagement</h3>
+            <p>
+                {% if safe_marketing_stats.engagement is defined %}
+                    {{ safe_marketing_stats.engagement }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Likes, comments, shares</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Email Subscribers</h3>
+            <p>
+                {% if safe_marketing_stats.subscribers is defined %}
+                    {{ safe_marketing_stats.subscribers }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Audience growth</span>
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         PURPOSE + GROWTH PRIORITIES
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card">
+            <h3>Marketing Executive Purpose</h3>
+            <p class="section-subtitle">
+                This module operates as the growth, visibility, and lead-generation engine of the platform.
+            </p>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Campaign Direction</div>
+                    <div class="activity-item-meta">
+                        Organize promotional initiatives across digital channels and connect growth efforts to real business outcomes.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Lead Generation &amp; Nurturing</div>
+                    <div class="activity-item-meta">
+                        Capture interest, structure follow-up, and connect opportunities to CRM for client conversion discipline.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Commercial Intelligence</div>
+                    <div class="activity-item-meta">
+                        Prepare campaign and audience data for XIOMY-driven trend analysis, optimization, and growth signals.
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0">Leads</h4>
-                </div>
-                <div class="card-body">
-                    {% if leads %}
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Lead</th>
-                                        <th>Source</th>
-                                        <th>Stage</th>
-                                        <th>Expected Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for lead in leads %}
-                                    <tr>
-                                        <td>{{ lead.id }}</td>
-                                        <td>{{ lead.lead_name }}</td>
-                                        <td>{{ lead.source or "-" }}</td>
-                                        <td>{{ lead.stage or "-" }}</td>
-                                        <td>{{ lead.expected_value }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+        <div class="panel-card">
+            <h3>Growth Leadership Priorities</h3>
+            <p class="section-subtitle">
+                Commercial controls that should remain visible to leadership and XIOMY.
+            </p>
+
+            <ul class="clean-list mt-4">
+                <li>Connect every campaign to leads, opportunities, and revenue direction.</li>
+                <li>Maintain consistency between web traffic, message quality, and conversion flow.</li>
+                <li>Identify channels that perform well and reduce waste in weak campaigns.</li>
+                <li>Keep content, lead management, and CRM aligned in one commercial pipeline.</li>
+                <li>Prepare the module for future XIOMY forecasting, segmentation, and optimization logic.</li>
+            </ul>
+
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="#analytics-center">Growth Analytics</a>
+                <a class="btn btn-secondary" href="#lead-center">Lead Center</a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         CAMPAIGN MANAGEMENT + LEAD CENTER
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card" id="campaign-center">
+
+            <div class="module-header">
+                <h1>Campaign Manager</h1>
+                <p>
+                    Create and control campaigns across service promotion, audience targeting, and market penetration.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Campaign Entry</button>
+                <button class="tab-button" type="button">Channel Strategy</button>
+                <button class="tab-button" type="button">Budget Focus</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_marketing_campaign') }}" class="crm-form">
+
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="campaign_name">Campaign Name</label>
+                            <input type="text" id="campaign_name" name="name" placeholder="Campaign title" required>
                         </div>
-                    {% else %}
-                        <p class="text-muted mb-0">No leads saved yet.</p>
-                    {% endif %}
+
+                        <div>
+                            <label for="campaign_channel">Channel</label>
+                            <input type="text" id="campaign_channel" name="channel" placeholder="Facebook, Instagram, Website, Email..." required>
+                        </div>
+
+                        <div>
+                            <label for="campaign_audience">Audience</label>
+                            <input type="text" id="campaign_audience" name="audience" placeholder="SMEs, nonprofits, HR buyers, executives...">
+                        </div>
+
+                        <div>
+                            <label for="campaign_budget">Budget</label>
+                            <input type="number" step="0.01" id="campaign_budget" name="budget" placeholder="0.00">
+                        </div>
+
+                        <div>
+                            <label for="campaign_status">Status</label>
+                            <select id="campaign_status" name="status">
+                                <option value="Draft">Draft</option>
+                                <option value="Active">Active</option>
+                                <option value="Paused">Paused</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="campaign_start_date">Start Date</label>
+                            <input type="date" id="campaign_start_date" name="start_date">
+                        </div>
+
+                        <div>
+                            <label for="campaign_end_date">End Date</label>
+                            <input type="date" id="campaign_end_date" name="end_date">
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="campaign_notes">Notes</label>
+                        <textarea id="campaign_notes" name="notes" placeholder="Campaign goals, messaging, expected outcomes, or launch notes."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Campaign</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+        <div class="panel-card" id="lead-center">
+
+            <div class="module-header">
+                <h1>Lead Management Center</h1>
+                <p>
+                    Structure captured interest, contact details, and conversion opportunity flow connected to CRM.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Lead Entry</button>
+                <button class="tab-button" type="button">Qualification</button>
+                <button class="tab-button" type="button">Follow-Up</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="#" class="crm-form">
+
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="lead_name">Lead Name</label>
+                            <input type="text" id="lead_name" name="lead_name" placeholder="Lead or company name">
+                        </div>
+
+                        <div>
+                            <label for="lead_email">Email</label>
+                            <input type="email" id="lead_email" name="email" placeholder="lead@company.com">
+                        </div>
+
+                        <div>
+                            <label for="lead_phone">Phone</label>
+                            <input type="text" id="lead_phone" name="phone" placeholder="Phone number">
+                        </div>
+
+                        <div>
+                            <label for="lead_source">Lead Source</label>
+                            <input type="text" id="lead_source" name="source" placeholder="Website, ad, referral, social media...">
+                        </div>
+
+                        <div>
+                            <label for="lead_stage">Stage</label>
+                            <select id="lead_stage" name="stage">
+                                <option value="New">New</option>
+                                <option value="Contacted">Contacted</option>
+                                <option value="Qualified">Qualified</option>
+                                <option value="Proposal">Proposal</option>
+                                <option value="Converted">Converted</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="lead_interest">Interest</label>
+                            <input type="text" id="lead_interest" name="interest" placeholder="HR, ATS, SG-SST, Finance, Marketing...">
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="lead_notes">Notes</label>
+                        <textarea id="lead_notes" name="notes" placeholder="Lead needs, business size, urgency, or follow-up remarks."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Save Lead</button>
+                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         CONTENT + SOCIAL CENTER
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card">
+            <div class="module-header">
+                <h1>Content Planning Center</h1>
+                <p>
+                    Structure planned promotional messaging, educational content, and market-facing communication.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Content Entry</button>
+                <button class="tab-button" type="button">Scheduling</button>
+                <button class="tab-button" type="button">Purpose</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="#" class="crm-form">
+
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="content_title">Content Title</label>
+                            <input type="text" id="content_title" name="title" placeholder="Post, campaign, article, reel topic...">
+                        </div>
+
+                        <div>
+                            <label for="content_channel">Channel</label>
+                            <input type="text" id="content_channel" name="channel" placeholder="Website, LinkedIn, Instagram, Facebook...">
+                        </div>
+
+                        <div>
+                            <label for="content_publish_date">Publish Date</label>
+                            <input type="date" id="content_publish_date" name="publish_date">
+                        </div>
+
+                        <div>
+                            <label for="content_goal">Goal</label>
+                            <select id="content_goal" name="goal">
+                                <option value="Awareness">Awareness</option>
+                                <option value="Lead Generation">Lead Generation</option>
+                                <option value="Education">Education</option>
+                                <option value="Conversion">Conversion</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="content_notes">Content Notes</label>
+                        <textarea id="content_notes" name="notes" placeholder="Topic angle, CTA, target audience, or commercial purpose."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Save Content Plan</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="module-header">
+                <h1>Social Media Direction</h1>
+                <p>
+                    Control social visibility, channel consistency, and campaign-linked content execution.
+                </p>
+            </div>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Channel Consistency</div>
+                    <div class="activity-item-meta">
+                        Align visual branding, messaging quality, and service positioning across all social channels.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Lead Conversion Focus</div>
+                    <div class="activity-item-meta">
+                        Move beyond content publishing into measurable demand generation and commercial conversion.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">XIOMY Growth Signals</div>
+                    <div class="activity-item-meta">
+                        Future XIOMY intelligence should analyze audience reaction, post patterns, and campaign traction.
+                    </div>
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-secondary text-white">
-                    <h4 class="mb-0">Campaigns</h4>
-                </div>
-                <div class="card-body">
-                    {% if campaigns %}
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Campaign</th>
-                                        <th>Channel</th>
-                                        <th>Cost</th>
-                                        <th>ROI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for campaign in campaigns %}
-                                    <tr>
-                                        <td>{{ campaign.id }}</td>
-                                        <td>{{ campaign.campaign_name }}</td>
-                                        <td>{{ campaign.channel or "-" }}</td>
-                                        <td>{{ campaign.cost }}</td>
-                                        <td>{{ campaign.roi or "-" }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted mb-0">No campaigns saved yet.</p>
-                    {% endif %}
-                </div>
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="{{ url_for('crm') }}">Open CRM</a>
+                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
             </div>
         </div>
-    </div>
+
+    </section>
+
+    <!-- =====================================================
+         CAMPAIGN TABLE
+    ====================================================== -->
+    <section class="table-shell">
+        <div class="table-toolbar">
+            <div>
+                <h3 class="section-title">Campaign Register</h3>
+                <p class="section-subtitle">Current marketing initiatives and execution visibility.</p>
+            </div>
+
+            <div class="action-row">
+                <a class="btn btn-primary btn-sm" href="#campaign-center">New Campaign</a>
+                <a class="btn btn-secondary btn-sm" href="#analytics-center">Growth Analytics</a>
+            </div>
+        </div>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Channel</th>
+                        <th>Audience</th>
+                        <th>Budget</th>
+                        <th>Status</th>
+                        <th>Dates</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if safe_campaigns %}
+                        {% for campaign in safe_campaigns %}
+                        <tr>
+                            <td>{{ campaign.name if campaign.name is defined and campaign.name else 'N/A' }}</td>
+                            <td>{{ campaign.channel if campaign.channel is defined and campaign.channel else 'N/A' }}</td>
+                            <td>{{ campaign.audience if campaign.audience is defined and campaign.audience else 'N/A' }}</td>
+                            <td>{{ campaign.budget if campaign.budget is defined else 0 }}</td>
+                            <td>
+                                {% set camp_status = campaign.status if campaign.status is defined and campaign.status else 'Draft' %}
+                                {% if camp_status in ['Active'] %}
+                                    <span class="badge badge-success">{{ camp_status }}</span>
+                                {% elif camp_status in ['Draft', 'Paused'] %}
+                                    <span class="badge badge-warning">{{ camp_status }}</span>
+                                {% elif camp_status in ['Completed'] %}
+                                    <span class="badge badge-info">{{ camp_status }}</span>
+                                {% else %}
+                                    <span class="badge badge-neutral">{{ camp_status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if campaign.start_date is defined and campaign.start_date %}
+                                    {{ campaign.start_date }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                                -
+                                {% if campaign.end_date is defined and campaign.end_date %}
+                                    {{ campaign.end_date }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6">No campaigns available.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         LEADS TABLE + ANALYTICS
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="table-shell">
+            <div class="table-toolbar">
+                <div>
+                    <h3 class="section-title">Lead Register</h3>
+                    <p class="section-subtitle">Structured lead visibility for follow-up and conversion discipline.</p>
+                </div>
+                <div class="action-row">
+                    <a class="btn btn-primary btn-sm" href="#lead-center">New Lead</a>
+                </div>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Source</th>
+                            <th>Email</th>
+                            <th>Stage</th>
+                            <th>Interest</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if safe_leads %}
+                            {% for lead in safe_leads %}
+                            <tr>
+                                <td>{{ lead.lead_name if lead.lead_name is defined and lead.lead_name else (lead.name if lead.name is defined and lead.name else 'N/A') }}</td>
+                                <td>{{ lead.source if lead.source is defined and lead.source else 'N/A' }}</td>
+                                <td>{{ lead.email if lead.email is defined and lead.email else 'N/A' }}</td>
+                                <td>
+                                    {% set lead_stage = lead.stage if lead.stage is defined and lead.stage else 'New' %}
+                                    {% if lead_stage in ['Converted'] %}
+                                        <span class="badge badge-success">{{ lead_stage }}</span>
+                                    {% elif lead_stage in ['Qualified', 'Proposal'] %}
+                                        <span class="badge badge-info">{{ lead_stage }}</span>
+                                    {% elif lead_stage in ['New', 'Contacted'] %}
+                                        <span class="badge badge-warning">{{ lead_stage }}</span>
+                                    {% else %}
+                                        <span class="badge badge-neutral">{{ lead_stage }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ lead.interest if lead.interest is defined and lead.interest else 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No leads available.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel-card" id="analytics-center">
+            <h3>Marketing Analytics Direction</h3>
+            <p class="section-subtitle">
+                Executive interpretation and future XIOMY optimization logic for growth performance.
+            </p>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Traffic & Conversion Signals</div>
+                    <div class="activity-item-meta">
+                        Review visits, lead capture patterns, and conversion movement to identify effective commercial channels.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Campaign Efficiency</div>
+                    <div class="activity-item-meta">
+                        Compare budget effort, channel reach, and outcome quality to reduce wasted spend and improve results.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">XIOMY Growth Intelligence</div>
+                    <div class="activity-item-meta">
+                        XIOMY will later summarize marketing traction, audience response, lead quality, and content success patterns.
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-grid mt-4">
+                <div class="summary-card">
+                    <h3>Campaign Count</h3>
+                    <p>{{ safe_campaigns|length }}</p>
+                    <span class="summary-note">Tracked initiatives</span>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Lead Count</h3>
+                    <p>{{ safe_leads|length }}</p>
+                    <span class="summary-note">Demand captured</span>
+                </div>
+            </div>
+
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
+                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            </div>
+        </div>
+
+    </section>
+
 </div>
+
 {% endblock %}

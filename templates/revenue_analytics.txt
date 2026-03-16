@@ -1,0 +1,14 @@
+<section class="panel-card">
+
+<h2>Revenue Analytics</h2>
+
+<ul class="clean-list">
+
+<li>Total revenue this month</li>
+<li>Top paying clients</li>
+<li>Revenue per project</li>
+<li>Revenue trend</li>
+
+</ul>
+
+</section>

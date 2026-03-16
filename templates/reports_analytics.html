@@ -1,0 +1,531 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports & Analytics | UrbanHRPartners Enterprise Suite
+{% endblock %}
+
+{% block content %}
+
+<div class="page-grid">
+
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
+
+    <section class="module-header">
+        <h1>Reports, Analytics & Executive Intelligence</h1>
+        <p>
+            Consolidated reporting environment for the UrbanHRPartners Enterprise Suite.
+            This page centralizes key performance indicators, operational summaries,
+            cross-module activity, executive metrics, and XIOMY-generated intelligence
+            across CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing,
+            and Calendar operations.
+        </p>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- EXECUTIVE SUMMARY -->
+    <!-- ===================================================== -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <h3>Total Clients</h3>
+            <p>
+                {% if crm_summary and crm_summary.total_clients is defined %}
+                    {{ crm_summary.total_clients }}
+                {% elif dashboard_metrics and dashboard_metrics.total_clients is defined %}
+                    {{ dashboard_metrics.total_clients }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Total Employees</h3>
+            <p>
+                {% if hris_summary and hris_summary.total_employees is defined %}
+                    {{ hris_summary.total_employees }}
+                {% elif dashboard_metrics and dashboard_metrics.total_employees is defined %}
+                    {{ dashboard_metrics.total_employees }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Total Candidates</h3>
+            <p>
+                {% if ats_summary and ats_summary.total_candidates is defined %}
+                    {{ ats_summary.total_candidates }}
+                {% elif dashboard_metrics and dashboard_metrics.total_candidates is defined %}
+                    {{ dashboard_metrics.total_candidates }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Open Orientation Items</h3>
+            <p>
+                {% if orientation_summary and orientation_summary.open_items is defined %}
+                    {{ orientation_summary.open_items }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Total Incidents</h3>
+            <p>
+                {% if sgsst_summary and sgsst_summary.total_incidents is defined %}
+                    {{ sgsst_summary.total_incidents }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="summary-card">
+            <h3>Total Revenue</h3>
+            <p>
+                {% if finance_summary and finance_summary.total_revenue is defined %}
+                    ${{ finance_summary.total_revenue }}
+                {% else %}
+                    $0.00
+                {% endif %}
+            </p>
+        </div>
+
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- BUSINESS PERFORMANCE -->
+    <!-- ===================================================== -->
+
+    <section class="module-card">
+        <h2>Business Performance Snapshot</h2>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <h3>CRM Performance</h3>
+                <p><strong>Total Clients:</strong>
+                    {% if crm_summary and crm_summary.total_clients is defined %}
+                        {{ crm_summary.total_clients }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Active Projects:</strong>
+                    {% if crm_summary and crm_summary.active_projects is defined %}
+                        {{ crm_summary.active_projects }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Communication Logs:</strong>
+                    {% if crm_summary and crm_summary.total_communications is defined %}
+                        {{ crm_summary.total_communications }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Pipeline Health:</strong> Operational</p>
+            </div>
+
+            <div class="info-card">
+                <h3>HRIS Performance</h3>
+                <p><strong>Total Employees:</strong>
+                    {% if hris_summary and hris_summary.total_employees is defined %}
+                        {{ hris_summary.total_employees }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Active Employees:</strong>
+                    {% if hris_summary and hris_summary.active_employees is defined %}
+                        {{ hris_summary.active_employees }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Disciplinary Records:</strong>
+                    {% if hris_summary and hris_summary.disciplinary_cases is defined %}
+                        {{ hris_summary.disciplinary_cases }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Workforce Status:</strong> Monitored</p>
+            </div>
+
+            <div class="info-card">
+                <h3>ATS Performance</h3>
+                <p><strong>Total Candidates:</strong>
+                    {% if ats_summary and ats_summary.total_candidates is defined %}
+                        {{ ats_summary.total_candidates }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Interviews Scheduled:</strong>
+                    {% if ats_summary and ats_summary.interviews_scheduled is defined %}
+                        {{ ats_summary.interviews_scheduled }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Offers / Hires:</strong>
+                    {% if ats_summary and ats_summary.hires_completed is defined %}
+                        {{ ats_summary.hires_completed }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Recruitment Status:</strong> Active</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Orientation Performance</h3>
+                <p><strong>Checklist Items:</strong>
+                    {% if orientation_summary and orientation_summary.total_items is defined %}
+                        {{ orientation_summary.total_items }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Pending Acknowledgements:</strong>
+                    {% if orientation_summary and orientation_summary.pending_acknowledgements is defined %}
+                        {{ orientation_summary.pending_acknowledgements }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Assigned Assets:</strong>
+                    {% if orientation_summary and orientation_summary.assigned_assets is defined %}
+                        {{ orientation_summary.assigned_assets }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Onboarding Status:</strong> Controlled</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- OPERATIONS & COMPLIANCE -->
+    <!-- ===================================================== -->
+
+    <section class="module-card">
+        <h2>Operations, Compliance & Resource Analytics</h2>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <h3>SG-SST Analytics</h3>
+                <p><strong>Total Incidents:</strong>
+                    {% if sgsst_summary and sgsst_summary.total_incidents is defined %}
+                        {{ sgsst_summary.total_incidents }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Risk Factors:</strong>
+                    {% if sgsst_summary and sgsst_summary.total_risks is defined %}
+                        {{ sgsst_summary.total_risks }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Trainings:</strong>
+                    {% if sgsst_summary and sgsst_summary.total_trainings is defined %}
+                        {{ sgsst_summary.total_trainings }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Compliance Status:</strong> Operational</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Inventory Analytics</h3>
+                <p><strong>Total Items:</strong>
+                    {% if inventory_summary and inventory_summary.total_items is defined %}
+                        {{ inventory_summary.total_items }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Assigned Assets:</strong>
+                    {% if inventory_summary and inventory_summary.assigned_items is defined %}
+                        {{ inventory_summary.assigned_items }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Low Stock Alerts:</strong>
+                    {% if inventory_summary and inventory_summary.low_stock_count is defined %}
+                        {{ inventory_summary.low_stock_count }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Resource Status:</strong> Monitored</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Finance Analytics</h3>
+                <p><strong>Total Revenue:</strong>
+                    {% if finance_summary and finance_summary.total_revenue is defined %}
+                        ${{ finance_summary.total_revenue }}
+                    {% else %}
+                        $0.00
+                    {% endif %}
+                </p>
+                <p><strong>Total Expenses:</strong>
+                    {% if finance_summary and finance_summary.total_expenses is defined %}
+                        ${{ finance_summary.total_expenses }}
+                    {% else %}
+                        $0.00
+                    {% endif %}
+                </p>
+                <p><strong>Net Position:</strong>
+                    {% if finance_summary and finance_summary.net_position is defined %}
+                        ${{ finance_summary.net_position }}
+                    {% else %}
+                        $0.00
+                    {% endif %}
+                </p>
+                <p><strong>Financial Status:</strong> Active</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Marketing Analytics</h3>
+                <p><strong>Total Campaigns:</strong>
+                    {% if marketing_summary and marketing_summary.total_campaigns is defined %}
+                        {{ marketing_summary.total_campaigns }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Lead Sources:</strong>
+                    {% if marketing_summary and marketing_summary.total_lead_sources is defined %}
+                        {{ marketing_summary.total_lead_sources }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Qualified Opportunities:</strong>
+                    {% if marketing_summary and marketing_summary.qualified_opportunities is defined %}
+                        {{ marketing_summary.qualified_opportunities }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Growth Status:</strong> Active</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- SCHEDULING & EXECUTION -->
+    <!-- ===================================================== -->
+
+    <section class="module-card">
+        <h2>Scheduling, Execution & Planning Analytics</h2>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <h3>Calendar Analytics</h3>
+                <p><strong>Total Events:</strong>
+                    {% if calendar_summary and calendar_summary.total_events is defined %}
+                        {{ calendar_summary.total_events }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Scheduled Tasks:</strong>
+                    {% if calendar_summary and calendar_summary.total_tasks is defined %}
+                        {{ calendar_summary.total_tasks }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Meeting Requests:</strong>
+                    {% if calendar_summary and calendar_summary.total_meetings is defined %}
+                        {{ calendar_summary.total_meetings }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+                <p><strong>Coordination Status:</strong> Active</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Executive Command Summary</h3>
+                <p><strong>Platform:</strong> UrbanHRPartners Enterprise Suite</p>
+                <p><strong>Integrated Modules:</strong> CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar</p>
+                <p><strong>Executive AI:</strong> XIOMY</p>
+                <p><strong>System Status:</strong> Online</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Operational Health</h3>
+                <p>
+                    This analytics layer is intended to help leadership identify performance
+                    trends, monitor enterprise execution, assess risk concentration, track
+                    commercial growth, and align strategic decisions with real-time operational data.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Founder Profile</h3>
+                <p><strong>Founder:</strong> Juan Carlos Urbano</p>
+                <p><strong>Display Name:</strong> Juan Carlos Urbano, PhD(c) Business Psychology, MA-MHRM</p>
+                <p><strong>Brand:</strong> UrbanHRPartners Enterprise Suite</p>
+                <p><strong>Purpose:</strong> Intelligent organizational management and executive control</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- RECENT ACTIVITY -->
+    <!-- ===================================================== -->
+
+    <section class="module-card">
+        <h2>Recent Activity Feed</h2>
+
+        <div class="table-responsive">
+            <table class="crm-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Module</th>
+                        <th>Activity</th>
+                        <th>User / Owner</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in recent_activity %}
+                    <tr>
+                        <td>{{ activity.id if activity.id is defined else loop.index }}</td>
+                        <td>{{ activity.module if activity.module is defined else 'System' }}</td>
+                        <td>{{ activity.activity if activity.activity is defined else '' }}</td>
+                        <td>{{ activity.owner if activity.owner is defined else '' }}</td>
+                        <td>{{ activity.date if activity.date is defined else '' }}</td>
+                        <td>{{ activity.status if activity.status is defined else 'Recorded' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">No recent activity has been recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- XIOMY EXECUTIVE INTELLIGENCE -->
+    <!-- ===================================================== -->
+
+    <section class="module-card">
+        <h2>XIOMY Executive Intelligence</h2>
+
+        <p>
+            XIOMY consolidates information across all modules to support executive
+            visibility, predictive insight, anomaly detection, workload prioritization,
+            commercial strategy, compliance monitoring, and resource planning.
+        </p>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <h3>Strategic Visibility</h3>
+                <p>
+                    XIOMY can identify growth patterns, operational bottlenecks, risk
+                    exposure, staffing needs, pending onboarding issues, and client
+                    concentration trends from a single executive layer.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Module Synchronization</h3>
+                <p>
+                    The executive AI layer is designed to synchronize CRM, HRIS, ATS,
+                    Orientation, SG-SST, Inventory, Finance, Marketing, and Calendar
+                    data into a unified command structure.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Decision Support</h3>
+                <p>
+                    XIOMY can be used to assist leadership in comparing module performance,
+                    prioritizing resources, anticipating compliance needs, and identifying
+                    next-step recommendations for sustainable growth.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Current AI Status</h3>
+                <p>
+                    {% if xiomy_summary and xiomy_summary.status is defined %}
+                        {{ xiomy_summary.status }}
+                    {% else %}
+                        Online
+                    {% endif %}
+                </p>
+            </div>
+
+        </div>
+
+        <div class="xiomy-panel">
+            <button type="button" class="btn-secondary" onclick="runExecutiveAnalytics()">
+                Run XIOMY Executive Analytics
+            </button>
+
+            <div id="executive-analytics-result" class="analysis-output"></div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+function runExecutiveAnalytics() {
+    fetch("/xiomy")
+        .then(response => response.json())
+        .then(data => {
+            const target = document.getElementById("executive-analytics-result");
+            target.innerHTML = `
+                <div class="info-card" style="margin-top: 15px;">
+                    <h3>XIOMY Executive Response</h3>
+                    <p>Executive analytics active. Cross-module monitoring engaged for CRM, workforce, recruitment, onboarding, compliance, finance, marketing, inventory, and calendar execution.</p>
+                </div>
+            `;
+        })
+        .catch(error => {
+            const target = document.getElementById("executive-analytics-result");
+            target.innerHTML = `
+                <div class="info-card" style="margin-top: 15px;">
+                    <h3>XIOMY Executive Response</h3>
+                    <p>Unable to retrieve XIOMY executive analytics at this time. Please verify the /xiomy endpoint and backend service availability.</p>
+                </div>
+            `;
+        });
+}
+</script>
+
+{% endblock %}

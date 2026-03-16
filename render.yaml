@@ -2,5 +2,12 @@ services:
   - type: web
     name: urbanhrpartners-enterprise-suite
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
+      - key: FLASK_DEBUG
+        value: "0"

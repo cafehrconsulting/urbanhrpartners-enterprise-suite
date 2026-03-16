@@ -1,16 +1,863 @@
 {% extends "base.html" %}
 
-{% block title %}Finance | UrbanHRPartners{% endblock %}
+{% block title %}Finance | UrbanHRPartners Enterprise Suite{% endblock %}
+{% block page_heading %}Finance Command Center{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">Finance Module</h4>
+<div class="page-grid">
+
+    <!-- =====================================================
+         SAFE RENDER VARIABLES
+         Keeps the page stable if app.py provides fewer or
+         differently named values than older templates expect.
+    ====================================================== -->
+    {% set safe_finance_stats = finance_stats if finance_stats is defined and finance_stats else {} %}
+    {% set safe_invoices = invoices if invoices is defined and invoices else [] %}
+    {% set safe_ledger_entries = ledger_entries if ledger_entries is defined and ledger_entries else [] %}
+    {% set safe_vendor_bills = vendor_bills if vendor_bills is defined and vendor_bills else [] %}
+    {% set safe_budgets = budgets if budgets is defined and budgets else [] %}
+    {% set safe_expenses = expenses if expenses is defined and expenses else [] %}
+    {% set safe_payments = payments if payments is defined and payments else [] %}
+
+    <!-- =====================================================
+         FINANCE HERO
+    ====================================================== -->
+    <section class="hero-panel">
+        <div class="hero-left">
+            <span class="hero-badge">Enterprise Financial Management System</span>
+            <h1 class="hero-title">Finance Command Center</h1>
+            <p class="hero-text">
+                Premium accounting and financial operations environment for chart of accounts,
+                journal entries, invoicing, accounts receivable, accounts payable, expenses,
+                budgeting, cashflow, reporting, and executive financial intelligence.
+            </p>
+
+            <div class="hero-actions">
+                <a class="btn btn-primary btn-lg" href="#invoice-center">Invoices</a>
+                <a class="btn btn-secondary btn-lg" href="#ledger-center">Journal Entries</a>
+                <a class="btn btn-ghost btn-lg" href="#cashflow-center">Cashflow</a>
+            </div>
+
+            <div class="mt-4">
+                <div class="tabs-bar">
+                    <button class="tab-button active" type="button">Overview</button>
+                    <button class="tab-button" type="button">Accounts</button>
+                    <button class="tab-button" type="button">Ledger</button>
+                    <button class="tab-button" type="button">Receivables</button>
+                    <button class="tab-button" type="button">Payables</button>
+                    <button class="tab-button" type="button">Expenses</button>
+                    <button class="tab-button" type="button">Budgets</button>
+                    <button class="tab-button" type="button">Reports</button>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <p class="mb-0">Finance module is active and ready for invoicing, projections, and revenue tracking.</p>
+
+        <div class="hero-right">
+            <div class="hero-status-card">
+                <h3 class="section-title">Executive Financial Snapshot</h3>
+                <p class="section-subtitle">
+                    Organized visibility into revenue, expenses, receivables, payables,
+                    cashflow, and financial control maturity.
+                </p>
+
+                <ul class="status-list mt-3">
+                    <li><strong>Accounting Core:</strong> chart of accounts and journal control</li>
+                    <li><strong>Revenue:</strong> invoices, collections, receivables, client billing</li>
+                    <li><strong>Expenses:</strong> bills, vendors, operational spending, budgets</li>
+                    <li><strong>Direction:</strong> future XIOMY financial forecasting and risk alerts</li>
+                </ul>
+
+                <div class="action-row mt-4">
+                    <a class="btn btn-primary" href="{{ url_for('crm') }}">CRM Revenue Link</a>
+                    <a class="btn btn-secondary" href="{{ url_for('reports_analytics') }}">Reports</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- =====================================================
+         EXECUTIVE DASHBOARD
+    ====================================================== -->
+    <section class="summary-grid">
+        <div class="summary-card">
+            <h3>Total Revenue</h3>
+            <p>
+                {% if safe_finance_stats.invoice_total is defined %}
+                    {{ safe_finance_stats.invoice_total }}
+                {% elif safe_finance_stats.total_revenue is defined %}
+                    {{ safe_finance_stats.total_revenue }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Revenue recognized across operations</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Total Expenses</h3>
+            <p>
+                {% if safe_finance_stats.total_expenses is defined %}
+                    {{ safe_finance_stats.total_expenses }}
+                {% elif safe_finance_stats.ledger_total is defined %}
+                    {{ safe_finance_stats.ledger_total }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Operational and administrative spending</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Net Profit</h3>
+            <p>
+                {% if safe_finance_stats.net_profit is defined %}
+                    {{ safe_finance_stats.net_profit }}
+                {% elif safe_finance_stats.invoice_total is defined and safe_finance_stats.ledger_total is defined %}
+                    {{ safe_finance_stats.invoice_total - safe_finance_stats.ledger_total }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Current profit performance</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Outstanding Invoices</h3>
+            <p>
+                {% if safe_finance_stats.outstanding_total is defined %}
+                    {{ safe_finance_stats.outstanding_total }}
+                {% elif safe_finance_stats.outstanding_invoices is defined %}
+                    {{ safe_finance_stats.outstanding_invoices }}
+                {% else %}
+                    {{ safe_invoices|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Receivables pending collection</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Vendor Bills</h3>
+            <p>
+                {% if safe_finance_stats.vendor_bills is defined %}
+                    {{ safe_finance_stats.vendor_bills }}
+                {% else %}
+                    {{ safe_vendor_bills|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Payables awaiting closure</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Cash On Hand</h3>
+            <p>
+                {% if safe_finance_stats.cash_on_hand is defined %}
+                    {{ safe_finance_stats.cash_on_hand }}
+                {% elif safe_finance_stats.paid_total is defined %}
+                    {{ safe_finance_stats.paid_total }}
+                {% else %}
+                    0
+                {% endif %}
+            </p>
+            <span class="summary-note">Liquidity currently available</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Budget Lines</h3>
+            <p>{{ safe_budgets|length }}</p>
+            <span class="summary-note">Planned financial allocations</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>Journal Entries</h3>
+            <p>
+                {% if safe_finance_stats.ledger_entries is defined %}
+                    {{ safe_finance_stats.ledger_entries }}
+                {% else %}
+                    {{ safe_ledger_entries|length }}
+                {% endif %}
+            </p>
+            <span class="summary-note">Accounting entries registered</span>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         PURPOSE + LEADERSHIP PRIORITIES
+    ====================================================== -->
+    <section class="two-column-grid">
+        <div class="panel-card">
+            <h3>Finance Executive Purpose</h3>
+            <p class="section-subtitle">
+                This module operates as the accounting, billing, budgeting, and cashflow engine of the platform.
+            </p>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Accounting Control</div>
+                    <div class="activity-item-meta">
+                        Maintain chart of accounts, balanced journal entries, and financial transparency across all operations.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Revenue &amp; Receivables Visibility</div>
+                    <div class="activity-item-meta">
+                        Track invoices, payment status, client collections, and revenue concentration by account and service line.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Expense Discipline &amp; Planning</div>
+                    <div class="activity-item-meta">
+                        Monitor vendor obligations, spending categories, budget performance, and future cashflow health.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <h3>Financial Leadership Priorities</h3>
+            <p class="section-subtitle">
+                Controls that should remain visible to leadership and XIOMY.
+            </p>
+
+            <ul class="clean-list mt-4">
+                <li>Do not allow invoicing and collections to become disconnected from CRM activity.</li>
+                <li>Keep journal entries structured and consistent with chart of accounts logic.</li>
+                <li>Monitor vendor obligations before they become liquidity problems.</li>
+                <li>Track budget overruns and cashflow stress early.</li>
+                <li>Prepare this module for future XIOMY forecasting, anomalies, and margin intelligence.</li>
+            </ul>
+
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="#reports-center">Financial Reports</a>
+                <a class="btn btn-secondary" href="#cashflow-center">Cashflow Control</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         CHART OF ACCOUNTS + JOURNAL ENTRY CENTER
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card" id="accounts-center">
+            <div class="module-header">
+                <h1>Chart of Accounts Center</h1>
+                <p>
+                    Create and maintain the accounting structure that organizes all financial transactions.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Account Entry</button>
+                <button class="tab-button" type="button">Classification</button>
+                <button class="tab-button" type="button">Balance View</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="#" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="account_name">Account Name</label>
+                            <input type="text" id="account_name" name="name" placeholder="Cash, Revenue, Payroll Expense..." required>
+                        </div>
+
+                        <div>
+                            <label for="account_code">Account Code</label>
+                            <input type="text" id="account_code" name="code" placeholder="1000, 4000, 5100...">
+                        </div>
+
+                        <div>
+                            <label for="account_type">Account Type</label>
+                            <select id="account_type" name="type">
+                                <option value="Asset">Asset</option>
+                                <option value="Liability">Liability</option>
+                                <option value="Equity">Equity</option>
+                                <option value="Revenue">Revenue</option>
+                                <option value="Expense">Expense</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="account_status">Status</label>
+                            <select id="account_status" name="status">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="account_description">Description</label>
+                        <textarea id="account_description" name="description" placeholder="Describe the account purpose and reporting logic."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Account</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel-card" id="ledger-center">
+            <div class="module-header">
+                <h1>Journal Entry Center</h1>
+                <p>
+                    Record accounting transactions to maintain ledger accuracy and financial integrity.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Journal Entry</button>
+                <button class="tab-button" type="button">Debit / Credit</button>
+                <button class="tab-button" type="button">Reference</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_ledger_entry') }}" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="entry_date">Date</label>
+                            <input type="date" id="entry_date" name="entry_date" required>
+                        </div>
+
+                        <div>
+                            <label for="entry_reference">Reference</label>
+                            <input type="text" id="entry_reference" name="reference" placeholder="Invoice, bill, adjustment, payroll...">
+                        </div>
+
+                        <div>
+                            <label for="entry_type">Entry Type</label>
+                            <input type="text" id="entry_type" name="entry_type" placeholder="Revenue, Expense, Adjustment..." required>
+                        </div>
+
+                        <div>
+                            <label for="entry_category">Category</label>
+                            <input type="text" id="entry_category" name="category" placeholder="Accounting category">
+                        </div>
+
+                        <div>
+                            <label for="entry_amount">Amount</label>
+                            <input type="number" step="0.01" id="entry_amount" name="amount" placeholder="0.00" required>
+                        </div>
+
+                        <div>
+                            <label for="entry_status">Status</label>
+                            <select id="entry_status" name="status">
+                                <option value="Posted">Posted</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="entry_description">Description</label>
+                        <textarea id="entry_description" name="description" placeholder="Describe the transaction and its accounting purpose."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Journal Entry</button>
+                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         INVOICE CENTER + PAYMENT CENTER
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card" id="invoice-center">
+            <div class="module-header">
+                <h1>Invoice Management Center</h1>
+                <p>
+                    Create client invoices, track due dates, and control billing status across revenue streams.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Invoice Entry</button>
+                <button class="tab-button" type="button">Client Billing</button>
+                <button class="tab-button" type="button">Status Control</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_invoice') }}" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="invoice_number">Invoice Number</label>
+                            <input type="text" id="invoice_number" name="invoice_number" placeholder="INV-1001" required>
+                        </div>
+
+                        <div>
+                            <label for="invoice_client_name">Client Name</label>
+                            <input type="text" id="invoice_client_name" name="client_name" placeholder="Client or organization" required>
+                        </div>
+
+                        <div>
+                            <label for="invoice_project_name">Project / Service</label>
+                            <input type="text" id="invoice_project_name" name="project_name" placeholder="Related service or project">
+                        </div>
+
+                        <div>
+                            <label for="invoice_amount">Amount</label>
+                            <input type="number" step="0.01" id="invoice_amount" name="amount" placeholder="0.00" required>
+                        </div>
+
+                        <div>
+                            <label for="invoice_issue_date">Issue Date</label>
+                            <input type="date" id="invoice_issue_date" name="issue_date">
+                        </div>
+
+                        <div>
+                            <label for="invoice_due_date">Due Date</label>
+                            <input type="date" id="invoice_due_date" name="due_date">
+                        </div>
+
+                        <div>
+                            <label for="invoice_status">Status</label>
+                            <select id="invoice_status" name="status">
+                                <option value="Draft">Draft</option>
+                                <option value="Sent">Sent</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Overdue">Overdue</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="invoice_currency">Currency</label>
+                            <input type="text" id="invoice_currency" name="currency" placeholder="USD, COP" value="USD">
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="invoice_notes">Invoice Notes</label>
+                        <textarea id="invoice_notes" name="notes" placeholder="Billing notes, payment instructions, or service details."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Invoice</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel-card" id="payment-center">
+            <div class="module-header">
+                <h1>Receipts &amp; Collections Center</h1>
+                <p>
+                    Register payments received and improve visibility over collections and receivable closure.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Payment Entry</button>
+                <button class="tab-button" type="button">Collection Method</button>
+                <button class="tab-button" type="button">Receivable Closure</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="#" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="payment_invoice_number">Invoice Number</label>
+                            <input type="text" id="payment_invoice_number" name="invoice_number" placeholder="Invoice reference" required>
+                        </div>
+
+                        <div>
+                            <label for="payment_client_name">Client Name</label>
+                            <input type="text" id="payment_client_name" name="client_name" placeholder="Client name">
+                        </div>
+
+                        <div>
+                            <label for="payment_date">Payment Date</label>
+                            <input type="date" id="payment_date" name="payment_date">
+                        </div>
+
+                        <div>
+                            <label for="payment_amount">Amount Received</label>
+                            <input type="number" step="0.01" id="payment_amount" name="amount" placeholder="0.00" required>
+                        </div>
+
+                        <div>
+                            <label for="payment_method">Payment Method</label>
+                            <select id="payment_method" name="payment_method">
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="Check">Check</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="payment_status">Status</label>
+                            <select id="payment_status" name="status">
+                                <option value="Received">Received</option>
+                                <option value="Partially Paid">Partially Paid</option>
+                                <option value="Applied">Applied</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="payment_notes">Collection Notes</label>
+                        <textarea id="payment_notes" name="notes" placeholder="Reference, bank confirmation, collection remarks, or exceptions."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Record Payment</button>
+                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         PAYABLES CENTER + EXPENSE CENTER
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card" id="payables-center">
+            <div class="module-header">
+                <h1>Vendor Bills &amp; Payables Center</h1>
+                <p>
+                    Register vendor obligations, due dates, and payable status to support responsible cash management.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Vendor Bill</button>
+                <button class="tab-button" type="button">Due Date</button>
+                <button class="tab-button" type="button">Payment Status</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="#" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="bill_vendor_name">Vendor</label>
+                            <input type="text" id="bill_vendor_name" name="vendor_name" placeholder="Vendor or supplier" required>
+                        </div>
+
+                        <div>
+                            <label for="bill_reference">Bill Reference</label>
+                            <input type="text" id="bill_reference" name="bill_reference" placeholder="Bill number, invoice number">
+                        </div>
+
+                        <div>
+                            <label for="bill_category">Category</label>
+                            <input type="text" id="bill_category" name="category" placeholder="Utilities, software, supplies, payroll support...">
+                        </div>
+
+                        <div>
+                            <label for="bill_amount">Amount</label>
+                            <input type="number" step="0.01" id="bill_amount" name="amount" placeholder="0.00" required>
+                        </div>
+
+                        <div>
+                            <label for="bill_issue_date">Issue Date</label>
+                            <input type="date" id="bill_issue_date" name="issue_date">
+                        </div>
+
+                        <div>
+                            <label for="bill_due_date">Due Date</label>
+                            <input type="date" id="bill_due_date" name="due_date">
+                        </div>
+
+                        <div>
+                            <label for="bill_status">Status</label>
+                            <select id="bill_status" name="status">
+                                <option value="Open">Open</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Overdue">Overdue</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="bill_account">Account</label>
+                            <input type="text" id="bill_account" name="account" placeholder="Related account or expense line">
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="bill_notes">Notes</label>
+                        <textarea id="bill_notes" name="notes" placeholder="Vendor details, supporting notes, or payment remarks."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Vendor Bill</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel-card" id="expense-center">
+            <div class="module-header">
+                <h1>Expense Management Center</h1>
+                <p>
+                    Log operational expenses, monitor categories, and keep spending disciplined and reportable.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Expense Entry</button>
+                <button class="tab-button" type="button">Category</button>
+                <button class="tab-button" type="button">Approval</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_ledger_entry') }}" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="expense_date">Date</label>
+                            <input type="date" id="expense_date" name="entry_date">
+                        </div>
+
+                        <div>
+                            <label for="expense_category">Category</label>
+                            <select id="expense_category" name="category">
+                                <option value="Office">Office</option>
+                                <option value="Software">Software</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Payroll">Payroll</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Training">Training</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="expense_amount">Amount</label>
+                            <input type="number" step="0.01" id="expense_amount" name="amount" placeholder="0.00">
+                        </div>
+
+                        <div>
+                            <label for="expense_status">Status</label>
+                            <select id="expense_status" name="status">
+                                <option value="Posted">Posted</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Draft">Draft</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="expense_description">Description</label>
+                        <textarea id="expense_description" name="description" placeholder="Explain the expense purpose and operational context."></textarea>
+                    </div>
+
+                    <input type="hidden" name="entry_type" value="Expense">
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Expense Entry</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         INVOICE REGISTER + LEDGER REGISTER
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="table-shell">
+            <div class="table-toolbar">
+                <div>
+                    <h3 class="section-title">Invoice Register</h3>
+                    <p class="section-subtitle">Client billing visibility and receivable control.</p>
+                </div>
+                <div class="action-row">
+                    <a class="btn btn-primary btn-sm" href="#invoice-center">New Invoice</a>
+                </div>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Client</th>
+                            <th>Project</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if safe_invoices %}
+                            {% for invoice in safe_invoices %}
+                            <tr>
+                                <td>
+                                    {% if invoice.invoice_number is defined and invoice.invoice_number %}
+                                        {{ invoice.invoice_number }}
+                                    {% else %}
+                                        Invoice #{{ invoice.id if invoice.id is defined else 'N/A' }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ invoice.client_name if invoice.client_name is defined and invoice.client_name else 'N/A' }}</td>
+                                <td>{{ invoice.project_name if invoice.project_name is defined and invoice.project_name else 'N/A' }}</td>
+                                <td>{{ invoice.amount if invoice.amount is defined else 0 }}</td>
+                                <td>{{ invoice.due_date if invoice.due_date is defined and invoice.due_date else 'N/A' }}</td>
+                                <td>
+                                    {% set inv_status = invoice.status if invoice.status is defined and invoice.status else 'Draft' %}
+                                    {% if inv_status in ['Paid'] %}
+                                        <span class="badge badge-success">{{ inv_status }}</span>
+                                    {% elif inv_status in ['Sent'] %}
+                                        <span class="badge badge-info">{{ inv_status }}</span>
+                                    {% elif inv_status in ['Overdue'] %}
+                                        <span class="badge badge-danger">{{ inv_status }}</span>
+                                    {% elif inv_status in ['Draft', 'Cancelled'] %}
+                                        <span class="badge badge-warning">{{ inv_status }}</span>
+                                    {% else %}
+                                        <span class="badge badge-neutral">{{ inv_status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6">No invoices available.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-shell">
+            <div class="table-toolbar">
+                <div>
+                    <h3 class="section-title">Ledger Register</h3>
+                    <p class="section-subtitle">Accounting entries and posting visibility.</p>
+                </div>
+                <div class="action-row">
+                    <a class="btn btn-secondary btn-sm" href="#ledger-center">New Entry</a>
+                </div>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if safe_ledger_entries %}
+                            {% for entry in safe_ledger_entries %}
+                            <tr>
+                                <td>{{ entry.entry_type if entry.entry_type is defined and entry.entry_type else 'General' }}</td>
+                                <td>{{ entry.category if entry.category is defined and entry.category else 'N/A' }}</td>
+                                <td>{{ entry.description if entry.description is defined and entry.description else 'N/A' }}</td>
+                                <td>{{ entry.amount if entry.amount is defined else 0 }}</td>
+                                <td>
+                                    {% if entry.entry_date is defined and entry.entry_date %}
+                                        {{ entry.entry_date }}
+                                    {% elif entry.date is defined and entry.date %}
+                                        {{ entry.date }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set ledger_status = entry.status if entry.status is defined and entry.status else 'Posted' %}
+                                    {% if ledger_status in ['Posted'] %}
+                                        <span class="badge badge-success">{{ ledger_status }}</span>
+                                    {% elif ledger_status in ['Pending'] %}
+                                        <span class="badge badge-warning">{{ ledger_status }}</span>
+                                    {% elif ledger_status in ['Draft'] %}
+                                        <span class="badge badge-info">{{ ledger_status }}</span>
+                                    {% else %}
+                                        <span class="badge badge-neutral">{{ ledger_status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6">No ledger entries available.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         CASHFLOW + REPORTS
+    ====================================================== -->
+    <section class="two-column-grid">
+
+        <div class="panel-card" id="cashflow-center">
+            <h3>Cashflow Control Direction</h3>
+            <p class="section-subtitle">
+                Executive visibility into inflows, obligations, and liquidity discipline.
+            </p>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Collections Discipline</div>
+                    <div class="activity-item-meta">
+                        Control overdue invoices, accelerate collections, and reduce revenue leakage.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Expense Timing</div>
+                    <div class="activity-item-meta">
+                        Align spending commitments with cash availability and operational priorities.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Future XIOMY Financial Intelligence</div>
+                    <div class="activity-item-meta">
+                        XIOMY will later support anomaly detection, forecasting, margin analysis,
+                        and executive early-warning alerts for finance risks.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card" id="reports-center">
+            <h3>Financial Reports Direction</h3>
+            <p class="section-subtitle">
+                Enterprise reporting should support both accounting visibility and strategic leadership review.
+            </p>
+
+            <ul class="clean-list mt-4">
+                <li>Income statement visibility across revenue and spending.</li>
+                <li>Receivables aging and overdue invoice monitoring.</li>
+                <li>Budget versus actual comparison by category.</li>
+                <li>Cashflow planning and liquidity stress review.</li>
+                <li>Profit concentration by client, service, or project line.</li>
+            </ul>
+
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
+                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            </div>
+        </div>
+    </section>
+
 </div>
 {% endblock %}

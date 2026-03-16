@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome | UrbanHRPartners Enterprise Suite{% endblock %}
+
+{% block content %}
+<section class="module-page">
+    <div class="module-header">
+        <h1>Welcome to UrbanHRPartners Enterprise Suite</h1>
+        <p>Integrated business operations, workforce management, and executive intelligence</p>
+    </div>
+
+    <div class="crm-layout">
+        <div class="info-card">
+            <h3>Platform Overview</h3>
+            <p>
+                UrbanHRPartners Enterprise Suite centralizes the management of client relationships,
+                human resources operations, recruiting, onboarding, safety compliance, finance,
+                marketing, scheduling, inventory, and executive decision support through XIOMY AI.
+            </p>
+
+            <p>
+                This environment is structured to provide a unified command center for business
+                growth, workforce performance, compliance visibility, and operational control.
+            </p>
+        </div>
+
+        <div class="info-card">
+            <h3>Core Modules</h3>
+            <ul class="module-list">
+                <li>CRM – Client Relationship &amp; Revenue Engine</li>
+                <li>HRIS – Human Resources Information System</li>
+                <li>ATS – Applicant Tracking System</li>
+                <li>Orientation – Onboarding and readiness workflows</li>
+                <li>SG-SST – Safety and compliance management</li>
+                <li>Finance – Revenue, invoicing, and projections</li>
+                <li>Inventory – Assets, tracking, and stock control</li>
+                <li>Marketing – Leads, campaigns, and outreach</li>
+                <li>Calendar – Scheduling and event coordination</li>
+                <li>XIOMY AI – Executive intelligence assistant</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="info-card table-card">
+        <h3>Start Here</h3>
+
+        <div class="module-info-grid">
+            <div class="metric-card">
+                <h3>Command Center</h3>
+                <p>Review enterprise metrics and operational activity from the dashboard.</p>
+                <a href="{{ url_for('dashboard') }}" class="action-button">Open Dashboard</a>
+            </div>
+
+            <div class="metric-card">
+                <h3>CRM</h3>
+                <p>Create and manage client profiles, relationships, and business pipeline visibility.</p>
+                <a href="{{ url_for('crm') }}" class="action-button">Open CRM</a>
+            </div>
+
+            <div class="metric-card">
+                <h3>HRIS</h3>
+                <p>Manage employee records, disciplinary tracking, and SOP monitoring.</p>
+                <a href="{{ url_for('hris') }}" class="action-button">Open HRIS</a>
+            </div>
+
+            <div class="metric-card">
+                <h3>XIOMY AI</h3>
+                <p>Access the executive intelligence layer for guidance and operational support.</p>
+                <a href="{{ url_for('xiomy_page') }}" class="action-button">Open XIOMY</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

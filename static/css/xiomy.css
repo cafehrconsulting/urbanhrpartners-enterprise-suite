@@ -1,44 +1,701 @@
-body {
-
-background:#0b1220;
-color:white;
-font-family:Arial;
-
+:root {
+    --xiomy-navy: #102b57;
+    --xiomy-deep-navy: #0b1f40;
+    --xiomy-gold: #d8a741;
+    --xiomy-orange: #e67e22;
+    --xiomy-silver: #dfe6ee;
+    --xiomy-white: #ffffff;
+    --xiomy-dark: #111827;
+    --xiomy-panel: rgba(255, 255, 255, 0.92);
+    --xiomy-border: rgba(16, 43, 87, 0.12);
+    --xiomy-shadow: 0 14px 40px rgba(16, 43, 87, 0.14);
+    --xiomy-shadow-strong: 0 20px 50px rgba(11, 31, 64, 0.2);
+    --xiomy-glow: 0 0 30px rgba(216, 167, 65, 0.35);
+    --xiomy-radius-xl: 28px;
+    --xiomy-radius-lg: 20px;
+    --xiomy-radius-md: 14px;
 }
 
-.xiomy-container{
-
-display:flex;
-height:100vh;
-align-items:center;
-justify-content:center;
-gap:60px;
-
+.xiomy-page {
+    min-height: 100vh;
+    padding: 28px;
+    background:
+        radial-gradient(circle at top right, rgba(216, 167, 65, 0.18), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(230, 126, 34, 0.14), transparent 28%),
+        linear-gradient(135deg, #f8fafc 0%, #edf2f7 45%, #f6f8fb 100%);
+    color: var(--xiomy-dark);
 }
 
-#xiomy-avatar{
-
-width:500px;
-height:700px;
-
+.xiomy-hero {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 28px;
 }
 
-.xiomy-panel{
-
-background:#111a30;
-padding:40px;
-border-radius:20px;
-width:400px;
-
+.xiomy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(16, 43, 87, 0.08), rgba(216, 167, 65, 0.12));
+    color: var(--xiomy-navy);
+    border: 1px solid rgba(16, 43, 87, 0.12);
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
 }
 
-button{
+.xiomy-title {
+    margin: 0 0 12px;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    line-height: 1.05;
+    font-weight: 800;
+    color: var(--xiomy-deep-navy);
+}
 
-background:#1d7cff;
-border:none;
-padding:12px 25px;
-border-radius:10px;
-color:white;
-font-size:16px;
+.xiomy-subtitle {
+    margin: 0;
+    font-size: 1.03rem;
+    line-height: 1.75;
+    color: #314155;
+    max-width: 780px;
+}
 
+.xiomy-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+    margin-bottom: 18px;
+}
+
+.xiomy-btn {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 14px;
+    padding: 13px 18px;
+    font-weight: 700;
+    font-size: 0.96rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    box-shadow: var(--xiomy-shadow);
+}
+
+.xiomy-btn:hover {
+    transform: translateY(-2px);
+}
+
+.xiomy-btn-primary {
+    color: var(--xiomy-white);
+    background: linear-gradient(135deg, var(--xiomy-navy), #1b4687);
+}
+
+.xiomy-btn-secondary {
+    color: var(--xiomy-white);
+    background: linear-gradient(135deg, #5f6f86, #334155);
+}
+
+.xiomy-btn-accent {
+    color: var(--xiomy-white);
+    background: linear-gradient(135deg, var(--xiomy-gold), var(--xiomy-orange));
+}
+
+.xiomy-quick-commands {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.xiomy-quick-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #4a5568;
+    margin-right: 6px;
+}
+
+.xiomy-chip {
+    border: 1px solid rgba(16, 43, 87, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--xiomy-navy);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.xiomy-chip:hover {
+    background: linear-gradient(135deg, rgba(216, 167, 65, 0.15), rgba(230, 126, 34, 0.15));
+    transform: translateY(-2px);
+}
+
+.xiomy-avatar-shell {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 450px;
+}
+
+.xiomy-avatar-halo,
+.xiomy-avatar-ring {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.xiomy-avatar-halo {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(216, 167, 65, 0.28) 0%, rgba(230, 126, 34, 0.14) 45%, transparent 70%);
+    filter: blur(16px);
+    animation: xiomyHalo 4s ease-in-out infinite;
+}
+
+.xiomy-avatar-ring {
+    width: 360px;
+    height: 360px;
+    border: 2px solid rgba(16, 43, 87, 0.12);
+    animation: xiomyRotate 16s linear infinite;
+}
+
+.xiomy-avatar-card {
+    position: relative;
+    width: 370px;
+    min-height: 420px;
+    border-radius: 34px;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(247,250,252,0.92));
+    border: 1px solid rgba(16, 43, 87, 0.08);
+    box-shadow: var(--xiomy-shadow-strong);
+    overflow: hidden;
+}
+
+.xiomy-avatar-stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 320px;
+}
+
+.xiomy-avatar-core {
+    position: relative;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,0.92), rgba(223,230,238,0.88) 38%, rgba(216,167,65,0.3) 70%, rgba(16,43,87,0.2) 100%);
+    box-shadow:
+        inset 0 0 20px rgba(255,255,255,0.8),
+        0 0 24px rgba(216,167,65,0.35),
+        0 10px 30px rgba(16,43,87,0.2);
+    animation: xiomyFloat 3.8s ease-in-out infinite;
+}
+
+.xiomy-avatar-core::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(16, 43, 87, 0.12);
+}
+
+.xiomy-avatar-face {
+    position: absolute;
+    inset: 0;
+}
+
+.xiomy-eye {
+    position: absolute;
+    top: 74px;
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle, var(--xiomy-navy) 0%, #1e3a8a 55%, #0f172a 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 14px rgba(16, 43, 87, 0.3);
+    animation: xiomyBlink 5.2s infinite;
+}
+
+.xiomy-eye-left {
+    left: 58px;
+}
+
+.xiomy-eye-right {
+    right: 58px;
+}
+
+.xiomy-mouth {
+    position: absolute;
+    left: 50%;
+    bottom: 54px;
+    transform: translateX(-50%);
+    width: 52px;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(230,126,34,0.85), rgba(216,167,65,0.95));
+    box-shadow: 0 0 12px rgba(230,126,34,0.2);
+    transition: all 0.12s ease;
+}
+
+.xiomy-mouth.speaking {
+    height: 24px;
+    width: 42px;
+    border-radius: 50%;
+}
+
+.xiomy-pulse {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(216, 167, 65, 0.22);
+    opacity: 0;
+}
+
+.xiomy-pulse-1 {
+    width: 220px;
+    height: 220px;
+    animation: xiomyPulse 3s infinite;
+}
+
+.xiomy-pulse-2 {
+    width: 280px;
+    height: 280px;
+    animation: xiomyPulse 3s 0.8s infinite;
+}
+
+.xiomy-pulse-3 {
+    width: 340px;
+    height: 340px;
+    animation: xiomyPulse 3s 1.6s infinite;
+}
+
+.xiomy-avatar-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    font-weight: 700;
+    color: var(--xiomy-navy);
+}
+
+.xiomy-status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #94a3b8;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    transition: all 0.25s ease;
+}
+
+.xiomy-status-dot.active {
+    background: #16a34a;
+    box-shadow: 0 0 14px rgba(22, 163, 74, 0.45);
+}
+
+.xiomy-status-dot.listening {
+    background: var(--xiomy-orange);
+    box-shadow: 0 0 14px rgba(230, 126, 34, 0.45);
+}
+
+.xiomy-status-dot.speaking {
+    background: var(--xiomy-gold);
+    box-shadow: 0 0 16px rgba(216, 167, 65, 0.55);
+}
+
+.xiomy-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 22px;
+    margin-bottom: 24px;
+}
+
+.xiomy-panel {
+    background: var(--xiomy-panel);
+    border: 1px solid var(--xiomy-border);
+    border-radius: var(--xiomy-radius-xl);
+    box-shadow: var(--xiomy-shadow);
+    padding: 24px;
+    backdrop-filter: blur(12px);
+}
+
+.xiomy-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.xiomy-panel-header h2 {
+    margin: 0;
+    color: var(--xiomy-deep-navy);
+    font-size: 1.35rem;
+}
+
+.xiomy-panel-sub {
+    color: #64748b;
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.xiomy-panel-summary {
+    grid-column: span 7;
+}
+
+.xiomy-panel-workforce {
+    grid-column: span 5;
+}
+
+.xiomy-panel-console {
+    grid-column: span 6;
+}
+
+.xiomy-panel-modules {
+    grid-column: span 6;
+}
+
+.xiomy-panel-live {
+    margin-top: 0;
+}
+
+.xiomy-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.xiomy-metric-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(245,247,250,0.92));
+    border: 1px solid rgba(16, 43, 87, 0.08);
+    border-radius: 20px;
+    padding: 18px;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.xiomy-metric-card-highlight {
+    background: linear-gradient(135deg, rgba(16,43,87,0.95), rgba(27,70,135,0.95));
+}
+
+.xiomy-metric-card-highlight .xiomy-metric-label,
+.xiomy-metric-card-highlight .xiomy-metric-value {
+    color: var(--xiomy-white);
+}
+
+.xiomy-metric-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #5a6b80;
+}
+
+.xiomy-metric-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--xiomy-deep-navy);
+    margin-top: 10px;
+    word-break: break-word;
+}
+
+.xiomy-workforce-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.xiomy-workforce-item {
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(243,246,249,0.92));
+    border: 1px solid rgba(16, 43, 87, 0.08);
+}
+
+.xiomy-workforce-item-wide {
+    grid-column: span 2;
+}
+
+.xiomy-workforce-label {
+    display: block;
+    color: #5f7188;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.xiomy-workforce-item strong {
+    color: var(--xiomy-deep-navy);
+    font-size: 1.35rem;
+}
+
+.xiomy-console-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.xiomy-console-input {
+    flex: 1;
+    border: 1px solid rgba(16, 43, 87, 0.16);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    color: var(--xiomy-dark);
+    background: rgba(255,255,255,0.94);
+    outline: none;
+}
+
+.xiomy-console-input:focus {
+    border-color: var(--xiomy-gold);
+    box-shadow: 0 0 0 4px rgba(216, 167, 65, 0.12);
+}
+
+.xiomy-console-response {
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(135deg, rgba(16,43,87,0.08), rgba(216,167,65,0.1));
+    color: var(--xiomy-deep-navy);
+    font-weight: 700;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+}
+
+.xiomy-console-log {
+    margin-top: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.xiomy-log-entry {
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(248, 250, 252, 0.95);
+    border: 1px solid rgba(16, 43, 87, 0.08);
+    margin-bottom: 10px;
+}
+
+.xiomy-log-time {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.xiomy-log-command {
+    color: var(--xiomy-dark);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.xiomy-log-message {
+    color: #334155;
+    line-height: 1.6;
+}
+
+.xiomy-module-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.xiomy-module-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    border-radius: 18px;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(243,246,249,0.92));
+    border: 1px solid rgba(16, 43, 87, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.xiomy-module-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--xiomy-shadow);
+    border-color: rgba(216, 167, 65, 0.35);
+}
+
+.xiomy-module-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--xiomy-deep-navy);
+}
+
+.xiomy-module-desc {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.xiomy-live-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.xiomy-live-item {
+    background: rgba(255,255,255,0.92);
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid rgba(16, 43, 87, 0.08);
+}
+
+.xiomy-live-item-wide {
+    grid-column: span 2;
+}
+
+.xiomy-live-label {
+    display: block;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.xiomy-live-item strong {
+    color: var(--xiomy-deep-navy);
+    font-size: 1.05rem;
+    word-break: break-word;
+}
+
+@keyframes xiomyFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes xiomyRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes xiomyPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    40% {
+        opacity: 0.45;
+    }
+    100% {
+        transform: scale(1.18);
+        opacity: 0;
+    }
+}
+
+@keyframes xiomyHalo {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.92;
+    }
+    50% {
+        transform: scale(1.08);
+        opacity: 0.65;
+    }
+}
+
+@keyframes xiomyBlink {
+    0%, 45%, 47%, 100% {
+        transform: scaleY(1);
+    }
+    46% {
+        transform: scaleY(0.12);
+    }
+}
+
+@media (max-width: 1200px) {
+    .xiomy-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .xiomy-panel-summary,
+    .xiomy-panel-workforce,
+    .xiomy-panel-console,
+    .xiomy-panel-modules {
+        grid-column: span 12;
+    }
+}
+
+@media (max-width: 900px) {
+    .xiomy-page {
+        padding: 18px;
+    }
+
+    .xiomy-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .xiomy-live-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .xiomy-avatar-card {
+        width: 100%;
+        max-width: 380px;
+    }
+}
+
+@media (max-width: 680px) {
+    .xiomy-actions,
+    .xiomy-console-form {
+        flex-direction: column;
+    }
+
+    .xiomy-metric-grid,
+    .xiomy-workforce-grid,
+    .xiomy-module-grid,
+    .xiomy-live-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xiomy-workforce-item-wide,
+    .xiomy-live-item-wide {
+        grid-column: span 1;
+    }
+
+    .xiomy-title {
+        font-size: 2.2rem;
+    }
+
+    .xiomy-avatar-shell {
+        min-height: 360px;
+    }
+
+    .xiomy-avatar-card {
+        min-height: 360px;
+    }
+
+    .xiomy-avatar-stage {
+        min-height: 260px;
+    }
+
+    .xiomy-avatar-core {
+        width: 160px;
+        height: 160px;
+    }
+
+    .xiomy-eye {
+        top: 62px;
+    }
+
+    .xiomy-eye-left {
+        left: 48px;
+    }
+
+    .xiomy-eye-right {
+        right: 48px;
+    }
+
+    .xiomy-mouth {
+        bottom: 46px;
+    }
 }
