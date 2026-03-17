@@ -3,6 +3,7 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 # =========================================================
 # USERS
 # =========================================================
@@ -27,31 +28,25 @@ class Client(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # Core identity
     name = db.Column(db.String(200), nullable=False)
     company_name = db.Column(db.String(200))
     contact_person = db.Column(db.String(200))
 
-    # Contact
     email = db.Column(db.String(200))
     phone = db.Column(db.String(100))
     address = db.Column(db.String(300))
 
-    # Global business intelligence
     industry = db.Column(db.String(200))
     country = db.Column(db.String(120), default="Colombia")
     language = db.Column(db.String(100), default="Spanish")
     region = db.Column(db.String(120))
 
-    # Tax / legal identification
     tax_id_type = db.Column(db.String(50))
     tax_id_number = db.Column(db.String(100))
 
-    # Business status
     status = db.Column(db.String(100), default="Prospect")
     risk_level = db.Column(db.String(50))
 
-    # Strategic notes
     needs = db.Column(db.Text)
     notes = db.Column(db.Text)
 
