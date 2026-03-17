@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}
-UrbanHRPartners Enterprise Suite
-{% endblock %}
+{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}
+{% block page_heading %}UrbanHRPartners Enterprise Suite{% endblock %}
 
 {% block content %}
 
@@ -11,12 +10,16 @@ UrbanHRPartners Enterprise Suite
     <!-- ========================================================= -->
     <!-- HERO SECTION -->
     <!-- ========================================================= -->
-
     <section class="landing-hero">
 
         <div class="hero-left">
 
-            <img src="{{ url_for('static', filename='img/logo.jpg') }}" class="hero-logo">
+            <img
+                src="{{ url_for('static', filename='img/logo.jpg') }}"
+                alt="UrbanHRPartners Logo"
+                class="hero-logo"
+                onerror="this.style.display='none';"
+            >
 
             <h1 class="hero-title">
                 UrbanHRPartners
@@ -24,14 +27,13 @@ UrbanHRPartners Enterprise Suite
             </h1>
 
             <p class="hero-description">
-                A unified enterprise platform designed for modern organizations.
-                Integrating CRM, HRIS, ATS, Employee Orientation, SG-SST compliance,
-                Finance, Inventory, Marketing intelligence, and XIOMY Executive AI
-                into a single operational ecosystem.
+                A unified enterprise platform designed for modern organizations,
+                integrating CRM, HRIS, ATS, Employee Orientation, SG-SST compliance,
+                Finance, Inventory, Marketing intelligence, Calendar coordination,
+                Executive Reporting, and XIOMY Executive AI into a single operational ecosystem.
             </p>
 
             <div class="hero-buttons">
-
                 <a href="{{ url_for('dashboard') }}" class="btn-primary">
                     Enter Dashboard
                 </a>
@@ -39,7 +41,6 @@ UrbanHRPartners Enterprise Suite
                 <a href="{{ url_for('xiomy_page') }}" class="btn-secondary">
                     Launch XIOMY AI
                 </a>
-
             </div>
 
         </div>
@@ -47,7 +48,6 @@ UrbanHRPartners Enterprise Suite
         <div class="hero-right">
 
             <div class="hero-info-card">
-
                 <h3>Platform Overview</h3>
 
                 <ul class="hero-list">
@@ -56,25 +56,22 @@ UrbanHRPartners Enterprise Suite
                     <li>ATS Recruitment Automation</li>
                     <li>Employee Orientation System</li>
                     <li>SG-SST Safety Compliance</li>
-                    <li>Inventory & Asset Tracking</li>
-                    <li>Finance Ledger & Invoicing</li>
+                    <li>Inventory &amp; Asset Tracking</li>
+                    <li>Finance Ledger &amp; Invoicing</li>
                     <li>Marketing Intelligence</li>
+                    <li>Calendar &amp; Operational Scheduling</li>
                     <li>Executive Analytics</li>
                     <li>XIOMY Artificial Intelligence</li>
                 </ul>
-
             </div>
 
         </div>
 
     </section>
 
-
-
     <!-- ========================================================= -->
     <!-- SYSTEM MODULES -->
     <!-- ========================================================= -->
-
     <section class="modules-grid">
 
         <h2 class="section-title">
@@ -85,69 +82,66 @@ UrbanHRPartners Enterprise Suite
 
             <a href="{{ url_for('crm') }}" class="module-card">
                 <h3>CRM</h3>
-                <p>Client relationship management and revenue tracking.</p>
+                <p>Client relationship management, communication history, pipeline control, and revenue tracking.</p>
             </a>
 
             <a href="{{ url_for('hris') }}" class="module-card">
                 <h3>HRIS</h3>
-                <p>Employee records, workforce analytics and HR operations.</p>
+                <p>Employee records, workforce analytics, HR documentation, and people operations.</p>
             </a>
 
             <a href="{{ url_for('ats') }}" class="module-card">
                 <h3>ATS</h3>
-                <p>Applicant tracking system for recruitment pipelines.</p>
+                <p>Applicant tracking system for recruitment pipelines, candidate stages, and hiring flow.</p>
             </a>
 
             <a href="{{ url_for('orientation') }}" class="module-card">
                 <h3>Orientation</h3>
-                <p>New employee onboarding and policy acknowledgement.</p>
+                <p>New employee onboarding, checklists, policy acknowledgement, and asset assignment.</p>
             </a>
 
             <a href="{{ url_for('sgsst') }}" class="module-card">
                 <h3>SG-SST</h3>
-                <p>Workplace safety compliance and risk management.</p>
+                <p>Workplace safety compliance, inspections, incidents, risk control, and audit readiness.</p>
             </a>
 
             <a href="{{ url_for('inventory') }}" class="module-card">
                 <h3>Inventory</h3>
-                <p>Asset management and equipment tracking.</p>
+                <p>Asset management, stock visibility, equipment control, and operational tracking.</p>
             </a>
 
             <a href="{{ url_for('finance') }}" class="module-card">
                 <h3>Finance</h3>
-                <p>Invoicing, budgeting and financial forecasting.</p>
+                <p>Invoicing, ledger activity, budgeting, financial forecasting, and revenue monitoring.</p>
             </a>
 
             <a href="{{ url_for('marketing') }}" class="module-card">
                 <h3>Marketing</h3>
-                <p>Campaign management and market intelligence.</p>
+                <p>Campaign management, growth intelligence, lead direction, and market analysis.</p>
             </a>
 
-            <a href="{{ url_for('calendar') }}" class="module-card">
+            <a href="{{ url_for('calendar_page') }}" class="module-card">
                 <h3>Calendar</h3>
-                <p>Corporate scheduling and activity planning.</p>
+                <p>Corporate scheduling, events, operational coordination, and activity planning.</p>
             </a>
 
             <a href="{{ url_for('reports_analytics') }}" class="module-card">
-                <h3>Reports & Analytics</h3>
-                <p>Executive reporting and performance dashboards.</p>
+                <h3>Reports &amp; Analytics</h3>
+                <p>Executive reporting, dashboards, KPI review, and cross-module intelligence.</p>
             </a>
 
             <a href="{{ url_for('xiomy_page') }}" class="module-card xiomy-card">
                 <h3>XIOMY AI</h3>
-                <p>Executive artificial intelligence for decision support.</p>
+                <p>Executive artificial intelligence for insight, decision support, and strategic command.</p>
             </a>
 
         </div>
 
     </section>
 
-
-
     <!-- ========================================================= -->
     <!-- SYSTEM STATUS -->
     <!-- ========================================================= -->
-
     <section class="system-status">
 
         <h2>System Status</h2>
@@ -178,12 +172,9 @@ UrbanHRPartners Enterprise Suite
 
     </section>
 
-
-
     <!-- ========================================================= -->
     <!-- FOOTER -->
     <!-- ========================================================= -->
-
     <footer class="landing-footer">
 
         <p>
