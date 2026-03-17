@@ -10,3 +10,10 @@ Flask
 Flask-SQLAlchemy
 gunicorn
 psycopg2-binary
+Flask
+Flask-SQLAlchemy
+gunicorn
+psycopg2-binary
+pandas
+twilio
+nylas
