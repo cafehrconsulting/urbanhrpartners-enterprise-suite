@@ -1,601 +1,774 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}UrbanHRPartners Enterprise Suite Dashboard{% endblock %}
+{% block title %}CRM | UrbanHRPartners Enterprise Suite{% endblock %}
+{% block page_heading %}CRM Command Center{% endblock %}
 
 {% block content %}
 <div class="page-grid">
 
     <!-- =====================================================
          SAFE RENDER VARIABLES
-         Protects dashboard from crashes if some values are
-         missing or app.py provides alternate field names.
+         Keeps page stable even if app.py sends slightly different
+         names or some collections are empty.
     ====================================================== -->
-    {% set stats = dashboard_stats if dashboard_stats is defined and dashboard_stats else {} %}
-    {% set safe_recent_clients = recent_clients if recent_clients is defined and recent_clients else [] %}
-    {% set safe_recent_projects = recent_projects if recent_projects is defined and recent_projects else [] %}
-    {% set safe_recent_candidates = recent_candidates if recent_candidates is defined and recent_candidates else [] %}
-    {% set safe_recent_invoices = recent_invoices if recent_invoices is defined and recent_invoices else [] %}
-    {% set safe_recent_incidents = recent_incidents if recent_incidents is defined and recent_incidents else [] %}
-    {% set safe_xiomy_greeting = xiomy_greeting if xiomy_greeting is defined and xiomy_greeting else "XIOMY Executive AI is ready to support operations." %}
-    {% set safe_xiomy_insight = xiomy_insight if xiomy_insight is defined and xiomy_insight else "Cross-module enterprise monitoring is available from this dashboard." %}
+    {% set crm_clients = clients if clients is defined and clients else [] %}
+    {% set crm_projects = projects if projects is defined and projects else [] %}
+    {% set crm_tasks = tasks if tasks is defined and tasks else [] %}
+    {% set crm_logs = communication_logs if communication_logs is defined and communication_logs else (communications if communications is defined and communications else []) %}
+    {% set crm_stats_safe = crm_stats if crm_stats is defined and crm_stats else {} %}
 
-    <!-- =====================================================
-         EXECUTIVE HERO
-    ====================================================== -->
+    {% set crm_country_options = country_options if country_options is defined and country_options else ['Colombia', 'United States', 'Canada', 'Mexico', 'Spain', 'Brazil', 'Argentina', 'Chile', 'Peru', 'Other'] %}
+    {% set crm_language_options = language_options if language_options is defined and language_options else ['Spanish', 'English', 'Portuguese', 'French', 'German', 'Italian', 'Other'] %}
+    {% set crm_industry_options = industry_options if industry_options is defined and industry_options else ['Accounting', 'Advertising', 'Agriculture', 'Architecture', 'Artificial Intelligence', 'Automotive', 'Banking', 'Biotechnology', 'Business Consulting', 'Construction', 'Cybersecurity', 'Education', 'Energy', 'Engineering', 'Entertainment', 'Fashion', 'Finance', 'Financial Services', 'Food and Beverage', 'Government', 'Healthcare', 'Hospitality', 'Human Resources', 'Import / Export', 'Insurance', 'Legal Services', 'Logistics', 'Manufacturing', 'Marketing', 'Medical Devices', 'Mining', 'Nonprofit', 'Oil and Gas', 'Pharmaceutical', 'Real Estate', 'Recruiting', 'Retail', 'SaaS', 'Security Services', 'Software Development', 'Sports', 'Staffing', 'Technology', 'Telecommunications', 'Textiles', 'Transportation', 'Travel', 'Veterinary', 'Warehousing', 'Wholesale', 'Tattoo Supplies', 'Other'] %}
+    {% set crm_default_tax_id_options = default_tax_id_options if default_tax_id_options is defined and default_tax_id_options else ['RUT', 'NIT', 'EIN', 'TIN', 'VAT', 'OTHER'] %}
+    {% set crm_tax_id_options_by_country = tax_id_options_by_country if tax_id_options_by_country is defined and tax_id_options_by_country else {
+        'Colombia': ['RUT', 'NIT', 'CEDULA', 'PASSPORT', 'OTHER'],
+        'United States': ['EIN', 'TIN', 'SSN', 'ITIN', 'OTHER'],
+        'Canada': ['BN', 'GST/HST', 'OTHER'],
+        'Mexico': ['RFC', 'CURP', 'OTHER'],
+        'Brazil': ['CNPJ', 'CPF', 'OTHER'],
+        'Argentina': ['CUIT', 'CUIL', 'OTHER'],
+        'Chile': ['RUT', 'OTHER'],
+        'Peru': ['RUC', 'DNI', 'OTHER'],
+        'Spain': ['NIF', 'CIF', 'NIE', 'OTHER'],
+        'Other': ['VAT', 'TIN', 'TAX ID', 'OTHER']
+    } %}
+
     <section class="hero-panel">
         <div class="hero-left">
-            <span class="hero-badge">Executive Command Center</span>
-            <h1 class="hero-title">UrbanHRPartners Enterprise Suite Dashboard</h1>
+            <span class="hero-badge">Client Relationship &amp; Revenue Engine</span>
+            <h1 class="hero-title">CRM Command Center</h1>
             <p class="hero-text">
-                Unified executive environment for CRM, HRIS, ATS, Orientation, SG-SST,
-                Inventory, Finance, Marketing, Calendar, Reports &amp; Analytics, and XIOMY.
-                This dashboard is designed to provide real-time operational visibility,
-                premium navigation, and strategic decision support for enterprise growth.
+                Premium client relationship management environment for pipeline visibility,
+                account development, communication tracking, task creation, project linkage,
+                revenue awareness, and executive client intelligence.
             </p>
 
             <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="{{ url_for('xiomy_page') }}">Launch XIOMY Office</a>
-                <a class="btn btn-secondary btn-lg" href="{{ url_for('crm') }}">Open CRM</a>
-                <a class="btn btn-ghost btn-lg" href="{{ url_for('reports_analytics') }}">View Analytics</a>
+                <a class="btn btn-primary btn-lg" href="#client-registration">Register Client</a>
+                <a class="btn btn-secondary btn-lg" href="#communication-center">Log Communication</a>
+                <a class="btn btn-ghost btn-lg" href="#revenue-panels">Revenue Focus</a>
             </div>
 
             <div class="mt-4">
                 <div class="tabs-bar">
-                    <a class="tab-button active" href="{{ url_for('dashboard') }}">Overview</a>
-                    <a class="tab-button" href="{{ url_for('finance') }}">Financial Pulse</a>
-                    <a class="tab-button" href="{{ url_for('ats') }}">Talent Pipeline</a>
-                    <a class="tab-button" href="{{ url_for('sgsst') }}">Compliance Status</a>
-                    <a class="tab-button" href="{{ url_for('marketing') }}">Growth Signals</a>
+                    <button class="tab-button active" type="button">Overview</button>
+                    <button class="tab-button" type="button">Clients</button>
+                    <button class="tab-button" type="button">Communications</button>
+                    <button class="tab-button" type="button">Projects</button>
+                    <button class="tab-button" type="button">Tasks</button>
+                    <button class="tab-button" type="button">Revenue</button>
                 </div>
             </div>
         </div>
 
         <div class="hero-right">
             <div class="hero-status-card">
-                <h3 class="section-title">System Status Brief</h3>
+                <h3 class="section-title">CRM Executive Snapshot</h3>
                 <p class="section-subtitle">
-                    Enterprise modules connected and ready for operational use.
+                    Organized visibility into customer management and commercial activity.
                 </p>
 
                 <ul class="status-list mt-3">
-                    <li><strong>Platform:</strong> Active</li>
-                    <li><strong>Environment:</strong> Development / Render-ready structure</li>
-                    <li><strong>AI Layer:</strong> XIOMY architecture enabled</li>
-                    <li><strong>Priority Mode:</strong> Executive oversight</li>
-                    <li><strong>Design Direction:</strong> Premium organized interface</li>
+                    <li><strong>Portfolio Control:</strong> active client relationship tracking</li>
+                    <li><strong>Commercial Focus:</strong> opportunities and service demand visibility</li>
+                    <li><strong>Operational Linkage:</strong> tasks, projects, and finance coordination</li>
+                    <li><strong>Global Readiness:</strong> country, language, industry, and tax identity structure</li>
                 </ul>
 
-                <div class="activity-feed mt-4">
-                    <div class="activity-item">
-                        <div class="activity-item-title">XIOMY Greeting</div>
-                        <div class="activity-item-meta">{{ safe_xiomy_greeting }}</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-item-title">Strategic Insight</div>
-                        <div class="activity-item-meta">{{ safe_xiomy_insight }}</div>
-                    </div>
-                </div>
-
                 <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('finance') }}">Finance</a>
-                    <a class="btn btn-secondary" href="{{ url_for('hris') }}">HRIS</a>
+                    <a class="btn btn-primary" href="{{ url_for('marketing') }}">Marketing</a>
+                    <a class="btn btn-secondary" href="{{ url_for('finance') }}">Finance</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- =====================================================
-         KPI SUMMARY
+         SUMMARY CARDS
     ====================================================== -->
     <section class="summary-grid">
         <div class="summary-card">
-            <h3>Total Active Clients</h3>
+            <h3>Total Clients</h3>
             <p>
-                {% if stats.total_clients is defined %}
-                    {{ stats.total_clients }}
+                {% if crm_stats_safe.total_clients is defined %}
+                    {{ crm_stats_safe.total_clients }}
                 {% else %}
-                    0
+                    {{ crm_clients|length }}
                 {% endif %}
             </p>
-            <span class="summary-note">CRM portfolio in active management</span>
+            <span class="summary-note">Current registered accounts</span>
         </div>
 
         <div class="summary-card">
-            <h3>Total Candidates</h3>
+            <h3>Open Projects</h3>
             <p>
-                {% if stats.total_candidates is defined %}
-                    {{ stats.total_candidates }}
-                {% elif stats.open_positions is defined %}
-                    {{ stats.open_positions }}
+                {% if crm_stats_safe.open_projects is defined %}
+                    {{ crm_stats_safe.open_projects }}
+                {% elif crm_stats_safe.active_projects is defined %}
+                    {{ crm_stats_safe.active_projects }}
                 {% else %}
-                    0
+                    {{ crm_projects|length }}
                 {% endif %}
             </p>
-            <span class="summary-note">ATS pipeline currently tracked</span>
+            <span class="summary-note">Commercial and service activity in progress</span>
         </div>
 
         <div class="summary-card">
-            <h3>Active Employees</h3>
+            <h3>Communication Logs</h3>
             <p>
-                {% if stats.total_employees is defined %}
-                    {{ stats.total_employees }}
-                {% elif stats.active_employees is defined %}
-                    {{ stats.active_employees }}
+                {% if crm_stats_safe.total_communications is defined %}
+                    {{ crm_stats_safe.total_communications }}
+                {% elif crm_stats_safe.communications is defined %}
+                    {{ crm_stats_safe.communications }}
                 {% else %}
-                    0
+                    {{ crm_logs|length }}
                 {% endif %}
             </p>
-            <span class="summary-note">HRIS workforce under management</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Total Invoices</h3>
-            <p>
-                {% if stats.total_invoices is defined %}
-                    {{ stats.total_invoices }}
-                {% elif stats.open_invoices is defined %}
-                    {{ stats.open_invoices }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Finance billing records currently tracked</span>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         SECONDARY KPI SUMMARY
-    ====================================================== -->
-    <section class="summary-grid">
-        <div class="summary-card">
-            <h3>Projects</h3>
-            <p>
-                {% if stats.total_projects is defined %}
-                    {{ stats.total_projects }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Cross-module projects linked to delivery</span>
+            <span class="summary-note">Recorded client contact history</span>
         </div>
 
         <div class="summary-card">
             <h3>Open Tasks</h3>
             <p>
-                {% if stats.open_tasks is defined %}
-                    {{ stats.open_tasks }}
-                {% elif stats.total_tasks is defined %}
-                    {{ stats.total_tasks }}
+                {% if crm_stats_safe.open_tasks is defined %}
+                    {{ crm_stats_safe.open_tasks }}
+                {% elif crm_stats_safe.tasks is defined %}
+                    {{ crm_stats_safe.tasks }}
                 {% else %}
-                    0
+                    {{ crm_tasks|length }}
                 {% endif %}
             </p>
-            <span class="summary-note">Operational commitments requiring action</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Marketing Campaigns</h3>
-            <p>
-                {% if stats.total_campaigns is defined %}
-                    {{ stats.total_campaigns }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Growth initiatives under visibility</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Safety Incidents</h3>
-            <p>
-                {% if stats.total_incidents is defined %}
-                    {{ stats.total_incidents }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">SG-SST records tracked by the suite</span>
+            <span class="summary-note">Follow-ups and commitments to execute</span>
         </div>
     </section>
 
     <!-- =====================================================
-         MODULE COMMAND GRID
+         EXECUTIVE WORKSPACE
     ====================================================== -->
-    <section class="panel-card">
-        <div class="module-header">
-            <h1>Module Navigation</h1>
-            <p>
-                Organized access to all major enterprise functions. Each module is designed
-                to operate as a premium enterprise workspace rather than a simple page.
+    <section class="two-column-grid">
+        <div class="panel-card">
+            <h3>CRM Executive Purpose</h3>
+            <p class="section-subtitle">
+                This module is designed to function as the client relationship and revenue
+                management core of the platform.
             </p>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Client Lifecycle Management</div>
+                    <div class="activity-item-meta">
+                        Maintain 360-degree client visibility, account history, service alignment,
+                        organization details, priorities, and growth opportunities.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Communication Intelligence</div>
+                    <div class="activity-item-meta">
+                        Track calls, emails, visits, follow-ups, client concerns, and future
+                        XIOMY interpretation of commercial tendencies.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Revenue &amp; Service Linkage</div>
+                    <div class="activity-item-meta">
+                        Connect clients to projects, finance records, invoicing activity,
+                        and service expansion opportunities.
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="dashboard-grid mt-4">
+        <div class="panel-card">
+            <h3>Commercial Priority Queue</h3>
+            <p class="section-subtitle">
+                Leadership-focused reminders for relationship development and business growth.
+            </p>
 
-            <div class="module-card">
-                <h3>CRM</h3>
-                <p>
-                    Client lifecycle, communication history, project relationships, revenue
-                    opportunities, and task generation from interactions.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-primary" href="{{ url_for('crm') }}">Open CRM</a>
-                </div>
+            <ul class="clean-list mt-4">
+                <li>Protect client retention through timely communication follow-up.</li>
+                <li>Identify accounts with expansion potential across HR, SG-SST, Finance, ATS, and Marketing services.</li>
+                <li>Link communication notes to tasks so nothing is lost.</li>
+                <li>Keep projects aligned with revenue and delivery progress.</li>
+                <li>Prepare the CRM foundation for XIOMY trend analysis and future scoring.</li>
+            </ul>
+
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="#task-center">Open Task Center</a>
+                <a class="btn btn-secondary" href="#project-center">Review Projects</a>
             </div>
-
-            <div class="module-card">
-                <h3>HRIS</h3>
-                <p>
-                    Workforce records, employee profiles, disciplinary actions, SOP compliance,
-                    HR documentation, and workforce analytics.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-secondary" href="{{ url_for('hris') }}">Open HRIS</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>ATS</h3>
-                <p>
-                    Vacancy pipeline, candidate tracking, interviews, hiring progress,
-                    onboarding readiness, and recruiter operations.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-primary" href="{{ url_for('ats') }}">Open ATS</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>Orientation</h3>
-                <p>
-                    New hire readiness, policy acknowledgements, checklist completion,
-                    asset assignment preparation, and structured onboarding flow.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-secondary" href="{{ url_for('orientation') }}">Open Orientation</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>SG-SST</h3>
-                <p>
-                    Safety governance, legal matrix, risk control, inspections, incident
-                    management, audits, training, and compliance improvement plans.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-primary" href="{{ url_for('sgsst') }}">Open SG-SST</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>Inventory</h3>
-                <p>
-                    Assets, stock control, employee assignment, PPE management, maintenance,
-                    and financial linkage to purchases and equipment lifecycle.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-secondary" href="{{ url_for('inventory') }}">Open Inventory</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>Finance</h3>
-                <p>
-                    QuickBooks-level financial operations direction including invoicing,
-                    ledgers, budgeting, receivables, payables, reporting, and forecasting.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-primary" href="{{ url_for('finance') }}">Open Finance</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>Marketing</h3>
-                <p>
-                    Growth campaigns, service promotion, lead attraction, conversion analytics,
-                    content intelligence, and demand signals.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-secondary" href="{{ url_for('marketing') }}">Open Marketing</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>Calendar</h3>
-                <p>
-                    Scheduling, coordination, task timing, training sessions, meetings,
-                    operational appointments, and executive time visibility.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-primary" href="{{ url_for('calendar_page') }}">Open Calendar</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>Reports &amp; Analytics</h3>
-                <p>
-                    Executive indicators, multi-module insights, KPIs, trends, management
-                    reporting, and business intelligence review.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-secondary" href="{{ url_for('reports_analytics') }}">Open Reports</a>
-                </div>
-            </div>
-
-            <div class="module-card">
-                <h3>XIOMY Executive Office</h3>
-                <p>
-                    Private owner-level AI intelligence layer, executive insights, strategic
-                    support, market tendencies, website enhancement, and premium command center.
-                </p>
-                <div class="action-row mt-3">
-                    <a class="btn btn-primary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
-                </div>
-            </div>
-
         </div>
     </section>
 
     <!-- =====================================================
-         EXECUTIVE PANELS
+         CLIENT REGISTRATION + COMMUNICATION CENTER
     ====================================================== -->
     <section class="two-column-grid">
 
-        <div class="panel-card">
-            <h3>Executive Operational Priorities</h3>
-            <p class="section-subtitle">
-                Focus areas that should remain visible to leadership and XIOMY’s future
-                command intelligence layer.
-            </p>
+        <div class="panel-card" id="client-registration">
+            <div class="module-header">
+                <h1>Client Registration Center</h1>
+                <p>
+                    Create or expand your client portfolio with structured account information
+                    and clear commercial context.
+                </p>
+            </div>
 
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Financial Oversight</div>
-                    <div class="activity-item-meta">
-                        Monitor receivables, vendor obligations, budget execution,
-                        cashflow health, and financial growth opportunities.
-                    </div>
-                </div>
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Client Record</button>
+                <button class="tab-button" type="button">Organization Profile</button>
+                <button class="tab-button" type="button">Opportunity Notes</button>
+            </div>
 
-                <div class="activity-item">
-                    <div class="activity-item-title">Hiring and Workforce Continuity</div>
-                    <div class="activity-item-meta">
-                        Keep vacancy pipelines active, reduce ATS bottlenecks, and maintain
-                        onboarding readiness between ATS, Orientation, and HRIS.
-                    </div>
-                </div>
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_client') }}" class="crm-form" autocomplete="off">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="client_name">Client / Organization Name</label>
+                            <input type="text" id="client_name" name="name" placeholder="Enter client or company name" required>
+                        </div>
 
-                <div class="activity-item">
-                    <div class="activity-item-title">Compliance and Safety</div>
-                    <div class="activity-item-meta">
-                        Strengthen SG-SST compliance, policy control, training tracking,
-                        and audit readiness.
-                    </div>
-                </div>
+                        <div>
+                            <label for="client_company_name">Company Legal / Alternate Name</label>
+                            <input type="text" id="client_company_name" name="company_name" placeholder="Legal company name if different">
+                        </div>
 
-                <div class="activity-item">
-                    <div class="activity-item-title">Growth and Customer Attraction</div>
-                    <div class="activity-item-meta">
-                        Improve campaign performance, website conversion structure,
-                        and service positioning to drive more customers.
+                        <div>
+                            <label for="client_contact_person">Primary Contact</label>
+                            <input type="text" id="client_contact_person" name="contact_person" placeholder="Main contact person">
+                        </div>
+
+                        <div>
+                            <label for="client_email">Email</label>
+                            <input type="email" id="client_email" name="email" placeholder="contact@company.com">
+                        </div>
+
+                        <div>
+                            <label for="client_phone">Phone</label>
+                            <input type="text" id="client_phone" name="phone" placeholder="Phone number">
+                        </div>
+
+                        <div>
+                            <label for="client_industry">Industry</label>
+                            <input list="industry-list" type="text" id="client_industry" name="industry" placeholder="Industry or business sector">
+                            <datalist id="industry-list">
+                                {% for industry in crm_industry_options %}
+                                    <option value="{{ industry }}"></option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+
+                        <div>
+                            <label for="client_country">Country</label>
+                            <select id="client_country" name="country" onchange="updateClientTaxIdOptions()">
+                                {% for option in crm_country_options %}
+                                    <option value="{{ option }}" {% if option == 'Colombia' %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_language">Language</label>
+                            <select id="client_language" name="language">
+                                {% for option in crm_language_options %}
+                                    <option value="{{ option }}" {% if option == 'Spanish' %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_tax_id_type">Tax ID Type</label>
+                            <select id="client_tax_id_type" name="tax_id_type">
+                                {% for option in crm_default_tax_id_options %}
+                                    <option value="{{ option }}" {% if option == 'RUT' %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_tax_id_number">Tax ID Number</label>
+                            <input type="text" id="client_tax_id_number" name="tax_id_number" placeholder="RUT / NIT / EIN / TIN / VAT">
+                        </div>
+
+                        <div>
+                            <label for="client_status">Client Status</label>
+                            <select id="client_status" name="status">
+                                <option value="Lead">Lead</option>
+                                <option value="Prospect" selected>Prospect</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_address">Address / Location</label>
+                            <input type="text" id="client_address" name="address" placeholder="Client business location">
+                        </div>
+
+                        <div>
+                            <label for="client_region">Region / Department / State</label>
+                            <input type="text" id="client_region" name="region" placeholder="Department, state, region, or city sector">
+                        </div>
+
+                        <div>
+                            <label for="client_risk_level">Risk Level</label>
+                            <select id="client_risk_level" name="risk_level">
+                                <option value="">Select risk level</option>
+                                <option value="Low">Low</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="mt-3">
+                        <label for="client_needs">Current Needs / Service Interests</label>
+                        <textarea id="client_needs" name="needs" placeholder="Describe what the client is looking for: HR consulting, SG-SST, recruiting, training, finance support, marketing, or integrated services."></textarea>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="client_notes">General CRM Notes</label>
+                        <textarea id="client_notes" name="notes" placeholder="Commercial notes, opportunity details, context, objections, priorities, or relationship history."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Client Record</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <div class="panel-card">
-            <h3>XIOMY Strategic Preview</h3>
-            <p class="section-subtitle">
-                Preview of the executive intelligence experience that will expand inside
-                the private XIOMY Office.
-            </p>
+        <div class="panel-card" id="communication-center">
+            <div class="module-header">
+                <h1>Communication Center</h1>
+                <p>
+                    Record calls, meetings, WhatsApp updates, email discussions, and next-step commitments.
+                </p>
+            </div>
 
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Owner-Only Intelligence Layer</div>
-                    <div class="activity-item-meta">
-                        XIOMY will privately analyze website structure, campaign tendencies,
-                        customer attraction patterns, market signals, and competitor positioning.
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Log Interaction</button>
+                <button class="tab-button" type="button">Follow-Up</button>
+                <button class="tab-button" type="button">Commitments</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_communication_log') }}" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="log_client_id">Client</label>
+                            <select id="log_client_id" name="client_id" required>
+                                <option value="">Select a client</option>
+                                {% for client in crm_clients %}
+                                    <option value="{{ client.id }}">
+                                        {% if client.name is defined and client.name %}
+                                            {{ client.name }}
+                                        {% elif client.company_name is defined and client.company_name %}
+                                            {{ client.company_name }}
+                                        {% else %}
+                                            Client #{{ client.id }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="log_channel">Communication Type</label>
+                            <select id="log_channel" name="channel">
+                                <option value="Call">Call</option>
+                                <option value="Email">Email</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="Visit">Visit</option>
+                                <option value="General">General</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="log_direction">Direction</label>
+                            <select id="log_direction" name="direction">
+                                <option value="Outbound" selected>Outbound</option>
+                                <option value="Inbound">Inbound</option>
+                                <option value="Internal">Internal</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="log_contact_person">Contact Person</label>
+                            <input type="text" id="log_contact_person" name="contact_person" placeholder="Main person involved in the interaction">
+                        </div>
+
+                        <div>
+                            <label for="log_subject">Subject</label>
+                            <input type="text" id="log_subject" name="subject" placeholder="Summary subject or communication topic">
+                        </div>
+
+                        <div>
+                            <label for="log_date_reference">Date Reference</label>
+                            <input type="date" id="log_date_reference" name="log_date">
+                        </div>
+
+                        <div>
+                            <label for="log_follow_up_date">Next Follow-Up Date</label>
+                            <input type="date" id="log_follow_up_date" name="follow_up_date">
+                        </div>
+
+                        <div class="full-width">
+                            <label class="checkbox-inline" for="log_action_required">
+                                <input type="checkbox" id="log_action_required" name="action_required">
+                                Action required / next-step commitment exists
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="activity-item">
-                    <div class="activity-item-title">Executive Office Environment</div>
-                    <div class="activity-item-meta">
-                        Premium digital office with avatar chamber, command desk,
-                        intelligence wall, website enhancement lab, and private strategy room.
+                    <div class="mt-3">
+                        <label for="log_summary">Summary</label>
+                        <textarea id="log_summary" name="summary" placeholder="Summarize the interaction, the client's concerns, the service discussion, and key context."></textarea>
                     </div>
-                </div>
 
-                <div class="activity-item">
-                    <div class="activity-item-title">Customer Version Separation</div>
-                    <div class="activity-item-meta">
-                        Clients receive a controlled assistant experience while the owner
-                        retains the full strategic intelligence advantage.
+                    <div class="mt-3">
+                        <label for="log_message">Detailed Notes</label>
+                        <textarea id="log_message" name="message" placeholder="Detailed communication notes, decisions, objections, risks, opportunities, and commercial intelligence."></textarea>
                     </div>
-                </div>
 
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('xiomy_page') }}">Enter XIOMY Office</a>
-                    <a class="btn btn-ghost" href="{{ url_for('marketing') }}">View Growth Module</a>
-                </div>
+                    <div class="mt-3">
+                        <label for="log_action_items">Action Items / Commitments</label>
+                        <textarea id="log_action_items" name="action_items" placeholder="List promised actions, deliverables, follow-up commitments, or opportunities."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Log Communication</button>
+                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
 
     <!-- =====================================================
-         FUNCTIONAL DASHBOARD TABS
+         PROJECT CENTER + TASK CENTER
     ====================================================== -->
-    <section class="panel-card">
-        <div class="module-header">
-            <h1>Operational Focus Panels</h1>
-            <p>
-                Organized executive tabs to make the dashboard more useful and less like a plain letter page.
-            </p>
-        </div>
+    <section class="two-column-grid">
 
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Finance</button>
-            <button class="tab-button" type="button">HRIS</button>
-            <button class="tab-button" type="button">ATS</button>
-            <button class="tab-button" type="button">SG-SST</button>
-            <button class="tab-button" type="button">Marketing</button>
-            <button class="tab-button" type="button">Inventory</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <div class="two-column-grid">
-
-                <div class="workspace-card panel-card">
-                    <h3>Financial Snapshot</h3>
-                    <p>
-                        Revenue control, invoicing, receivables, payables, expense discipline,
-                        and strategic financial performance monitoring.
-                    </p>
-                    <ul class="clean-list mt-3">
-                        <li>Review total invoice volume currently tracked in the system.</li>
-                        <li>Track budget variance and financial discipline through the Finance module.</li>
-                        <li>Prepare accounting-grade reporting structure and forecasting direction.</li>
-                    </ul>
-                    <div class="summary-grid mt-4">
-                        <div class="summary-card">
-                            <h3>Total Invoices</h3>
-                            <p>{{ stats.total_invoices if stats.total_invoices is defined else 0 }}</p>
-                            <span class="summary-note">Current invoice records</span>
-                        </div>
-
-                        <div class="summary-card">
-                            <h3>Total Revenue</h3>
-                            <p>{{ stats.total_revenue if stats.total_revenue is defined else 0 }}</p>
-                            <span class="summary-note">Recorded revenue visibility</span>
-                        </div>
-                    </div>
-                    <div class="action-row mt-4">
-                        <a class="btn btn-primary" href="{{ url_for('finance') }}">Go to Finance</a>
-                    </div>
-                </div>
-
-                <div class="workspace-card panel-card">
-                    <h3>People &amp; Talent Snapshot</h3>
-                    <p>
-                        Workforce administration, disciplinary visibility, hiring velocity,
-                        role readiness, orientation progress, and performance support.
-                    </p>
-                    <ul class="clean-list mt-3">
-                        <li>Monitor active employees and candidate flow.</li>
-                        <li>Track onboarding and policy acknowledgements between modules.</li>
-                        <li>Surface HR operational priorities and talent continuity needs.</li>
-                    </ul>
-                    <div class="summary-grid mt-4">
-                        <div class="summary-card">
-                            <h3>Employees</h3>
-                            <p>{{ stats.total_employees if stats.total_employees is defined else 0 }}</p>
-                            <span class="summary-note">Workforce records</span>
-                        </div>
-
-                        <div class="summary-card">
-                            <h3>Candidates</h3>
-                            <p>{{ stats.total_candidates if stats.total_candidates is defined else 0 }}</p>
-                            <span class="summary-note">ATS pipeline volume</span>
-                        </div>
-                    </div>
-                    <div class="action-row mt-4">
-                        <a class="btn btn-secondary" href="{{ url_for('hris') }}">Go to HRIS</a>
-                        <a class="btn btn-ghost" href="{{ url_for('ats') }}">Open ATS</a>
-                    </div>
-                </div>
-
+        <div class="panel-card" id="project-center">
+            <div class="module-header">
+                <h1>Project Center</h1>
+                <p>
+                    Connect client accounts to active services, project delivery, timelines, and value creation.
+                </p>
             </div>
 
-            <div class="two-column-grid mt-4">
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Create Project</button>
+                <button class="tab-button" type="button">Delivery Notes</button>
+                <button class="tab-button" type="button">Commercial Status</button>
+            </div>
 
-                <div class="workspace-card panel-card">
-                    <h3>Safety, Compliance &amp; Risk</h3>
-                    <p>
-                        Compliance, SG-SST controls, training visibility, audit readiness,
-                        and enterprise safety monitoring.
-                    </p>
-                    <ul class="clean-list mt-3">
-                        <li>Track incidents, inspections, audits, and safety actions.</li>
-                        <li>Prepare compliance documentation and legal support structure.</li>
-                        <li>Maintain occupational health and safety visibility across the suite.</li>
-                    </ul>
-                    <div class="summary-grid mt-4">
-                        <div class="summary-card">
-                            <h3>Incidents</h3>
-                            <p>{{ stats.total_incidents if stats.total_incidents is defined else 0 }}</p>
-                            <span class="summary-note">SG-SST event visibility</span>
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_project') }}" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="project_client_id">Client</label>
+                            <select id="project_client_id" name="client_id">
+                                <option value="">Select a client</option>
+                                {% for client in crm_clients %}
+                                    <option value="{{ client.id }}">
+                                        {% if client.name is defined and client.name %}
+                                            {{ client.name }}
+                                        {% elif client.company_name is defined and client.company_name %}
+                                            {{ client.company_name }}
+                                        {% else %}
+                                            Client #{{ client.id }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
 
-                        <div class="summary-card">
-                            <h3>Tasks</h3>
-                            <p>
-                                {% if stats.open_tasks is defined %}
-                                    {{ stats.open_tasks }}
-                                {% elif stats.total_tasks is defined %}
-                                    {{ stats.total_tasks }}
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </p>
-                            <span class="summary-note">Action items pending</span>
-                        </div>
-                    </div>
-                    <div class="action-row mt-4">
-                        <a class="btn btn-primary" href="{{ url_for('sgsst') }}">SG-SST</a>
-                        <a class="btn btn-secondary" href="{{ url_for('inventory') }}">Inventory</a>
-                    </div>
-                </div>
-
-                <div class="workspace-card panel-card">
-                    <h3>Growth, Clients &amp; Market Direction</h3>
-                    <p>
-                        Customer relationship depth, campaign motion, opportunity tracking,
-                        and market expansion preparation for XIOMY intelligence.
-                    </p>
-                    <ul class="clean-list mt-3">
-                        <li>Review client portfolio and campaign activity.</li>
-                        <li>Connect growth efforts with CRM and Finance value creation.</li>
-                        <li>Strengthen commercial direction and market conversion structure.</li>
-                    </ul>
-                    <div class="summary-grid mt-4">
-                        <div class="summary-card">
-                            <h3>Clients</h3>
-                            <p>{{ stats.total_clients if stats.total_clients is defined else 0 }}</p>
-                            <span class="summary-note">CRM portfolio count</span>
+                        <div>
+                            <label for="project_client_name">Client Name Reference</label>
+                            <input type="text" id="project_client_name" name="client_name" placeholder="Associated client text reference if needed">
                         </div>
 
-                        <div class="summary-card">
-                            <h3>Campaigns</h3>
-                            <p>{{ stats.total_campaigns if stats.total_campaigns is defined else 0 }}</p>
-                            <span class="summary-note">Growth campaigns tracked</span>
+                        <div>
+                            <label for="project_name">Project Name</label>
+                            <input type="text" id="project_name" name="project_name" placeholder="Service or engagement title" required>
+                        </div>
+
+                        <div>
+                            <label for="project_status">Project Status</label>
+                            <select id="project_status" name="status">
+                                <option value="Planned">Planned</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Pending Approval">Pending Approval</option>
+                                <option value="Completed">Completed</option>
+                                <option value="On Hold">On Hold</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="project_value">Estimated Value</label>
+                            <input type="number" step="0.01" id="project_value" name="estimated_value" placeholder="0.00">
+                        </div>
+
+                        <div>
+                            <label for="project_budget">Budget</label>
+                            <input type="number" step="0.01" id="project_budget" name="budget" placeholder="0.00">
+                        </div>
+
+                        <div>
+                            <label for="project_start_date">Start Date</label>
+                            <input type="date" id="project_start_date" name="start_date">
+                        </div>
+
+                        <div>
+                            <label for="project_end_date">Target End Date</label>
+                            <input type="date" id="project_end_date" name="end_date">
                         </div>
                     </div>
-                    <div class="action-row mt-4">
-                        <a class="btn btn-primary" href="{{ url_for('crm') }}">Open CRM</a>
-                        <a class="btn btn-secondary" href="{{ url_for('marketing') }}">Open Marketing</a>
-                    </div>
-                </div>
 
+                    <div class="mt-3">
+                        <label for="project_scope">Project Scope / Description</label>
+                        <textarea id="project_scope" name="description" placeholder="Describe the client engagement, service commitments, deliverables, and expected outcomes."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Project</button>
+                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel-card" id="task-center">
+            <div class="module-header">
+                <h1>Task Center</h1>
+                <p>
+                    Capture follow-ups and operational commitments so each client relationship stays active and organized.
+                </p>
+            </div>
+
+            <div class="tabs-bar mt-4">
+                <button class="tab-button active" type="button">Create Task</button>
+                <button class="tab-button" type="button">Priority</button>
+                <button class="tab-button" type="button">Follow-Up Queue</button>
+            </div>
+
+            <div class="tab-content-panel mt-4">
+                <form method="POST" action="{{ url_for('create_task') }}" class="crm-form">
+                    <div class="form-grid two-col">
+                        <div>
+                            <label for="task_title">Task Title</label>
+                            <input type="text" id="task_title" name="title" placeholder="Task or follow-up title" required>
+                        </div>
+
+                        <div>
+                            <label for="task_client_id">Related Client</label>
+                            <select id="task_client_id" name="client_id">
+                                <option value="">Select a client</option>
+                                {% for client in crm_clients %}
+                                    <option value="{{ client.id }}">
+                                        {% if client.name is defined and client.name %}
+                                            {{ client.name }}
+                                        {% elif client.company_name is defined and client.company_name %}
+                                            {{ client.company_name }}
+                                        {% else %}
+                                            Client #{{ client.id }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="task_client_name">Client Name Reference</label>
+                            <input type="text" id="task_client_name" name="client_name" placeholder="Associated client text reference">
+                        </div>
+
+                        <div>
+                            <label for="task_project_id">Related Project</label>
+                            <select id="task_project_id" name="project_id">
+                                <option value="">Select a project</option>
+                                {% for project in crm_projects %}
+                                    <option value="{{ project.id }}">
+                                        {% if project.project_name is defined and project.project_name %}
+                                            {{ project.project_name }}
+                                        {% elif project.name is defined and project.name %}
+                                            {{ project.name }}
+                                        {% else %}
+                                            Project #{{ project.id }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="task_due_date">Due Date</label>
+                            <input type="date" id="task_due_date" name="due_date">
+                        </div>
+
+                        <div>
+                            <label for="task_priority">Priority</label>
+                            <select id="task_priority" name="priority">
+                                <option value="Low">Low</option>
+                                <option value="Normal" selected>Normal</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="task_status">Status</label>
+                            <select id="task_status" name="status">
+                                <option value="Open" selected>Open</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="task_notes">Task Notes</label>
+                        <textarea id="task_notes" name="notes" placeholder="Describe the follow-up, next action, or internal commitment."></textarea>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="task_description">Task Description</label>
+                        <textarea id="task_description" name="description" placeholder="Operational details, service commitments, internal instructions, or execution details."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button class="btn btn-primary btn-lg" type="submit">Create Task</button>
+                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
 
     <!-- =====================================================
-         RECENT ACTIVITY PANELS
+         CLIENT TABLE
+    ====================================================== -->
+    <section class="table-shell">
+        <div class="table-toolbar">
+            <div>
+                <h3 class="section-title">Client Portfolio</h3>
+                <p class="section-subtitle">Current account records and relationship visibility.</p>
+            </div>
+
+            <div class="action-row">
+                <a class="btn btn-primary btn-sm" href="#client-registration">New Client</a>
+                <a class="btn btn-secondary btn-sm" href="#communication-center">Log Contact</a>
+            </div>
+        </div>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Country</th>
+                        <th>Language</th>
+                        <th>Industry</th>
+                        <th>Tax ID</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Region</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if crm_clients %}
+                        {% for client in crm_clients %}
+                        <tr>
+                            <td>
+                                {% if client.name is defined and client.name %}
+                                    {{ client.name }}
+                                {% elif client.company_name is defined and client.company_name %}
+                                    {{ client.company_name }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if client.company_name is defined and client.company_name %}
+                                    {{ client.company_name }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if client.contact_person is defined and client.contact_person %}
+                                    {{ client.contact_person }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set status_value = client.status if client.status is defined and client.status else 'N/A' %}
+                                {% if status_value in ['Active', 'Closed-Won', 'Current'] %}
+                                    <span class="badge badge-success">{{ status_value }}</span>
+                                {% elif status_value in ['Lead', 'Prospect', 'Pending'] %}
+                                    <span class="badge badge-info">{{ status_value }}</span>
+                                {% elif status_value in ['Inactive', 'Closed-Lost', 'On Hold', 'Closed'] %}
+                                    <span class="badge badge-warning">{{ status_value }}</span>
+                                {% else %}
+                                    <span class="badge badge-neutral">{{ status_value }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ client.country if client.country is defined and client.country else 'N/A' }}</td>
+                            <td>{{ client.language if client.language is defined and client.language else 'N/A' }}</td>
+                            <td>{{ client.industry if client.industry is defined and client.industry else 'N/A' }}</td>
+                            <td>
+                                {% if (client.tax_id_type is defined and client.tax_id_type) or (client.tax_id_number is defined and client.tax_id_number) %}
+                                    {{ client.tax_id_type if client.tax_id_type is defined and client.tax_id_type else 'ID' }}:
+                                    {{ client.tax_id_number if client.tax_id_number is defined and client.tax_id_number else 'N/A' }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>{{ client.email if client.email is defined and client.email else 'N/A' }}</td>
+                            <td>{{ client.phone if client.phone is defined and client.phone else 'N/A' }}</td>
+                            <td>{{ client.region if client.region is defined and client.region else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="11">No clients registered yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         COMMUNICATION LOGS + PROJECTS
     ====================================================== -->
     <section class="two-column-grid">
 
         <div class="table-shell">
             <div class="table-toolbar">
                 <div>
-                    <h3 class="section-title">Recent Clients & Projects</h3>
-                    <p class="section-subtitle">Quick executive visibility into commercial movement.</p>
+                    <h3 class="section-title">Recent Communication Logs</h3>
+                    <p class="section-subtitle">Client conversations, updates, and follow-up history.</p>
                 </div>
                 <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="{{ url_for('crm') }}">Open CRM</a>
+                    <a class="btn btn-primary btn-sm" href="#communication-center">New Log</a>
                 </div>
             </div>
 
@@ -603,166 +776,139 @@
                 <table class="data-table">
                     <thead>
                         <tr>
+                            <th>Client</th>
                             <th>Type</th>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Reference</th>
+                            <th>Summary</th>
+                            <th>Follow-Up</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if safe_recent_clients %}
-                            {% for client in safe_recent_clients %}
+                        {% if crm_logs %}
+                            {% for log in crm_logs %}
                             <tr>
-                                <td>Client</td>
                                 <td>
-                                    {% if client.name is defined and client.name %}
-                                        {{ client.name }}
-                                    {% elif client.company_name is defined and client.company_name %}
-                                        {{ client.company_name }}
+                                    {% if log.client_name is defined and log.client_name %}
+                                        {{ log.client_name }}
+                                    {% elif log.client is defined and log.client %}
+                                        {% if log.client.name is defined and log.client.name %}
+                                            {{ log.client.name }}
+                                        {% elif log.client.company_name is defined and log.client.company_name %}
+                                            {{ log.client.company_name }}
+                                        {% else %}
+                                            Client #{{ log.client_id if log.client_id is defined else 'N/A' }}
+                                        {% endif %}
                                     {% else %}
-                                        Client #{{ client.id if client.id is defined else 'N/A' }}
+                                        N/A
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% set c_status = client.status if client.status is defined and client.status else 'N/A' %}
-                                    <span class="badge badge-info">{{ c_status }}</span>
+                                    {% if log.communication_type is defined and log.communication_type %}
+                                        {{ log.communication_type }}
+                                    {% elif log.channel is defined and log.channel %}
+                                        {{ log.channel }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
                                 </td>
-                                <td>{{ client.industry if client.industry is defined and client.industry else 'CRM Portfolio' }}</td>
+                                <td>
+                                    {% if log.summary is defined and log.summary %}
+                                        {{ log.summary }}
+                                    {% elif log.subject is defined and log.subject %}
+                                        {{ log.subject }}
+                                    {% elif log.message is defined and log.message %}
+                                        {{ log.message }}
+                                    {% else %}
+                                        No summary
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.follow_up_date if log.follow_up_date is defined and log.follow_up_date else 'N/A' }}</td>
                             </tr>
                             {% endfor %}
-                        {% endif %}
-
-                        {% if safe_recent_projects %}
-                            {% for project in safe_recent_projects %}
+                        {% else %}
                             <tr>
-                                <td>Project</td>
+                                <td colspan="4">No communication logs available.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-shell">
+            <div class="table-toolbar">
+                <div>
+                    <h3 class="section-title">Active Projects</h3>
+                    <p class="section-subtitle">Client service delivery and account development visibility.</p>
+                </div>
+                <div class="action-row">
+                    <a class="btn btn-secondary btn-sm" href="#project-center">New Project</a>
+                </div>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Project</th>
+                            <th>Status</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if crm_projects %}
+                            {% for project in crm_projects %}
+                            <tr>
+                                <td>
+                                    {% if project.client_name is defined and project.client_name %}
+                                        {{ project.client_name }}
+                                    {% elif project.client is defined and project.client %}
+                                        {% if project.client.name is defined and project.client.name %}
+                                            {{ project.client.name }}
+                                        {% elif project.client.company_name is defined and project.client.company_name %}
+                                            {{ project.client.company_name }}
+                                        {% else %}
+                                            Client #{{ project.client_id if project.client_id is defined else 'N/A' }}
+                                        {% endif %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if project.project_name is defined and project.project_name %}
                                         {{ project.project_name }}
                                     {% elif project.name is defined and project.name %}
                                         {{ project.name }}
                                     {% else %}
-                                        Project #{{ project.id if project.id is defined else 'N/A' }}
+                                        N/A
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% set project_status = project.status if project.status is defined and project.status else 'N/A' %}
-                                    <span class="badge badge-info">{{ project_status }}</span>
+                                    {% set p_status = project.status if project.status is defined and project.status else 'N/A' %}
+                                    {% if p_status in ['Completed'] %}
+                                        <span class="badge badge-success">{{ p_status }}</span>
+                                    {% elif p_status in ['In Progress', 'Pending Approval', 'Planned', 'Proposal', 'Active'] %}
+                                        <span class="badge badge-info">{{ p_status }}</span>
+                                    {% elif p_status in ['On Hold'] %}
+                                        <span class="badge badge-warning">{{ p_status }}</span>
+                                    {% else %}
+                                        <span class="badge badge-neutral">{{ p_status }}</span>
+                                    {% endif %}
                                 </td>
                                 <td>
-                                    {% if project.budget is defined and project.budget is not none %}
+                                    {% if project.estimated_value is defined and project.estimated_value %}
+                                        {{ project.estimated_value }}
+                                    {% elif project.budget is defined and project.budget %}
                                         {{ project.budget }}
                                     {% else %}
-                                        Active Project
+                                        N/A
                                     {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
-                        {% endif %}
-
-                        {% if not safe_recent_clients and not safe_recent_projects %}
+                        {% else %}
                             <tr>
-                                <td colspan="4">No recent client or project records available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Recent Talent, Finance & Safety</h3>
-                    <p class="section-subtitle">Cross-module activity signals for executive review.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-secondary btn-sm" href="{{ url_for('reports_analytics') }}">Open Reports</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Name / Record</th>
-                            <th>Status</th>
-                            <th>Reference</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_recent_candidates %}
-                            {% for candidate in safe_recent_candidates %}
-                            <tr>
-                                <td>Candidate</td>
-                                <td>
-                                    {% if candidate.full_name is defined and candidate.full_name %}
-                                        {{ candidate.full_name }}
-                                    {% elif candidate.first_name is defined and candidate.last_name is defined %}
-                                        {{ candidate.first_name }} {{ candidate.last_name }}
-                                    {% else %}
-                                        Candidate #{{ candidate.id if candidate.id is defined else 'N/A' }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set cand_status = candidate.stage if candidate.stage is defined and candidate.stage else (candidate.status if candidate.status is defined and candidate.status else 'N/A') %}
-                                    <span class="badge badge-info">{{ cand_status }}</span>
-                                </td>
-                                <td>{{ candidate.position_applied if candidate.position_applied is defined and candidate.position_applied else 'ATS Pipeline' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if safe_recent_invoices %}
-                            {% for invoice in safe_recent_invoices %}
-                            <tr>
-                                <td>Invoice</td>
-                                <td>
-                                    {% if invoice.invoice_number is defined and invoice.invoice_number %}
-                                        {{ invoice.invoice_number }}
-                                    {% else %}
-                                        Invoice #{{ invoice.id if invoice.id is defined else 'N/A' }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set inv_status = invoice.status if invoice.status is defined and invoice.status else 'Pending' %}
-                                    <span class="badge badge-info">{{ inv_status }}</span>
-                                </td>
-                                <td>
-                                    {% if invoice.amount is defined and invoice.amount is not none %}
-                                        {{ invoice.amount }}
-                                    {% else %}
-                                        Finance Record
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if safe_recent_incidents %}
-                            {% for incident in safe_recent_incidents %}
-                            <tr>
-                                <td>Incident</td>
-                                <td>
-                                    {% if incident.incident_type is defined and incident.incident_type %}
-                                        {{ incident.incident_type }}
-                                    {% else %}
-                                        Incident #{{ incident.id if incident.id is defined else 'N/A' }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set inc_status = incident.status if incident.status is defined and incident.status else 'Open' %}
-                                    <span class="badge badge-warning">{{ inc_status }}</span>
-                                </td>
-                                <td>{{ incident.incident_date if incident.incident_date is defined and incident.incident_date else 'SG-SST Record' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if not safe_recent_candidates and not safe_recent_invoices and not safe_recent_incidents %}
-                            <tr>
-                                <td colspan="4">No recent cross-module records available.</td>
+                                <td colspan="4">No projects available.</td>
                             </tr>
                         {% endif %}
                     </tbody>
@@ -772,30 +918,172 @@
     </section>
 
     <!-- =====================================================
-         QUICK ACTION BAR
+         TASKS + REVENUE PANELS
     ====================================================== -->
-    <section class="panel-card">
-        <div class="module-header">
-            <h1>Quick Actions</h1>
-            <p>
-                Fast operational access designed with strong 3D controls and organized workflows.
-            </p>
+    <section class="two-column-grid">
+
+        <div class="table-shell">
+            <div class="table-toolbar">
+                <div>
+                    <h3 class="section-title">Task &amp; Follow-Up Queue</h3>
+                    <p class="section-subtitle">Commercial actions, service follow-ups, and internal commitments.</p>
+                </div>
+                <div class="action-row">
+                    <a class="btn btn-primary btn-sm" href="#task-center">New Task</a>
+                </div>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Client</th>
+                            <th>Priority</th>
+                            <th>Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if crm_tasks %}
+                            {% for task in crm_tasks %}
+                            <tr>
+                                <td>{{ task.title if task.title is defined and task.title else 'N/A' }}</td>
+                                <td>
+                                    {% if task.client_name is defined and task.client_name %}
+                                        {{ task.client_name }}
+                                    {% elif task.client_id is defined and task.client_id %}
+                                        Client #{{ task.client_id }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set priority = task.priority if task.priority is defined and task.priority else 'Normal' %}
+                                    {% if priority in ['Urgent', 'High', 'Critical'] %}
+                                        <span class="badge badge-danger">{{ priority }}</span>
+                                    {% elif priority in ['Normal'] %}
+                                        <span class="badge badge-info">{{ priority }}</span>
+                                    {% else %}
+                                        <span class="badge badge-neutral">{{ priority }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ task.due_date if task.due_date is defined and task.due_date else 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No tasks recorded.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="dashboard-grid mt-4">
-            <a class="btn btn-primary btn-lg" href="{{ url_for('crm') }}">Register Client Activity</a>
-            <a class="btn btn-secondary btn-lg" href="{{ url_for('hris') }}">Review Workforce Records</a>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('ats') }}">Review Candidate Pipeline</a>
-            <a class="btn btn-secondary btn-lg" href="{{ url_for('orientation') }}">Check Orientation</a>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('finance') }}">Review Financial Control</a>
-            <a class="btn btn-secondary btn-lg" href="{{ url_for('marketing') }}">Open Campaign Center</a>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('sgsst') }}">Compliance Monitoring</a>
-            <a class="btn btn-secondary btn-lg" href="{{ url_for('inventory') }}">Open Inventory Control</a>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('calendar_page') }}">Open Calendar</a>
-            <a class="btn btn-secondary btn-lg" href="{{ url_for('reports_analytics') }}">Review Reports & Analytics</a>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('xiomy_page') }}">Open XIOMY Office</a>
+        <div class="panel-card" id="revenue-panels">
+            <h3>Revenue &amp; Opportunity Direction</h3>
+            <p class="section-subtitle">
+                Commercial positioning and account expansion guidance for the CRM engine.
+            </p>
+
+            <div class="activity-feed mt-4">
+                <div class="activity-item">
+                    <div class="activity-item-title">Cross-Service Growth</div>
+                    <div class="activity-item-meta">
+                        Identify which CRM accounts can expand into HRIS, ATS, SG-SST,
+                        Finance, training, or marketing services.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Pipeline Discipline</div>
+                    <div class="activity-item-meta">
+                        Keep leads active, structure follow-up timing, and avoid losing
+                        opportunities because of undocumented client conversations.
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-item-title">Future XIOMY CRM Intelligence</div>
+                    <div class="activity-item-meta">
+                        XIOMY will eventually evaluate customer tendencies, service demand,
+                        communication patterns, and account priority signals for owner use.
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-grid mt-4">
+                <div class="summary-card">
+                    <h3>Clients in Portfolio</h3>
+                    <p>{{ crm_clients|length }}</p>
+                    <span class="summary-note">Relationship base under management</span>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Pipeline Value</h3>
+                    <p>
+                        {% if crm_stats_safe.pipeline_value is defined %}
+                            {{ crm_stats_safe.pipeline_value }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </p>
+                    <span class="summary-note">Tracked opportunity and project value</span>
+                </div>
+            </div>
+
+            <div class="action-row mt-4">
+                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
+                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            </div>
         </div>
     </section>
 
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const crmTaxIdOptionsByCountry = {{ crm_tax_id_options_by_country|tojson }};
+    const crmDefaultTaxIdOptions = {{ crm_default_tax_id_options|tojson }};
+
+    function updateClientTaxIdOptions() {
+        const countrySelect = document.getElementById("client_country");
+        const taxTypeSelect = document.getElementById("client_tax_id_type");
+        const taxNumberInput = document.getElementById("client_tax_id_number");
+
+        if (!countrySelect || !taxTypeSelect) {
+            return;
+        }
+
+        const selectedCountry = countrySelect.value;
+        const options = crmTaxIdOptionsByCountry[selectedCountry] || crmDefaultTaxIdOptions;
+        const previousValue = taxTypeSelect.value;
+
+        taxTypeSelect.innerHTML = "";
+
+        options.forEach((optionValue) => {
+            const option = document.createElement("option");
+            option.value = optionValue;
+            option.textContent = optionValue;
+            if (optionValue === previousValue) {
+                option.selected = true;
+            }
+            taxTypeSelect.appendChild(option);
+        });
+
+        if (![...taxTypeSelect.options].some((option) => option.selected)) {
+            taxTypeSelect.selectedIndex = 0;
+        }
+
+        if (taxNumberInput) {
+            const selectedType = taxTypeSelect.value || "Tax ID";
+            taxNumberInput.placeholder = "Enter " + selectedType;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateClientTaxIdOptions();
+    });
+</script>
 {% endblock %}
