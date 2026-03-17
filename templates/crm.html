@@ -17,6 +17,12 @@
     {% set crm_logs = communication_logs if communication_logs is defined and communication_logs else (communications if communications is defined and communications else []) %}
     {% set crm_stats_safe = crm_stats if crm_stats is defined and crm_stats else {} %}
 
+    {% set crm_country_options = country_options if country_options is defined and country_options else ['Colombia', 'United States', 'Other'] %}
+    {% set crm_language_options = language_options if language_options is defined and language_options else ['Spanish', 'English', 'Other'] %}
+    {% set crm_industry_options = industry_options if industry_options is defined and industry_options else ['Accounting', 'Healthcare', 'Technology', 'Tattoo Supplies', 'Other'] %}
+    {% set crm_default_tax_id_options = default_tax_id_options if default_tax_id_options is defined and default_tax_id_options else ['RUT', 'NIT', 'EIN', 'TIN', 'VAT', 'OTHER'] %}
+    {% set crm_tax_id_options_by_country = tax_id_options_by_country if tax_id_options_by_country is defined and tax_id_options_by_country else {} %}
+
     <section class="hero-panel">
         <div class="hero-left">
             <span class="hero-badge">Client Relationship &amp; Revenue Engine</span>
@@ -49,14 +55,15 @@
             <div class="hero-status-card">
                 <h3 class="section-title">CRM Executive Snapshot</h3>
                 <p class="section-subtitle">
-                    Organized visibility into customer management and commercial activity.
+                    Organized visibility into customer management, market segmentation,
+                    tax identity tracking, and commercial activity.
                 </p>
 
                 <ul class="status-list mt-3">
                     <li><strong>Portfolio Control:</strong> active client relationship tracking</li>
                     <li><strong>Commercial Focus:</strong> opportunities and service demand visibility</li>
                     <li><strong>Operational Linkage:</strong> tasks, projects, and finance coordination</li>
-                    <li><strong>Intelligence Direction:</strong> future XIOMY client tendency analysis</li>
+                    <li><strong>Global Ready:</strong> country, language, and tax identity support</li>
                 </ul>
 
                 <div class="action-row mt-4">
@@ -133,8 +140,8 @@
         <div class="panel-card">
             <h3>CRM Executive Purpose</h3>
             <p class="section-subtitle">
-                This module is designed to function as the client relationship and revenue
-                management core of the platform.
+                This module functions as the client relationship and revenue management
+                core of the platform, now upgraded for multi-country client classification.
             </p>
 
             <div class="activity-feed mt-4">
@@ -142,7 +149,7 @@
                     <div class="activity-item-title">Client Lifecycle Management</div>
                     <div class="activity-item-meta">
                         Maintain 360-degree client visibility, account history, service alignment,
-                        organization details, priorities, and growth opportunities.
+                        organization details, market location, and growth opportunities.
                     </div>
                 </div>
 
@@ -172,10 +179,10 @@
 
             <ul class="clean-list mt-4">
                 <li>Protect client retention through timely communication follow-up.</li>
-                <li>Identify accounts with expansion potential across HR, SG-SST, Finance, ATS, and Marketing services.</li>
+                <li>Segment accounts by country, language, and industry for better service targeting.</li>
+                <li>Capture legal or tax identity references such as RUT, NIT, EIN, TIN, or VAT.</li>
                 <li>Link communication notes to tasks so nothing is lost.</li>
                 <li>Keep projects aligned with revenue and delivery progress.</li>
-                <li>Prepare the CRM foundation for XIOMY trend analysis and future scoring.</li>
             </ul>
 
             <div class="action-row mt-4">
@@ -194,8 +201,8 @@
             <div class="module-header">
                 <h1>Client Registration Center</h1>
                 <p>
-                    Create or expand your client portfolio with structured account information
-                    and clear commercial context.
+                    Create or expand your client portfolio with structured account information,
+                    country, language, industry classification, and flexible tax identity capture.
                 </p>
             </div>
 
@@ -206,7 +213,7 @@
             </div>
 
             <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_client') }}" class="crm-form">
+                <form method="POST" action="{{ url_for('create_client') }}" class="crm-form" autocomplete="off">
                     <div class="form-grid two-col">
                         <div>
                             <label for="client_name">Client / Organization Name</label>
@@ -235,7 +242,44 @@
 
                         <div>
                             <label for="client_industry">Industry</label>
-                            <input type="text" id="client_industry" name="industry" placeholder="Industry or business sector">
+                            <input list="industry-list" id="client_industry" name="industry" placeholder="Select or type any industry">
+                            <datalist id="industry-list">
+                                {% for industry in crm_industry_options %}
+                                    <option value="{{ industry }}"></option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+
+                        <div>
+                            <label for="client_country">Country</label>
+                            <select id="client_country" name="country" onchange="updateClientTaxIdOptions()">
+                                {% for option in crm_country_options %}
+                                    <option value="{{ option }}" {% if option == 'Colombia' %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_language">Language</label>
+                            <select id="client_language" name="language">
+                                {% for option in crm_language_options %}
+                                    <option value="{{ option }}" {% if option == 'Spanish' %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_tax_id_type">Tax ID Type</label>
+                            <select id="client_tax_id_type" name="tax_id_type">
+                                {% for option in crm_default_tax_id_options %}
+                                    <option value="{{ option }}" {% if option == 'RUT' %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="client_tax_id_number">Tax ID Number</label>
+                            <input type="text" id="client_tax_id_number" name="tax_id_number" placeholder="Enter RUT / NIT / EIN / TIN / VAT">
                         </div>
 
                         <div>
@@ -250,6 +294,23 @@
                         </div>
 
                         <div>
+                            <label for="client_region">Region / State / Department</label>
+                            <input type="text" id="client_region" name="region" placeholder="Region, department, state, or city area">
+                        </div>
+
+                        <div>
+                            <label for="client_risk_level">Risk Level</label>
+                            <select id="client_risk_level" name="risk_level">
+                                <option value="">Select risk level</option>
+                                <option value="Low">Low</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div class="full-width">
                             <label for="client_address">Address / Location</label>
                             <input type="text" id="client_address" name="address" placeholder="Client business location">
                         </div>
@@ -607,11 +668,16 @@
                 <thead>
                     <tr>
                         <th>Client</th>
+                        <th>Company</th>
                         <th>Contact</th>
                         <th>Status</th>
+                        <th>Country</th>
+                        <th>Language</th>
                         <th>Industry</th>
+                        <th>Tax ID</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Region</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -622,6 +688,13 @@
                                 {% if client.name is defined and client.name %}
                                     {{ client.name }}
                                 {% elif client.company_name is defined and client.company_name %}
+                                    {{ client.company_name }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if client.company_name is defined and client.company_name %}
                                     {{ client.company_name }}
                                 {% else %}
                                     N/A
@@ -646,14 +719,25 @@
                                     <span class="badge badge-neutral">{{ status_value }}</span>
                                 {% endif %}
                             </td>
+                            <td>{{ client.country if client.country is defined and client.country else 'N/A' }}</td>
+                            <td>{{ client.language if client.language is defined and client.language else 'N/A' }}</td>
                             <td>{{ client.industry if client.industry is defined and client.industry else 'N/A' }}</td>
+                            <td>
+                                {% if (client.tax_id_type is defined and client.tax_id_type) or (client.tax_id_number is defined and client.tax_id_number) %}
+                                    {{ client.tax_id_type if client.tax_id_type is defined and client.tax_id_type else 'ID' }}:
+                                    {{ client.tax_id_number if client.tax_id_number is defined and client.tax_id_number else 'N/A' }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
                             <td>{{ client.email if client.email is defined and client.email else 'N/A' }}</td>
                             <td>{{ client.phone if client.phone is defined and client.phone else 'N/A' }}</td>
+                            <td>{{ client.region if client.region is defined and client.region else 'N/A' }}</td>
                         </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="6">No clients registered yet.</td>
+                            <td colspan="11">No clients registered yet.</td>
                         </tr>
                     {% endif %}
                 </tbody>
@@ -692,7 +776,9 @@
                             {% for log in crm_logs %}
                             <tr>
                                 <td>
-                                    {% if log.client is defined and log.client %}
+                                    {% if log.client_name is defined and log.client_name %}
+                                        {{ log.client_name }}
+                                    {% elif log.client is defined and log.client %}
                                         {% if log.client.name is defined and log.client.name %}
                                             {{ log.client.name }}
                                         {% elif log.client.company_name is defined and log.client.company_name %}
@@ -700,8 +786,6 @@
                                         {% else %}
                                             Client #{{ log.client_id if log.client_id is defined else 'N/A' }}
                                         {% endif %}
-                                    {% elif log.client_name is defined and log.client_name %}
-                                        {{ log.client_name }}
                                     {% else %}
                                         N/A
                                     {% endif %}
@@ -765,7 +849,9 @@
                             {% for project in crm_projects %}
                             <tr>
                                 <td>
-                                    {% if project.client is defined and project.client %}
+                                    {% if project.client_name is defined and project.client_name %}
+                                        {{ project.client_name }}
+                                    {% elif project.client is defined and project.client %}
                                         {% if project.client.name is defined and project.client.name %}
                                             {{ project.client.name }}
                                         {% elif project.client.company_name is defined and project.client.company_name %}
@@ -773,8 +859,6 @@
                                         {% else %}
                                             Client #{{ project.client_id if project.client_id is defined else 'N/A' }}
                                         {% endif %}
-                                    {% elif project.client_name is defined and project.client_name %}
-                                        {{ project.client_name }}
                                     {% else %}
                                         N/A
                                     {% endif %}
@@ -792,7 +876,7 @@
                                     {% set p_status = project.status if project.status is defined and project.status else 'N/A' %}
                                     {% if p_status in ['Completed'] %}
                                         <span class="badge badge-success">{{ p_status }}</span>
-                                    {% elif p_status in ['In Progress', 'Pending Approval', 'Planned'] %}
+                                    {% elif p_status in ['In Progress', 'Pending Approval', 'Planned', 'Proposal', 'Active'] %}
                                         <span class="badge badge-info">{{ p_status }}</span>
                                     {% elif p_status in ['On Hold'] %}
                                         <span class="badge badge-warning">{{ p_status }}</span>
@@ -854,23 +938,17 @@
                             <tr>
                                 <td>{{ task.title if task.title is defined and task.title else 'N/A' }}</td>
                                 <td>
-                                    {% if task.client is defined and task.client %}
-                                        {% if task.client.name is defined and task.client.name %}
-                                            {{ task.client.name }}
-                                        {% elif task.client.company_name is defined and task.client.company_name %}
-                                            {{ task.client.company_name }}
-                                        {% else %}
-                                            Client #{{ task.client_id if task.client_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif task.client_name is defined and task.client_name %}
+                                    {% if task.client_name is defined and task.client_name %}
                                         {{ task.client_name }}
+                                    {% elif task.client_id is defined and task.client_id %}
+                                        Client #{{ task.client_id }}
                                     {% else %}
                                         N/A
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% set priority = task.priority if task.priority is defined and task.priority else 'Normal' %}
-                                    {% if priority in ['Urgent', 'High'] %}
+                                    {% if priority in ['Urgent', 'High', 'Critical'] %}
                                         <span class="badge badge-danger">{{ priority }}</span>
                                     {% elif priority in ['Normal'] %}
                                         <span class="badge badge-info">{{ priority }}</span>
@@ -951,4 +1029,50 @@
     </section>
 
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const crmTaxIdOptionsByCountry = {{ crm_tax_id_options_by_country|tojson }};
+    const crmDefaultTaxIdOptions = {{ crm_default_tax_id_options|tojson }};
+
+    function updateClientTaxIdOptions() {
+        const countrySelect = document.getElementById("client_country");
+        const taxTypeSelect = document.getElementById("client_tax_id_type");
+        const taxNumberInput = document.getElementById("client_tax_id_number");
+
+        if (!countrySelect || !taxTypeSelect) {
+            return;
+        }
+
+        const selectedCountry = countrySelect.value;
+        const options = crmTaxIdOptionsByCountry[selectedCountry] || crmDefaultTaxIdOptions;
+        const previousValue = taxTypeSelect.value;
+
+        taxTypeSelect.innerHTML = "";
+
+        options.forEach((optionValue) => {
+            const option = document.createElement("option");
+            option.value = optionValue;
+            option.textContent = optionValue;
+            if (optionValue === previousValue) {
+                option.selected = true;
+            }
+            taxTypeSelect.appendChild(option);
+        });
+
+        if (![...taxTypeSelect.options].some((option) => option.selected)) {
+            taxTypeSelect.selectedIndex = 0;
+        }
+
+        if (taxNumberInput) {
+            const selectedType = taxTypeSelect.value || "Tax ID";
+            taxNumberInput.placeholder = "Enter " + selectedType;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateClientTaxIdOptions();
+    });
+</script>
 {% endblock %}
