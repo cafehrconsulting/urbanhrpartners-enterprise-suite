@@ -2,4 +2,16 @@ Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 SQLAlchemy==2.0.36
 gunicorn==23.0.0
+<<<<<<< HEAD
 psycopg2-binary==2.9.10
+=======
+pandas==2.2.3
+twilio==9.3.7
+nylas==6.8.0
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1
+Flask
+Flask-SQLAlchemy
+gunicorn
+psycopg2-binary
+>>>>>>> 21bf6d2bd6f76b189e35f0a9ff5dc2f3ce45f12a
