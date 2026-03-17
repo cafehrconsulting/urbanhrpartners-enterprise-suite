@@ -27,29 +27,22 @@ class Client(db.Model):
     __tablename__ = "clients"
 
     id = db.Column(db.Integer, primary_key=True)
-
     name = db.Column(db.String(200), nullable=False)
     company_name = db.Column(db.String(200))
     contact_person = db.Column(db.String(200))
-
     email = db.Column(db.String(200))
     phone = db.Column(db.String(100))
     address = db.Column(db.String(300))
-
     industry = db.Column(db.String(200))
     country = db.Column(db.String(120), default="Colombia")
     language = db.Column(db.String(100), default="Spanish")
     region = db.Column(db.String(120))
-
     tax_id_type = db.Column(db.String(50))
     tax_id_number = db.Column(db.String(100))
-
     status = db.Column(db.String(100), default="Prospect")
     risk_level = db.Column(db.String(50))
-
     needs = db.Column(db.Text)
     notes = db.Column(db.Text)
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     communication_logs = db.relationship("CommunicationLog", backref="client", lazy=True)
