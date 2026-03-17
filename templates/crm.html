@@ -8,8 +8,6 @@
 
     <!-- =====================================================
          SAFE RENDER VARIABLES
-         Keeps page stable even if app.py sends slightly different
-         names or some collections are empty.
     ====================================================== -->
     {% set crm_clients = clients if clients is defined and clients else [] %}
     {% set crm_projects = projects if projects is defined and projects else [] %}
@@ -17,12 +15,31 @@
     {% set crm_logs = communication_logs if communication_logs is defined and communication_logs else (communications if communications is defined and communications else []) %}
     {% set crm_stats_safe = crm_stats if crm_stats is defined and crm_stats else {} %}
 
-    {% set crm_country_options = country_options if country_options is defined and country_options else ['Colombia', 'United States', 'Other'] %}
-    {% set crm_language_options = language_options if language_options is defined and language_options else ['Spanish', 'English', 'Other'] %}
-    {% set crm_industry_options = industry_options if industry_options is defined and industry_options else ['Accounting', 'Healthcare', 'Technology', 'Tattoo Supplies', 'Other'] %}
+    {% set crm_country_options = country_options if country_options is defined and country_options else ['Colombia', 'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil', 'Chile', 'Peru', 'Spain', 'United Kingdom', 'Germany', 'France', 'Italy', 'Portugal', 'Other'] %}
+    {% set crm_language_options = language_options if language_options is defined and language_options else ['Spanish', 'English', 'Portuguese', 'French', 'German', 'Italian', 'Dutch', 'Other'] %}
+    {% set crm_industry_options = industry_options if industry_options is defined and industry_options else ['Accounting', 'Advertising', 'Agriculture', 'Architecture', 'Artificial Intelligence', 'Automotive', 'Banking', 'Biotechnology', 'Business Consulting', 'Construction', 'Cybersecurity', 'Education', 'Energy', 'Engineering', 'Entertainment', 'Fashion', 'Finance', 'Financial Services', 'Food and Beverage', 'Government', 'Healthcare', 'Hospitality', 'Human Resources', 'Import / Export', 'Insurance', 'Legal Services', 'Logistics', 'Manufacturing', 'Marketing', 'Medical Devices', 'Mining', 'Nonprofit', 'Oil and Gas', 'Pharmaceutical', 'Real Estate', 'Recruiting', 'Retail', 'SaaS', 'Security Services', 'Software Development', 'Sports', 'Staffing', 'Technology', 'Telecommunications', 'Textiles', 'Transportation', 'Travel', 'Veterinary', 'Warehousing', 'Wholesale', 'Tattoo Supplies', 'Other'] %}
     {% set crm_default_tax_id_options = default_tax_id_options if default_tax_id_options is defined and default_tax_id_options else ['RUT', 'NIT', 'EIN', 'TIN', 'VAT', 'OTHER'] %}
-    {% set crm_tax_id_options_by_country = tax_id_options_by_country if tax_id_options_by_country is defined and tax_id_options_by_country else {} %}
+    {% set crm_tax_id_options_by_country = tax_id_options_by_country if tax_id_options_by_country is defined and tax_id_options_by_country else {
+        'Colombia': ['RUT', 'NIT', 'CEDULA', 'PASSPORT', 'OTHER'],
+        'United States': ['EIN', 'TIN', 'SSN', 'ITIN', 'OTHER'],
+        'Canada': ['BN', 'GST/HST', 'OTHER'],
+        'Mexico': ['RFC', 'CURP', 'OTHER'],
+        'Brazil': ['CNPJ', 'CPF', 'OTHER'],
+        'Argentina': ['CUIT', 'CUIL', 'OTHER'],
+        'Chile': ['RUT', 'OTHER'],
+        'Peru': ['RUC', 'DNI', 'OTHER'],
+        'Spain': ['NIF', 'CIF', 'NIE', 'OTHER'],
+        'United Kingdom': ['UTR', 'VAT', 'COMPANY NUMBER', 'OTHER'],
+        'Germany': ['VAT', 'STEUERNUMMER', 'OTHER'],
+        'France': ['SIREN', 'SIRET', 'VAT', 'OTHER'],
+        'Italy': ['PIVA', 'CF', 'OTHER'],
+        'Portugal': ['NIF', 'OTHER'],
+        'Other': ['VAT', 'TIN', 'TAX ID', 'OTHER']
+    } %}
 
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
     <section class="hero-panel">
         <div class="hero-left">
             <span class="hero-badge">Client Relationship &amp; Revenue Engine</span>
@@ -30,7 +47,7 @@
             <p class="hero-text">
                 Premium client relationship management environment for pipeline visibility,
                 account development, communication tracking, task creation, project linkage,
-                revenue awareness, and executive client intelligence.
+                revenue awareness, global market segmentation, and executive client intelligence.
             </p>
 
             <div class="hero-actions">
@@ -55,15 +72,15 @@
             <div class="hero-status-card">
                 <h3 class="section-title">CRM Executive Snapshot</h3>
                 <p class="section-subtitle">
-                    Organized visibility into customer management, market segmentation,
-                    tax identity tracking, and commercial activity.
+                    Organized visibility into customer management, commercial movement,
+                    and multi-country client structure.
                 </p>
 
                 <ul class="status-list mt-3">
                     <li><strong>Portfolio Control:</strong> active client relationship tracking</li>
                     <li><strong>Commercial Focus:</strong> opportunities and service demand visibility</li>
                     <li><strong>Operational Linkage:</strong> tasks, projects, and finance coordination</li>
-                    <li><strong>Global Ready:</strong> country, language, and tax identity support</li>
+                    <li><strong>Global Readiness:</strong> country, language, industry, and tax identity structure</li>
                 </ul>
 
                 <div class="action-row mt-4">
@@ -141,7 +158,7 @@
             <h3>CRM Executive Purpose</h3>
             <p class="section-subtitle">
                 This module functions as the client relationship and revenue management
-                core of the platform, now upgraded for multi-country client classification.
+                core of the platform.
             </p>
 
             <div class="activity-feed mt-4">
@@ -149,7 +166,7 @@
                     <div class="activity-item-title">Client Lifecycle Management</div>
                     <div class="activity-item-meta">
                         Maintain 360-degree client visibility, account history, service alignment,
-                        organization details, market location, and growth opportunities.
+                        organization details, market location, priorities, and growth opportunities.
                     </div>
                 </div>
 
@@ -179,8 +196,8 @@
 
             <ul class="clean-list mt-4">
                 <li>Protect client retention through timely communication follow-up.</li>
-                <li>Segment accounts by country, language, and industry for better service targeting.</li>
-                <li>Capture legal or tax identity references such as RUT, NIT, EIN, TIN, or VAT.</li>
+                <li>Identify accounts with expansion potential across HR, SG-SST, Finance, ATS, and Marketing services.</li>
+                <li>Capture country, language, and tax identity to support better segmentation.</li>
                 <li>Link communication notes to tasks so nothing is lost.</li>
                 <li>Keep projects aligned with revenue and delivery progress.</li>
             </ul>
@@ -202,7 +219,7 @@
                 <h1>Client Registration Center</h1>
                 <p>
                     Create or expand your client portfolio with structured account information,
-                    country, language, industry classification, and flexible tax identity capture.
+                    commercial context, country, language, industry classification, and flexible tax identity capture.
                 </p>
             </div>
 
@@ -242,7 +259,7 @@
 
                         <div>
                             <label for="client_industry">Industry</label>
-                            <input list="industry-list" id="client_industry" name="industry" placeholder="Select or type any industry">
+                            <input list="industry-list" type="text" id="client_industry" name="industry" placeholder="Industry or business sector">
                             <datalist id="industry-list">
                                 {% for industry in crm_industry_options %}
                                     <option value="{{ industry }}"></option>
@@ -279,7 +296,7 @@
 
                         <div>
                             <label for="client_tax_id_number">Tax ID Number</label>
-                            <input type="text" id="client_tax_id_number" name="tax_id_number" placeholder="Enter RUT / NIT / EIN / TIN / VAT">
+                            <input type="text" id="client_tax_id_number" name="tax_id_number" placeholder="RUT / NIT / EIN / TIN / VAT">
                         </div>
 
                         <div>
@@ -294,8 +311,13 @@
                         </div>
 
                         <div>
-                            <label for="client_region">Region / State / Department</label>
-                            <input type="text" id="client_region" name="region" placeholder="Region, department, state, or city area">
+                            <label for="client_address">Address / Location</label>
+                            <input type="text" id="client_address" name="address" placeholder="Client business location">
+                        </div>
+
+                        <div>
+                            <label for="client_region">Region / Department / State</label>
+                            <input type="text" id="client_region" name="region" placeholder="Department, state, region, or city sector">
                         </div>
 
                         <div>
@@ -308,11 +330,6 @@
                                 <option value="High">High</option>
                                 <option value="Critical">Critical</option>
                             </select>
-                        </div>
-
-                        <div class="full-width">
-                            <label for="client_address">Address / Location</label>
-                            <input type="text" id="client_address" name="address" placeholder="Client business location">
                         </div>
                     </div>
 
@@ -613,6 +630,7 @@
                                 <option value="Normal" selected>Normal</option>
                                 <option value="High">High</option>
                                 <option value="Urgent">Urgent</option>
+                                <option value="Critical">Critical</option>
                             </select>
                         </div>
 
@@ -693,20 +711,8 @@
                                     N/A
                                 {% endif %}
                             </td>
-                            <td>
-                                {% if client.company_name is defined and client.company_name %}
-                                    {{ client.company_name }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if client.contact_person is defined and client.contact_person %}
-                                    {{ client.contact_person }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
+                            <td>{{ client.company_name if client.company_name is defined and client.company_name else 'N/A' }}</td>
+                            <td>{{ client.contact_person if client.contact_person is defined and client.contact_person else 'N/A' }}</td>
                             <td>
                                 {% set status_value = client.status if client.status is defined and client.status else 'N/A' %}
                                 {% if status_value in ['Active', 'Closed-Won', 'Current'] %}
@@ -851,14 +857,6 @@
                                 <td>
                                     {% if project.client_name is defined and project.client_name %}
                                         {{ project.client_name }}
-                                    {% elif project.client is defined and project.client %}
-                                        {% if project.client.name is defined and project.client.name %}
-                                            {{ project.client.name }}
-                                        {% elif project.client.company_name is defined and project.client.company_name %}
-                                            {{ project.client.company_name }}
-                                        {% else %}
-                                            Client #{{ project.client_id if project.client_id is defined else 'N/A' }}
-                                        {% endif %}
                                     {% else %}
                                         N/A
                                     {% endif %}
@@ -937,15 +935,7 @@
                             {% for task in crm_tasks %}
                             <tr>
                                 <td>{{ task.title if task.title is defined and task.title else 'N/A' }}</td>
-                                <td>
-                                    {% if task.client_name is defined and task.client_name %}
-                                        {{ task.client_name }}
-                                    {% elif task.client_id is defined and task.client_id %}
-                                        Client #{{ task.client_id }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
+                                <td>{{ task.client_name if task.client_name is defined and task.client_name else 'N/A' }}</td>
                                 <td>
                                     {% set priority = task.priority if task.priority is defined and task.priority else 'Normal' %}
                                     {% if priority in ['Urgent', 'High', 'Critical'] %}
