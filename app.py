@@ -22,7 +22,7 @@ from flask import (
 )
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import TemplateNotFound
-from sqlalchemy import inspect
+from sqlalchemy import inspect, text
 from werkzeug.utils import secure_filename
 
 # =========================================================
@@ -57,6 +57,174 @@ ALLOWED_EXTENSIONS = {
     "txt",
     "csv",
 }
+
+# =========================================================
+# CRM GLOBAL OPTION SETS
+# =========================================================
+
+COUNTRY_OPTIONS = [
+    "Colombia",
+    "United States",
+    "Canada",
+    "Mexico",
+    "Argentina",
+    "Brazil",
+    "Chile",
+    "Peru",
+    "Ecuador",
+    "Panama",
+    "Costa Rica",
+    "Dominican Republic",
+    "Spain",
+    "United Kingdom",
+    "Germany",
+    "France",
+    "Italy",
+    "Netherlands",
+    "Portugal",
+    "Other",
+]
+
+LANGUAGE_OPTIONS = [
+    "Spanish",
+    "English",
+    "Portuguese",
+    "French",
+    "German",
+    "Italian",
+    "Dutch",
+    "Mandarin Chinese",
+    "Cantonese",
+    "Japanese",
+    "Korean",
+    "Hebrew",
+    "Other",
+]
+
+COMMON_INDUSTRIES = [
+    "Accounting",
+    "Advertising",
+    "Aerospace",
+    "Agriculture",
+    "Architecture",
+    "Artificial Intelligence",
+    "Automotive",
+    "Aviation",
+    "Banking",
+    "Biotechnology",
+    "Business Consulting",
+    "Cannabis",
+    "Chemical",
+    "Civil Engineering",
+    "Cleaning Services",
+    "Cloud Computing",
+    "Construction",
+    "Consumer Goods",
+    "Cybersecurity",
+    "Data Analytics",
+    "Defense",
+    "Dental",
+    "Distribution",
+    "E-commerce",
+    "Education",
+    "Electrical",
+    "Electronics",
+    "Energy",
+    "Engineering",
+    "Entertainment",
+    "Environmental Services",
+    "Event Management",
+    "Fashion",
+    "Finance",
+    "Financial Services",
+    "Food and Beverage",
+    "Forestry",
+    "Freight",
+    "Gaming",
+    "Government",
+    "Graphic Design",
+    "Health and Safety",
+    "Healthcare",
+    "Home Services",
+    "Hospitality",
+    "Human Resources",
+    "Import / Export",
+    "Industrial Services",
+    "Information Technology",
+    "Insurance",
+    "Interior Design",
+    "International Trade",
+    "Investment",
+    "Janitorial",
+    "Legal Services",
+    "Logistics",
+    "Luxury Goods",
+    "Machinery",
+    "Manufacturing",
+    "Marine",
+    "Marketing",
+    "Media",
+    "Medical Devices",
+    "Mining",
+    "Mobile Technology",
+    "Nonprofit",
+    "Oil and Gas",
+    "Packaging",
+    "Payroll Services",
+    "Pet Services",
+    "Pharmaceutical",
+    "Printing",
+    "Private Security",
+    "Public Relations",
+    "Real Estate",
+    "Recruiting",
+    "Renewable Energy",
+    "Research",
+    "Restaurant",
+    "Retail",
+    "Risk Management",
+    "SaaS",
+    "Safety Training",
+    "Security Services",
+    "Software Development",
+    "Sports",
+    "Staffing",
+    "Supply Chain",
+    "Tattoo Supplies",
+    "Tax Services",
+    "Telecommunications",
+    "Textiles",
+    "Tourism",
+    "Training and Development",
+    "Transportation",
+    "Travel",
+    "Veterinary",
+    "Warehousing",
+    "Wholesale",
+    "Wellness",
+    "Other",
+]
+
+TAX_ID_OPTIONS_BY_COUNTRY = {
+    "Colombia": ["RUT", "NIT", "CEDULA", "PASSPORT", "OTHER"],
+    "United States": ["EIN", "TIN", "SSN", "ITIN", "OTHER"],
+    "Canada": ["BN", "GST/HST", "OTHER"],
+    "Mexico": ["RFC", "CURP", "OTHER"],
+    "Brazil": ["CNPJ", "CPF", "OTHER"],
+    "Argentina": ["CUIT", "CUIL", "OTHER"],
+    "Chile": ["RUT", "OTHER"],
+    "Peru": ["RUC", "DNI", "OTHER"],
+    "Spain": ["NIF", "CIF", "NIE", "OTHER"],
+    "United Kingdom": ["UTR", "VAT", "COMPANY NUMBER", "OTHER"],
+    "Germany": ["VAT", "STEUERNUMMER", "OTHER"],
+    "France": ["SIREN", "SIRET", "VAT", "OTHER"],
+    "Italy": ["PIVA", "CF", "OTHER"],
+    "Netherlands": ["VAT", "KVK", "OTHER"],
+    "Portugal": ["NIF", "OTHER"],
+    "Other": ["VAT", "TIN", "TAX ID", "OTHER"],
+}
+
+DEFAULT_TAX_ID_OPTIONS = ["RUT", "NIT", "EIN", "TIN", "VAT", "OTHER"]
 
 # =========================================================
 # OPTIONAL XIOMY IMPORT
@@ -297,6 +465,12 @@ def commit_with_feedback(success_message: str, error_prefix: str, redirect_endpo
     return redirect(url_for(redirect_endpoint))
 
 
+def get_tax_id_options_for_country(country: str | None) -> list[str]:
+    if not country:
+        return DEFAULT_TAX_ID_OPTIONS
+    return TAX_ID_OPTIONS_BY_COUNTRY.get(country, DEFAULT_TAX_ID_OPTIONS)
+
+
 # =========================================================
 # XIOMY SAFE HELPERS
 # =========================================================
@@ -356,6 +530,59 @@ def model_columns(model: Any) -> set[str]:
 def filter_payload_by_columns(model: Any, payload: dict) -> dict:
     cols = model_columns(model)
     return {k: v for k, v in payload.items() if k in cols}
+
+
+# =========================================================
+# STARTUP SCHEMA SAFETY
+# =========================================================
+
+def ensure_clients_table_extensions():
+    """
+    Ensures legacy deployed databases receive the new CRM columns required
+    by the updated client intake form.
+    """
+    try:
+        inspector = inspect(db.engine)
+        table_names = inspector.get_table_names()
+        if "clients" not in table_names:
+            return
+
+        existing_columns = {col["name"] for col in inspector.get_columns("clients")}
+        statements = []
+
+        if "industry" not in existing_columns:
+            statements.append("ALTER TABLE clients ADD COLUMN industry VARCHAR(200)")
+        if "country" not in existing_columns:
+            statements.append("ALTER TABLE clients ADD COLUMN country VARCHAR(100)")
+        if "language" not in existing_columns:
+            statements.append("ALTER TABLE clients ADD COLUMN language VARCHAR(100)")
+        if "tax_id_type" not in existing_columns:
+            statements.append("ALTER TABLE clients ADD COLUMN tax_id_type VARCHAR(50)")
+        if "tax_id_number" not in existing_columns:
+            statements.append("ALTER TABLE clients ADD COLUMN tax_id_number VARCHAR(100)")
+
+        for stmt in statements:
+            db.session.execute(text(stmt))
+
+        if statements:
+            db.session.commit()
+
+        # Backfill safe defaults
+        try:
+            if "country" in {col["name"] for col in inspect(db.engine).get_columns("clients")}:
+                db.session.execute(
+                    text("UPDATE clients SET country = 'Colombia' WHERE country IS NULL OR country = ''")
+                )
+            if "language" in {col["name"] for col in inspect(db.engine).get_columns("clients")}:
+                db.session.execute(
+                    text("UPDATE clients SET language = 'Spanish' WHERE language IS NULL OR language = ''")
+                )
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+    except Exception:
+        db.session.rollback()
 
 
 # =========================================================
@@ -436,6 +663,11 @@ def build_crm_context():
         "projects": projects,
         "tasks": tasks,
         "crm_stats": crm_stats,
+        "country_options": COUNTRY_OPTIONS,
+        "language_options": LANGUAGE_OPTIONS,
+        "industry_options": COMMON_INDUSTRIES,
+        "default_tax_id_options": DEFAULT_TAX_ID_OPTIONS,
+        "tax_id_options_by_country": TAX_ID_OPTIONS_BY_COUNTRY,
     }
 
 
@@ -691,6 +923,11 @@ def create_app():
         except Exception:
             pass
 
+        try:
+            ensure_clients_table_extensions()
+        except Exception:
+            db.session.rollback()
+
         if User is not None:
             try:
                 admin_email = os.getenv("ADMIN_EMAIL", "admin@urbanhrconsulting.cloud")
@@ -777,6 +1014,15 @@ def create_app():
             flash("Client model is not available in models.py.", "danger")
             return redirect(url_for("crm"))
 
+        country = (request.form.get("country") or "Colombia").strip()
+        language = (request.form.get("language") or "Spanish").strip()
+        submitted_tax_id_type = (request.form.get("tax_id_type") or "").strip()
+        tax_id_options = get_tax_id_options_for_country(country)
+
+        tax_id_type = submitted_tax_id_type if submitted_tax_id_type in tax_id_options else (
+            tax_id_options[0] if tax_id_options else "OTHER"
+        )
+
         raw_payload = {
             "name": (request.form.get("name") or "").strip(),
             "company_name": (request.form.get("company_name") or "").strip(),
@@ -784,8 +1030,14 @@ def create_app():
             "email": (request.form.get("email") or "").strip(),
             "phone": (request.form.get("phone") or "").strip(),
             "industry": (request.form.get("industry") or "").strip(),
+            "country": country,
+            "language": language,
+            "tax_id_type": tax_id_type,
+            "tax_id_number": (request.form.get("tax_id_number") or "").strip(),
             "status": (request.form.get("status") or "Prospect").strip(),
             "address": (request.form.get("address") or "").strip(),
+            "region": (request.form.get("region") or "").strip(),
+            "risk_level": (request.form.get("risk_level") or "").strip(),
             "needs": (request.form.get("needs") or "").strip(),
             "notes": (request.form.get("notes") or "").strip(),
         }
@@ -1439,6 +1691,10 @@ def create_app():
                     matches(getattr(client, "name", ""))
                     or matches(getattr(client, "company_name", ""))
                     or matches(getattr(client, "email", ""))
+                    or matches(getattr(client, "industry", ""))
+                    or matches(getattr(client, "country", ""))
+                    or matches(getattr(client, "language", ""))
+                    or matches(getattr(client, "tax_id_number", ""))
                 ):
                     results["clients"].append(client)
         except Exception:
