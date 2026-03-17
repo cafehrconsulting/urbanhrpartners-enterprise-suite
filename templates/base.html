@@ -1,354 +1,585 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- ========================================================= -->
-    <!-- URBANHRPARTNERS ENTERPRISE SUITE -->
-    <!-- templates/base.html -->
-    <!-- Full enterprise base layout -->
-    <!-- ========================================================= -->
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
-    <!-- ========================================================= -->
-    <!-- PAGE META -->
-    <!-- ========================================================= -->
-    <meta name="description" content="UrbanHRPartners Enterprise Suite - Integrated CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, Reports, Analytics, and XIOMY Executive AI.">
-    <meta name="author" content="UrbanHRPartners">
-    <meta name="theme-color" content="#0b1f3a">
+db = SQLAlchemy()
 
-    <!-- ========================================================= -->
-    <!-- TITLE -->
-    <!-- ========================================================= -->
-    <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
+# =========================================================
+# USERS
+# =========================================================
 
-    <!-- ========================================================= -->
-    <!-- FONTS -->
-    <!-- ========================================================= -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-    >
+class User(db.Model):
+    __tablename__ = "users"
 
-    <!-- ========================================================= -->
-    <!-- GLOBAL STYLES -->
-    <!-- ========================================================= -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    email = db.Column(db.String(200), unique=True, nullable=False)
+    password = db.Column(db.String(255))
+    password_hash = db.Column(db.String(255))
+    role = db.Column(db.String(100), default="user")
+    is_admin = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    <!-- ========================================================= -->
-    <!-- PAGE-SPECIFIC HEAD CONTENT -->
-    <!-- ========================================================= -->
-    {% block extra_head %}{% endblock %}
-</head>
-<body class="uhp-body">
 
-    <!-- ========================================================= -->
-    <!-- ENTERPRISE SHELL -->
-    <!-- ========================================================= -->
-    <div class="enterprise-shell">
+# =========================================================
+# CLIENTS / CRM
+# =========================================================
 
-        <!-- ===================================================== -->
-        <!-- SIDEBAR -->
-        <!-- ===================================================== -->
-        <aside class="enterprise-sidebar" id="enterpriseSidebar">
+class Client(db.Model):
+    __tablename__ = "clients"
 
-            <!-- ================================================= -->
-            <!-- BRAND / LOGO -->
-            <!-- ================================================= -->
-            <div class="sidebar-brand-section">
-                <a href="{{ url_for('dashboard') }}" class="brand-link" aria-label="Go to Dashboard">
-                    <div class="brand-logo-panel">
-                        <img
-                            src="{{ url_for('static', filename='img/logo.jpg') }}"
-                            alt="UrbanHRPartners Logo"
-                            class="brand-logo"
-                            onerror="this.style.display='none';"
-                        >
-                    </div>
+    id = db.Column(db.Integer, primary_key=True)
 
-                    <div class="brand-text-panel">
-                        <div class="brand-overline">Enterprise Platform</div>
-                        <h1 class="brand-name">UrbanHRPartners</h1>
-                        <div class="brand-subname">Consulting Integrated System</div>
-                        <div class="brand-divider"></div>
-                    </div>
-                </a>
-            </div>
+    # Core identity
+    name = db.Column(db.String(200), nullable=False)
+    company_name = db.Column(db.String(200))
+    contact_person = db.Column(db.String(200))
 
-            <!-- ================================================= -->
-            <!-- EXECUTIVE STATUS -->
-            <!-- ================================================= -->
-            <section class="sidebar-executive-card">
-                <div class="executive-card-top">
-                    <span class="executive-status-dot"></span>
-                    <span class="executive-status-label">Executive System Online</span>
-                </div>
+    # Contact
+    email = db.Column(db.String(200))
+    phone = db.Column(db.String(100))
+    address = db.Column(db.String(300))
 
-                <div class="executive-card-body">
-                    <h3 class="executive-name">Juan Carlos Urbano</h3>
-                    <p class="executive-title">PhD(c) Business Psychology, MA-MHRM</p>
-                    <div class="executive-role-badges">
-                        <span class="executive-badge">Founder</span>
-                        <span class="executive-badge">Strategic Lead</span>
-                        <span class="executive-badge">Enterprise Owner</span>
-                    </div>
-                </div>
-            </section>
+    # Global business intelligence
+    industry = db.Column(db.String(200))
+    country = db.Column(db.String(120), default="Colombia")
+    language = db.Column(db.String(100), default="Spanish")
+    region = db.Column(db.String(120))
 
-            <!-- ================================================= -->
-            <!-- NAVIGATION -->
-            <!-- ================================================= -->
-            <nav class="sidebar-navigation" aria-label="Primary navigation">
+    # Tax / legal identification
+    tax_id_type = db.Column(db.String(50))
+    tax_id_number = db.Column(db.String(100))
 
-                <a
-                    href="{{ url_for('dashboard') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'dashboard' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Dashboard</span>
-                </a>
+    # Business status
+    status = db.Column(db.String(100), default="Prospect")
+    risk_level = db.Column(db.String(50))
 
-                <a
-                    href="{{ url_for('crm') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'crm' or request.endpoint == 'create_client' or request.endpoint == 'create_communication_log' or request.endpoint == 'create_project' or request.endpoint == 'create_task' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">CRM</span>
-                </a>
+    # Strategic notes
+    needs = db.Column(db.Text)
+    notes = db.Column(db.Text)
 
-                <a
-                    href="{{ url_for('hris') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'hris' or request.endpoint == 'create_employee_profile' or request.endpoint == 'create_point_log' or request.endpoint == 'create_disciplinary_record' or request.endpoint == 'create_sop_requirement' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">HRIS</span>
-                </a>
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-                <a
-                    href="{{ url_for('ats') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'ats' or request.endpoint == 'create_candidate' or request.endpoint == 'promote_candidate_to_orientation' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">ATS</span>
-                </a>
+    communication_logs = db.relationship("CommunicationLog", backref="client", lazy=True)
+    projects = db.relationship("Project", backref="client", lazy=True)
+    sgsst_documents = db.relationship("SGSSTDocument", backref="client", lazy=True)
 
-                <a
-                    href="{{ url_for('orientation') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'orientation' or request.endpoint == 'create_orientation_checklist' or request.endpoint == 'create_policy_acknowledgement' or request.endpoint == 'create_asset_assignment' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Orientation</span>
-                </a>
 
-                <a
-                    href="{{ url_for('sgsst') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'sgsst' or request.endpoint == 'create_risk_item' or request.endpoint == 'create_inspection_record' or request.endpoint == 'create_incident_record' or request.endpoint == 'create_training_record' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">SG-SST</span>
-                </a>
+class CommunicationLog(db.Model):
+    __tablename__ = "communication_logs"
 
-                <a
-                    href="{{ url_for('inventory') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'inventory' or request.endpoint == 'create_inventory_item' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Inventory</span>
-                </a>
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"))
+    client_name = db.Column(db.String(200))
+    channel = db.Column(db.String(100))
+    communication_type = db.Column(db.String(100))
+    direction = db.Column(db.String(100))
+    contact_person = db.Column(db.String(200))
+    subject = db.Column(db.String(255))
+    summary = db.Column(db.Text)
+    message = db.Column(db.Text)
+    action_items = db.Column(db.Text)
+    action_required = db.Column(db.Boolean, default=False)
+    log_date = db.Column(db.Date)
+    follow_up_date = db.Column(db.Date)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-                <a
-                    href="{{ url_for('finance') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'finance' or request.endpoint == 'create_invoice' or request.endpoint == 'create_ledger_entry' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Finance</span>
-                </a>
 
-                <a
-                    href="{{ url_for('marketing') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'marketing' or request.endpoint == 'create_marketing_campaign' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Marketing</span>
-                </a>
+class Project(db.Model):
+    __tablename__ = "projects"
 
-                <a
-                    href="{{ url_for('calendar_page') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'calendar_page' or request.endpoint == 'create_calendar_event' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Calendar</span>
-                </a>
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"))
+    client_name = db.Column(db.String(200))
+    name = db.Column(db.String(200))
+    project_name = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    status = db.Column(db.String(100), default="Planned")
+    estimated_value = db.Column(db.Float, default=0)
+    budget = db.Column(db.Float, default=0)
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-                <a
-                    href="{{ url_for('reports_analytics') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'reports_analytics' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Reports &amp; Analytics</span>
-                </a>
 
-                <a
-                    href="{{ url_for('xiomy_page') }}"
-                    class="nav-3d-btn nav-3d-btn-xiomy {% if request.endpoint == 'xiomy_page' or request.endpoint == 'xiomy' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">✦</span>
-                    <span class="nav-3d-text">XIOMY Executive AI</span>
-                </a>
-            </nav>
+class Task(db.Model):
+    __tablename__ = "tasks"
 
-            <!-- ================================================= -->
-            <!-- SIDEBAR FOOTER PANEL -->
-            <!-- ================================================= -->
-            <div class="sidebar-bottom-panel">
-                <div class="sidebar-mission-card">
-                    <div class="sidebar-card-title">Enterprise Command</div>
-                    <p class="sidebar-card-text">
-                        Unified environment for strategic client management, workforce systems,
-                        recruiting operations, occupational safety, finance intelligence,
-                        marketing growth, reporting, and AI executive assistance.
-                    </p>
-                </div>
-            </div>
-        </aside>
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    notes = db.Column(db.Text)
+    status = db.Column(db.String(100), default="Open")
+    priority = db.Column(db.String(50), default="Normal")
+    due_date = db.Column(db.Date)
+    client_id = db.Column(db.Integer)
+    client_name = db.Column(db.String(200))
+    project_id = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-        <!-- ===================================================== -->
-        <!-- MAIN WRAPPER -->
-        <!-- ===================================================== -->
-        <div class="enterprise-main-wrapper">
 
-            <!-- ================================================= -->
-            <!-- TOPBAR -->
-            <!-- ================================================= -->
-            <header class="enterprise-topbar">
+# =========================================================
+# INVENTORY
+# =========================================================
 
-                <div class="topbar-left-zone">
-                    <button
-                        type="button"
-                        class="topbar-menu-toggle"
-                        aria-label="Toggle sidebar"
-                        onclick="document.getElementById('enterpriseSidebar').classList.toggle('open');"
-                    >
-                        ☰
-                    </button>
+class InventoryItem(db.Model):
+    __tablename__ = "inventory_items"
 
-                    <div class="topbar-title-block">
-                        <div class="topbar-overline">UrbanHRPartners Enterprise Navigation</div>
-                        <h2 class="topbar-main-title">
-                            {% block page_heading %}UrbanHRPartners Enterprise Suite{% endblock %}
-                        </h2>
-                    </div>
-                </div>
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    sku = db.Column(db.String(100))
+    barcode = db.Column(db.String(200))
+    category = db.Column(db.String(150))
+    quantity = db.Column(db.Float, default=0)
+    unit_cost = db.Column(db.Float, default=0)
+    reorder_level = db.Column(db.Float, default=0)
+    location = db.Column(db.String(200))
+    status = db.Column(db.String(100), default="Available")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-                <div class="topbar-right-zone">
-                    <form action="{{ url_for('search') }}" method="GET" class="topbar-search-form">
-                        <input
-                            type="text"
-                            name="q"
-                            class="topbar-search-input"
-                            placeholder="Search clients, employees, candidates, projects, campaigns..."
-                            value="{{ request.args.get('q', '') }}"
-                        >
-                        <button type="submit" class="topbar-search-btn">Search</button>
-                    </form>
-                </div>
-            </header>
 
-            <!-- ================================================= -->
-            <!-- QUICK STATUS STRIP -->
-            <!-- ================================================= -->
-            <section class="enterprise-status-strip">
-                <div class="status-chip">
-                    <span class="chip-label">System</span>
-                    <span class="chip-value">Online</span>
-                </div>
+# =========================================================
+# FINANCE
+# =========================================================
 
-                <div class="status-chip">
-                    <span class="chip-label">Platform</span>
-                    <span class="chip-value">Enterprise</span>
-                </div>
+class Finance(db.Model):
+    __tablename__ = "finance"
 
-                <div class="status-chip">
-                    <span class="chip-label">AI</span>
-                    <span class="chip-value">XIOMY Ready</span>
-                </div>
+    id = db.Column(db.Integer, primary_key=True)
+    entry_type = db.Column(db.String(100))
+    category = db.Column(db.String(150))
+    description = db.Column(db.String(500))
+    amount = db.Column(db.Float, default=0)
+    entry_date = db.Column(db.Date)
+    status = db.Column(db.String(100), default="Posted")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-                <div class="status-chip">
-                    <span class="chip-label">Date</span>
-                    <span class="chip-value">{{ today if today is defined else '' }}</span>
-                </div>
-            </section>
 
-            <!-- ================================================= -->
-            <!-- FLASH MESSAGES -->
-            <!-- ================================================= -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <section class="flash-message-section">
-                        {% for category, message in messages %}
-                            <div class="flash-message-card flash-{{ category }}">
-                                <div class="flash-message-label">
-                                    {{ category|upper }}
-                                </div>
-                                <div class="flash-message-text">
-                                    {{ message }}
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </section>
-                {% endif %}
-            {% endwith %}
+class Invoice(db.Model):
+    __tablename__ = "invoices"
 
-            <!-- ================================================= -->
-            <!-- PAGE CONTENT -->
-            <!-- ================================================= -->
-            <main class="enterprise-content-area">
-                {% block content %}{% endblock %}
-            </main>
+    id = db.Column(db.Integer, primary_key=True)
+    invoice_number = db.Column(db.String(100))
+    client_name = db.Column(db.String(200))
+    project_name = db.Column(db.String(200))
+    amount = db.Column(db.Float, default=0)
+    due_date = db.Column(db.Date)
+    status = db.Column(db.String(100), default="Pending")
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-            <!-- ================================================= -->
-            <!-- FOOTER -->
-            <!-- ================================================= -->
-            <footer class="enterprise-footer">
-                <div class="enterprise-footer-left">
-                    <div class="footer-brand-line">
-                        <strong>UrbanHRPartners Enterprise Suite</strong>
-                    </div>
-                    <div class="footer-description-line">
-                        Integrated CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, Reports, Analytics, and XIOMY Executive AI.
-                    </div>
-                </div>
 
-                <div class="enterprise-footer-right">
-                    <div class="footer-copy-line">
-                        &copy; {{ current_year if current_year is defined else 2026 }} UrbanHRPartners. All rights reserved.
-                    </div>
-                </div>
-            </footer>
-        </div>
-    </div>
+class Account(db.Model):
+    __tablename__ = "accounts"
 
-    <!-- ========================================================= -->
-    <!-- OPTIONAL GLOBAL SCRIPTS -->
-    <!-- ========================================================= -->
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    account_type = db.Column(db.String(100))
+    balance = db.Column(db.Float, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const flashMessages = document.querySelectorAll(".flash-message-card");
-            flashMessages.forEach((item) => {
-                setTimeout(() => {
-                    item.classList.add("flash-fade-out");
-                }, 5000);
-            });
-        });
-    </script>
 
-    <!-- ========================================================= -->
-    <!-- PAGE-SPECIFIC SCRIPTS -->
-    <!-- ========================================================= -->
-    {% block extra_scripts %}{% endblock %}
-</body>
-</html>
+class LedgerEntry(db.Model):
+    __tablename__ = "ledger_entries"
+
+    id = db.Column(db.Integer, primary_key=True)
+    account = db.Column(db.String(200))
+    description = db.Column(db.String(500))
+    debit = db.Column(db.Float, default=0)
+    credit = db.Column(db.Float, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Budget(db.Model):
+    __tablename__ = "budgets"
+
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(200))
+    allocated_amount = db.Column(db.Float, default=0)
+    spent_amount = db.Column(db.Float, default=0)
+    year = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Vendor(db.Model):
+    __tablename__ = "vendors"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    email = db.Column(db.String(200))
+    phone = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Payable(db.Model):
+    __tablename__ = "payables"
+
+    id = db.Column(db.Integer, primary_key=True)
+    vendor_name = db.Column(db.String(200))
+    amount = db.Column(db.Float, default=0)
+    due_date = db.Column(db.Date)
+    status = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# HRIS
+# =========================================================
+
+class EmployeeProfile(db.Model):
+    __tablename__ = "employee_profiles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.String(100))
+    employee_number = db.Column(db.String(100))
+    first_name = db.Column(db.String(150))
+    last_name = db.Column(db.String(150))
+    full_name = db.Column(db.String(200))
+    name = db.Column(db.String(200))
+    department = db.Column(db.String(150))
+    role = db.Column(db.String(150))
+    position = db.Column(db.String(150))
+    status = db.Column(db.String(100))
+    hire_date = db.Column(db.Date)
+    email = db.Column(db.String(200))
+    phone = db.Column(db.String(100))
+    salary = db.Column(db.Float, default=0)
+    manager = db.Column(db.String(200))
+    location = db.Column(db.String(200))
+    employment_type = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class DisciplinaryRecord(db.Model):
+    __tablename__ = "disciplinary_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer)
+    employee_name = db.Column(db.String(200))
+    violation_type = db.Column(db.String(200))
+    case_type = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    action_taken = db.Column(db.Text)
+    date = db.Column(db.Date)
+    record_date = db.Column(db.Date)
+    status = db.Column(db.String(100), default="Open")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class PointLog(db.Model):
+    __tablename__ = "point_logs"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer)
+    employee_name = db.Column(db.String(200))
+    points = db.Column(db.Integer)
+    reason = db.Column(db.Text)
+    category = db.Column(db.String(100))
+    date = db.Column(db.Date)
+    log_date = db.Column(db.Date)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class SOPRequirement(db.Model):
+    __tablename__ = "sop_requirements"
+
+    id = db.Column(db.Integer, primary_key=True)
+    job_role = db.Column(db.String(200))
+    job_title = db.Column(db.String(200))
+    sop_name = db.Column(db.String(200))
+    title = db.Column(db.String(200))
+    requirement = db.Column(db.Text)
+    description = db.Column(db.Text)
+    required = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# ATS
+# =========================================================
+
+class Candidate(db.Model):
+    __tablename__ = "candidates"
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(150))
+    last_name = db.Column(db.String(150))
+    full_name = db.Column(db.String(200))
+    email = db.Column(db.String(200))
+    phone = db.Column(db.String(100))
+    position_applied = db.Column(db.String(200))
+    stage = db.Column(db.String(100), default="Applied")
+    status = db.Column(db.String(100), default="New")
+    notes = db.Column(db.Text)
+    resume_filename = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# SG-SST
+# =========================================================
+
+class SafetyPolicy(db.Model):
+    __tablename__ = "safety_policies"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    version = db.Column(db.String(50))
+    owner = db.Column(db.String(200))
+    review_date = db.Column(db.Date)
+    statement = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class LegalRequirement(db.Model):
+    __tablename__ = "legal_requirements"
+
+    id = db.Column(db.Integer, primary_key=True)
+    standard = db.Column(db.String(200))
+    reference = db.Column(db.String(200))
+    topic = db.Column(db.String(200))
+    owner = db.Column(db.String(200))
+    status = db.Column(db.String(100))
+    review_date = db.Column(db.Date)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class RiskMatrixItem(db.Model):
+    __tablename__ = "risk_matrix_items"
+
+    id = db.Column(db.Integer, primary_key=True)
+    area = db.Column(db.String(200))
+    hazard = db.Column(db.String(255))
+    risk_level = db.Column(db.String(100), default="Medium")
+    control_measure = db.Column(db.Text)
+    responsible_party = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class InspectionRecord(db.Model):
+    __tablename__ = "inspection_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    inspection_name = db.Column(db.String(255))
+    area = db.Column(db.String(200))
+    inspector = db.Column(db.String(200))
+    inspection_date = db.Column(db.Date)
+    findings = db.Column(db.Text)
+    status = db.Column(db.String(100), default="Open")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class IncidentRecord(db.Model):
+    __tablename__ = "incident_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer)
+    incident_type = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    incident_date = db.Column(db.Date)
+    status = db.Column(db.String(100), default="Open")
+    corrective_action = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class TrainingRecord(db.Model):
+    __tablename__ = "training_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer)
+    title = db.Column(db.String(200))
+    training_name = db.Column(db.String(200))
+    training_type = db.Column(db.String(200))
+    training_date = db.Column(db.Date)
+    facilitator = db.Column(db.String(200))
+    trainer = db.Column(db.String(200))
+    attendance_count = db.Column(db.Integer)
+    status = db.Column(db.String(100))
+    certificate = db.Column(db.String(255))
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Inspection(db.Model):
+    __tablename__ = "inspections"
+
+    id = db.Column(db.Integer, primary_key=True)
+    area = db.Column(db.String(200))
+    inspection_type = db.Column(db.String(100))
+    inspection_date = db.Column(db.Date)
+    status = db.Column(db.String(100))
+    owner = db.Column(db.String(200))
+    due_date = db.Column(db.Date)
+    findings = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class PPERecord(db.Model):
+    __tablename__ = "ppe_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_name = db.Column(db.String(200))
+    ppe_item = db.Column(db.String(200))
+    status = db.Column(db.String(100))
+    assignment_date = db.Column(db.Date)
+    expiration_date = db.Column(db.Date)
+    reference = db.Column(db.String(200))
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class AuditRecord(db.Model):
+    __tablename__ = "audit_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    audit_date = db.Column(db.Date)
+    scope = db.Column(db.String(200))
+    status = db.Column(db.String(100))
+    owner = db.Column(db.String(200))
+    due_date = db.Column(db.Date)
+    findings = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class ImprovementPlan(db.Model):
+    __tablename__ = "improvement_plans"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    owner = db.Column(db.String(200))
+    due_date = db.Column(db.Date)
+    status = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class SGSSTDocument(db.Model):
+    __tablename__ = "sgsst_documents"
+
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"))
+    folder = db.Column(db.String(200))
+    document_name = db.Column(db.String(200))
+    file_path = db.Column(db.String(500))
+    status = db.Column(db.String(50), default="pending")
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# MARKETING
+# =========================================================
+
+class MarketingCampaign(db.Model):
+    __tablename__ = "marketing_campaigns"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    channel = db.Column(db.String(200))
+    audience = db.Column(db.String(255))
+    budget = db.Column(db.Float, default=0)
+    status = db.Column(db.String(100), default="Draft")
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Lead(db.Model):
+    __tablename__ = "leads"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    email = db.Column(db.String(200))
+    source = db.Column(db.String(200))
+    status = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# CALENDAR
+# =========================================================
+
+class CalendarEvent(db.Model):
+    __tablename__ = "calendar_events"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    description = db.Column(db.Text)
+    location = db.Column(db.String(255))
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
+    status = db.Column(db.String(100), default="Scheduled")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Event(db.Model):
+    __tablename__ = "events"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    date = db.Column(db.Date)
+    description = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# ANALYTICS
+# =========================================================
+
+class AnalyticsMetric(db.Model):
+    __tablename__ = "analytics_metrics"
+
+    id = db.Column(db.Integer, primary_key=True)
+    metric_name = db.Column(db.String(200))
+    metric_value = db.Column(db.Float)
+    recorded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# =========================================================
+# ORIENTATION
+# =========================================================
+
+class OrientationChecklist(db.Model):
+    __tablename__ = "orientation_checklist"
+
+    id = db.Column(db.Integer, primary_key=True)
+    candidate_id = db.Column(db.Integer)
+    employee_id = db.Column(db.Integer)
+    employee_name = db.Column(db.String(200))
+    title = db.Column(db.String(255))
+    task = db.Column(db.String(300))
+    description = db.Column(db.Text)
+    status = db.Column(db.String(100), default="Pending")
+    completed = db.Column(db.Boolean, default=False)
+    due_date = db.Column(db.Date)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class AssetAssignment(db.Model):
+    __tablename__ = "asset_assignments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer)
+    employee_name = db.Column(db.String(200))
+    inventory_item_id = db.Column(db.Integer)
+    asset_name = db.Column(db.String(200))
+    asset_barcode = db.Column(db.String(200))
+    assignment_date = db.Column(db.Date)
+    return_due_date = db.Column(db.Date)
+    status = db.Column(db.String(100), default="Assigned")
+    assigned_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class PolicyAcknowledgement(db.Model):
+    __tablename__ = "policy_acknowledgements"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer)
+    employee_name = db.Column(db.String(200))
+    policy_name = db.Column(db.String(200))
+    acknowledged = db.Column(db.Boolean, default=False)
+    acknowledged_date = db.Column(db.Date)
+    acknowledged_at = db.Column(db.DateTime)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
