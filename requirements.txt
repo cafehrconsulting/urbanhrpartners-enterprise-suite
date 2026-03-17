@@ -10,8 +10,11 @@ twilio==9.3.7
 nylas==6.8.0
 psycopg2-binary==2.9.10
 python-dotenv==1.0.1
+<<<<<<< HEAD
 Flask
 Flask-SQLAlchemy
 gunicorn
 psycopg2-binary
 >>>>>>> 21bf6d2bd6f76b189e35f0a9ff5dc2f3ce45f12a
+=======
+>>>>>>> 2887a9c6228a955dd8f0107884357deaa8ed6be3
