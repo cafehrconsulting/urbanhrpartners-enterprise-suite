@@ -6,7 +6,6 @@ db = SQLAlchemy()
 # =========================================================
 # USERS
 # =========================================================
-
 class User(db.Model):
     __tablename__ = "users"
 
@@ -23,7 +22,6 @@ class User(db.Model):
 # =========================================================
 # CLIENTS / CRM
 # =========================================================
-
 class Client(db.Model):
     __tablename__ = "clients"
 
@@ -39,7 +37,7 @@ class Client(db.Model):
     phone = db.Column(db.String(100))
     address = db.Column(db.String(300))
 
-    # Business intelligence
+    # Global business intelligence
     industry = db.Column(db.String(200))
     country = db.Column(db.String(120), default="Colombia")
     language = db.Column(db.String(100), default="Spanish")
@@ -120,7 +118,6 @@ class Task(db.Model):
 # =========================================================
 # INVENTORY
 # =========================================================
-
 class InventoryItem(db.Model):
     __tablename__ = "inventory_items"
 
@@ -140,7 +137,6 @@ class InventoryItem(db.Model):
 # =========================================================
 # FINANCE
 # =========================================================
-
 class Finance(db.Model):
     __tablename__ = "finance"
 
@@ -224,7 +220,6 @@ class Payable(db.Model):
 # =========================================================
 # HRIS
 # =========================================================
-
 class EmployeeProfile(db.Model):
     __tablename__ = "employee_profiles"
 
@@ -296,7 +291,6 @@ class SOPRequirement(db.Model):
 # =========================================================
 # ATS
 # =========================================================
-
 class Candidate(db.Model):
     __tablename__ = "candidates"
 
@@ -317,7 +311,6 @@ class Candidate(db.Model):
 # =========================================================
 # SG-SST
 # =========================================================
-
 class SafetyPolicy(db.Model):
     __tablename__ = "safety_policies"
 
@@ -469,7 +462,6 @@ class SGSSTDocument(db.Model):
 # =========================================================
 # MARKETING
 # =========================================================
-
 class MarketingCampaign(db.Model):
     __tablename__ = "marketing_campaigns"
 
@@ -499,7 +491,6 @@ class Lead(db.Model):
 # =========================================================
 # CALENDAR
 # =========================================================
-
 class CalendarEvent(db.Model):
     __tablename__ = "calendar_events"
 
@@ -526,7 +517,6 @@ class Event(db.Model):
 # =========================================================
 # ANALYTICS
 # =========================================================
-
 class AnalyticsMetric(db.Model):
     __tablename__ = "analytics_metrics"
 
@@ -539,7 +529,6 @@ class AnalyticsMetric(db.Model):
 # =========================================================
 # ORIENTATION
 # =========================================================
-
 class OrientationChecklist(db.Model):
     __tablename__ = "orientation_checklist"
 
