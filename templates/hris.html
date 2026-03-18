@@ -1,843 +1,1516 @@
 {% extends "base.html" %}
 
 {% block title %}HRIS | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}HRIS Workforce Command Center{% endblock %}
+
+{% block topbar_subtitle %}
+Human Resources Information System for workforce structure, employee records, payroll, disciplinary actions, labor actions, and enterprise people operations.
+{% endblock %}
+
+{% block head_extra %}
+<style>
+    .hris-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .hris-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 28px;
+        color: #ffffff;
+        background:
+            radial-gradient(circle at right top, rgba(240, 200, 90, 0.25), transparent 26%),
+            radial-gradient(circle at left bottom, rgba(232, 137, 26, 0.14), transparent 28%),
+            linear-gradient(135deg, #07162a 0%, #0b1f3a 55%, #17345c 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 18px 40px rgba(11, 31, 58, 0.24);
+    }
+
+    .hris-hero::before {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+        top: -80px;
+        right: -80px;
+    }
+
+    .hris-hero-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .hris-hero-title {
+        margin: 0 0 10px 0;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1.12;
+    }
+
+    .hris-hero-text {
+        margin: 0;
+        max-width: 920px;
+        color: #dce7f4;
+        line-height: 1.72;
+        font-size: 1rem;
+    }
+
+    .hris-hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .hris-highlight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .hris-highlight-card {
+        padding: 18px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .hris-highlight-label {
+        color: #d8e4f2;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+    }
+
+    .hris-highlight-value {
+        color: #f6d87b;
+        font-size: 1.7rem;
+        font-weight: 900;
+        line-height: 1.05;
+        margin-bottom: 8px;
+    }
+
+    .hris-highlight-sub {
+        color: #d9e5f4;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+    .hris-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 18px;
+    }
+
+    .hris-stat-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        padding: 20px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid #dce5ef;
+        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
+        min-height: 132px;
+    }
+
+    .hris-stat-card::after {
+        content: "";
+        position: absolute;
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        background: rgba(11,31,58,0.05);
+        top: -24px;
+        right: -24px;
+    }
+
+    .hris-stat-top {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        gap: 12px;
+    }
+
+    .hris-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+        color: #0b1f3a;
+        font-size: 1.06rem;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .hris-stat-label {
+        position: relative;
+        z-index: 1;
+        color: #59697c;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 10px;
+    }
+
+    .hris-stat-value {
+        position: relative;
+        z-index: 1;
+        color: #0b1f3a;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .hris-stat-note {
+        position: relative;
+        z-index: 1;
+        color: #6b7280;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+    .hris-card {
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
+        border-radius: 24px;
+        border: 1px solid #dce5ef;
+        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
+        overflow: hidden;
+    }
+
+    .hris-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 22px 22px 16px;
+        border-bottom: 1px solid #ebf0f6;
+        flex-wrap: wrap;
+    }
+
+    .hris-card-title-wrap h2,
+    .hris-card-title-wrap h3 {
+        margin: 0 0 6px 0;
+        color: #0b1f3a;
+        line-height: 1.2;
+    }
+
+    .hris-card-title-wrap p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 0.92rem;
+        max-width: 940px;
+    }
+
+    .hris-card-body {
+        padding: 22px;
+    }
+
+    .hris-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .hris-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .form-panel {
+        border-radius: 20px;
+        padding: 18px;
+        background: linear-gradient(180deg, #fbfdff 0%, #f1f6fb 100%);
+        border: 1px solid #dde7f2;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .form-panel h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+        margin-bottom: 8px;
+    }
+
+    .form-panel p {
+        margin-top: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    .hris-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .hris-form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .hris-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .hris-field-full {
+        grid-column: 1 / -1;
+    }
+
+    .hris-field label {
+        color: #0b1f3a;
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .hris-field input,
+    .hris-field select,
+    .hris-field textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid #cfd9e5;
+        background: #ffffff;
+        color: #1f2937;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .hris-field input:focus,
+    .hris-field select:focus,
+    .hris-field textarea:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+    }
+
+    .hris-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .hris-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid #dde7f2;
+        background: #ffffff;
+    }
+
+    .hris-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    .hris-table thead {
+        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+    }
+
+    .hris-table th,
+    .hris-table td {
+        padding: 14px 14px;
+        border-bottom: 1px solid #e7edf5;
+        text-align: left;
+        vertical-align: top;
+        font-size: 0.93rem;
+    }
+
+    .hris-table th {
+        color: #0b1f3a;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 900;
+    }
+
+    .hris-table tbody tr:hover td {
+        background: #fbfdff;
+    }
+
+    .hris-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .hris-list-item {
+        border-radius: 18px;
+        border: 1px solid #e5ebf2;
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        box-shadow: 0 8px 18px rgba(11, 31, 58, 0.05);
+        padding: 16px;
+    }
+
+    .hris-list-item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .hris-list-title {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1rem;
+        font-weight: 900;
+        line-height: 1.3;
+    }
+
+    .hris-list-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: #6b7280;
+        font-size: 0.84rem;
+        line-height: 1.45;
+    }
+
+    .hris-list-text {
+        margin: 0;
+        color: #5f6d7e;
+        line-height: 1.65;
+        font-size: 0.92rem;
+    }
+
+    .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef4fb;
+        color: #0b1f3a;
+        border: 1px solid #d8e4f2;
+        font-size: 0.78rem;
+        font-weight: 800;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .tag.gold {
+        background: #fff6df;
+        color: #8f6500;
+        border-color: #f0d18c;
+    }
+
+    .tag.orange {
+        background: #fff2e5;
+        color: #b05e00;
+        border-color: #f1c48d;
+    }
+
+    .tag.green {
+        background: #eefcf5;
+        color: #14673c;
+        border-color: #b9ebca;
+    }
+
+    .tag.red {
+        background: #fff0f0;
+        color: #8d1f1f;
+        border-color: #f2c0c0;
+    }
+
+    .tab-note {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+    .empty-hris {
+        text-align: center;
+        padding: 40px 20px;
+        border-radius: 20px;
+        border: 1px dashed #cfd8e3;
+        background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
+    }
+
+    .empty-hris h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #0b1f3a;
+    }
+
+    .empty-hris p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.65;
+    }
+
+    @media (max-width: 1450px) {
+        .hris-stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .hris-grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 1180px) {
+        .hris-hero-grid,
+        .hris-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .hris-highlight-grid,
+        .hris-stats-grid,
+        .hris-form-grid,
+        .hris-form-grid-3 {
+            grid-template-columns: 1fr;
+        }
+
+        .hris-hero-title {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="page-grid">
+<div class="hris-shell">
 
-    <!-- =====================================================
-         SAFE RENDER VARIABLES
-         Keeps HRIS page stable if app.py provides alternate
-         field names or if some collections are empty.
-    ====================================================== -->
-    {% set safe_employees = employees if employees is defined and employees else [] %}
-    {% set safe_point_logs = point_logs if point_logs is defined and point_logs else [] %}
-    {% set safe_sop_requirements = sop_requirements if sop_requirements is defined and sop_requirements else [] %}
-    {% set safe_disciplinary_records = disciplinary_records if disciplinary_records is defined and disciplinary_records else [] %}
-    {% set safe_workforce_stats = workforce_stats if workforce_stats is defined and workforce_stats else {} %}
-
-    <!-- =====================================================
-         HRIS HERO
-    ====================================================== -->
-    <section class="hero-panel">
-        <div class="hero-left">
-            <span class="hero-badge">Human Resources Information System</span>
-            <h1 class="hero-title">HRIS Workforce Command Center</h1>
-            <p class="hero-text">
-                Premium workforce administration environment for employee records,
-                disciplinary visibility, SOP compliance, point tracking, training history,
-                document readiness, and workforce intelligence across the enterprise suite.
-            </p>
-
-            <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="#employee-registration">Register Employee</a>
-                <a class="btn btn-secondary btn-lg" href="#disciplinary-center">Disciplinary Records</a>
-                <a class="btn btn-ghost btn-lg" href="#sop-center">SOP Tracking</a>
-            </div>
-
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Employees</button>
-                    <button class="tab-button" type="button">Discipline</button>
-                    <button class="tab-button" type="button">SOP</button>
-                    <button class="tab-button" type="button">Points</button>
-                    <button class="tab-button" type="button">Analytics</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero-right">
-            <div class="hero-status-card">
-                <h3 class="section-title">HRIS Executive Snapshot</h3>
-                <p class="section-subtitle">
-                    Organized workforce visibility for operational leadership and HR control.
+    <section class="hris-hero">
+        <div class="hris-hero-grid">
+            <div>
+                <h1 class="hris-hero-title">HRIS Workforce Command Center</h1>
+                <p class="hris-hero-text">
+                    This module centralizes people operations across workforce structure, employee
+                    master profiles, compensation records, disciplinary actions, labor relations,
+                    and payroll administration. It is aligned to your integrated enterprise suite
+                    and built to render safely in deployment.
                 </p>
 
-                <ul class="status-list mt-3">
-                    <li><strong>Workforce Control:</strong> employee master records and role visibility</li>
-                    <li><strong>Compliance Support:</strong> SOP, policy, and accountability structure</li>
-                    <li><strong>Relations Monitoring:</strong> disciplinary and formal action history</li>
-                    <li><strong>Growth Direction:</strong> future XIOMY workforce intelligence and risk alerts</li>
-                </ul>
+                <div class="hris-hero-actions">
+                    <a href="#employee-create" class="btn-3d">Create Employee</a>
+                    <a href="#disciplinary-create" class="btn-ghost">Disciplinary Action</a>
+                    <a href="#payroll-create" class="btn-ghost">Create Payroll</a>
+                </div>
+            </div>
 
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('orientation') }}">Orientation</a>
-                    <a class="btn btn-secondary" href="{{ url_for('ats') }}">ATS</a>
+            <div class="hris-highlight-grid">
+                <div class="hris-highlight-card">
+                    <div class="hris-highlight-label">Employees</div>
+                    <div class="hris-highlight-value">{{ hris_stats.employees if hris_stats and hris_stats.employees is not none else 0 }}</div>
+                    <div class="hris-highlight-sub">Core workforce records currently stored in the employee master system.</div>
+                </div>
+
+                <div class="hris-highlight-card">
+                    <div class="hris-highlight-label">Departments</div>
+                    <div class="hris-highlight-value">{{ hris_stats.departments if hris_stats and hris_stats.departments is not none else 0 }}</div>
+                    <div class="hris-highlight-sub">Organizational structure units available for assignment and reporting.</div>
+                </div>
+
+                <div class="hris-highlight-card">
+                    <div class="hris-highlight-label">Positions</div>
+                    <div class="hris-highlight-value">{{ hris_stats.positions if hris_stats and hris_stats.positions is not none else 0 }}</div>
+                    <div class="hris-highlight-sub">Role definitions, compensation bands, and employment architecture records.</div>
+                </div>
+
+                <div class="hris-highlight-card">
+                    <div class="hris-highlight-label">Labor & Discipline</div>
+                    <div class="hris-highlight-value">
+                        {{ (hris_stats.disciplinary_records if hris_stats and hris_stats.disciplinary_records is not none else 0) + (hris_stats.labor_actions if hris_stats and hris_stats.labor_actions is not none else 0) }}
+                    </div>
+                    <div class="hris-highlight-sub">Formal workforce relations records, employee actions, and case visibility.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         SUMMARY CARDS
-    ====================================================== -->
-    <section class="summary-grid">
-        <div class="summary-card">
-            <h3>Total Employees</h3>
-            <p>
-                {% if safe_workforce_stats.total_employees is defined %}
-                    {{ safe_workforce_stats.total_employees }}
-                {% else %}
-                    {{ safe_employees|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">All workforce profiles registered</span>
+    <section class="hris-stats-grid">
+        <div class="hris-stat-card">
+            <div class="hris-stat-top">
+                <div class="hris-stat-icon">👥</div>
+                <span class="tag">Employees</span>
+            </div>
+            <div class="hris-stat-label">Employee Profiles</div>
+            <div class="hris-stat-value">{{ hris_stats.employees if hris_stats and hris_stats.employees is not none else 0 }}</div>
+            <div class="hris-stat-note">Workforce records currently active inside the HRIS core.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Active Employees</h3>
-            <p>
-                {% if safe_workforce_stats.active_employees is defined %}
-                    {{ safe_workforce_stats.active_employees }}
-                {% else %}
-                    {{ safe_employees|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Currently active workforce population</span>
+        <div class="hris-stat-card">
+            <div class="hris-stat-top">
+                <div class="hris-stat-icon">🏢</div>
+                <span class="tag gold">Structure</span>
+            </div>
+            <div class="hris-stat-label">Departments</div>
+            <div class="hris-stat-value">{{ hris_stats.departments if hris_stats and hris_stats.departments is not none else 0 }}</div>
+            <div class="hris-stat-note">Enterprise organizational units used for reporting and role allocation.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Disciplinary Cases</h3>
-            <p>
-                {% if safe_workforce_stats.disciplinary_cases is defined %}
-                    {{ safe_workforce_stats.disciplinary_cases }}
-                {% else %}
-                    {{ safe_disciplinary_records|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Formal employee relations records</span>
+        <div class="hris-stat-card">
+            <div class="hris-stat-top">
+                <div class="hris-stat-icon">🧭</div>
+                <span class="tag orange">Roles</span>
+            </div>
+            <div class="hris-stat-label">Positions</div>
+            <div class="hris-stat-value">{{ hris_stats.positions if hris_stats and hris_stats.positions is not none else 0 }}</div>
+            <div class="hris-stat-note">Role architecture with salary band, type, and risk visibility.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>SOP Requirements</h3>
-            <p>
-                {% if safe_workforce_stats.sop_requirements is defined %}
-                    {{ safe_workforce_stats.sop_requirements }}
-                {% else %}
-                    {{ safe_sop_requirements|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Role-based procedural controls</span>
+        <div class="hris-stat-card">
+            <div class="hris-stat-top">
+                <div class="hris-stat-icon">⚖️</div>
+                <span class="tag red">Formal</span>
+            </div>
+            <div class="hris-stat-label">Disciplinary Records</div>
+            <div class="hris-stat-value">{{ hris_stats.disciplinary_records if hris_stats and hris_stats.disciplinary_records is not none else 0 }}</div>
+            <div class="hris-stat-note">Formal discipline actions entered against employee records.</div>
+        </div>
+
+        <div class="hris-stat-card">
+            <div class="hris-stat-top">
+                <div class="hris-stat-icon">📑</div>
+                <span class="tag">Labor</span>
+            </div>
+            <div class="hris-stat-label">Labor Actions</div>
+            <div class="hris-stat-value">{{ hris_stats.labor_actions if hris_stats and hris_stats.labor_actions is not none else 0 }}</div>
+            <div class="hris-stat-note">Case records tied to labor relations, investigations, or legal frameworks.</div>
+        </div>
+
+        <div class="hris-stat-card">
+            <div class="hris-stat-top">
+                <div class="hris-stat-icon">💵</div>
+                <span class="tag green">Payroll</span>
+            </div>
+            <div class="hris-stat-label">Payroll Records</div>
+            <div class="hris-stat-value">{{ hris_stats.payroll_records if hris_stats and hris_stats.payroll_records is not none else 0 }}</div>
+            <div class="hris-stat-note">Compensation cycle entries already stored in payroll administration.</div>
         </div>
     </section>
 
-    <!-- =====================================================
-         EXECUTIVE PURPOSE
-    ====================================================== -->
-    <section class="two-column-grid">
-        <div class="panel-card">
-            <h3>HRIS Executive Purpose</h3>
-            <p class="section-subtitle">
-                This module operates as the workforce administration core of the platform.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Employee Master Control</div>
-                    <div class="activity-item-meta">
-                        Maintain identity, role, department, status, and core employment data
-                        in a centralized workforce environment.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Employee Relations &amp; Accountability</div>
-                    <div class="activity-item-meta">
-                        Track disciplinary actions, formal records, compliance issues, and
-                        accountability events with a structured HR lens.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Operational Workforce Readiness</div>
-                    <div class="activity-item-meta">
-                        Connect SOP requirements, training expectations, point logs, and
-                        future analytics to strengthen performance and consistency.
-                    </div>
+    <section class="hris-grid-2">
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Create Department</h2>
+                    <p>
+                        Build the organizational structure that supports assignment, reporting,
+                        HR analytics, and enterprise role architecture.
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <div class="panel-card">
-            <h3>Leadership Priorities</h3>
-            <p class="section-subtitle">
-                Workforce controls that should remain visible to leadership and XIOMY.
-            </p>
-
-            <ul class="clean-list mt-4">
-                <li>Protect data quality for employee records and role assignments.</li>
-                <li>Track disciplinary history carefully and consistently.</li>
-                <li>Ensure SOP obligations align with each role and department.</li>
-                <li>Use point logs to document positive and negative patterns transparently.</li>
-                <li>Prepare the workforce structure for analytics, readiness, and risk review.</li>
-            </ul>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="#analytics-panels">Workforce Analytics</a>
-                <a class="btn btn-secondary" href="#point-log-center">Point Logs</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         EMPLOYEE REGISTRATION + DISCIPLINARY CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="employee-registration">
-            <div class="module-header">
-                <h1>Employee Registration Center</h1>
-                <p>
-                    Create centralized workforce records with operational, organizational,
-                    and employment details.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Core Profile</button>
-                <button class="tab-button" type="button">Role Structure</button>
-                <button class="tab-button" type="button">Employment Status</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_employee_profile') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="employee_first_name">First Name</label>
-                            <input type="text" id="employee_first_name" name="first_name" placeholder="First name" required>
+            <div class="hris-card-body">
+                <form method="POST" action="{{ url_for('create_department') }}">
+                    <div class="hris-form-grid">
+                        <div class="hris-field">
+                            <label for="department_name">Department Name *</label>
+                            <input type="text" id="department_name" name="name" placeholder="Human Resources" required>
                         </div>
 
-                        <div>
-                            <label for="employee_last_name">Last Name</label>
-                            <input type="text" id="employee_last_name" name="last_name" placeholder="Last name" required>
+                        <div class="hris-field">
+                            <label for="department_code">Department Code</label>
+                            <input type="text" id="department_code" name="code" placeholder="HR-001">
                         </div>
 
-                        <div>
-                            <label for="employee_full_name">Full Name</label>
-                            <input type="text" id="employee_full_name" name="full_name" placeholder="Full employee name">
-                        </div>
-
-                        <div>
-                            <label for="employee_id_code">Employee ID</label>
-                            <input type="text" id="employee_id_code" name="employee_id" placeholder="Internal employee ID">
-                        </div>
-
-                        <div>
-                            <label for="employee_email">Email</label>
-                            <input type="email" id="employee_email" name="email" placeholder="employee@company.com">
-                        </div>
-
-                        <div>
-                            <label for="employee_phone">Phone</label>
-                            <input type="text" id="employee_phone" name="phone" placeholder="Phone number">
-                        </div>
-
-                        <div>
-                            <label for="employee_department">Department</label>
-                            <input type="text" id="employee_department" name="department" placeholder="Department or business unit">
-                        </div>
-
-                        <div>
-                            <label for="employee_position">Job Title / Position</label>
-                            <input type="text" id="employee_position" name="position" placeholder="Role or position title">
-                        </div>
-
-                        <div>
-                            <label for="employee_status">Employment Status</label>
-                            <select id="employee_status" name="status">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="On Leave">On Leave</option>
-                                <option value="Suspended">Suspended</option>
-                                <option value="Separated">Separated</option>
+                        <div class="hris-field">
+                            <label for="manager_employee_id">Manager Employee</label>
+                            <select id="manager_employee_id" name="manager_employee_id">
+                                <option value="">Optional manager</option>
+                                {% if employees %}
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="employee_start_date">Hire Date</label>
-                            <input type="date" id="employee_start_date" name="hire_date">
+                        <div class="hris-field">
+                            <label for="department_status">Status</label>
+                            <select id="department_status" name="status">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Planning">Planning</option>
+                            </select>
                         </div>
 
-                        <div>
-                            <label for="employee_salary">Salary</label>
-                            <input type="number" step="0.01" id="employee_salary" name="salary" placeholder="0.00">
-                        </div>
-
-                        <div>
-                            <label for="employee_supervisor">Supervisor / Manager</label>
-                            <input type="text" id="employee_supervisor" name="supervisor" placeholder="Manager or reporting line">
+                        <div class="hris-field hris-field-full">
+                            <label for="department_description">Description</label>
+                            <textarea id="department_description" name="description" placeholder="Purpose, scope, responsibilities, and reporting structure for this department."></textarea>
                         </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="employee_notes">Employment Notes</label>
-                        <textarea id="employee_notes" name="notes" placeholder="Relevant notes about assignment, role expectations, or employment context."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Employee Profile</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Department</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="panel-card" id="disciplinary-center">
-            <div class="module-header">
-                <h1>Disciplinary Record Center</h1>
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Create Position</h2>
+                    <p>
+                        Define jobs, compensation bands, employment type, and risk alignment for the enterprise workforce.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hris-card-body">
+                <form method="POST" action="{{ url_for('create_position') }}">
+                    <div class="hris-form-grid">
+                        <div class="hris-field">
+                            <label for="position_title">Title *</label>
+                            <input type="text" id="position_title" name="title" placeholder="HR Manager" required>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="job_code">Job Code</label>
+                            <input type="text" id="job_code" name="job_code" placeholder="POS-001">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="position_department_id">Department</label>
+                            <select id="position_department_id" name="department_id">
+                                <option value="">Optional department</option>
+                                {% if departments %}
+                                    {% for department in departments %}
+                                        <option value="{{ department.id }}">{{ department.name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="employment_type">Employment Type</label>
+                            <select id="employment_type" name="employment_type">
+                                <option value="Full-Time">Full-Time</option>
+                                <option value="Part-Time">Part-Time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Temporary">Temporary</option>
+                                <option value="Intern">Intern</option>
+                            </select>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="salary_band_min">Salary Band Min</label>
+                            <input type="number" step="0.01" id="salary_band_min" name="salary_band_min" placeholder="0.00">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="salary_band_max">Salary Band Max</label>
+                            <input type="number" step="0.01" id="salary_band_max" name="salary_band_max" placeholder="0.00">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="exempt_status">Exempt Status</label>
+                            <select id="exempt_status" name="exempt_status">
+                                <option value="Non-Exempt">Non-Exempt</option>
+                                <option value="Exempt">Exempt</option>
+                            </select>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="risk_level">Risk Level</label>
+                            <select id="risk_level" name="risk_level">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="position_status">Status</label>
+                            <select id="position_status" name="status">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Draft">Draft</option>
+                            </select>
+                        </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="position_description">Description</label>
+                            <textarea id="position_description" name="description" placeholder="Core duties, scope, compliance responsibilities, SOP context, and performance expectations."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Position</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="hris-card" id="employee-create">
+        <div class="hris-card-header">
+            <div class="hris-card-title-wrap">
+                <h2>Create Employee Profile</h2>
                 <p>
-                    Record formal employee relations actions, accountability history, and
-                    case details with professional structure.
+                    Build complete employee master records with organizational placement, employment details,
+                    emergency data, salary, supervision, and contact structure.
                 </p>
             </div>
+        </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Case Entry</button>
-                <button class="tab-button" type="button">Action Type</button>
-                <button class="tab-button" type="button">Resolution</button>
+        <div class="hris-card-body">
+            <form method="POST" action="{{ url_for('create_employee') }}">
+                <div class="hris-form-grid-3">
+                    <div class="hris-field">
+                        <label for="employee_number">Employee Number</label>
+                        <input type="text" id="employee_number" name="employee_number" placeholder="EMP-001">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="first_name">First Name *</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="Juan" required>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="last_name">Last Name *</label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Urbano" required>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="work_email">Work Email</label>
+                        <input type="email" id="work_email" name="email" placeholder="employee@company.com">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="personal_email">Personal Email</label>
+                        <input type="email" id="personal_email" name="personal_email" placeholder="person@email.com">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="employee_phone">Phone</label>
+                        <input type="text" id="employee_phone" name="phone" placeholder="+57 300 000 0000">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="emergency_contact_name">Emergency Contact Name</label>
+                        <input type="text" id="emergency_contact_name" name="emergency_contact_name" placeholder="Emergency contact full name">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="emergency_contact_phone">Emergency Contact Phone</label>
+                        <input type="text" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="+57 300 000 0000">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="national_id">National ID</label>
+                        <input type="text" id="national_id" name="national_id" placeholder="CC / SSN / ID number">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="tax_id">Tax ID</label>
+                        <input type="text" id="tax_id" name="tax_id" placeholder="Tax identification">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="date_of_birth">Date of Birth</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="hire_date">Hire Date</label>
+                        <input type="date" id="hire_date" name="hire_date">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="termination_date">Termination Date</label>
+                        <input type="date" id="termination_date" name="termination_date">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="employee_employment_type">Employment Type</label>
+                        <select id="employee_employment_type" name="employment_type">
+                            <option value="Full-Time">Full-Time</option>
+                            <option value="Part-Time">Part-Time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Temporary">Temporary</option>
+                            <option value="Intern">Intern</option>
+                        </select>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="work_location">Work Location</label>
+                        <input type="text" id="work_location" name="work_location" placeholder="Remote / Office / Hybrid / Site">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" name="country" placeholder="Colombia" value="Colombia">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" placeholder="Ibagué">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" placeholder="Residential address">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="salary">Salary</label>
+                        <input type="number" step="0.01" id="salary" name="salary" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="salary_frequency">Salary Frequency</label>
+                        <select id="salary_frequency" name="salary_frequency">
+                            <option value="Monthly">Monthly</option>
+                            <option value="Biweekly">Biweekly</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Hourly">Hourly</option>
+                        </select>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="supervisor_id">Supervisor</label>
+                        <select id="supervisor_id" name="supervisor_id">
+                            <option value="">Optional supervisor</option>
+                            {% if employees %}
+                                {% for employee in employees %}
+                                    <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="department_id">Department</label>
+                        <select id="department_id" name="department_id">
+                            <option value="">Optional department</option>
+                            {% if departments %}
+                                {% for department in departments %}
+                                    <option value="{{ department.id }}">{{ department.name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="position_id">Position</label>
+                        <select id="position_id" name="position_id">
+                            <option value="">Optional position</option>
+                            {% if positions %}
+                                {% for position in positions %}
+                                    <option value="{{ position.id }}">{{ position.title }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="profile_photo_url">Profile Photo URL</label>
+                        <input type="text" id="profile_photo_url" name="profile_photo_url" placeholder="https://photo-link">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="employee_status">Status</label>
+                        <select id="employee_status" name="status">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="On Leave">On Leave</option>
+                            <option value="Probation">Probation</option>
+                            <option value="Terminated">Terminated</option>
+                        </select>
+                    </div>
+
+                    <div class="hris-field hris-field-full">
+                        <label for="employee_notes">Notes</label>
+                        <textarea id="employee_notes" name="notes" placeholder="Employee summary, onboarding notes, legal context, risk factors, performance notes, or strategic HR comments."></textarea>
+                    </div>
+                </div>
+
+                <div class="btn-row" style="margin-top: 18px;">
+                    <button type="submit" class="btn-3d">Create Employee</button>
+                    <button type="reset" class="btn-ghost">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="hris-grid-2">
+        <div class="hris-card" id="disciplinary-create">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Create Disciplinary Record</h2>
+                    <p>
+                        Formal corrective action entry for employee conduct, performance, policy, or workplace violations.
+                    </p>
+                </div>
             </div>
 
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_disciplinary_record') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="discipline_employee_id">Employee</label>
-                            <select id="discipline_employee_id" name="employee_id">
+            <div class="hris-card-body">
+                <form method="POST" action="{{ url_for('create_disciplinary_record') }}">
+                    <div class="hris-form-grid">
+                        <div class="hris-field">
+                            <label for="disciplinary_employee_id">Employee *</label>
+                            <select id="disciplinary_employee_id" name="employee_id" required>
                                 <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
+                                {% if employees %}
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="discipline_record_date">Record Date</label>
-                            <input type="date" id="discipline_record_date" name="record_date">
-                        </div>
-
-                        <div>
-                            <label for="discipline_case_type">Case Type</label>
-                            <select id="discipline_case_type" name="case_type">
-                                <option value="Counseling">Counseling</option>
-                                <option value="Verbal Warning">Verbal Warning</option>
-                                <option value="Written Warning">Written Warning</option>
+                        <div class="hris-field">
+                            <label for="record_type">Record Type *</label>
+                            <select id="record_type" name="record_type" required>
+                                <option value="">Select type</option>
+                                <option value="Verbal">Verbal</option>
+                                <option value="Written">Written</option>
                                 <option value="Suspension">Suspension</option>
-                                <option value="Final Warning">Final Warning</option>
-                                <option value="Termination Review">Termination Review</option>
+                                <option value="Final">Final</option>
+                                <option value="Performance Warning">Performance Warning</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label for="discipline_status">Status</label>
-                            <select id="discipline_status" name="status">
+                        <div class="hris-field">
+                            <label for="violation_type">Violation Type</label>
+                            <input type="text" id="violation_type" name="violation_type" placeholder="Attendance / Misconduct / Performance / Policy">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="incident_date">Incident Date</label>
+                            <input type="date" id="incident_date" name="incident_date">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="action_date">Action Date</label>
+                            <input type="date" id="action_date" name="action_date">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="follow_up_date">Follow-Up Date</label>
+                            <input type="date" id="follow_up_date" name="follow_up_date">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="legal_reference">Legal Reference</label>
+                            <input type="text" id="legal_reference" name="legal_reference" placeholder="FLRA / CST / Internal Policy">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="disciplinary_status">Status</label>
+                            <select id="disciplinary_status" name="status">
                                 <option value="Open">Open</option>
-                                <option value="In Review">In Review</option>
+                                <option value="Resolved">Resolved</option>
+                                <option value="Under Review">Under Review</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="summary">Summary *</label>
+                            <textarea id="summary" name="summary" placeholder="Describe the incident, factual context, circumstances, witnesses, and primary issue." required></textarea>
+                        </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="corrective_action">Corrective Action</label>
+                            <textarea id="corrective_action" name="corrective_action" placeholder="Required corrective behavior, training, timeline, coaching, or formal consequence."></textarea>
+                        </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="employee_response">Employee Response</label>
+                            <textarea id="employee_response" name="employee_response" placeholder="Employee statement, response, or documented acknowledgment."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Disciplinary Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Create Labor Action Record</h2>
+                    <p>
+                        Formal workforce case record for investigations, grievances, complaints, ULP matters, or legal/labor actions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hris-card-body">
+                <form method="POST" action="{{ url_for('create_labor_action_record') }}">
+                    <div class="hris-form-grid">
+                        <div class="hris-field">
+                            <label for="labor_employee_id">Employee *</label>
+                            <select id="labor_employee_id" name="employee_id" required>
+                                <option value="">Select employee</option>
+                                {% if employees %}
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="action_type">Action Type *</label>
+                            <select id="action_type" name="action_type" required>
+                                <option value="">Select action</option>
+                                <option value="grievance">Grievance</option>
+                                <option value="complaint">Complaint</option>
+                                <option value="ULP">ULP</option>
+                                <option value="investigation">Investigation</option>
+                                <option value="appeal">Appeal</option>
+                                <option value="disciplinary review">Disciplinary Review</option>
+                            </select>
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="jurisdiction">Jurisdiction</label>
+                            <input type="text" id="jurisdiction" name="jurisdiction" placeholder="Colombia / USA" value="Colombia">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="legal_framework">Legal Framework</label>
+                            <input type="text" id="legal_framework" name="legal_framework" placeholder="FLRA / CST / internal policy">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="case_number">Case Number</label>
+                            <input type="text" id="case_number" name="case_number" placeholder="CASE-001">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="filing_date">Filing Date</label>
+                            <input type="date" id="filing_date" name="filing_date">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="resolution_date">Resolution Date</label>
+                            <input type="date" id="resolution_date" name="resolution_date">
+                        </div>
+
+                        <div class="hris-field">
+                            <label for="labor_status">Status</label>
+                            <select id="labor_status" name="status">
+                                <option value="Open">Open</option>
+                                <option value="Pending">Pending</option>
                                 <option value="Resolved">Resolved</option>
                                 <option value="Closed">Closed</option>
                             </select>
                         </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="labor_summary">Summary *</label>
+                            <textarea id="labor_summary" name="summary" placeholder="Describe the case, complaint, issue, action requested, and organizational context." required></textarea>
+                        </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="outcome">Outcome</label>
+                            <textarea id="outcome" name="outcome" placeholder="Document the result, decision, or formal disposition if available."></textarea>
+                        </div>
+
+                        <div class="hris-field hris-field-full">
+                            <label for="next_steps">Next Steps</label>
+                            <textarea id="next_steps" name="next_steps" placeholder="Required follow-up, hearing, mediation, legal review, or management action."></textarea>
+                        </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="discipline_description">Issue / Allegation</label>
-                        <textarea id="discipline_description" name="description" placeholder="Describe the incident, misconduct concern, or formal issue."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="discipline_action_taken">Resolution / Outcome</label>
-                        <textarea id="discipline_action_taken" name="action_taken" placeholder="Document the outcome, action taken, and follow-up expectation."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Disciplinary Record</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Labor Action</button>
                     </div>
                 </form>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         SOP CENTER + POINT LOG CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="sop-center">
-            <div class="module-header">
-                <h1>SOP Requirement Center</h1>
+    <section class="hris-card" id="payroll-create">
+        <div class="hris-card-header">
+            <div class="hris-card-title-wrap">
+                <h2>Create Payroll Record</h2>
                 <p>
-                    Map role-based SOP expectations, required procedures, and operational accountability.
+                    Enter pay cycle compensation values with salary, bonuses, deductions, taxes, and net pay calculation support.
                 </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Requirement Entry</button>
-                <button class="tab-button" type="button">Role Mapping</button>
-                <button class="tab-button" type="button">Compliance Notes</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_sop_requirement') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="sop_job_title">Job Title / Role</label>
-                            <input type="text" id="sop_job_title" name="job_title" placeholder="Role linked to the requirement" required>
-                        </div>
-
-                        <div>
-                            <label for="sop_department">Department</label>
-                            <input type="text" id="sop_department" name="department" placeholder="Department or function">
-                        </div>
-
-                        <div>
-                            <label for="sop_title">SOP / Requirement Name</label>
-                            <input type="text" id="sop_title" name="title" placeholder="Procedure or requirement title" required>
-                        </div>
-
-                        <div>
-                            <label for="sop_required">Required</label>
-                            <select id="sop_required" name="required_selector">
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-3 form-checkbox-row">
-                        <label class="checkbox-inline" for="sop_required_checkbox">
-                            <input type="checkbox" id="sop_required_checkbox" name="required" checked>
-                            Mark as required operational obligation
-                        </label>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="sop_requirement">Requirement / Description</label>
-                        <textarea id="sop_requirement" name="requirement" placeholder="Describe the SOP, expected behavior, required procedure, or performance obligation."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="sop_description">Additional Notes</label>
-                        <textarea id="sop_description" name="description" placeholder="Add support notes, implementation details, or compliance expectations."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create SOP Requirement</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-                </form>
             </div>
         </div>
 
-        <div class="panel-card" id="point-log-center">
-            <div class="module-header">
-                <h1>Point Log Center</h1>
-                <p>
-                    Record positive and negative point events to strengthen accountability,
-                    recognition, and performance transparency.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Entry</button>
-                <button class="tab-button" type="button">Recognition</button>
-                <button class="tab-button" type="button">Corrective Trend</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_point_log') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="point_employee_id">Employee</label>
-                            <select id="point_employee_id" name="employee_id">
-                                <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
+        <div class="hris-card-body">
+            <form method="POST" action="{{ url_for('create_payroll_record') }}">
+                <div class="hris-form-grid-3">
+                    <div class="hris-field">
+                        <label for="payroll_employee_id">Employee *</label>
+                        <select id="payroll_employee_id" name="employee_id" required>
+                            <option value="">Select employee</option>
+                            {% if employees %}
+                                {% for employee in employees %}
+                                    <option value="{{ employee.id }}">{{ employee.full_name }}</option>
                                 {% endfor %}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="point_category">Point Type</label>
-                            <select id="point_category" name="category">
-                                <option value="Positive">Positive</option>
-                                <option value="Negative">Negative</option>
-                                <option value="Performance">Performance</option>
-                                <option value="Conduct">Conduct</option>
-                                <option value="Attendance">Attendance</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="point_value">Points</label>
-                            <input type="number" id="point_value" name="points" placeholder="Numeric value" required>
-                        </div>
-
-                        <div>
-                            <label for="point_date">Date</label>
-                            <input type="date" id="point_date" name="log_date">
-                        </div>
+                            {% endif %}
+                        </select>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="point_reason">Reason / Event Description</label>
-                        <textarea id="point_reason" name="reason" placeholder="Explain the behavior, achievement, issue, or event that generated the point entry."></textarea>
+                    <div class="hris-field">
+                        <label for="pay_period_start">Pay Period Start *</label>
+                        <input type="date" id="pay_period_start" name="pay_period_start" required>
                     </div>
 
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Point Log</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    <div class="hris-field">
+                        <label for="pay_period_end">Pay Period End *</label>
+                        <input type="date" id="pay_period_end" name="pay_period_end" required>
                     </div>
-                </form>
+
+                    <div class="hris-field">
+                        <label for="base_salary">Base Salary</label>
+                        <input type="number" step="0.01" id="base_salary" name="base_salary" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="overtime_pay">Overtime Pay</label>
+                        <input type="number" step="0.01" id="overtime_pay" name="overtime_pay" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="bonuses">Bonuses</label>
+                        <input type="number" step="0.01" id="bonuses" name="bonuses" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="deductions">Deductions</label>
+                        <input type="number" step="0.01" id="deductions" name="deductions" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="taxes">Taxes</label>
+                        <input type="number" step="0.01" id="taxes" name="taxes" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="benefits_cost">Benefits Cost</label>
+                        <input type="number" step="0.01" id="benefits_cost" name="benefits_cost" placeholder="0.00">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="payment_date">Payment Date</label>
+                        <input type="date" id="payment_date" name="payment_date">
+                    </div>
+
+                    <div class="hris-field">
+                        <label for="payment_method">Payment Method</label>
+                        <select id="payment_method" name="payment_method">
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Check">Check</option>
+                            <option value="Digital Wallet">Digital Wallet</option>
+                        </select>
+                    </div>
+
+                    <div class="hris-field hris-field-full">
+                        <label for="payroll_notes">Notes</label>
+                        <textarea id="payroll_notes" name="notes" placeholder="Compensation remarks, adjustments, special cycle comments, or legal payroll notes."></textarea>
+                    </div>
+                </div>
+
+                <div class="btn-row" style="margin-top: 18px;">
+                    <button type="submit" class="btn-3d">Create Payroll Record</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="hris-grid-2">
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Employee Directory</h2>
+                    <p>
+                        Workforce table view including organization placement, employment type, location, and status visibility.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hris-card-body">
+                {% if employees %}
+                    <div class="hris-table-wrap">
+                        <table class="hris-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Email / Phone</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Type</th>
+                                    <th>Salary</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in employees %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ employee.full_name or "Unnamed Employee" }}</strong>
+                                            {% if employee.employee_number %}
+                                                <br><span class="tab-note">{{ employee.employee_number }}</span>
+                                            {% endif %}
+                                            {% if employee.hire_date %}
+                                                <br><span class="tab-note">Hire: {{ employee.hire_date.strftime("%Y-%m-%d") }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ employee.email or "No email" }}
+                                            {% if employee.phone %}
+                                                <br><span class="tab-note">{{ employee.phone }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ employee.department.name if employee.department else "Not assigned" }}</td>
+                                        <td>{{ employee.position.title if employee.position else "Not assigned" }}</td>
+                                        <td>{{ employee.employment_type or "Not set" }}</td>
+                                        <td>{{ "{:,.2f}".format(employee.salary or 0) }}</td>
+                                        <td>{{ employee.status or "Active" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-hris">
+                        <h3>No employee records yet</h3>
+                        <p>
+                            The HRIS backend is ready. Create the first employee profile and it will appear here automatically.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Departments & Positions</h2>
+                    <p>
+                        Current enterprise structure for organizational design, reporting, and workforce planning.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hris-card-body">
+                <div class="hris-grid-2">
+                    <div>
+                        {% if departments %}
+                            <div class="hris-list">
+                                {% for department in departments %}
+                                    <div class="hris-list-item">
+                                        <div class="hris-list-item-top">
+                                            <div>
+                                                <h3 class="hris-list-title">{{ department.name }}</h3>
+                                                <div class="hris-list-meta">
+                                                    {% if department.code %}
+                                                        <span>{{ department.code }}</span>
+                                                    {% endif %}
+                                                    {% if department.manager_employee_id %}
+                                                        <span>Manager assigned</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="tag-row">
+                                                <span class="tag">{{ department.status or "Active" }}</span>
+                                            </div>
+                                        </div>
+                                        <p class="hris-list-text">{{ department.description or "No department description available." }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-hris">
+                                <h3>No departments yet</h3>
+                                <p>Create departments to organize workforce structure and reporting lines.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {% if positions %}
+                            <div class="hris-list">
+                                {% for position in positions %}
+                                    <div class="hris-list-item">
+                                        <div class="hris-list-item-top">
+                                            <div>
+                                                <h3 class="hris-list-title">{{ position.title }}</h3>
+                                                <div class="hris-list-meta">
+                                                    {% if position.department %}
+                                                        <span>{{ position.department.name }}</span>
+                                                    {% endif %}
+                                                    <span>{{ position.employment_type or "Type not set" }}</span>
+                                                    <span>Risk: {{ position.risk_level or "Medium" }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="tag-row">
+                                                <span class="tag gold">{{ position.status or "Active" }}</span>
+                                            </div>
+                                        </div>
+                                        <p class="hris-list-text">
+                                            Band: {{ "{:,.2f}".format(position.salary_band_min or 0) }} - {{ "{:,.2f}".format(position.salary_band_max or 0) }}
+                                        </p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-hris">
+                                <h3>No positions yet</h3>
+                                <p>Create positions to define role structure, compensation, and workforce design.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         EMPLOYEE TABLE
-    ====================================================== -->
-    <section class="table-shell">
-        <div class="table-toolbar">
-            <div>
-                <h3 class="section-title">Employee Workforce Table</h3>
-                <p class="section-subtitle">Central employee profile visibility and organizational structure.</p>
+    <section class="hris-grid-2">
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Recent Disciplinary Records</h2>
+                    <p>
+                        Formal employee action visibility aligned with policy, corrective measures, and follow-up management.
+                    </p>
+                </div>
             </div>
 
-            <div class="action-row">
-                <a class="btn btn-primary btn-sm" href="#employee-registration">New Employee</a>
-                <a class="btn btn-secondary btn-sm" href="#sop-center">SOP Center</a>
-            </div>
-        </div>
+            <div class="hris-card-body">
+                {% if disciplinary_records %}
+                    <div class="hris-list">
+                        {% for record in disciplinary_records %}
+                            <div class="hris-list-item">
+                                <div class="hris-list-item-top">
+                                    <div>
+                                        <h3 class="hris-list-title">
+                                            {{ record.employee.full_name if record.employee else "Employee not found" }}
+                                        </h3>
+                                        <div class="hris-list-meta">
+                                            <span>{{ record.record_type or "Record" }}</span>
+                                            {% if record.violation_type %}
+                                                <span>{{ record.violation_type }}</span>
+                                            {% endif %}
+                                            {% if record.action_date %}
+                                                <span>{{ record.action_date.strftime("%Y-%m-%d") }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
 
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Job Title</th>
-                        <th>Status</th>
-                        <th>Email</th>
-                        <th>Hire Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if safe_employees %}
-                        {% for employee in safe_employees %}
-                        <tr>
-                            <td>
-                                {% if employee.full_name is defined and employee.full_name %}
-                                    {{ employee.full_name }}
-                                {% else %}
-                                    {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                {% endif %}
-                            </td>
-                            <td>{{ employee.department if employee.department is defined and employee.department else 'N/A' }}</td>
-                            <td>
-                                {% if employee.position is defined and employee.position %}
-                                    {{ employee.position }}
-                                {% elif employee.job_title is defined and employee.job_title %}
-                                    {{ employee.job_title }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% set emp_status = employee.status if employee.status is defined and employee.status else 'N/A' %}
-                                {% if emp_status in ['Active'] %}
-                                    <span class="badge badge-success">{{ emp_status }}</span>
-                                {% elif emp_status in ['On Leave', 'Suspended'] %}
-                                    <span class="badge badge-warning">{{ emp_status }}</span>
-                                {% elif emp_status in ['Separated', 'Inactive'] %}
-                                    <span class="badge badge-danger">{{ emp_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ emp_status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ employee.email if employee.email is defined and employee.email else 'N/A' }}</td>
-                            <td>{{ employee.hire_date if employee.hire_date is defined and employee.hire_date else 'N/A' }}</td>
-                        </tr>
+                                    <div class="tag-row">
+                                        <span class="tag red">{{ record.status or "Open" }}</span>
+                                        {% if record.legal_reference %}
+                                            <span class="tag gold">{{ record.legal_reference }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <p class="hris-list-text">
+                                    {{ record.summary or "No summary available." }}
+                                    {% if record.corrective_action %}
+                                        <br><strong>Corrective Action:</strong> {{ record.corrective_action }}
+                                    {% endif %}
+                                </p>
+                            </div>
                         {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6">No employee profiles available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         DISCIPLINARY TABLE + SOP TABLE
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Disciplinary Records</h3>
-                    <p class="section-subtitle">Formal employee relations history and accountability tracking.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#disciplinary-center">New Case</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Action Type</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_disciplinary_records %}
-                            {% for record in safe_disciplinary_records %}
-                            <tr>
-                                <td>
-                                    {% if record.employee is defined and record.employee %}
-                                        {% if record.employee.full_name is defined and record.employee.full_name %}
-                                            {{ record.employee.full_name }}
-                                        {% elif record.employee.first_name is defined or record.employee.last_name is defined %}
-                                            {{ (record.employee.first_name if record.employee.first_name is defined else '') ~ ' ' ~ (record.employee.last_name if record.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ record.employee_id if record.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif record.employee_name is defined and record.employee_name %}
-                                        {{ record.employee_name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if record.case_type is defined and record.case_type %}
-                                        {{ record.case_type }}
-                                    {% elif record.action_type is defined and record.action_type %}
-                                        {{ record.action_type }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set record_status = record.status if record.status is defined and record.status else 'N/A' %}
-                                    {% if record_status in ['Resolved', 'Closed'] %}
-                                        <span class="badge badge-success">{{ record_status }}</span>
-                                    {% elif record_status in ['In Review'] %}
-                                        <span class="badge badge-warning">{{ record_status }}</span>
-                                    {% elif record_status in ['Open'] %}
-                                        <span class="badge badge-danger">{{ record_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ record_status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if record.record_date is defined and record.record_date %}
-                                        {{ record.record_date }}
-                                    {% elif record.case_date is defined and record.case_date %}
-                                        {{ record.case_date }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No disciplinary records available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">SOP Requirements</h3>
-                    <p class="section-subtitle">Role-based procedural and operational obligations.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-secondary btn-sm" href="#sop-center">New SOP</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Role</th>
-                            <th>Department</th>
-                            <th>Requirement</th>
-                            <th>Required</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_sop_requirements %}
-                            {% for sop in safe_sop_requirements %}
-                            <tr>
-                                <td>{{ sop.job_title if sop.job_title is defined and sop.job_title else 'N/A' }}</td>
-                                <td>{{ sop.department if sop.department is defined and sop.department else 'N/A' }}</td>
-                                <td>
-                                    {% if sop.title is defined and sop.title %}
-                                        {{ sop.title }}
-                                    {% elif sop.requirement_name is defined and sop.requirement_name %}
-                                        {{ sop.requirement_name }}
-                                    {% elif sop.requirement is defined and sop.requirement %}
-                                        {{ sop.requirement }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if sop.required is defined %}
-                                        {% if sop.required %}
-                                            <span class="badge badge-success">Required</span>
-                                        {% else %}
-                                            <span class="badge badge-neutral">Optional</span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="badge badge-neutral">N/A</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No SOP requirements available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         POINT LOG TABLE + ANALYTICS PANELS
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Point Logs</h3>
-                    <p class="section-subtitle">Positive and negative point history for workforce accountability.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#point-log-center">New Log</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Type</th>
-                            <th>Points</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_point_logs %}
-                            {% for log in safe_point_logs %}
-                            <tr>
-                                <td>
-                                    {% if log.employee is defined and log.employee %}
-                                        {% if log.employee.full_name is defined and log.employee.full_name %}
-                                            {{ log.employee.full_name }}
-                                        {% elif log.employee.first_name is defined or log.employee.last_name is defined %}
-                                            {{ (log.employee.first_name if log.employee.first_name is defined else '') ~ ' ' ~ (log.employee.last_name if log.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ log.employee_id if log.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif log.employee_name is defined and log.employee_name %}
-                                        {{ log.employee_name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set point_type = log.category if log.category is defined and log.category else (log.point_type if log.point_type is defined and log.point_type else 'N/A') %}
-                                    {% if point_type == 'Positive' %}
-                                        <span class="badge badge-success">{{ point_type }}</span>
-                                    {% elif point_type == 'Negative' %}
-                                        <span class="badge badge-danger">{{ point_type }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ point_type }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ log.points if log.points is defined else '0' }}</td>
-                                <td>{{ log.log_date if log.log_date is defined and log.log_date else 'N/A' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No point logs available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="panel-card" id="analytics-panels">
-            <h3>Workforce Analytics Direction</h3>
-            <p class="section-subtitle">
-                Executive interpretation and future XIOMY workforce intelligence foundation.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Employee Risk Visibility</div>
-                    <div class="activity-item-meta">
-                        HRIS will support future detection of recurring disciplinary patterns,
-                        attendance issues, and employee relations concerns.
                     </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Performance &amp; Accountability Signals</div>
-                    <div class="activity-item-meta">
-                        Point logs, SOP obligations, and HR record consistency create the basis
-                        for stronger workforce analytics and management decisions.
+                {% else %}
+                    <div class="empty-hris">
+                        <h3>No disciplinary records yet</h3>
+                        <p>
+                            Formal corrective action entries will appear here as they are created.
+                        </p>
                     </div>
-                </div>
+                {% endif %}
+            </div>
+        </div>
 
-                <div class="activity-item">
-                    <div class="activity-item-title">XIOMY Workforce Intelligence</div>
-                    <div class="activity-item-meta">
-                        XIOMY will later summarize workforce concerns, role readiness,
-                        operational risk, and human capital trends for owner-level review.
-                    </div>
+        <div class="hris-card">
+            <div class="hris-card-header">
+                <div class="hris-card-title-wrap">
+                    <h2>Recent Labor Action Records</h2>
+                    <p>
+                        Labor relations, grievance, investigation, and legal framework case visibility from the HRIS module.
+                    </p>
                 </div>
             </div>
 
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            <div class="hris-card-body">
+                {% if labor_action_records %}
+                    <div class="hris-list">
+                        {% for record in labor_action_records %}
+                            <div class="hris-list-item">
+                                <div class="hris-list-item-top">
+                                    <div>
+                                        <h3 class="hris-list-title">
+                                            {{ record.employee.full_name if record.employee else "Employee not found" }}
+                                        </h3>
+                                        <div class="hris-list-meta">
+                                            <span>{{ record.action_type or "Action" }}</span>
+                                            {% if record.jurisdiction %}
+                                                <span>{{ record.jurisdiction }}</span>
+                                            {% endif %}
+                                            {% if record.case_number %}
+                                                <span>{{ record.case_number }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="tag-row">
+                                        <span class="tag orange">{{ record.status or "Open" }}</span>
+                                        {% if record.legal_framework %}
+                                            <span class="tag">{{ record.legal_framework }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <p class="hris-list-text">
+                                    {{ record.summary or "No summary available." }}
+                                    {% if record.outcome %}
+                                        <br><strong>Outcome:</strong> {{ record.outcome }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-hris">
+                        <h3>No labor action records yet</h3>
+                        <p>
+                            Formal labor cases and investigation records will appear here once entered into the system.
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </section>
