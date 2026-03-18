@@ -1,1068 +1,1474 @@
 {% extends "base.html" %}
 
 {% block title %}CRM | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}CRM Command Center{% endblock %}
+
+{% block topbar_subtitle %}
+Client relationship and revenue engine for organizations, contacts, communications, projects, proposals, and follow-up workflow.
+{% endblock %}
+
+{% block head_extra %}
+<style>
+    .crm-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .crm-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 28px;
+        color: #ffffff;
+        background:
+            radial-gradient(circle at right top, rgba(240, 200, 90, 0.25), transparent 26%),
+            radial-gradient(circle at left bottom, rgba(232, 137, 26, 0.14), transparent 28%),
+            linear-gradient(135deg, #07162a 0%, #0b1f3a 55%, #17345c 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 18px 40px rgba(11, 31, 58, 0.24);
+    }
+
+    .crm-hero::before {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+        top: -80px;
+        right: -80px;
+    }
+
+    .crm-hero-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .crm-hero-title {
+        margin: 0 0 10px 0;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1.12;
+    }
+
+    .crm-hero-text {
+        margin: 0;
+        max-width: 900px;
+        color: #dce7f4;
+        line-height: 1.72;
+        font-size: 1rem;
+    }
+
+    .crm-hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .crm-highlight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .crm-highlight-card {
+        padding: 18px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .crm-highlight-label {
+        color: #d8e4f2;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+    }
+
+    .crm-highlight-value {
+        color: #f6d87b;
+        font-size: 1.7rem;
+        font-weight: 900;
+        line-height: 1.05;
+        margin-bottom: 8px;
+    }
+
+    .crm-highlight-sub {
+        color: #d9e5f4;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+    .crm-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+
+    .crm-stat-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        padding: 20px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid #dce5ef;
+        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
+        min-height: 132px;
+    }
+
+    .crm-stat-card::after {
+        content: "";
+        position: absolute;
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        background: rgba(11,31,58,0.05);
+        top: -24px;
+        right: -24px;
+    }
+
+    .crm-stat-top {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        gap: 12px;
+    }
+
+    .crm-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+        color: #0b1f3a;
+        font-size: 1.06rem;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .crm-stat-label {
+        position: relative;
+        z-index: 1;
+        color: #59697c;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 10px;
+    }
+
+    .crm-stat-value {
+        position: relative;
+        z-index: 1;
+        color: #0b1f3a;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .crm-stat-note {
+        position: relative;
+        z-index: 1;
+        color: #6b7280;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+    .crm-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    .crm-card {
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
+        border-radius: 24px;
+        border: 1px solid #dce5ef;
+        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
+        overflow: hidden;
+    }
+
+    .crm-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 22px 22px 16px;
+        border-bottom: 1px solid #ebf0f6;
+        flex-wrap: wrap;
+    }
+
+    .crm-card-title-wrap h2,
+    .crm-card-title-wrap h3 {
+        margin: 0 0 6px 0;
+        color: #0b1f3a;
+        line-height: 1.2;
+    }
+
+    .crm-card-title-wrap p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 0.92rem;
+        max-width: 900px;
+    }
+
+    .crm-card-body {
+        padding: 22px;
+    }
+
+    .crm-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .crm-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .form-panel {
+        border-radius: 20px;
+        padding: 18px;
+        background: linear-gradient(180deg, #fbfdff 0%, #f1f6fb 100%);
+        border: 1px solid #dde7f2;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .form-panel h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+        margin-bottom: 8px;
+    }
+
+    .form-panel p {
+        margin-top: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    .crm-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .crm-form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .crm-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .crm-field-full {
+        grid-column: 1 / -1;
+    }
+
+    .crm-field label {
+        color: #0b1f3a;
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .crm-field input,
+    .crm-field select,
+    .crm-field textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid #cfd9e5;
+        background: #ffffff;
+        color: #1f2937;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .crm-field input:focus,
+    .crm-field select:focus,
+    .crm-field textarea:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+    }
+
+    .crm-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .crm-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid #dde7f2;
+        background: #ffffff;
+    }
+
+    .crm-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 860px;
+    }
+
+    .crm-table thead {
+        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+    }
+
+    .crm-table th,
+    .crm-table td {
+        padding: 14px 14px;
+        border-bottom: 1px solid #e7edf5;
+        text-align: left;
+        vertical-align: top;
+        font-size: 0.93rem;
+    }
+
+    .crm-table th {
+        color: #0b1f3a;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 900;
+    }
+
+    .crm-table tbody tr:hover td {
+        background: #fbfdff;
+    }
+
+    .crm-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .crm-list-item {
+        border-radius: 18px;
+        border: 1px solid #e5ebf2;
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        box-shadow: 0 8px 18px rgba(11, 31, 58, 0.05);
+        padding: 16px;
+    }
+
+    .crm-list-item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .crm-list-title {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1rem;
+        font-weight: 900;
+        line-height: 1.3;
+    }
+
+    .crm-list-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: #6b7280;
+        font-size: 0.84rem;
+        line-height: 1.45;
+    }
+
+    .crm-list-text {
+        margin: 0;
+        color: #5f6d7e;
+        line-height: 1.65;
+        font-size: 0.92rem;
+    }
+
+    .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef4fb;
+        color: #0b1f3a;
+        border: 1px solid #d8e4f2;
+        font-size: 0.78rem;
+        font-weight: 800;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .tag.gold {
+        background: #fff6df;
+        color: #8f6500;
+        border-color: #f0d18c;
+    }
+
+    .tag.orange {
+        background: #fff2e5;
+        color: #b05e00;
+        border-color: #f1c48d;
+    }
+
+    .tag.green {
+        background: #eefcf5;
+        color: #14673c;
+        border-color: #b9ebca;
+    }
+
+    .tab-note {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+    .empty-crm {
+        text-align: center;
+        padding: 40px 20px;
+        border-radius: 20px;
+        border: 1px dashed #cfd8e3;
+        background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
+    }
+
+    .empty-crm h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #0b1f3a;
+    }
+
+    .empty-crm p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.65;
+    }
+
+    @media (max-width: 1400px) {
+        .crm-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .crm-grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 1180px) {
+        .crm-hero-grid,
+        .crm-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .crm-highlight-grid,
+        .crm-stats-grid,
+        .crm-form-grid,
+        .crm-form-grid-3 {
+            grid-template-columns: 1fr;
+        }
+
+        .crm-hero-title {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="page-grid">
+<div class="crm-shell">
 
-    <!-- =====================================================
-         SAFE RENDER VARIABLES
-    ====================================================== -->
-    {% set crm_clients = clients if clients is defined and clients else [] %}
-    {% set crm_projects = projects if projects is defined and projects else [] %}
-    {% set crm_tasks = tasks if tasks is defined and tasks else [] %}
-    {% set crm_logs = communication_logs if communication_logs is defined and communication_logs else (communications if communications is defined and communications else []) %}
-    {% set crm_stats_safe = crm_stats if crm_stats is defined and crm_stats else {} %}
-
-    {% set crm_country_options = country_options if country_options is defined and country_options else ['Colombia', 'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil', 'Chile', 'Peru', 'Spain', 'United Kingdom', 'Germany', 'France', 'Italy', 'Portugal', 'Other'] %}
-    {% set crm_language_options = language_options if language_options is defined and language_options else ['Spanish', 'English', 'Portuguese', 'French', 'German', 'Italian', 'Dutch', 'Other'] %}
-    {% set crm_industry_options = industry_options if industry_options is defined and industry_options else ['Accounting', 'Advertising', 'Agriculture', 'Architecture', 'Artificial Intelligence', 'Automotive', 'Banking', 'Biotechnology', 'Business Consulting', 'Construction', 'Cybersecurity', 'Education', 'Energy', 'Engineering', 'Entertainment', 'Fashion', 'Finance', 'Financial Services', 'Food and Beverage', 'Government', 'Healthcare', 'Hospitality', 'Human Resources', 'Import / Export', 'Insurance', 'Legal Services', 'Logistics', 'Manufacturing', 'Marketing', 'Medical Devices', 'Mining', 'Nonprofit', 'Oil and Gas', 'Pharmaceutical', 'Real Estate', 'Recruiting', 'Retail', 'SaaS', 'Security Services', 'Software Development', 'Sports', 'Staffing', 'Technology', 'Telecommunications', 'Textiles', 'Transportation', 'Travel', 'Veterinary', 'Warehousing', 'Wholesale', 'Tattoo Supplies', 'Other'] %}
-    {% set crm_default_tax_id_options = default_tax_id_options if default_tax_id_options is defined and default_tax_id_options else ['RUT', 'NIT', 'EIN', 'TIN', 'VAT', 'OTHER'] %}
-    {% set crm_tax_id_options_by_country = tax_id_options_by_country if tax_id_options_by_country is defined and tax_id_options_by_country else {
-        'Colombia': ['RUT', 'NIT', 'CEDULA', 'PASSPORT', 'OTHER'],
-        'United States': ['EIN', 'TIN', 'SSN', 'ITIN', 'OTHER'],
-        'Canada': ['BN', 'GST/HST', 'OTHER'],
-        'Mexico': ['RFC', 'CURP', 'OTHER'],
-        'Brazil': ['CNPJ', 'CPF', 'OTHER'],
-        'Argentina': ['CUIT', 'CUIL', 'OTHER'],
-        'Chile': ['RUT', 'OTHER'],
-        'Peru': ['RUC', 'DNI', 'OTHER'],
-        'Spain': ['NIF', 'CIF', 'NIE', 'OTHER'],
-        'United Kingdom': ['UTR', 'VAT', 'COMPANY NUMBER', 'OTHER'],
-        'Germany': ['VAT', 'STEUERNUMMER', 'OTHER'],
-        'France': ['SIREN', 'SIRET', 'VAT', 'OTHER'],
-        'Italy': ['PIVA', 'CF', 'OTHER'],
-        'Portugal': ['NIF', 'OTHER'],
-        'Other': ['VAT', 'TIN', 'TAX ID', 'OTHER']
-    } %}
-
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
-    <section class="hero-panel">
-        <div class="hero-left">
-            <span class="hero-badge">Client Relationship &amp; Revenue Engine</span>
-            <h1 class="hero-title">CRM Command Center</h1>
-            <p class="hero-text">
-                Premium client relationship management environment for pipeline visibility,
-                account development, communication tracking, task creation, project linkage,
-                revenue awareness, global market segmentation, and executive client intelligence.
-            </p>
-
-            <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="#client-registration">Register Client</a>
-                <a class="btn btn-secondary btn-lg" href="#communication-center">Log Communication</a>
-                <a class="btn btn-ghost btn-lg" href="#revenue-panels">Revenue Focus</a>
-            </div>
-
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Clients</button>
-                    <button class="tab-button" type="button">Communications</button>
-                    <button class="tab-button" type="button">Projects</button>
-                    <button class="tab-button" type="button">Tasks</button>
-                    <button class="tab-button" type="button">Revenue</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero-right">
-            <div class="hero-status-card">
-                <h3 class="section-title">CRM Executive Snapshot</h3>
-                <p class="section-subtitle">
-                    Organized visibility into customer management, commercial movement,
-                    and multi-country client structure.
+    <section class="crm-hero">
+        <div class="crm-hero-grid">
+            <div>
+                <h1 class="crm-hero-title">CRM Command Center</h1>
+                <p class="crm-hero-text">
+                    This module is the client relationship and revenue engine for UrbanHRPartners.
+                    It is structured to manage organizations, contact persons, communication history,
+                    projects, proposal flow, and follow-up actions in a connected enterprise workflow.
                 </p>
 
-                <ul class="status-list mt-3">
-                    <li><strong>Portfolio Control:</strong> active client relationship tracking</li>
-                    <li><strong>Commercial Focus:</strong> opportunities and service demand visibility</li>
-                    <li><strong>Operational Linkage:</strong> tasks, projects, and finance coordination</li>
-                    <li><strong>Global Readiness:</strong> country, language, industry, and tax identity structure</li>
-                </ul>
+                <div class="crm-hero-actions">
+                    <a href="#client-create" class="btn-3d">Create Client</a>
+                    <a href="#communication-log" class="btn-ghost">Log Communication</a>
+                    <a href="#project-create" class="btn-ghost">Create Project</a>
+                </div>
+            </div>
 
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('marketing') }}">Marketing</a>
-                    <a class="btn btn-secondary" href="{{ url_for('finance') }}">Finance</a>
+            <div class="crm-highlight-grid">
+                <div class="crm-highlight-card">
+                    <div class="crm-highlight-label">Clients</div>
+                    <div class="crm-highlight-value">{{ crm_stats.clients if crm_stats and crm_stats.clients is not none else 0 }}</div>
+                    <div class="crm-highlight-sub">Organizations tracked in the commercial relationship structure.</div>
+                </div>
+
+                <div class="crm-highlight-card">
+                    <div class="crm-highlight-label">Contacts</div>
+                    <div class="crm-highlight-value">{{ crm_stats.contacts if crm_stats and crm_stats.contacts is not none else 0 }}</div>
+                    <div class="crm-highlight-sub">Decision makers, stakeholders, and relationship contacts on file.</div>
+                </div>
+
+                <div class="crm-highlight-card">
+                    <div class="crm-highlight-label">Projects</div>
+                    <div class="crm-highlight-value">{{ crm_stats.projects if crm_stats and crm_stats.projects is not none else 0 }}</div>
+                    <div class="crm-highlight-sub">Service delivery and consulting project records available in CRM.</div>
+                </div>
+
+                <div class="crm-highlight-card">
+                    <div class="crm-highlight-label">Communications</div>
+                    <div class="crm-highlight-value">{{ crm_stats.communications if crm_stats and crm_stats.communications is not none else 0 }}</div>
+                    <div class="crm-highlight-sub">Documented conversations, follow-ups, calls, meetings, and updates.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         SUMMARY CARDS
-    ====================================================== -->
-    <section class="summary-grid">
-        <div class="summary-card">
-            <h3>Total Clients</h3>
-            <p>
-                {% if crm_stats_safe.total_clients is defined %}
-                    {{ crm_stats_safe.total_clients }}
-                {% else %}
-                    {{ crm_clients|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Current registered accounts</span>
+    <section class="crm-stats-grid">
+        <div class="crm-stat-card">
+            <div class="crm-stat-top">
+                <div class="crm-stat-icon">🏢</div>
+                <span class="tag">Clients</span>
+            </div>
+            <div class="crm-stat-label">Client Organizations</div>
+            <div class="crm-stat-value">{{ crm_stats.clients if crm_stats and crm_stats.clients is not none else 0 }}</div>
+            <div class="crm-stat-note">Active commercial entities inside the CRM ecosystem.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Open Projects</h3>
-            <p>
-                {% if crm_stats_safe.open_projects is defined %}
-                    {{ crm_stats_safe.open_projects }}
-                {% elif crm_stats_safe.active_projects is defined %}
-                    {{ crm_stats_safe.active_projects }}
-                {% else %}
-                    {{ crm_projects|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Commercial and service activity in progress</span>
+        <div class="crm-stat-card">
+            <div class="crm-stat-top">
+                <div class="crm-stat-icon">🧑‍💼</div>
+                <span class="tag gold">Contacts</span>
+            </div>
+            <div class="crm-stat-label">Relationship Contacts</div>
+            <div class="crm-stat-value">{{ crm_stats.contacts if crm_stats and crm_stats.contacts is not none else 0 }}</div>
+            <div class="crm-stat-note">Stakeholders and points of contact tied to client accounts.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Communication Logs</h3>
-            <p>
-                {% if crm_stats_safe.total_communications is defined %}
-                    {{ crm_stats_safe.total_communications }}
-                {% elif crm_stats_safe.communications is defined %}
-                    {{ crm_stats_safe.communications }}
-                {% else %}
-                    {{ crm_logs|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Recorded client contact history</span>
+        <div class="crm-stat-card">
+            <div class="crm-stat-top">
+                <div class="crm-stat-icon">📁</div>
+                <span class="tag orange">Projects</span>
+            </div>
+            <div class="crm-stat-label">Projects Pipeline</div>
+            <div class="crm-stat-value">{{ crm_stats.projects if crm_stats and crm_stats.projects is not none else 0 }}</div>
+            <div class="crm-stat-note">Consulting and service engagements currently registered.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Open Tasks</h3>
-            <p>
-                {% if crm_stats_safe.open_tasks is defined %}
-                    {{ crm_stats_safe.open_tasks }}
-                {% elif crm_stats_safe.tasks is defined %}
-                    {{ crm_stats_safe.tasks }}
-                {% else %}
-                    {{ crm_tasks|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Follow-ups and commitments to execute</span>
+        <div class="crm-stat-card">
+            <div class="crm-stat-top">
+                <div class="crm-stat-icon">📞</div>
+                <span class="tag green">Communications</span>
+            </div>
+            <div class="crm-stat-label">Activity History</div>
+            <div class="crm-stat-value">{{ crm_stats.communications if crm_stats and crm_stats.communications is not none else 0 }}</div>
+            <div class="crm-stat-note">Communication logging available for follow-up intelligence.</div>
         </div>
     </section>
 
-    <!-- =====================================================
-         EXECUTIVE WORKSPACE
-    ====================================================== -->
-    <section class="two-column-grid">
-        <div class="panel-card">
-            <h3>CRM Executive Purpose</h3>
-            <p class="section-subtitle">
-                This module functions as the client relationship and revenue management
-                core of the platform.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Client Lifecycle Management</div>
-                    <div class="activity-item-meta">
-                        Maintain 360-degree client visibility, account history, service alignment,
-                        organization details, market location, priorities, and growth opportunities.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Communication Intelligence</div>
-                    <div class="activity-item-meta">
-                        Track calls, emails, visits, follow-ups, client concerns, and future
-                        XIOMY interpretation of commercial tendencies.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Revenue &amp; Service Linkage</div>
-                    <div class="activity-item-meta">
-                        Connect clients to projects, finance records, invoicing activity,
-                        and service expansion opportunities.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <h3>Commercial Priority Queue</h3>
-            <p class="section-subtitle">
-                Leadership-focused reminders for relationship development and business growth.
-            </p>
-
-            <ul class="clean-list mt-4">
-                <li>Protect client retention through timely communication follow-up.</li>
-                <li>Identify accounts with expansion potential across HR, SG-SST, Finance, ATS, and Marketing services.</li>
-                <li>Capture country, language, and tax identity to support better segmentation.</li>
-                <li>Link communication notes to tasks so nothing is lost.</li>
-                <li>Keep projects aligned with revenue and delivery progress.</li>
-            </ul>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="#task-center">Open Task Center</a>
-                <a class="btn btn-secondary" href="#project-center">Review Projects</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         CLIENT REGISTRATION + COMMUNICATION CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="client-registration">
-            <div class="module-header">
-                <h1>Client Registration Center</h1>
+    <section class="crm-card" id="client-create">
+        <div class="crm-card-header">
+            <div class="crm-card-title-wrap">
+                <h2>Create New Client</h2>
                 <p>
-                    Create or expand your client portfolio with structured account information,
-                    commercial context, country, language, industry classification, and flexible tax identity capture.
+                    Register a new organization with business identity, location, industry,
+                    communication data, and relationship ownership.
                 </p>
             </div>
+        </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Client Record</button>
-                <button class="tab-button" type="button">Organization Profile</button>
-                <button class="tab-button" type="button">Opportunity Notes</button>
+        <div class="crm-card-body">
+            <form method="POST" action="{{ url_for('create_client') }}">
+                <div class="crm-form-grid-3">
+                    <div class="crm-field">
+                        <label for="client_code">Client Code</label>
+                        <input type="text" id="client_code" name="client_code" placeholder="CLI-001">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="legal_name">Legal Name *</label>
+                        <input type="text" id="legal_name" name="legal_name" placeholder="Urban Example SAS" required>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="trade_name">Trade Name</label>
+                        <input type="text" id="trade_name" name="trade_name" placeholder="Example HR Solutions">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="client_type">Client Type</label>
+                        <select id="client_type" name="client_type">
+                            <option value="Business">Business</option>
+                            <option value="Nonprofit">Nonprofit</option>
+                            <option value="Government">Government</option>
+                            <option value="Educational">Educational</option>
+                            <option value="Startup">Startup</option>
+                            <option value="Individual">Individual</option>
+                        </select>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="industry">Industry</label>
+                        <input type="text" id="industry" name="industry" placeholder="Human Resources / Manufacturing / Healthcare">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="company_size">Company Size</label>
+                        <input type="text" id="company_size" name="company_size" placeholder="1-10 / 11-50 / 51-200 / Enterprise">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="website">Website</label>
+                        <input type="text" id="website" name="website" placeholder="https://example.com">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="email">Main Email</label>
+                        <input type="email" id="email" name="email" placeholder="contact@example.com">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" name="phone" placeholder="+57 300 000 0000">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="whatsapp">WhatsApp</label>
+                        <input type="text" id="whatsapp" name="whatsapp" placeholder="+57 300 000 0000">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" name="country" placeholder="Colombia">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="state">State / Department</label>
+                        <input type="text" id="state" name="state" placeholder="Tolima">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" placeholder="Ibagué">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" placeholder="Business address">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="postal_code">Postal Code</label>
+                        <input type="text" id="postal_code" name="postal_code" placeholder="730001">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="language">Language</label>
+                        <input type="text" id="language" name="language" placeholder="Spanish / English">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="tax_id_type">Tax ID Type</label>
+                        <input type="text" id="tax_id_type" name="tax_id_type" placeholder="NIT / EIN / CC">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="tax_id_number">Tax ID Number</label>
+                        <input type="text" id="tax_id_number" name="tax_id_number" placeholder="900123456-7">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="annual_revenue">Annual Revenue</label>
+                        <input type="number" step="0.01" id="annual_revenue" name="annual_revenue" placeholder="0.00">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="employee_count">Employee Count</label>
+                        <input type="number" id="employee_count" name="employee_count" placeholder="0">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="source">Lead Source</label>
+                        <input type="text" id="source" name="source" placeholder="Referral / Website / Event / Social Media">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="lead_score">Lead Score</label>
+                        <input type="number" step="0.01" id="lead_score" name="lead_score" placeholder="0.00">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="Active">Active</option>
+                            <option value="Prospect">Prospect</option>
+                            <option value="Lead">Lead</option>
+                            <option value="Dormant">Dormant</option>
+                        </select>
+                    </div>
+
+                    <div class="crm-field crm-field-full">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes" placeholder="Strategic notes, relationship context, needs, opportunities, pain points, and service observations."></textarea>
+                    </div>
+                </div>
+
+                <div class="btn-row" style="margin-top: 18px;">
+                    <button type="submit" class="btn-3d">Create Client</button>
+                    <button type="reset" class="btn-ghost">Reset Form</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="crm-grid-2">
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Create Client Contact</h2>
+                    <p>
+                        Add a specific contact person and tie them to an existing client organization.
+                    </p>
+                </div>
             </div>
 
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_client') }}" class="crm-form" autocomplete="off">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="client_name">Client / Organization Name</label>
-                            <input type="text" id="client_name" name="name" placeholder="Enter client or company name" required>
-                        </div>
-
-                        <div>
-                            <label for="client_company_name">Company Legal / Alternate Name</label>
-                            <input type="text" id="client_company_name" name="company_name" placeholder="Legal company name if different">
-                        </div>
-
-                        <div>
-                            <label for="client_contact_person">Primary Contact</label>
-                            <input type="text" id="client_contact_person" name="contact_person" placeholder="Main contact person">
-                        </div>
-
-                        <div>
-                            <label for="client_email">Email</label>
-                            <input type="email" id="client_email" name="email" placeholder="contact@company.com">
-                        </div>
-
-                        <div>
-                            <label for="client_phone">Phone</label>
-                            <input type="text" id="client_phone" name="phone" placeholder="Phone number">
-                        </div>
-
-                        <div>
-                            <label for="client_industry">Industry</label>
-                            <input list="industry-list" type="text" id="client_industry" name="industry" placeholder="Industry or business sector">
-                            <datalist id="industry-list">
-                                {% for industry in crm_industry_options %}
-                                    <option value="{{ industry }}"></option>
-                                {% endfor %}
-                            </datalist>
-                        </div>
-
-                        <div>
-                            <label for="client_country">Country</label>
-                            <select id="client_country" name="country" onchange="updateClientTaxIdOptions()">
-                                {% for option in crm_country_options %}
-                                    <option value="{{ option }}" {% if option == 'Colombia' %}selected{% endif %}>{{ option }}</option>
-                                {% endfor %}
+            <div class="crm-card-body">
+                <form method="POST" action="{{ url_for('create_client_contact') }}">
+                    <div class="crm-form-grid">
+                        <div class="crm-field">
+                            <label for="contact_client_id">Client *</label>
+                            <select id="contact_client_id" name="client_id" required>
+                                <option value="">Select client</option>
+                                {% if clients %}
+                                    {% for client in clients %}
+                                        <option value="{{ client.id }}">{{ client.legal_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="client_language">Language</label>
-                            <select id="client_language" name="language">
-                                {% for option in crm_language_options %}
-                                    <option value="{{ option }}" {% if option == 'Spanish' %}selected{% endif %}>{{ option }}</option>
-                                {% endfor %}
+                        <div class="crm-field">
+                            <label for="full_name">Full Name *</label>
+                            <input type="text" id="full_name" name="full_name" placeholder="Decision maker name" required>
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="job_title">Job Title</label>
+                            <input type="text" id="job_title" name="job_title" placeholder="CEO / HR Director / Manager">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="contact_email">Email</label>
+                            <input type="email" id="contact_email" name="email" placeholder="person@example.com">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="contact_phone">Phone</label>
+                            <input type="text" id="contact_phone" name="phone" placeholder="+57 300 000 0000">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="contact_whatsapp">WhatsApp</label>
+                            <input type="text" id="contact_whatsapp" name="whatsapp" placeholder="+57 300 000 0000">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="preferred_contact_method">Preferred Contact Method</label>
+                            <select id="preferred_contact_method" name="preferred_contact_method">
+                                <option value="Email">Email</option>
+                                <option value="Phone">Phone</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="SMS">SMS</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label for="client_tax_id_type">Tax ID Type</label>
-                            <select id="client_tax_id_type" name="tax_id_type">
-                                {% for option in crm_default_tax_id_options %}
-                                    <option value="{{ option }}" {% if option == 'RUT' %}selected{% endif %}>{{ option }}</option>
-                                {% endfor %}
+                        <div class="crm-field">
+                            <label for="decision_maker">Decision Maker</label>
+                            <select id="decision_maker" name="decision_maker">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label for="client_tax_id_number">Tax ID Number</label>
-                            <input type="text" id="client_tax_id_number" name="tax_id_number" placeholder="RUT / NIT / EIN / TIN / VAT">
+                        <div class="crm-field crm-field-full">
+                            <label for="contact_notes">Notes</label>
+                            <textarea id="contact_notes" name="notes" placeholder="Relationship details, authority level, communication style, or strategic observations."></textarea>
                         </div>
 
-                        <div>
-                            <label for="client_status">Client Status</label>
-                            <select id="client_status" name="status">
-                                <option value="Lead">Lead</option>
-                                <option value="Prospect" selected>Prospect</option>
+                        <div class="crm-field">
+                            <label for="contact_status">Status</label>
+                            <select id="contact_status" name="status">
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
-                                <option value="Closed">Closed</option>
+                                <option value="Primary">Primary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Contact</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="crm-card" id="communication-log">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Log Communication</h2>
+                    <p>
+                        Document calls, emails, meetings, or messages. Action items can become tasks.
+                    </p>
+                </div>
+            </div>
+
+            <div class="crm-card-body">
+                <form method="POST" action="{{ url_for('create_communication_log') }}">
+                    <div class="crm-form-grid">
+                        <div class="crm-field">
+                            <label for="comm_client_id">Client *</label>
+                            <select id="comm_client_id" name="client_id" required>
+                                <option value="">Select client</option>
+                                {% if clients %}
+                                    {% for client in clients %}
+                                        <option value="{{ client.id }}">{{ client.legal_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="client_address">Address / Location</label>
-                            <input type="text" id="client_address" name="address" placeholder="Client business location">
+                        <div class="crm-field">
+                            <label for="contact_id">Contact</label>
+                            <select id="contact_id" name="contact_id">
+                                <option value="">Optional contact</option>
+                                {% if contacts %}
+                                    {% for contact in contacts %}
+                                        <option value="{{ contact.id }}">
+                                            {{ contact.full_name }}{% if contact.client %} — {{ contact.client.legal_name }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
                         </div>
 
-                        <div>
-                            <label for="client_region">Region / Department / State</label>
-                            <input type="text" id="client_region" name="region" placeholder="Department, state, region, or city sector">
+                        <div class="crm-field">
+                            <label for="channel">Channel</label>
+                            <select id="channel" name="channel">
+                                <option value="email">Email</option>
+                                <option value="call">Call</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="sms">SMS</option>
+                            </select>
                         </div>
 
-                        <div>
-                            <label for="client_risk_level">Risk Level</label>
-                            <select id="client_risk_level" name="risk_level">
-                                <option value="">Select risk level</option>
-                                <option value="Low">Low</option>
-                                <option value="Moderate">Moderate</option>
+                        <div class="crm-field">
+                            <label for="comm_subject">Subject</label>
+                            <input type="text" id="comm_subject" name="subject" placeholder="Follow-up on proposal / Discovery call">
+                        </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="message_summary">Message Summary *</label>
+                            <textarea id="message_summary" name="message_summary" placeholder="What was discussed, client needs, concerns, expectations, or commitments." required></textarea>
+                        </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="raw_content">Raw Content</label>
+                            <textarea id="raw_content" name="raw_content" placeholder="Optional raw transcription, note capture, or detailed communication content."></textarea>
+                        </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="action_items">Action Items</label>
+                            <textarea id="action_items" name="action_items" placeholder="Follow-up steps. If entered, this can create a task automatically from the backend."></textarea>
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="next_follow_up_date">Next Follow-Up Date</label>
+                            <input type="date" id="next_follow_up_date" name="next_follow_up_date">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="duration_minutes">Duration (minutes)</label>
+                            <input type="number" id="duration_minutes" name="duration_minutes" placeholder="0">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="priority">Task Priority</label>
+                            <select id="priority" name="priority">
                                 <option value="Medium">Medium</option>
                                 <option value="High">High</option>
+                                <option value="Low">Low</option>
                                 <option value="Critical">Critical</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="client_needs">Current Needs / Service Interests</label>
-                        <textarea id="client_needs" name="needs" placeholder="Describe what the client is looking for: HR consulting, SG-SST, recruiting, training, finance support, marketing, or integrated services."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="client_notes">General CRM Notes</label>
-                        <textarea id="client_notes" name="notes" placeholder="Commercial notes, opportunity details, context, objections, priorities, or relationship history."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Client Record</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="panel-card" id="communication-center">
-            <div class="module-header">
-                <h1>Communication Center</h1>
-                <p>
-                    Record calls, meetings, WhatsApp updates, email discussions, and next-step commitments.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Log Interaction</button>
-                <button class="tab-button" type="button">Follow-Up</button>
-                <button class="tab-button" type="button">Commitments</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_communication_log') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="log_client_id">Client</label>
-                            <select id="log_client_id" name="client_id" required>
-                                <option value="">Select a client</option>
-                                {% for client in crm_clients %}
-                                    <option value="{{ client.id }}">
-                                        {% if client.name is defined and client.name %}
-                                            {{ client.name }}
-                                        {% elif client.company_name is defined and client.company_name %}
-                                            {{ client.company_name }}
-                                        {% else %}
-                                            Client #{{ client.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="log_channel">Communication Type</label>
-                            <select id="log_channel" name="channel">
-                                <option value="Call">Call</option>
-                                <option value="Email">Email</option>
-                                <option value="Meeting">Meeting</option>
-                                <option value="WhatsApp">WhatsApp</option>
-                                <option value="Visit">Visit</option>
-                                <option value="General">General</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="log_direction">Direction</label>
-                            <select id="log_direction" name="direction">
-                                <option value="Outbound" selected>Outbound</option>
-                                <option value="Inbound">Inbound</option>
-                                <option value="Internal">Internal</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="log_contact_person">Contact Person</label>
-                            <input type="text" id="log_contact_person" name="contact_person" placeholder="Main person involved in the interaction">
-                        </div>
-
-                        <div>
-                            <label for="log_subject">Subject</label>
-                            <input type="text" id="log_subject" name="subject" placeholder="Summary subject or communication topic">
-                        </div>
-
-                        <div>
-                            <label for="log_date_reference">Date Reference</label>
-                            <input type="date" id="log_date_reference" name="log_date">
-                        </div>
-
-                        <div>
-                            <label for="log_follow_up_date">Next Follow-Up Date</label>
-                            <input type="date" id="log_follow_up_date" name="follow_up_date">
-                        </div>
-
-                        <div class="full-width">
-                            <label class="checkbox-inline" for="log_action_required">
-                                <input type="checkbox" id="log_action_required" name="action_required">
-                                Action required / next-step commitment exists
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="log_summary">Summary</label>
-                        <textarea id="log_summary" name="summary" placeholder="Summarize the interaction, the client's concerns, the service discussion, and key context."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="log_message">Detailed Notes</label>
-                        <textarea id="log_message" name="message" placeholder="Detailed communication notes, decisions, objections, risks, opportunities, and commercial intelligence."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="log_action_items">Action Items / Commitments</label>
-                        <textarea id="log_action_items" name="action_items" placeholder="List promised actions, deliverables, follow-up commitments, or opportunities."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Log Communication</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Log Communication</button>
                     </div>
                 </form>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         PROJECT CENTER + TASK CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="project-center">
-            <div class="module-header">
-                <h1>Project Center</h1>
-                <p>
-                    Connect client accounts to active services, project delivery, timelines, and value creation.
-                </p>
+    <section class="crm-grid-2">
+        <div class="crm-card" id="project-create">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Create Project</h2>
+                    <p>
+                        Create client service engagements and connect delivery, cost, revenue, and margin visibility.
+                    </p>
+                </div>
             </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Create Project</button>
-                <button class="tab-button" type="button">Delivery Notes</button>
-                <button class="tab-button" type="button">Commercial Status</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_project') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="project_client_id">Client</label>
-                            <select id="project_client_id" name="client_id">
-                                <option value="">Select a client</option>
-                                {% for client in crm_clients %}
-                                    <option value="{{ client.id }}">
-                                        {% if client.name is defined and client.name %}
-                                            {{ client.name }}
-                                        {% elif client.company_name is defined and client.company_name %}
-                                            {{ client.company_name }}
-                                        {% else %}
-                                            Client #{{ client.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
+            <div class="crm-card-body">
+                <form method="POST" action="{{ url_for('create_project') }}">
+                    <div class="crm-form-grid">
+                        <div class="crm-field">
+                            <label for="project_client_id">Client *</label>
+                            <select id="project_client_id" name="client_id" required>
+                                <option value="">Select client</option>
+                                {% if clients %}
+                                    {% for client in clients %}
+                                        <option value="{{ client.id }}">{{ client.legal_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="project_client_name">Client Name Reference</label>
-                            <input type="text" id="project_client_name" name="client_name" placeholder="Associated client text reference if needed">
+                        <div class="crm-field">
+                            <label for="project_code">Project Code</label>
+                            <input type="text" id="project_code" name="project_code" placeholder="PRJ-001">
                         </div>
 
-                        <div>
-                            <label for="project_name">Project Name</label>
-                            <input type="text" id="project_name" name="project_name" placeholder="Service or engagement title" required>
+                        <div class="crm-field">
+                            <label for="project_name">Project Name *</label>
+                            <input type="text" id="project_name" name="name" placeholder="HR Compliance Implementation" required>
                         </div>
 
-                        <div>
-                            <label for="project_status">Project Status</label>
+                        <div class="crm-field">
+                            <label for="service_line">Service Line</label>
+                            <input type="text" id="service_line" name="service_line" placeholder="Recruitment / HR Advisory / SG-SST / Payroll">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" id="start_date" name="start_date">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="end_date">End Date</label>
+                            <input type="date" id="end_date" name="end_date">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="estimated_budget">Estimated Budget</label>
+                            <input type="number" step="0.01" id="estimated_budget" name="estimated_budget" placeholder="0.00">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="actual_cost">Actual Cost</label>
+                            <input type="number" step="0.01" id="actual_cost" name="actual_cost" placeholder="0.00">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="projected_revenue">Projected Revenue</label>
+                            <input type="number" step="0.01" id="projected_revenue" name="projected_revenue" placeholder="0.00">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="actual_revenue">Actual Revenue</label>
+                            <input type="number" step="0.01" id="actual_revenue" name="actual_revenue" placeholder="0.00">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="project_status">Status</label>
                             <select id="project_status" name="status">
-                                <option value="Planned">Planned</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Pending Approval">Pending Approval</option>
-                                <option value="Completed">Completed</option>
+                                <option value="Active">Active</option>
+                                <option value="Planning">Planning</option>
                                 <option value="On Hold">On Hold</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="project_value">Estimated Value</label>
-                            <input type="number" step="0.01" id="project_value" name="estimated_value" placeholder="0.00">
-                        </div>
-
-                        <div>
-                            <label for="project_budget">Budget</label>
-                            <input type="number" step="0.01" id="project_budget" name="budget" placeholder="0.00">
-                        </div>
-
-                        <div>
-                            <label for="project_start_date">Start Date</label>
-                            <input type="date" id="project_start_date" name="start_date">
-                        </div>
-
-                        <div>
-                            <label for="project_end_date">Target End Date</label>
-                            <input type="date" id="project_end_date" name="end_date">
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="project_scope">Project Scope / Description</label>
-                        <textarea id="project_scope" name="description" placeholder="Describe the client engagement, service commitments, deliverables, and expected outcomes."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Project</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="panel-card" id="task-center">
-            <div class="module-header">
-                <h1>Task Center</h1>
-                <p>
-                    Capture follow-ups and operational commitments so each client relationship stays active and organized.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Create Task</button>
-                <button class="tab-button" type="button">Priority</button>
-                <button class="tab-button" type="button">Follow-Up Queue</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_task') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="task_title">Task Title</label>
-                            <input type="text" id="task_title" name="title" placeholder="Task or follow-up title" required>
-                        </div>
-
-                        <div>
-                            <label for="task_client_id">Related Client</label>
-                            <select id="task_client_id" name="client_id">
-                                <option value="">Select a client</option>
-                                {% for client in crm_clients %}
-                                    <option value="{{ client.id }}">
-                                        {% if client.name is defined and client.name %}
-                                            {{ client.name }}
-                                        {% elif client.company_name is defined and client.company_name %}
-                                            {{ client.company_name }}
-                                        {% else %}
-                                            Client #{{ client.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="task_client_name">Client Name Reference</label>
-                            <input type="text" id="task_client_name" name="client_name" placeholder="Associated client text reference">
-                        </div>
-
-                        <div>
-                            <label for="task_project_id">Related Project</label>
-                            <select id="task_project_id" name="project_id">
-                                <option value="">Select a project</option>
-                                {% for project in crm_projects %}
-                                    <option value="{{ project.id }}">
-                                        {% if project.project_name is defined and project.project_name %}
-                                            {{ project.project_name }}
-                                        {% elif project.name is defined and project.name %}
-                                            {{ project.name }}
-                                        {% else %}
-                                            Project #{{ project.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="task_due_date">Due Date</label>
-                            <input type="date" id="task_due_date" name="due_date">
-                        </div>
-
-                        <div>
-                            <label for="task_priority">Priority</label>
-                            <select id="task_priority" name="priority">
-                                <option value="Low">Low</option>
-                                <option value="Normal" selected>Normal</option>
-                                <option value="High">High</option>
-                                <option value="Urgent">Urgent</option>
-                                <option value="Critical">Critical</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="task_status">Status</label>
-                            <select id="task_status" name="status">
-                                <option value="Open" selected>Open</option>
-                                <option value="Pending">Pending</option>
-                                <option value="In Progress">In Progress</option>
                                 <option value="Completed">Completed</option>
                                 <option value="Closed">Closed</option>
                             </select>
                         </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="project_description">Description</label>
+                            <textarea id="project_description" name="description" placeholder="Scope, deliverables, risks, strategic objectives, or implementation details."></textarea>
+                        </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="project_notes">Notes</label>
+                            <textarea id="project_notes" name="notes" placeholder="Commercial context, dependencies, concerns, margin observations, or commitments."></textarea>
+                        </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="task_notes">Task Notes</label>
-                        <textarea id="task_notes" name="notes" placeholder="Describe the follow-up, next action, or internal commitment."></textarea>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Create Proposal</h2>
+                    <p>
+                        Build client proposals with value, expiration, versioning, and commercial documentation.
+                    </p>
+                </div>
+            </div>
+
+            <div class="crm-card-body">
+                <form method="POST" action="{{ url_for('create_proposal') }}">
+                    <div class="crm-form-grid">
+                        <div class="crm-field">
+                            <label for="proposal_client_id">Client *</label>
+                            <select id="proposal_client_id" name="client_id" required>
+                                <option value="">Select client</option>
+                                {% if clients %}
+                                    {% for client in clients %}
+                                        <option value="{{ client.id }}">{{ client.legal_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="proposal_number">Proposal Number</label>
+                            <input type="text" id="proposal_number" name="proposal_number" placeholder="PROP-001">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="proposal_title">Title *</label>
+                            <input type="text" id="proposal_title" name="title" placeholder="Comprehensive HR Consulting Package" required>
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="proposed_value">Proposed Value</label>
+                            <input type="number" step="0.01" id="proposed_value" name="proposed_value" placeholder="0.00">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="issue_date">Issue Date</label>
+                            <input type="date" id="issue_date" name="issue_date">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="expiration_date">Expiration Date</label>
+                            <input type="date" id="expiration_date" name="expiration_date">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="accepted_date">Accepted Date</label>
+                            <input type="date" id="accepted_date" name="accepted_date">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="version">Version</label>
+                            <input type="text" id="version" name="version" placeholder="1.0" value="1.0">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="document_url">Document URL</label>
+                            <input type="text" id="document_url" name="document_url" placeholder="https://proposal-link">
+                        </div>
+
+                        <div class="crm-field">
+                            <label for="proposal_status">Status</label>
+                            <select id="proposal_status" name="status">
+                                <option value="Draft">Draft</option>
+                                <option value="Sent">Sent</option>
+                                <option value="Negotiation">Negotiation</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="service_description">Service Description</label>
+                            <textarea id="service_description" name="service_description" placeholder="Detailed explanation of consulting services, implementation phases, and deliverables."></textarea>
+                        </div>
+
+                        <div class="crm-field crm-field-full">
+                            <label for="proposal_notes">Notes</label>
+                            <textarea id="proposal_notes" name="notes" placeholder="Commercial comments, objections, negotiation remarks, or client-specific notes."></textarea>
+                        </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="task_description">Task Description</label>
-                        <textarea id="task_description" name="description" placeholder="Operational details, service commitments, internal instructions, or execution details."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Task</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Proposal</button>
                     </div>
                 </form>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         CLIENT TABLE
-    ====================================================== -->
-    <section class="table-shell">
-        <div class="table-toolbar">
-            <div>
-                <h3 class="section-title">Client Portfolio</h3>
-                <p class="section-subtitle">Current account records and relationship visibility.</p>
-            </div>
-
-            <div class="action-row">
-                <a class="btn btn-primary btn-sm" href="#client-registration">New Client</a>
-                <a class="btn btn-secondary btn-sm" href="#communication-center">Log Contact</a>
+    <section class="crm-card">
+        <div class="crm-card-header">
+            <div class="crm-card-title-wrap">
+                <h2>Create Manual Task</h2>
+                <p>
+                    Add CRM-driven actions directly into the workflow engine with client and project linkage.
+                </p>
             </div>
         </div>
 
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Client</th>
-                        <th>Company</th>
-                        <th>Contact</th>
-                        <th>Status</th>
-                        <th>Country</th>
-                        <th>Language</th>
-                        <th>Industry</th>
-                        <th>Tax ID</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Region</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if crm_clients %}
-                        {% for client in crm_clients %}
-                        <tr>
-                            <td>
-                                {% if client.name is defined and client.name %}
-                                    {{ client.name }}
-                                {% elif client.company_name is defined and client.company_name %}
-                                    {{ client.company_name }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>{{ client.company_name if client.company_name is defined and client.company_name else 'N/A' }}</td>
-                            <td>{{ client.contact_person if client.contact_person is defined and client.contact_person else 'N/A' }}</td>
-                            <td>
-                                {% set status_value = client.status if client.status is defined and client.status else 'N/A' %}
-                                {% if status_value in ['Active', 'Closed-Won', 'Current'] %}
-                                    <span class="badge badge-success">{{ status_value }}</span>
-                                {% elif status_value in ['Lead', 'Prospect', 'Pending'] %}
-                                    <span class="badge badge-info">{{ status_value }}</span>
-                                {% elif status_value in ['Inactive', 'Closed-Lost', 'On Hold', 'Closed'] %}
-                                    <span class="badge badge-warning">{{ status_value }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ status_value }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ client.country if client.country is defined and client.country else 'N/A' }}</td>
-                            <td>{{ client.language if client.language is defined and client.language else 'N/A' }}</td>
-                            <td>{{ client.industry if client.industry is defined and client.industry else 'N/A' }}</td>
-                            <td>
-                                {% if (client.tax_id_type is defined and client.tax_id_type) or (client.tax_id_number is defined and client.tax_id_number) %}
-                                    {{ client.tax_id_type if client.tax_id_type is defined and client.tax_id_type else 'ID' }}:
-                                    {{ client.tax_id_number if client.tax_id_number is defined and client.tax_id_number else 'N/A' }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>{{ client.email if client.email is defined and client.email else 'N/A' }}</td>
-                            <td>{{ client.phone if client.phone is defined and client.phone else 'N/A' }}</td>
-                            <td>{{ client.region if client.region is defined and client.region else 'N/A' }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="11">No clients registered yet.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+        <div class="crm-card-body">
+            <form method="POST" action="{{ url_for('create_task') }}">
+                <div class="crm-form-grid-3">
+                    <div class="crm-field">
+                        <label for="task_title">Task Title *</label>
+                        <input type="text" id="task_title" name="title" placeholder="Call client about proposal" required>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_category">Category</label>
+                        <input type="text" id="task_category" name="category" placeholder="CRM Follow-up / Proposal / Renewal">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_priority">Priority</label>
+                        <select id="task_priority" name="priority">
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_due_date">Due Date</label>
+                        <input type="date" id="task_due_date" name="due_date">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_due_datetime">Due DateTime</label>
+                        <input type="datetime-local" id="task_due_datetime" name="due_datetime">
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_status">Status</label>
+                        <select id="task_status" name="status">
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_client_id">Client</label>
+                        <select id="task_client_id" name="client_id">
+                            <option value="">Optional client</option>
+                            {% if clients %}
+                                {% for client in clients %}
+                                    <option value="{{ client.id }}">{{ client.legal_name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="task_project_id">Project</label>
+                        <select id="task_project_id" name="project_id">
+                            <option value="">Optional project</option>
+                            {% if projects %}
+                                {% for project in projects %}
+                                    <option value="{{ project.id }}">{{ project.name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="completion_percentage">Completion %</label>
+                        <input type="number" step="0.01" id="completion_percentage" name="completion_percentage" placeholder="0.00">
+                    </div>
+
+                    <div class="crm-field crm-field-full">
+                        <label for="task_description">Description</label>
+                        <textarea id="task_description" name="description" placeholder="Action details, preparation notes, or follow-up requirements."></textarea>
+                    </div>
+
+                    <div class="crm-field crm-field-full">
+                        <label for="task_notes">Notes</label>
+                        <textarea id="task_notes" name="notes" placeholder="Internal task notes, dependencies, outcomes, or strategic reminders."></textarea>
+                    </div>
+                </div>
+
+                <div class="btn-row" style="margin-top: 18px;">
+                    <button type="submit" class="btn-3d">Create Task</button>
+                </div>
+            </form>
         </div>
     </section>
 
-    <!-- =====================================================
-         COMMUNICATION LOGS + PROJECTS
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Recent Communication Logs</h3>
-                    <p class="section-subtitle">Client conversations, updates, and follow-up history.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#communication-center">New Log</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Type</th>
-                            <th>Summary</th>
-                            <th>Follow-Up</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if crm_logs %}
-                            {% for log in crm_logs %}
-                            <tr>
-                                <td>
-                                    {% if log.client_name is defined and log.client_name %}
-                                        {{ log.client_name }}
-                                    {% elif log.client is defined and log.client %}
-                                        {% if log.client.name is defined and log.client.name %}
-                                            {{ log.client.name }}
-                                        {% elif log.client.company_name is defined and log.client.company_name %}
-                                            {{ log.client.company_name }}
-                                        {% else %}
-                                            Client #{{ log.client_id if log.client_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if log.communication_type is defined and log.communication_type %}
-                                        {{ log.communication_type }}
-                                    {% elif log.channel is defined and log.channel %}
-                                        {{ log.channel }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if log.summary is defined and log.summary %}
-                                        {{ log.summary }}
-                                    {% elif log.subject is defined and log.subject %}
-                                        {{ log.subject }}
-                                    {% elif log.message is defined and log.message %}
-                                        {{ log.message }}
-                                    {% else %}
-                                        No summary
-                                    {% endif %}
-                                </td>
-                                <td>{{ log.follow_up_date if log.follow_up_date is defined and log.follow_up_date else 'N/A' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No communication logs available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Active Projects</h3>
-                    <p class="section-subtitle">Client service delivery and account development visibility.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-secondary btn-sm" href="#project-center">New Project</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Project</th>
-                            <th>Status</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if crm_projects %}
-                            {% for project in crm_projects %}
-                            <tr>
-                                <td>
-                                    {% if project.client_name is defined and project.client_name %}
-                                        {{ project.client_name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if project.project_name is defined and project.project_name %}
-                                        {{ project.project_name }}
-                                    {% elif project.name is defined and project.name %}
-                                        {{ project.name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set p_status = project.status if project.status is defined and project.status else 'N/A' %}
-                                    {% if p_status in ['Completed'] %}
-                                        <span class="badge badge-success">{{ p_status }}</span>
-                                    {% elif p_status in ['In Progress', 'Pending Approval', 'Planned', 'Proposal', 'Active'] %}
-                                        <span class="badge badge-info">{{ p_status }}</span>
-                                    {% elif p_status in ['On Hold'] %}
-                                        <span class="badge badge-warning">{{ p_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ p_status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if project.estimated_value is defined and project.estimated_value %}
-                                        {{ project.estimated_value }}
-                                    {% elif project.budget is defined and project.budget %}
-                                        {{ project.budget }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No projects available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         TASKS + REVENUE PANELS
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Task &amp; Follow-Up Queue</h3>
-                    <p class="section-subtitle">Commercial actions, service follow-ups, and internal commitments.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#task-center">New Task</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Task</th>
-                            <th>Client</th>
-                            <th>Priority</th>
-                            <th>Due Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if crm_tasks %}
-                            {% for task in crm_tasks %}
-                            <tr>
-                                <td>{{ task.title if task.title is defined and task.title else 'N/A' }}</td>
-                                <td>{{ task.client_name if task.client_name is defined and task.client_name else 'N/A' }}</td>
-                                <td>
-                                    {% set priority = task.priority if task.priority is defined and task.priority else 'Normal' %}
-                                    {% if priority in ['Urgent', 'High', 'Critical'] %}
-                                        <span class="badge badge-danger">{{ priority }}</span>
-                                    {% elif priority in ['Normal'] %}
-                                        <span class="badge badge-info">{{ priority }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ priority }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ task.due_date if task.due_date is defined and task.due_date else 'N/A' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No tasks recorded.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="panel-card" id="revenue-panels">
-            <h3>Revenue &amp; Opportunity Direction</h3>
-            <p class="section-subtitle">
-                Commercial positioning and account expansion guidance for the CRM engine.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Cross-Service Growth</div>
-                    <div class="activity-item-meta">
-                        Identify which CRM accounts can expand into HRIS, ATS, SG-SST,
-                        Finance, training, or marketing services.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Pipeline Discipline</div>
-                    <div class="activity-item-meta">
-                        Keep leads active, structure follow-up timing, and avoid losing
-                        opportunities because of undocumented client conversations.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Future XIOMY CRM Intelligence</div>
-                    <div class="activity-item-meta">
-                        XIOMY will eventually evaluate customer tendencies, service demand,
-                        communication patterns, and account priority signals for owner use.
-                    </div>
-                </div>
-            </div>
-
-            <div class="summary-grid mt-4">
-                <div class="summary-card">
-                    <h3>Clients in Portfolio</h3>
-                    <p>{{ crm_clients|length }}</p>
-                    <span class="summary-note">Relationship base under management</span>
-                </div>
-
-                <div class="summary-card">
-                    <h3>Pipeline Value</h3>
+    <section class="crm-grid-2">
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Clients Table</h2>
                     <p>
-                        {% if crm_stats_safe.pipeline_value is defined %}
-                            {{ crm_stats_safe.pipeline_value }}
-                        {% else %}
-                            0
-                        {% endif %}
+                        Full CRM account visibility with location, industry, status, and commercial ownership context.
                     </p>
-                    <span class="summary-note">Tracked opportunity and project value</span>
                 </div>
             </div>
 
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            <div class="crm-card-body">
+                {% if clients %}
+                    <div class="crm-table-wrap">
+                        <table class="crm-table">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Industry</th>
+                                    <th>Location</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in clients %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ client.legal_name or "Unnamed Client" }}</strong>
+                                            {% if client.trade_name %}
+                                                <br><span class="tab-note">{{ client.trade_name }}</span>
+                                            {% endif %}
+                                            {% if client.client_code %}
+                                                <br><span class="tab-note">Code: {{ client.client_code }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ client.industry or "Not set" }}</td>
+                                        <td>
+                                            {{ client.city or "City not set" }}
+                                            {% if client.country %}
+                                                <br><span class="tab-note">{{ client.country }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ client.email or "No email" }}</td>
+                                        <td>{{ client.phone or "No phone" }}</td>
+                                        <td>{{ client.status or "Active" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-crm">
+                        <h3>No clients registered yet</h3>
+                        <p>
+                            The CRM backend is ready. Create your first client with the form above and it will appear here.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Recent Contacts</h2>
+                    <p>
+                        Key relationship people linked to current accounts and client structures.
+                    </p>
+                </div>
+            </div>
+
+            <div class="crm-card-body">
+                {% if contacts %}
+                    <div class="crm-list">
+                        {% for contact in contacts %}
+                            <div class="crm-list-item">
+                                <div class="crm-list-item-top">
+                                    <div>
+                                        <h3 class="crm-list-title">{{ contact.full_name or "Unnamed Contact" }}</h3>
+                                        <div class="crm-list-meta">
+                                            <span>{{ contact.job_title or "No job title" }}</span>
+                                            {% if contact.client %}
+                                                <span>{{ contact.client.legal_name }}</span>
+                                            {% endif %}
+                                            {% if contact.preferred_contact_method %}
+                                                <span>{{ contact.preferred_contact_method }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="tag-row">
+                                        {% if contact.decision_maker %}
+                                            <span class="tag gold">Decision Maker</span>
+                                        {% endif %}
+                                        <span class="tag">{{ contact.status or "Active" }}</span>
+                                    </div>
+                                </div>
+
+                                <p class="crm-list-text">
+                                    {{ contact.email or "No email" }}
+                                    {% if contact.phone %}
+                                        · {{ contact.phone }}
+                                    {% endif %}
+                                    {% if contact.whatsapp %}
+                                        · WhatsApp: {{ contact.whatsapp }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-crm">
+                        <h3>No contacts yet</h3>
+                        <p>
+                            Add a contact using the client contact form and relationship records will appear here.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="crm-grid-2">
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Projects Overview</h2>
+                    <p>
+                        Client project portfolio with service line, financial reference, and status visibility.
+                    </p>
+                </div>
+            </div>
+
+            <div class="crm-card-body">
+                {% if projects %}
+                    <div class="crm-list">
+                        {% for project in projects %}
+                            <div class="crm-list-item">
+                                <div class="crm-list-item-top">
+                                    <div>
+                                        <h3 class="crm-list-title">{{ project.name or "Unnamed Project" }}</h3>
+                                        <div class="crm-list-meta">
+                                            {% if project.client %}
+                                                <span>{{ project.client.legal_name }}</span>
+                                            {% endif %}
+                                            <span>{{ project.service_line or "No service line" }}</span>
+                                            {% if project.project_code %}
+                                                <span>{{ project.project_code }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="tag-row">
+                                        <span class="tag">{{ project.status or "Active" }}</span>
+                                    </div>
+                                </div>
+
+                                <p class="crm-list-text">
+                                    Budget: {{ "{:,.2f}".format(project.estimated_budget or 0) }}
+                                    · Revenue: {{ "{:,.2f}".format(project.actual_revenue or 0) }}
+                                    · Margin: {{ "{:,.2f}".format(project.margin_percentage or 0) }}%
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-crm">
+                        <h3>No projects yet</h3>
+                        <p>
+                            Projects created from this module will be shown here with client and financial context.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="crm-card">
+            <div class="crm-card-header">
+                <div class="crm-card-title-wrap">
+                    <h2>Communication History</h2>
+                    <p>
+                        Logged CRM activity with channel visibility, summaries, and next-step context.
+                    </p>
+                </div>
+            </div>
+
+            <div class="crm-card-body">
+                {% if communications %}
+                    <div class="crm-list">
+                        {% for comm in communications %}
+                            <div class="crm-list-item">
+                                <div class="crm-list-item-top">
+                                    <div>
+                                        <h3 class="crm-list-title">
+                                            {{ comm.subject or "CRM Communication Record" }}
+                                        </h3>
+                                        <div class="crm-list-meta">
+                                            {% if comm.client %}
+                                                <span>{{ comm.client.legal_name }}</span>
+                                            {% endif %}
+                                            <span>{{ comm.channel or "No channel" }}</span>
+                                            {% if comm.contact %}
+                                                <span>{{ comm.contact.full_name }}</span>
+                                            {% endif %}
+                                            {% if comm.next_follow_up_date %}
+                                                <span>Follow-up: {{ comm.next_follow_up_date.strftime("%Y-%m-%d") }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="tag-row">
+                                        <span class="tag green">{{ comm.channel or "Activity" }}</span>
+                                    </div>
+                                </div>
+
+                                <p class="crm-list-text">
+                                    {{ comm.message_summary or "No summary." }}
+                                    {% if comm.action_items %}
+                                        <br><strong>Action Items:</strong> {{ comm.action_items }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-crm">
+                        <h3>No communications logged yet</h3>
+                        <p>
+                            Use the communication form above to create the first documented client interaction.
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </section>
 
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-    const crmTaxIdOptionsByCountry = {{ crm_tax_id_options_by_country|tojson }};
-    const crmDefaultTaxIdOptions = {{ crm_default_tax_id_options|tojson }};
-
-    function updateClientTaxIdOptions() {
-        const countrySelect = document.getElementById("client_country");
-        const taxTypeSelect = document.getElementById("client_tax_id_type");
-        const taxNumberInput = document.getElementById("client_tax_id_number");
-
-        if (!countrySelect || !taxTypeSelect) {
-            return;
-        }
-
-        const selectedCountry = countrySelect.value;
-        const options = crmTaxIdOptionsByCountry[selectedCountry] || crmDefaultTaxIdOptions;
-        const previousValue = taxTypeSelect.value;
-
-        taxTypeSelect.innerHTML = "";
-
-        options.forEach((optionValue) => {
-            const option = document.createElement("option");
-            option.value = optionValue;
-            option.textContent = optionValue;
-            if (optionValue === previousValue) {
-                option.selected = true;
-            }
-            taxTypeSelect.appendChild(option);
-        });
-
-        if (![...taxTypeSelect.options].some((option) => option.selected)) {
-            taxTypeSelect.selectedIndex = 0;
-        }
-
-        if (taxNumberInput) {
-            const selectedType = taxTypeSelect.value || "Tax ID";
-            taxNumberInput.placeholder = "Enter " + selectedType;
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        updateClientTaxIdOptions();
-    });
-</script>
 {% endblock %}
