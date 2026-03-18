@@ -1,531 +1,612 @@
+```html
 {% extends "base.html" %}
 
-{% block title %}
-Reports & Analytics | UrbanHRPartners Enterprise Suite
+{% block title %}Reports & Analytics | UrbanHRPartners Enterprise Suite{% endblock %}
+{% block page_title %}Reports & Analytics Command Center{% endblock %}
+{% block page_subtitle %}Manage KPI records, analytics snapshots, report requests, and export logs from one integrated executive reporting workspace.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .ra-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .ra-banner,
+    .ra-summary {
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
+        border: 1px solid rgba(11,31,58,0.08);
+    }
+
+    .ra-banner {
+        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 52%, rgba(212,175,55,0.88) 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ra-banner::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
+    }
+
+    .ra-banner h2 {
+        margin: 0 0 10px;
+        font-size: 1.9rem;
+        color: #fff8e6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ra-banner p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+    }
+
+    .ra-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ra-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 800;
+        color: #fffdf5;
+    }
+
+    .ra-summary {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
+    }
+
+    .ra-summary h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+    }
+
+    .summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.06);
+    }
+
+    .summary-item strong { color: #0b1f3a; }
+    .summary-pill {
+        min-width: 84px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 14px;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
+        border: 1px solid rgba(212,175,55,0.26);
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
+    }
+
+    .kpi-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5e6d85;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .kpi-card .value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .kpi-card .note {
+        color: #6b7a91;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .ra-layout {
+        display: grid;
+        grid-template-columns: 430px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-stack,
+    .data-stack {
+        display: grid;
+        gap: 22px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.97);
+        border-radius: 24px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
+        padding: 22px;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1.14rem;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #61718a;
+        line-height: 1.45;
+        font-size: 0.94rem;
+    }
+
+    .section-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
+        border: 1px solid rgba(212,175,55,0.24);
+    }
+
+    .enterprise-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field,
+    .field-full {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field-full { grid-column: 1 / -1; }
+
+    .enterprise-form label {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .enterprise-form input,
+    .enterprise-form select,
+    .enterprise-form textarea {
+        width: 100%;
+        border: 1px solid rgba(11,31,58,0.12);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        color: #132238;
+        background: #fff;
+        outline: none;
+    }
+
+    .enterprise-form textarea {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 800;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
+        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(11,31,58,0.07);
+    }
+
+    .ra-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 840px;
+        background: #fff;
+    }
+
+    .ra-table th,
+    .ra-table td {
+        padding: 13px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(11,31,58,0.07);
+        vertical-align: top;
+    }
+
+    .ra-table th {
+        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
+        color: #0b1f3a;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .ra-table td {
+        font-size: 0.95rem;
+        color: #334155;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        border: 1px solid rgba(11,31,58,0.08);
+        background: rgba(11,31,58,0.05);
+        color: #0b1f3a;
+    }
+
+    .status-active,
+    .status-completed,
+    .status-generated,
+    .status-ready {
+        background: rgba(6,118,71,0.12);
+        color: #067647;
+        border-color: rgba(6,118,71,0.18);
+    }
+
+    .status-pending,
+    .status-draft,
+    .status-processing {
+        background: rgba(181,71,8,0.12);
+        color: #b54708;
+        border-color: rgba(181,71,8,0.18);
+    }
+
+    .status-closed,
+    .status-failed,
+    .status-cancelled {
+        background: rgba(100,116,139,0.12);
+        color: #475569;
+        border-color: rgba(100,116,139,0.18);
+    }
+
+    .code-box {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #0f1f37;
+        color: #f8fafc;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 0.84rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 20px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
+        border: 1px dashed rgba(11,31,58,0.12);
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-link {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.08);
+        color: #0b1f3a;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1320px) {
+        .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .ra-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+        .ra-hero,
+        .kpi-grid,
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
+
+{% macro status_chip(value) -%}
+    {% set raw = (value or 'N/A') %}
+    {% set normalized = raw|string|lower|replace(' ', '-') %}
+    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
+{%- endmacro %}
 
 {% block content %}
-
-<div class="page-grid">
-
-    <!-- ===================================================== -->
-    <!-- PAGE HEADER -->
-    <!-- ===================================================== -->
-
-    <section class="module-header">
-        <h1>Reports, Analytics & Executive Intelligence</h1>
+<section class="ra-hero">
+    <div class="ra-banner">
+        <h2>Executive reporting, KPI tracking, and export governance</h2>
         <p>
-            Consolidated reporting environment for the UrbanHRPartners Enterprise Suite.
-            This page centralizes key performance indicators, operational summaries,
-            cross-module activity, executive metrics, and XIOMY-generated intelligence
-            across CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing,
-            and Calendar operations.
+            This reporting workspace centralizes KPI entries, analytics snapshots, formal report requests,
+            and export logging so leadership can control insight generation, historical trend capture,
+            and reporting evidence from one enterprise command surface.
         </p>
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- EXECUTIVE SUMMARY -->
-    <!-- ===================================================== -->
-
-    <section class="summary-grid">
-
-        <div class="summary-card">
-            <h3>Total Clients</h3>
-            <p>
-                {% if crm_summary and crm_summary.total_clients is defined %}
-                    {{ crm_summary.total_clients }}
-                {% elif dashboard_metrics and dashboard_metrics.total_clients is defined %}
-                    {{ dashboard_metrics.total_clients }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
+        <div class="ra-chip-row">
+            <span class="ra-chip">KPI records</span>
+            <span class="ra-chip">Analytics snapshots</span>
+            <span class="ra-chip">Report requests</span>
+            <span class="ra-chip">Export control</span>
         </div>
+    </div>
 
-        <div class="summary-card">
-            <h3>Total Employees</h3>
-            <p>
-                {% if hris_summary and hris_summary.total_employees is defined %}
-                    {{ hris_summary.total_employees }}
-                {% elif dashboard_metrics and dashboard_metrics.total_employees is defined %}
-                    {{ dashboard_metrics.total_employees }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
+    <div class="ra-summary">
+        <div class="panel-head">
+            <div>
+                <h3>Reporting summary</h3>
+                <p>Immediate visibility into analytics activity and report operations.</p>
+            </div>
+            <span class="section-badge">Analytics Live</span>
         </div>
-
-        <div class="summary-card">
-            <h3>Total Candidates</h3>
-            <p>
-                {% if ats_summary and ats_summary.total_candidates is defined %}
-                    {{ ats_summary.total_candidates }}
-                {% elif dashboard_metrics and dashboard_metrics.total_candidates is defined %}
-                    {{ dashboard_metrics.total_candidates }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
+        <div class="summary-list">
+            <div class="summary-item"><strong>KPI Records</strong><span class="summary-pill">{{ kpi_records|length }}</span></div>
+            <div class="summary-item"><strong>Snapshots</strong><span class="summary-pill">{{ analytics_snapshots|length }}</span></div>
+            <div class="summary-item"><strong>Requests</strong><span class="summary-pill">{{ report_requests|length }}</span></div>
+            <div class="summary-item"><strong>Exports</strong><span class="summary-pill">{{ export_logs|length }}</span></div>
         </div>
+    </div>
+</section>
 
-        <div class="summary-card">
-            <h3>Open Orientation Items</h3>
-            <p>
-                {% if orientation_summary and orientation_summary.open_items is defined %}
-                    {{ orientation_summary.open_items }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-        </div>
+<section class="kpi-grid">
+    <article class="kpi-card">
+        <div class="label">KPI Records</div>
+        <div class="value">{{ kpi_records|length }}</div>
+        <div class="note">Operational and strategic KPI entries by module and date.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Snapshots</div>
+        <div class="value">{{ analytics_snapshots|length }}</div>
+        <div class="note">Saved analytics states for later review and comparison.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Requests</div>
+        <div class="value">{{ report_requests|length }}</div>
+        <div class="note">Formal reporting requests with filters and generation paths.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Exports</div>
+        <div class="value">{{ export_logs|length }}</div>
+        <div class="note">Audit trail of generated exports and reporting outputs.</div>
+    </article>
+</section>
 
-        <div class="summary-card">
-            <h3>Total Incidents</h3>
-            <p>
-                {% if sgsst_summary and sgsst_summary.total_incidents is defined %}
-                    {{ sgsst_summary.total_incidents }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-        </div>
-
-        <div class="summary-card">
-            <h3>Total Revenue</h3>
-            <p>
-                {% if finance_summary and finance_summary.total_revenue is defined %}
-                    ${{ finance_summary.total_revenue }}
-                {% else %}
-                    $0.00
-                {% endif %}
-            </p>
-        </div>
-
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- BUSINESS PERFORMANCE -->
-    <!-- ===================================================== -->
-
-    <section class="module-card">
-        <h2>Business Performance Snapshot</h2>
-
-        <div class="info-grid">
-
-            <div class="info-card">
-                <h3>CRM Performance</h3>
-                <p><strong>Total Clients:</strong>
-                    {% if crm_summary and crm_summary.total_clients is defined %}
-                        {{ crm_summary.total_clients }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Active Projects:</strong>
-                    {% if crm_summary and crm_summary.active_projects is defined %}
-                        {{ crm_summary.active_projects }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Communication Logs:</strong>
-                    {% if crm_summary and crm_summary.total_communications is defined %}
-                        {{ crm_summary.total_communications }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Pipeline Health:</strong> Operational</p>
-            </div>
-
-            <div class="info-card">
-                <h3>HRIS Performance</h3>
-                <p><strong>Total Employees:</strong>
-                    {% if hris_summary and hris_summary.total_employees is defined %}
-                        {{ hris_summary.total_employees }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Active Employees:</strong>
-                    {% if hris_summary and hris_summary.active_employees is defined %}
-                        {{ hris_summary.active_employees }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Disciplinary Records:</strong>
-                    {% if hris_summary and hris_summary.disciplinary_cases is defined %}
-                        {{ hris_summary.disciplinary_cases }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Workforce Status:</strong> Monitored</p>
-            </div>
-
-            <div class="info-card">
-                <h3>ATS Performance</h3>
-                <p><strong>Total Candidates:</strong>
-                    {% if ats_summary and ats_summary.total_candidates is defined %}
-                        {{ ats_summary.total_candidates }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Interviews Scheduled:</strong>
-                    {% if ats_summary and ats_summary.interviews_scheduled is defined %}
-                        {{ ats_summary.interviews_scheduled }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Offers / Hires:</strong>
-                    {% if ats_summary and ats_summary.hires_completed is defined %}
-                        {{ ats_summary.hires_completed }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Recruitment Status:</strong> Active</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Orientation Performance</h3>
-                <p><strong>Checklist Items:</strong>
-                    {% if orientation_summary and orientation_summary.total_items is defined %}
-                        {{ orientation_summary.total_items }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Pending Acknowledgements:</strong>
-                    {% if orientation_summary and orientation_summary.pending_acknowledgements is defined %}
-                        {{ orientation_summary.pending_acknowledgements }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Assigned Assets:</strong>
-                    {% if orientation_summary and orientation_summary.assigned_assets is defined %}
-                        {{ orientation_summary.assigned_assets }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Onboarding Status:</strong> Controlled</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- OPERATIONS & COMPLIANCE -->
-    <!-- ===================================================== -->
-
-    <section class="module-card">
-        <h2>Operations, Compliance & Resource Analytics</h2>
-
-        <div class="info-grid">
-
-            <div class="info-card">
-                <h3>SG-SST Analytics</h3>
-                <p><strong>Total Incidents:</strong>
-                    {% if sgsst_summary and sgsst_summary.total_incidents is defined %}
-                        {{ sgsst_summary.total_incidents }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Risk Factors:</strong>
-                    {% if sgsst_summary and sgsst_summary.total_risks is defined %}
-                        {{ sgsst_summary.total_risks }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Trainings:</strong>
-                    {% if sgsst_summary and sgsst_summary.total_trainings is defined %}
-                        {{ sgsst_summary.total_trainings }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Compliance Status:</strong> Operational</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Inventory Analytics</h3>
-                <p><strong>Total Items:</strong>
-                    {% if inventory_summary and inventory_summary.total_items is defined %}
-                        {{ inventory_summary.total_items }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Assigned Assets:</strong>
-                    {% if inventory_summary and inventory_summary.assigned_items is defined %}
-                        {{ inventory_summary.assigned_items }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Low Stock Alerts:</strong>
-                    {% if inventory_summary and inventory_summary.low_stock_count is defined %}
-                        {{ inventory_summary.low_stock_count }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Resource Status:</strong> Monitored</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Finance Analytics</h3>
-                <p><strong>Total Revenue:</strong>
-                    {% if finance_summary and finance_summary.total_revenue is defined %}
-                        ${{ finance_summary.total_revenue }}
-                    {% else %}
-                        $0.00
-                    {% endif %}
-                </p>
-                <p><strong>Total Expenses:</strong>
-                    {% if finance_summary and finance_summary.total_expenses is defined %}
-                        ${{ finance_summary.total_expenses }}
-                    {% else %}
-                        $0.00
-                    {% endif %}
-                </p>
-                <p><strong>Net Position:</strong>
-                    {% if finance_summary and finance_summary.net_position is defined %}
-                        ${{ finance_summary.net_position }}
-                    {% else %}
-                        $0.00
-                    {% endif %}
-                </p>
-                <p><strong>Financial Status:</strong> Active</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Marketing Analytics</h3>
-                <p><strong>Total Campaigns:</strong>
-                    {% if marketing_summary and marketing_summary.total_campaigns is defined %}
-                        {{ marketing_summary.total_campaigns }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Lead Sources:</strong>
-                    {% if marketing_summary and marketing_summary.total_lead_sources is defined %}
-                        {{ marketing_summary.total_lead_sources }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Qualified Opportunities:</strong>
-                    {% if marketing_summary and marketing_summary.qualified_opportunities is defined %}
-                        {{ marketing_summary.qualified_opportunities }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Growth Status:</strong> Active</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- SCHEDULING & EXECUTION -->
-    <!-- ===================================================== -->
-
-    <section class="module-card">
-        <h2>Scheduling, Execution & Planning Analytics</h2>
-
-        <div class="info-grid">
-
-            <div class="info-card">
-                <h3>Calendar Analytics</h3>
-                <p><strong>Total Events:</strong>
-                    {% if calendar_summary and calendar_summary.total_events is defined %}
-                        {{ calendar_summary.total_events }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Scheduled Tasks:</strong>
-                    {% if calendar_summary and calendar_summary.total_tasks is defined %}
-                        {{ calendar_summary.total_tasks }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Meeting Requests:</strong>
-                    {% if calendar_summary and calendar_summary.total_meetings is defined %}
-                        {{ calendar_summary.total_meetings }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </p>
-                <p><strong>Coordination Status:</strong> Active</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Executive Command Summary</h3>
-                <p><strong>Platform:</strong> UrbanHRPartners Enterprise Suite</p>
-                <p><strong>Integrated Modules:</strong> CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar</p>
-                <p><strong>Executive AI:</strong> XIOMY</p>
-                <p><strong>System Status:</strong> Online</p>
-            </div>
-
-            <div class="info-card">
-                <h3>Operational Health</h3>
-                <p>
-                    This analytics layer is intended to help leadership identify performance
-                    trends, monitor enterprise execution, assess risk concentration, track
-                    commercial growth, and align strategic decisions with real-time operational data.
-                </p>
-            </div>
-
-            <div class="info-card">
-                <h3>Founder Profile</h3>
-                <p><strong>Founder:</strong> Juan Carlos Urbano</p>
-                <p><strong>Display Name:</strong> Juan Carlos Urbano, PhD(c) Business Psychology, MA-MHRM</p>
-                <p><strong>Brand:</strong> UrbanHRPartners Enterprise Suite</p>
-                <p><strong>Purpose:</strong> Intelligent organizational management and executive control</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- RECENT ACTIVITY -->
-    <!-- ===================================================== -->
-
-    <section class="module-card">
-        <h2>Recent Activity Feed</h2>
-
-        <div class="table-responsive">
-            <table class="crm-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Module</th>
-                        <th>Activity</th>
-                        <th>User / Owner</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for activity in recent_activity %}
-                    <tr>
-                        <td>{{ activity.id if activity.id is defined else loop.index }}</td>
-                        <td>{{ activity.module if activity.module is defined else 'System' }}</td>
-                        <td>{{ activity.activity if activity.activity is defined else '' }}</td>
-                        <td>{{ activity.owner if activity.owner is defined else '' }}</td>
-                        <td>{{ activity.date if activity.date is defined else '' }}</td>
-                        <td>{{ activity.status if activity.status is defined else 'Recorded' }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6">No recent activity has been recorded yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- XIOMY EXECUTIVE INTELLIGENCE -->
-    <!-- ===================================================== -->
-
-    <section class="module-card">
-        <h2>XIOMY Executive Intelligence</h2>
-
-        <p>
-            XIOMY consolidates information across all modules to support executive
-            visibility, predictive insight, anomaly detection, workload prioritization,
-            commercial strategy, compliance monitoring, and resource planning.
-        </p>
-
-        <div class="info-grid">
-
-            <div class="info-card">
-                <h3>Strategic Visibility</h3>
-                <p>
-                    XIOMY can identify growth patterns, operational bottlenecks, risk
-                    exposure, staffing needs, pending onboarding issues, and client
-                    concentration trends from a single executive layer.
-                </p>
-            </div>
-
-            <div class="info-card">
-                <h3>Module Synchronization</h3>
-                <p>
-                    The executive AI layer is designed to synchronize CRM, HRIS, ATS,
-                    Orientation, SG-SST, Inventory, Finance, Marketing, and Calendar
-                    data into a unified command structure.
-                </p>
-            </div>
-
-            <div class="info-card">
-                <h3>Decision Support</h3>
-                <p>
-                    XIOMY can be used to assist leadership in comparing module performance,
-                    prioritizing resources, anticipating compliance needs, and identifying
-                    next-step recommendations for sustainable growth.
-                </p>
-            </div>
-
-            <div class="info-card">
-                <h3>Current AI Status</h3>
-                <p>
-                    {% if xiomy_summary and xiomy_summary.status is defined %}
-                        {{ xiomy_summary.status }}
-                    {% else %}
-                        Online
-                    {% endif %}
-                </p>
-            </div>
-
-        </div>
-
-        <div class="xiomy-panel">
-            <button type="button" class="btn-secondary" onclick="runExecutiveAnalytics()">
-                Run XIOMY Executive Analytics
-            </button>
-
-            <div id="executive-analytics-result" class="analysis-output"></div>
-        </div>
-    </section>
-
-</div>
-
-<script>
-function runExecutiveAnalytics() {
-    fetch("/xiomy")
-        .then(response => response.json())
-        .then(data => {
-            const target = document.getElementById("executive-analytics-result");
-            target.innerHTML = `
-                <div class="info-card" style="margin-top: 15px;">
-                    <h3>XIOMY Executive Response</h3>
-                    <p>Executive analytics active. Cross-module monitoring engaged for CRM, workforce, recruitment, onboarding, compliance, finance, marketing, inventory, and calendar execution.</p>
+<section class="ra-layout">
+    <div class="form-stack">
+        <div class="panel" id="kpi-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create KPI record</h3>
+                    <p>Register a module KPI with date, value, unit, and notes.</p>
                 </div>
-            `;
-        })
-        .catch(error => {
-            const target = document.getElementById("executive-analytics-result");
-            target.innerHTML = `
-                <div class="info-card" style="margin-top: 15px;">
-                    <h3>XIOMY Executive Response</h3>
-                    <p>Unable to retrieve XIOMY executive analytics at this time. Please verify the /xiomy endpoint and backend service availability.</p>
+                <span class="section-badge">KPI</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_kpi_record') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="kpi_module">Module</label><input id="kpi_module" name="module" type="text" required /></div>
+                    <div class="field"><label for="kpi_name">KPI Name</label><input id="kpi_name" name="kpi_name" type="text" required /></div>
+                    <div class="field"><label for="kpi_value">KPI Value</label><input id="kpi_value" name="kpi_value" type="number" step="0.01" required /></div>
+                    <div class="field"><label for="kpi_date">KPI Date</label><input id="kpi_date" name="kpi_date" type="date" /></div>
+                    <div class="field"><label for="kpi_unit">Unit</label><input id="kpi_unit" name="unit" type="text" /></div>
+                    <div class="field-full"><label for="kpi_notes">Notes</label><textarea id="kpi_notes" name="notes"></textarea></div>
                 </div>
-            `;
-        });
-}
-</script>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create KPI Record</button>
+                    <a class="btn-secondary" href="#kpi-table">Review KPI Records</a>
+                </div>
+            </form>
+        </div>
 
+        <div class="panel" id="snapshot-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create analytics snapshot</h3>
+                    <p>Store a named analytics view with period label, JSON payload, and summary.</p>
+                </div>
+                <span class="section-badge">Snapshot</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_analytics_snapshot') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="snapshot_module">Module</label><input id="snapshot_module" name="module" type="text" required /></div>
+                    <div class="field"><label for="snapshot_name">Snapshot Name</label><input id="snapshot_name" name="snapshot_name" type="text" required /></div>
+                    <div class="field-full"><label for="period_label">Period Label</label><input id="period_label" name="period_label" type="text" /></div>
+                    <div class="field-full"><label for="json_data">JSON Data</label><textarea id="json_data" name="json_data" placeholder='{"metric": 100, "trend": "up"}'></textarea></div>
+                    <div class="field-full"><label for="snapshot_summary">Summary</label><textarea id="snapshot_summary" name="summary"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Snapshot</button>
+                    <a class="btn-secondary" href="#snapshots-table">Review Snapshots</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="request-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create report request</h3>
+                    <p>Register a formal reporting need, filters, requester, status, and file destination.</p>
+                </div>
+                <span class="section-badge">Request</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_report_request') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="request_module">Module</label><input id="request_module" name="module" type="text" required /></div>
+                    <div class="field"><label for="report_name">Report Name</label><input id="report_name" name="report_name" type="text" required /></div>
+                    <div class="field"><label for="requested_by">Requested By</label><input id="requested_by" name="requested_by" type="text" /></div>
+                    <div class="field"><label for="request_status">Status</label><input id="request_status" name="status" type="text" value="Pending" /></div>
+                    <div class="field-full"><label for="filters_json">Filters JSON</label><textarea id="filters_json" name="filters_json" placeholder='{"date_from": "2026-01-01", "date_to": "2026-12-31"}'></textarea></div>
+                    <div class="field-full"><label for="generated_file_path">Generated File Path</label><input id="generated_file_path" name="generated_file_path" type="text" /></div>
+                    <div class="field-full"><label for="request_notes">Notes</label><textarea id="request_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Report Request</button>
+                    <a class="btn-secondary" href="#requests-table">Review Requests</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="export-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create export log</h3>
+                    <p>Capture export activity for governance, audit trail, and output tracking.</p>
+                </div>
+                <span class="section-badge">Export</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_export_log') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="export_module">Module</label><input id="export_module" name="module" type="text" required /></div>
+                    <div class="field"><label for="export_type">Export Type</label><input id="export_type" name="export_type" type="text" placeholder="PDF / CSV / XLSX" required /></div>
+                    <div class="field"><label for="record_count">Record Count</label><input id="record_count" name="record_count" type="number" /></div>
+                    <div class="field"><label for="generated_by">Generated By</label><input id="generated_by" name="generated_by" type="text" /></div>
+                    <div class="field-full"><label for="export_file_path">File Path</label><input id="export_file_path" name="file_path" type="text" /></div>
+                    <div class="field-full"><label for="export_notes">Notes</label><textarea id="export_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Export Log</button>
+                    <a class="btn-secondary" href="#exports-table">Review Exports</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="data-stack">
+        <div class="panel">
+            <div class="tabs">
+                <a class="tab-link" href="#kpi-table">KPI Records</a>
+                <a class="tab-link" href="#snapshots-table">Snapshots</a>
+                <a class="tab-link" href="#requests-table">Report Requests</a>
+                <a class="tab-link" href="#exports-table">Export Logs</a>
+            </div>
+        </div>
+
+        <div class="panel" id="kpi-table">
+            <div class="panel-head"><div><h3>KPI records</h3><p>Structured KPI entries by module, value, date, and unit.</p></div><span class="section-badge">{{ kpi_records|length }} records</span></div>
+            {% if kpi_records %}
+            <div class="table-wrap"><table class="ra-table"><thead><tr><th>Module</th><th>KPI Name</th><th>Value</th><th>Unit</th><th>Date</th></tr></thead><tbody>{% for kpi in kpi_records %}<tr><td>{{ kpi.module }}</td><td><strong>{{ kpi.kpi_name }}</strong></td><td>{{ kpi.kpi_value or 0 }}</td><td>{{ kpi.unit or 'N/A' }}</td><td>{{ kpi.kpi_date.strftime('%Y-%m-%d') if kpi.kpi_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No KPI records available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="snapshots-table">
+            <div class="panel-head"><div><h3>Analytics snapshots</h3><p>Saved analytical states with period labels and structured data.</p></div><span class="section-badge">{{ analytics_snapshots|length }} records</span></div>
+            {% if analytics_snapshots %}
+            <div class="table-wrap"><table class="ra-table"><thead><tr><th>Module</th><th>Snapshot</th><th>Period</th><th>Summary</th><th>Data</th></tr></thead><tbody>{% for snapshot in analytics_snapshots %}<tr><td>{{ snapshot.module }}</td><td><strong>{{ snapshot.snapshot_name }}</strong></td><td>{{ snapshot.period_label or 'N/A' }}</td><td>{{ snapshot.summary or 'N/A' }}</td><td><div class="code-box">{{ snapshot.json_data or '{}' }}</div></td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No analytics snapshots available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="requests-table">
+            <div class="panel-head"><div><h3>Report requests</h3><p>Formal report demand queue with filters, status, and output path.</p></div><span class="section-badge">{{ report_requests|length }} records</span></div>
+            {% if report_requests %}
+            <div class="table-wrap"><table class="ra-table"><thead><tr><th>Module</th><th>Report</th><th>Requested By</th><th>Status</th><th>Filters</th><th>File</th></tr></thead><tbody>{% for request in report_requests %}<tr><td>{{ request.module }}</td><td><strong>{{ request.report_name }}</strong></td><td>{{ request.requested_by or 'N/A' }}</td><td>{{ status_chip(request.status) }}</td><td><div class="code-box">{{ request.filters_json or '{}' }}</div></td><td>{{ request.generated_file_path or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No report requests available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="exports-table">
+            <div class="panel-head"><div><h3>Export logs</h3><p>Reporting output history for governance and audit evidence.</p></div><span class="section-badge">{{ export_logs|length }} records</span></div>
+            {% if export_logs %}
+            <div class="table-wrap"><table class="ra-table"><thead><tr><th>Module</th><th>Export Type</th><th>Records</th><th>Generated By</th><th>File Path</th></tr></thead><tbody>{% for export in export_logs %}<tr><td>{{ export.module }}</td><td>{{ status_chip(export.export_type) }}</td><td>{{ export.record_count or 0 }}</td><td>{{ export.generated_by or 'N/A' }}</td><td>{{ export.file_path or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No export logs available yet.</div>{% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}
+```

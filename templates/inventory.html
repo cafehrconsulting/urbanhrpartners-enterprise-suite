@@ -1,729 +1,740 @@
+```html
 {% extends "base.html" %}
 
-{% block title %}
-Inventory | UrbanHRPartners Enterprise Suite
+{% block title %}Inventory | UrbanHRPartners Enterprise Suite{% endblock %}
+{% block page_title %}Inventory Command Center{% endblock %}
+{% block page_subtitle %}Manage inventory categories, warehouse locations, items, barcode and QR control, stock movements, asset assignments, and maintenance logs from one integrated operational workspace.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .inv-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .inv-banner,
+    .inv-summary {
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
+        border: 1px solid rgba(11,31,58,0.08);
+    }
+
+    .inv-banner {
+        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 54%, rgba(192,198,207,0.88) 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .inv-banner::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
+    }
+
+    .inv-banner h2 {
+        margin: 0 0 10px;
+        font-size: 1.9rem;
+        color: #fff8e6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .inv-banner p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+    }
+
+    .inv-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .inv-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 800;
+        color: #fffdf5;
+    }
+
+    .inv-summary {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
+    }
+
+    .inv-summary h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+    }
+
+    .summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.06);
+    }
+
+    .summary-item strong { color: #0b1f3a; }
+    .summary-pill {
+        min-width: 84px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 14px;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
+        border: 1px solid rgba(212,175,55,0.26);
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
+    }
+
+    .kpi-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5e6d85;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .kpi-card .value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .kpi-card .note {
+        color: #6b7a91;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .inv-layout {
+        display: grid;
+        grid-template-columns: 430px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-stack,
+    .data-stack {
+        display: grid;
+        gap: 22px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.97);
+        border-radius: 24px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
+        padding: 22px;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1.14rem;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #61718a;
+        line-height: 1.45;
+        font-size: 0.94rem;
+    }
+
+    .section-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
+        border: 1px solid rgba(212,175,55,0.24);
+    }
+
+    .enterprise-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field,
+    .field-full {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field-full { grid-column: 1 / -1; }
+
+    .enterprise-form label {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .enterprise-form input,
+    .enterprise-form select,
+    .enterprise-form textarea {
+        width: 100%;
+        border: 1px solid rgba(11,31,58,0.12);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        color: #132238;
+        background: #fff;
+        outline: none;
+    }
+
+    .enterprise-form textarea {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 800;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
+        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .scan-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(11,31,58,0.07);
+    }
+
+    .inv-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 860px;
+        background: #fff;
+    }
+
+    .inv-table th,
+    .inv-table td {
+        padding: 13px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(11,31,58,0.07);
+        vertical-align: top;
+    }
+
+    .inv-table th {
+        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
+        color: #0b1f3a;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .inv-table td {
+        font-size: 0.95rem;
+        color: #334155;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        border: 1px solid rgba(11,31,58,0.08);
+        background: rgba(11,31,58,0.05);
+        color: #0b1f3a;
+    }
+
+    .status-active,
+    .status-assigned,
+    .status-completed,
+    .status-in,
+    .status-out,
+    .status-transfer {
+        background: rgba(6,118,71,0.12);
+        color: #067647;
+        border-color: rgba(6,118,71,0.18);
+    }
+
+    .status-pending,
+    .status-maintenance,
+    .status-low-stock {
+        background: rgba(181,71,8,0.12);
+        color: #b54708;
+        border-color: rgba(181,71,8,0.18);
+    }
+
+    .status-inactive,
+    .status-returned,
+    .status-retired {
+        background: rgba(100,116,139,0.12);
+        color: #475569;
+        border-color: rgba(100,116,139,0.18);
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 20px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
+        border: 1px dashed rgba(11,31,58,0.12);
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-link {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.08);
+        color: #0b1f3a;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1320px) {
+        .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .inv-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+        .inv-hero,
+        .kpi-grid,
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
 
-{% block page_heading %}Inventory & Asset Management{% endblock %}
+{% macro status_chip(value) -%}
+    {% set raw = (value or 'N/A') %}
+    {% set normalized = raw|string|lower|replace(' ', '-') %}
+    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
+{%- endmacro %}
 
 {% block content %}
-
-<div class="page-grid inventory-page">
-
-    <!-- ========================================================= -->
-    <!-- SAFE RENDER VARIABLES -->
-    <!-- ========================================================= -->
-    {% set safe_inventory_stats = inventory_stats if inventory_stats is defined and inventory_stats else {} %}
-    {% set safe_inventory_items = inventory_items if inventory_items is defined and inventory_items else [] %}
-    {% set safe_asset_assignments = asset_assignments if asset_assignments is defined and asset_assignments else [] %}
-    {% set safe_low_stock_items = low_stock_items if low_stock_items is defined and low_stock_items else [] %}
-    {% set safe_maintenance_logs = maintenance_logs if maintenance_logs is defined and maintenance_logs else [] %}
-    {% set safe_employees = employees if employees is defined and employees else [] %}
-
-    <!-- ========================================================= -->
-    <!-- MODULE HEADER -->
-    <!-- ========================================================= -->
-    <section class="module-header">
-        <div class="module-header-content">
-            <h1>Inventory &amp; Asset Management</h1>
-            <p>
-                Centralized inventory, equipment control, asset assignment, barcode traceability,
-                onboarding provisioning, financial visibility, and operational accountability
-                across the UrbanHRPartners Enterprise Suite.
-            </p>
+<section class="inv-hero">
+    <div class="inv-banner">
+        <h2>Inventory, assets, scanning, and maintenance control</h2>
+        <p>
+            This inventory workspace centralizes item classification, warehouse structure, stock control,
+            barcode and QR tracking, asset assignment, movement history, and maintenance visibility to support
+            operational control across the enterprise.
+        </p>
+        <div class="inv-chip-row">
+            <span class="inv-chip">Categories</span>
+            <span class="inv-chip">Warehouses</span>
+            <span class="inv-chip">Barcode / QR</span>
+            <span class="inv-chip">Stock movements</span>
+            <span class="inv-chip">Asset assignments</span>
         </div>
+    </div>
 
-        <div class="module-header-actions">
-            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Return to Dashboard</a>
-            <a href="{{ url_for('xiomy_page') }}" class="btn btn-primary">Consult XIOMY AI</a>
-        </div>
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- SUMMARY GRID -->
-    <!-- ========================================================= -->
-    <section class="summary-grid">
-
-        <div class="summary-card">
-            <h3>Total Items</h3>
-            <p>
-                {% if safe_inventory_stats.total_items is defined %}
-                    {{ safe_inventory_stats.total_items }}
-                {% else %}
-                    {{ safe_inventory_items|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Tracked inventory records</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Assigned Assets</h3>
-            <p>
-                {% if safe_inventory_stats.assigned_assets is defined %}
-                    {{ safe_inventory_stats.assigned_assets }}
-                {% else %}
-                    {{ safe_asset_assignments|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Assets currently linked to personnel</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Low Stock Alerts</h3>
-            <p>
-                {% if safe_inventory_stats.low_stock_items is defined %}
-                    {{ safe_inventory_stats.low_stock_items }}
-                {% elif safe_inventory_stats.low_stock is defined %}
-                    {{ safe_inventory_stats.low_stock }}
-                {% else %}
-                    {{ safe_low_stock_items|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Items below control threshold</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Pending Returns</h3>
-            <p>
-                {% if safe_inventory_stats.pending_returns is defined %}
-                    {{ safe_inventory_stats.pending_returns }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Assets not yet returned</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Maintenance Items</h3>
-            <p>
-                {% if safe_inventory_stats.maintenance_items is defined %}
-                    {{ safe_inventory_stats.maintenance_items }}
-                {% else %}
-                    {{ safe_maintenance_logs|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Repair or review records</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Total Asset Value</h3>
-            <p>
-                {% if safe_inventory_stats.inventory_value is defined %}
-                    {{ safe_inventory_stats.inventory_value }}
-                {% elif safe_inventory_stats.total_value is defined %}
-                    {{ safe_inventory_stats.total_value }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Tracked estimated inventory value</span>
-        </div>
-
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- INVENTORY CREATION / QUICK CONTROLS -->
-    <!-- ========================================================= -->
-    <section class="two-column-grid">
-
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Create Inventory Item</h2>
-                <p>Add materials, equipment, PPE, technology, or operational assets.</p>
+    <div class="inv-summary">
+        <div class="panel-head">
+            <div>
+                <h3>Inventory summary</h3>
+                <p>Immediate visibility into operational asset control and movement activity.</p>
             </div>
+            <span class="section-badge">Inventory Live</span>
+        </div>
+        <div class="summary-list">
+            <div class="summary-item"><strong>Categories</strong><span class="summary-pill">{{ inventory_stats.categories_count }}</span></div>
+            <div class="summary-item"><strong>Items</strong><span class="summary-pill">{{ inventory_stats.items_count }}</span></div>
+            <div class="summary-item"><strong>Movements</strong><span class="summary-pill">{{ inventory_stats.stock_movements_count }}</span></div>
+            <div class="summary-item"><strong>Assignments</strong><span class="summary-pill">{{ inventory_stats.asset_assignments_count }}</span></div>
+        </div>
+    </div>
+</section>
 
-            <form method="POST" action="{{ url_for('create_inventory_item') }}" class="crm-form">
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="item_name">Item Name</label>
-                        <input type="text" id="item_name" name="name" placeholder="Enter item name" required>
-                    </div>
+<section class="kpi-grid">
+    <article class="kpi-card">
+        <div class="label">Categories</div>
+        <div class="value">{{ categories|length }}</div>
+        <div class="note">Controlled groups for inventory standardization and reporting.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Warehouses</div>
+        <div class="value">{{ warehouse_locations|length }}</div>
+        <div class="note">Physical or logical locations for stock and asset placement.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Items</div>
+        <div class="value">{{ inventory_stats.items_count }}</div>
+        <div class="note">Inventory and asset records available for assignment and movement.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Maintenance</div>
+        <div class="value">{{ maintenance_logs|length }}</div>
+        <div class="note">Maintenance events linked to controlled assets and equipment.</div>
+    </article>
+</section>
 
-                    <div>
-                        <label for="item_sku">SKU</label>
-                        <input type="text" id="item_sku" name="sku" placeholder="Internal SKU or code">
-                    </div>
-
-                    <div>
-                        <label for="item_category">Category</label>
-                        <select id="item_category" name="category">
-                            <option value="Equipment">Equipment</option>
-                            <option value="Technology">Technology</option>
-                            <option value="PPE">PPE</option>
-                            <option value="Office Supplies">Office Supplies</option>
-                            <option value="Tools">Tools</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="item_quantity">Quantity</label>
-                        <input type="number" id="item_quantity" name="quantity" min="0" value="1">
-                    </div>
-
-                    <div>
-                        <label for="item_unit_cost">Unit Cost</label>
-                        <input type="number" step="0.01" id="item_unit_cost" name="unit_cost" placeholder="0.00">
-                    </div>
-
-                    <div>
-                        <label for="item_reorder_level">Reorder Level</label>
-                        <input type="number" step="0.01" id="item_reorder_level" name="reorder_level" placeholder="0">
-                    </div>
-
-                    <div>
-                        <label for="item_location">Storage Location</label>
-                        <input type="text" id="item_location" name="location" placeholder="Warehouse / Office / Site">
-                    </div>
-
-                    <div>
-                        <label for="item_barcode">Barcode / Tag</label>
-                        <input type="text" id="item_barcode" name="barcode" placeholder="Barcode or asset tag">
-                    </div>
-
-                    <div>
-                        <label for="item_status">Status</label>
-                        <select id="item_status" name="status">
-                            <option value="Available">Available</option>
-                            <option value="Assigned">Assigned</option>
-                            <option value="In Maintenance">In Maintenance</option>
-                            <option value="Out of Service">Out of Service</option>
-                        </select>
-                    </div>
+<section class="inv-layout">
+    <div class="form-stack">
+        <div class="panel" id="category-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create inventory category</h3>
+                    <p>Group items by classification for reporting and operational organization.</p>
                 </div>
-
-                <div class="mt-3">
-                    <label for="item_notes">Notes</label>
-                    <textarea id="item_notes" name="notes" rows="4" placeholder="Operational notes, condition, or assignment comments"></textarea>
+                <span class="section-badge">Category</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_inventory_category') }}">
+                <div class="form-grid">
+                    <div class="field-full"><label for="category_name">Category Name</label><input id="category_name" name="name" type="text" required /></div>
+                    <div class="field-full"><label for="category_description">Description</label><textarea id="category_description" name="description"></textarea></div>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button type="submit" class="btn btn-primary">Create Inventory Item</button>
-                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Category</button>
+                    <a class="btn-secondary" href="#categories-table">Review Categories</a>
                 </div>
             </form>
         </div>
 
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Inventory Control Guidance</h2>
-                <p>Recommended integrated operating controls for asset management.</p>
+        <div class="panel" id="warehouse-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create warehouse location</h3>
+                    <p>Define storage points, operational zones, and coded locations for movement tracking.</p>
+                </div>
+                <span class="section-badge">Warehouse</span>
             </div>
-
-            <ul class="detail-list clean-list">
-                <li>Track all critical assets by category, quantity, and assigned location.</li>
-                <li>Connect onboarding asset delivery with Orientation and HRIS records.</li>
-                <li>Link PPE assignments with SG-SST safety requirements.</li>
-                <li>Maintain barcode or asset tag visibility for each controlled item.</li>
-                <li>Register returns, damage, replacement, and maintenance history.</li>
-                <li>Integrate inventory cost visibility with Finance for asset control.</li>
-                <li>Use XIOMY to flag shortages, anomalies, and recurring equipment loss.</li>
-            </ul>
-
-            <div class="soft-panel mt-4">
-                <p>
-                    This module should work as the control center for equipment allocation,
-                    new-hire provisioning, safety asset compliance, and financial accountability.
-                </p>
-            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_warehouse_location') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="warehouse_name">Name</label><input id="warehouse_name" name="name" type="text" required /></div>
+                    <div class="field"><label for="warehouse_code">Code</label><input id="warehouse_code" name="code" type="text" /></div>
+                    <div class="field"><label for="warehouse_city">City</label><input id="warehouse_city" name="city" type="text" /></div>
+                    <div class="field"><label for="warehouse_country">Country</label><input id="warehouse_country" name="country" type="text" /></div>
+                    <div class="field-full"><label for="warehouse_address">Address</label><input id="warehouse_address" name="address" type="text" /></div>
+                    <div class="field-full"><label for="warehouse_notes">Notes</label><textarea id="warehouse_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Warehouse</button>
+                    <a class="btn-secondary" href="#warehouses-table">Review Warehouses</a>
+                </div>
+            </form>
         </div>
 
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- INVENTORY REGISTER -->
-    <!-- ========================================================= -->
-    <section class="info-card panel-card">
-        <div class="section-heading">
-            <h2>Inventory Register</h2>
-            <p>Master list of stock items, equipment, and enterprise assets.</p>
-        </div>
-
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                        <th>Unit Cost</th>
-                        <th>Location</th>
-                        <th>Barcode</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if safe_inventory_items %}
-                        {% for item in safe_inventory_items %}
-                            <tr>
-                                <td>
-                                    {% if item.name is defined and item.name %}
-                                        {{ item.name }}
-                                    {% elif item.item_name is defined and item.item_name %}
-                                        {{ item.item_name }}
-                                    {% else %}
-                                        Inventory Item
-                                    {% endif %}
-                                </td>
-                                <td>{{ item.category if item.category is defined and item.category else 'General' }}</td>
-                                <td>{{ item.quantity if item.quantity is defined else 0 }}</td>
-                                <td>{{ item.unit_cost if item.unit_cost is defined else 0 }}</td>
-                                <td>{{ item.location if item.location is defined and item.location else 'Unassigned' }}</td>
-                                <td>{{ item.barcode if item.barcode is defined and item.barcode else 'N/A' }}</td>
-                                <td>
-                                    {% set inv_status = item.status if item.status is defined and item.status else 'Available' %}
-                                    {% if inv_status in ['Available'] %}
-                                        <span class="badge badge-success">{{ inv_status }}</span>
-                                    {% elif inv_status in ['Assigned'] %}
-                                        <span class="badge badge-info">{{ inv_status }}</span>
-                                    {% elif inv_status in ['In Maintenance'] %}
-                                        <span class="badge badge-warning">{{ inv_status }}</span>
-                                    {% elif inv_status in ['Out of Service'] %}
-                                        <span class="badge badge-danger">{{ inv_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ inv_status }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="7">No inventory items registered yet.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- ASSET ASSIGNMENT AND RETURNS -->
-    <!-- ========================================================= -->
-    <section class="two-column-grid">
-
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Assign Asset</h2>
-                <p>Link assets to employees, candidates, or operational projects.</p>
+        <div class="panel" id="item-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create inventory item</h3>
+                    <p>Register stock and assets with SKU, serial, barcode, QR, cost, and location control.</p>
+                </div>
+                <span class="section-badge">Item</span>
             </div>
-
-            <form method="POST" action="{{ url_for('create_asset_assignment') }}" class="crm-form">
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="assignment_employee_id">Employee</label>
-                        <select id="assignment_employee_id" name="employee_id">
-                            <option value="">Select employee</option>
-                            {% for employee in safe_employees %}
-                                <option value="{{ employee.id }}">
-                                    {% if employee.full_name is defined and employee.full_name %}
-                                        {{ employee.full_name }}
-                                    {% elif employee.first_name is defined or employee.last_name is defined %}
-                                        {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                    {% else %}
-                                        Employee #{{ employee.id }}
-                                    {% endif %}
-                                </option>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_inventory_item') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="item_code">Item Code</label><input id="item_code" name="item_code" type="text" /></div>
+                    <div class="field"><label for="item_name">Name</label><input id="item_name" name="name" type="text" required /></div>
+                    <div class="field"><label for="category_id">Category</label>
+                        <select id="category_id" name="category_id">
+                            <option value="">Select category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="field"><label for="warehouse_location_id">Warehouse</label>
+                        <select id="warehouse_location_id" name="warehouse_location_id">
+                            <option value="">Select warehouse</option>
+                            {% for warehouse in warehouse_locations %}
+                            <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="vendor_id">Vendor ID</label><input id="vendor_id" name="vendor_id" type="number" /></div>
+                    <div class="field"><label for="sku">SKU</label><input id="sku" name="sku" type="text" /></div>
+                    <div class="field"><label for="serial_number">Serial Number</label><input id="serial_number" name="serial_number" type="text" /></div>
+                    <div class="field"><label for="barcode">Barcode</label><input id="barcode" name="barcode" type="text" /></div>
+                    <div class="field"><label for="qr_code">QR Code</label><input id="qr_code" name="qr_code" type="text" /></div>
+                    <div class="field"><label for="unit_of_measure">Unit of Measure</label><input id="unit_of_measure" name="unit_of_measure" type="text" value="Unit" /></div>
+                    <div class="field"><label for="item_type">Item Type</label><input id="item_type" name="item_type" type="text" value="Inventory" /></div>
+                    <div class="field"><label for="quantity_on_hand">Quantity on Hand</label><input id="quantity_on_hand" name="quantity_on_hand" type="number" step="0.01" /></div>
+                    <div class="field"><label for="minimum_stock">Minimum Stock</label><input id="minimum_stock" name="minimum_stock" type="number" step="0.01" /></div>
+                    <div class="field"><label for="maximum_stock">Maximum Stock</label><input id="maximum_stock" name="maximum_stock" type="number" step="0.01" /></div>
+                    <div class="field"><label for="reorder_point">Reorder Point</label><input id="reorder_point" name="reorder_point" type="number" step="0.01" /></div>
+                    <div class="field"><label for="unit_cost">Unit Cost</label><input id="unit_cost" name="unit_cost" type="number" step="0.01" /></div>
+                    <div class="field"><label for="average_cost">Average Cost</label><input id="average_cost" name="average_cost" type="number" step="0.01" /></div>
+                    <div class="field"><label for="sale_price">Sale Price</label><input id="sale_price" name="sale_price" type="number" step="0.01" /></div>
+                    <div class="field"><label for="item_status">Status</label><input id="item_status" name="status" type="text" value="Active" /></div>
+                    <div class="field-full"><label for="image_path">Image Path</label><input id="image_path" name="image_path" type="text" /></div>
+                    <div class="field-full"><label for="item_description">Description</label><textarea id="item_description" name="description"></textarea></div>
+                    <div class="field-full"><label for="item_notes">Notes</label><textarea id="item_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Item</button>
+                    <a class="btn-secondary" href="#items-table">Review Items</a>
+                    <a class="scan-link" href="{{ url_for('inventory_scan') }}">Open Scanner</a>
+                </div>
+            </form>
+        </div>
 
-                    <div>
-                        <label for="assignment_inventory_item_id">Inventory Item</label>
+        <div class="panel" id="movement-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create stock movement</h3>
+                    <p>Track quantity flow between locations and reference source activity.</p>
+                </div>
+                <span class="section-badge">Movement</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_stock_movement') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="movement_inventory_item_id">Inventory Item</label>
+                        <select id="movement_inventory_item_id" name="inventory_item_id">
+                            <option value="">Select item</option>
+                            {% for item in inventory_items %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="movement_type">Movement Type</label><input id="movement_type" name="movement_type" type="text" placeholder="IN / OUT / TRANSFER" /></div>
+                    <div class="field"><label for="movement_quantity">Quantity</label><input id="movement_quantity" name="quantity" type="number" step="0.01" /></div>
+                    <div class="field"><label for="movement_date">Movement Date</label><input id="movement_date" name="movement_date" type="date" /></div>
+                    <div class="field"><label for="from_location_id">From Location ID</label><input id="from_location_id" name="from_location_id" type="number" /></div>
+                    <div class="field"><label for="to_location_id">To Location ID</label><input id="to_location_id" name="to_location_id" type="number" /></div>
+                    <div class="field"><label for="reference_type">Reference Type</label><input id="reference_type" name="reference_type" type="text" /></div>
+                    <div class="field"><label for="reference_id">Reference ID</label><input id="reference_id" name="reference_id" type="number" /></div>
+                    <div class="field"><label for="scanned_code">Scanned Code</label><input id="scanned_code" name="scanned_code" type="text" /></div>
+                    <div class="field"><label for="performed_by">Performed By</label><input id="performed_by" name="performed_by" type="text" /></div>
+                    <div class="field-full"><label for="movement_notes">Notes</label><textarea id="movement_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Movement</button>
+                    <a class="btn-secondary" href="#movements-table">Review Movements</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="assignment-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create asset assignment</h3>
+                    <p>Assign enterprise assets to employees and control issue/return conditions.</p>
+                </div>
+                <span class="section-badge">Assignment</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('assign_asset') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="assignment_employee_id">Employee ID</label><input id="assignment_employee_id" name="employee_id" type="number" required /></div>
+                    <div class="field"><label for="assignment_inventory_item_id">Inventory Item</label>
                         <select id="assignment_inventory_item_id" name="inventory_item_id">
-                            <option value="">Select asset</option>
-                            {% for item in safe_inventory_items %}
-                                <option value="{{ item.id }}">
-                                    {% if item.name is defined and item.name %}
-                                        {{ item.name }}
-                                    {% elif item.item_name is defined and item.item_name %}
-                                        {{ item.item_name }}
-                                    {% else %}
-                                        Asset #{{ item.id }}
-                                    {% endif %}
-                                </option>
+                            <option value="">Select item</option>
+                            {% for item in inventory_items %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
-                    <div>
-                        <label for="assignment_item_name">Asset Item</label>
-                        <input type="text" id="assignment_item_name" name="asset_name" placeholder="Assigned asset" required>
-                    </div>
-
-                    <div>
-                        <label for="assignment_status">Status</label>
-                        <select id="assignment_status" name="status">
-                            <option value="Assigned">Assigned</option>
-                            <option value="Prepared">Prepared</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Pending">Pending</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="assignment_date">Assignment Date</label>
-                        <input type="date" id="assignment_date" name="assignment_date">
-                    </div>
-
-                    <div>
-                        <label for="assignment_return_due_date">Return Due Date</label>
-                        <input type="date" id="assignment_return_due_date" name="return_due_date">
-                    </div>
+                    <div class="field"><label for="assigned_date">Assigned Date</label><input id="assigned_date" name="assigned_date" type="date" /></div>
+                    <div class="field"><label for="expected_return_date">Expected Return Date</label><input id="expected_return_date" name="expected_return_date" type="date" /></div>
+                    <div class="field"><label for="actual_return_date">Actual Return Date</label><input id="actual_return_date" name="actual_return_date" type="date" /></div>
+                    <div class="field"><label for="assignment_status">Assignment Status</label><input id="assignment_status" name="assignment_status" type="text" value="Assigned" /></div>
+                    <div class="field"><label for="condition_on_issue">Condition on Issue</label><input id="condition_on_issue" name="condition_on_issue" type="text" /></div>
+                    <div class="field"><label for="condition_on_return">Condition on Return</label><input id="condition_on_return" name="condition_on_return" type="text" /></div>
+                    <div class="field"><label for="signed_receipt">Signed Receipt</label><select id="signed_receipt" name="signed_receipt"><option value="">Select</option><option value="true">Yes</option><option value="false">No</option></select></div>
+                    <div class="field-full"><label for="assignment_notes">Notes</label><textarea id="assignment_notes" name="notes"></textarea></div>
                 </div>
-
-                <div class="mt-3">
-                    <label for="assignment_notes">Assignment Notes</label>
-                    <textarea id="assignment_notes" name="notes" rows="4" placeholder="Assignment purpose, serial number, related onboarding note"></textarea>
-                </div>
-
-                <div class="form-actions mt-4">
-                    <button type="submit" class="btn btn-primary">Assign Asset</button>
-                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Assignment</button>
+                    <a class="btn-secondary" href="#assignments-table">Review Assignments</a>
                 </div>
             </form>
         </div>
 
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Asset Return / Recovery</h2>
-                <p>Register returns, replacement needs, and equipment recovery events.</p>
+        <div class="panel" id="maintenance-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create maintenance log</h3>
+                    <p>Track corrective and preventive maintenance for operational assets.</p>
+                </div>
+                <span class="section-badge">Maintenance</span>
             </div>
-
-            <div class="soft-panel">
-                <p>
-                    The current backend does not yet include a dedicated asset return route.
-                    For now, returns and recovery notes should be tracked through asset status
-                    updates, notes, maintenance records, or future dedicated return workflows.
-                </p>
-            </div>
-
-            <form method="POST" action="#" class="crm-form mt-4">
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="return_employee">Employee / Holder</label>
-                        <input type="text" id="return_employee" name="employee_name" placeholder="Current holder">
-                    </div>
-
-                    <div>
-                        <label for="return_item">Asset Item</label>
-                        <input type="text" id="return_item" name="item_name" placeholder="Returned asset">
-                    </div>
-
-                    <div>
-                        <label for="return_date">Return Date</label>
-                        <input type="date" id="return_date" name="return_date">
-                    </div>
-
-                    <div>
-                        <label for="return_condition">Returned Condition</label>
-                        <select id="return_condition" name="condition">
-                            <option value="Good">Good</option>
-                            <option value="Damaged">Damaged</option>
-                            <option value="Missing Parts">Missing Parts</option>
-                            <option value="Needs Maintenance">Needs Maintenance</option>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_maintenance_log') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="maintenance_inventory_item_id">Inventory Item</label>
+                        <select id="maintenance_inventory_item_id" name="inventory_item_id">
+                            <option value="">Select item</option>
+                            {% for item in inventory_items %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
+                    <div class="field"><label for="maintenance_type">Maintenance Type</label><input id="maintenance_type" name="maintenance_type" type="text" /></div>
+                    <div class="field"><label for="maintenance_date">Maintenance Date</label><input id="maintenance_date" name="maintenance_date" type="date" /></div>
+                    <div class="field"><label for="maintenance_provider">Provider</label><input id="maintenance_provider" name="provider" type="text" /></div>
+                    <div class="field"><label for="maintenance_cost">Cost</label><input id="maintenance_cost" name="cost" type="number" step="0.01" /></div>
+                    <div class="field"><label for="next_due_date">Next Due Date</label><input id="next_due_date" name="next_due_date" type="date" /></div>
+                    <div class="field"><label for="maintenance_status">Status</label><input id="maintenance_status" name="status" type="text" value="Completed" /></div>
+                    <div class="field-full"><label for="findings">Findings</label><textarea id="findings" name="findings"></textarea></div>
+                    <div class="field-full"><label for="maintenance_notes">Notes</label><textarea id="maintenance_notes" name="notes"></textarea></div>
                 </div>
-
-                <div class="mt-3">
-                    <label for="return_notes">Return Notes</label>
-                    <textarea id="return_notes" name="notes" rows="4" placeholder="Return findings, losses, repair notes, accountability comments"></textarea>
-                </div>
-
-                <div class="form-actions mt-4">
-                    <button type="submit" class="btn btn-primary">Register Return</button>
-                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Maintenance Log</button>
+                    <a class="btn-secondary" href="#maintenance-table">Review Maintenance</a>
                 </div>
             </form>
         </div>
+    </div>
 
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- ASSIGNMENT REGISTER -->
-    <!-- ========================================================= -->
-    <section class="info-card panel-card">
-        <div class="section-heading">
-            <h2>Asset Assignment Register</h2>
-            <p>Traceability for assets delivered to personnel or tied to onboarding.</p>
-        </div>
-
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Employee / Holder</th>
-                        <th>Asset</th>
-                        <th>Assigned Date</th>
-                        <th>Condition</th>
-                        <th>Status</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if safe_asset_assignments %}
-                        {% for assignment in safe_asset_assignments %}
-                            <tr>
-                                <td>
-                                    {% if assignment.employee is defined and assignment.employee %}
-                                        {% if assignment.employee.full_name is defined and assignment.employee.full_name %}
-                                            {{ assignment.employee.full_name }}
-                                        {% elif assignment.employee.first_name is defined or assignment.employee.last_name is defined %}
-                                            {{ (assignment.employee.first_name if assignment.employee.first_name is defined else '') ~ ' ' ~ (assignment.employee.last_name if assignment.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ assignment.employee_id if assignment.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif assignment.employee_name is defined and assignment.employee_name %}
-                                        {{ assignment.employee_name }}
-                                    {% else %}
-                                        Employee
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if assignment.asset_name is defined and assignment.asset_name %}
-                                        {{ assignment.asset_name }}
-                                    {% elif assignment.item_name is defined and assignment.item_name %}
-                                        {{ assignment.item_name }}
-                                    {% else %}
-                                        Asset
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if assignment.assignment_date is defined and assignment.assignment_date %}
-                                        {{ assignment.assignment_date }}
-                                    {% elif assignment.assigned_date is defined and assignment.assigned_date %}
-                                        {{ assignment.assigned_date }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>{{ assignment.condition if assignment.condition is defined and assignment.condition else 'Good' }}</td>
-                                <td>
-                                    {% set assign_status = assignment.status if assignment.status is defined and assignment.status else 'Assigned' %}
-                                    {% if assign_status in ['Delivered', 'Assigned'] %}
-                                        <span class="badge badge-success">{{ assign_status }}</span>
-                                    {% elif assign_status in ['Prepared'] %}
-                                        <span class="badge badge-info">{{ assign_status }}</span>
-                                    {% elif assign_status in ['Pending'] %}
-                                        <span class="badge badge-warning">{{ assign_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ assign_status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ assignment.notes if assignment.notes is defined and assignment.notes else '' }}</td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6">No asset assignments registered yet.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- PPE / SG-SST / ORIENTATION INTEGRATION -->
-    <!-- ========================================================= -->
-    <section class="three-column-grid">
-
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>PPE Integration</h2>
-                <p>Safety equipment visibility tied to SG-SST compliance.</p>
-            </div>
-
-            <ul class="detail-list clean-list">
-                <li>Track safety helmets, gloves, boots, protective eyewear, and uniforms.</li>
-                <li>Register assigned PPE per employee and exposure level.</li>
-                <li>Flag expiration, damage, or missing equipment.</li>
-                <li>Support audits and inspections with traceable PPE evidence.</li>
-            </ul>
-        </div>
-
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Orientation Integration</h2>
-                <p>New-hire equipment readiness and onboarding coordination.</p>
-            </div>
-
-            <ul class="detail-list clean-list">
-                <li>Prepare equipment before orientation completion.</li>
-                <li>Link asset assignments with onboarding checklists.</li>
-                <li>Confirm candidate-to-employee provisioning status.</li>
-                <li>Document policy-based responsibility for company property.</li>
-            </ul>
-        </div>
-
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Finance Integration</h2>
-                <p>Control total asset value, loss exposure, and replacement cost visibility.</p>
-            </div>
-
-            <ul class="detail-list clean-list">
-                <li>Connect purchases and replacements to budget control.</li>
-                <li>Track asset depreciation or lifecycle replacement plans.</li>
-                <li>Support project costing with assigned equipment visibility.</li>
-                <li>Highlight recurring loss or repair trends for executive review.</li>
-            </ul>
-        </div>
-
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- LOW STOCK / MAINTENANCE / ALERTS -->
-    <!-- ========================================================= -->
-    <section class="two-column-grid">
-
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Low Stock Alerts</h2>
-                <p>Items below operational minimum levels.</p>
-            </div>
-
-            <div class="data-table-wrapper mt-4">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Current Qty</th>
-                            <th>Minimum Qty</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_low_stock_items %}
-                            {% for low_item in safe_low_stock_items %}
-                                <tr>
-                                    <td>
-                                        {% if low_item.name is defined and low_item.name %}
-                                            {{ low_item.name }}
-                                        {% elif low_item.item_name is defined and low_item.item_name %}
-                                            {{ low_item.item_name }}
-                                        {% else %}
-                                            Inventory Item
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ low_item.quantity if low_item.quantity is defined else 0 }}</td>
-                                    <td>
-                                        {% if low_item.reorder_level is defined %}
-                                            {{ low_item.reorder_level }}
-                                        {% elif low_item.minimum_quantity is defined %}
-                                            {{ low_item.minimum_quantity }}
-                                        {% else %}
-                                            0
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set low_status = low_item.status if low_item.status is defined and low_item.status else 'Low Stock' %}
-                                        <span class="badge badge-warning">{{ low_status }}</span>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No low stock alerts registered.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+    <div class="data-stack">
+        <div class="panel">
+            <div class="tabs">
+                <a class="tab-link" href="#categories-table">Categories</a>
+                <a class="tab-link" href="#warehouses-table">Warehouses</a>
+                <a class="tab-link" href="#items-table">Items</a>
+                <a class="tab-link" href="#movements-table">Movements</a>
+                <a class="tab-link" href="#assignments-table">Assignments</a>
+                <a class="tab-link" href="#maintenance-table">Maintenance</a>
             </div>
         </div>
 
-        <div class="info-card panel-card">
-            <div class="section-heading">
-                <h2>Maintenance / Repair Log</h2>
-                <p>Monitor damaged assets, repairs, and service needs.</p>
-            </div>
-
-            <div class="data-table-wrapper mt-4">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th>Issue</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_maintenance_logs %}
-                            {% for log in safe_maintenance_logs %}
-                                <tr>
-                                    <td>
-                                        {% if log.item_name is defined and log.item_name %}
-                                            {{ log.item_name }}
-                                        {% elif log.asset_name is defined and log.asset_name %}
-                                            {{ log.asset_name }}
-                                        {% else %}
-                                            Asset
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ log.issue if log.issue is defined and log.issue else 'Maintenance Issue' }}</td>
-                                    <td>
-                                        {% if log.log_date is defined and log.log_date %}
-                                            {{ log.log_date }}
-                                        {% elif log.maintenance_date is defined and log.maintenance_date %}
-                                            {{ log.maintenance_date }}
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set maint_status = log.status if log.status is defined and log.status else 'Open' %}
-                                        {% if maint_status in ['Closed', 'Completed'] %}
-                                            <span class="badge badge-success">{{ maint_status }}</span>
-                                        {% elif maint_status in ['In Progress'] %}
-                                            <span class="badge badge-warning">{{ maint_status }}</span>
-                                        {% elif maint_status in ['Open', 'Pending'] %}
-                                            <span class="badge badge-info">{{ maint_status }}</span>
-                                        {% else %}
-                                            <span class="badge badge-neutral">{{ maint_status }}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No maintenance records registered.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="panel" id="categories-table">
+            <div class="panel-head"><div><h3>Categories</h3><p>Item classification library for reporting and control.</p></div><span class="section-badge">{{ categories|length }} records</span></div>
+            {% if categories %}
+            <div class="table-wrap"><table class="inv-table"><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>{% for category in categories %}<tr><td><strong>{{ category.name }}</strong></td><td>{{ category.description or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No categories available yet.</div>{% endif %}
         </div>
 
-    </section>
-
-    <!-- ========================================================= -->
-    <!-- XIOMY INVENTORY INTELLIGENCE -->
-    <!-- ========================================================= -->
-    <section class="info-card panel-card">
-        <div class="section-heading">
-            <h2>XIOMY Inventory Intelligence</h2>
-            <p>Executive monitoring logic for operational asset visibility.</p>
+        <div class="panel" id="warehouses-table">
+            <div class="panel-head"><div><h3>Warehouse locations</h3><p>Storage and logistics points for inventory and asset movement control.</p></div><span class="section-badge">{{ warehouse_locations|length }} records</span></div>
+            {% if warehouse_locations %}
+            <div class="table-wrap"><table class="inv-table"><thead><tr><th>Name</th><th>Code</th><th>City</th><th>Country</th><th>Address</th></tr></thead><tbody>{% for warehouse in warehouse_locations %}<tr><td><strong>{{ warehouse.name }}</strong></td><td>{{ warehouse.code or 'N/A' }}</td><td>{{ warehouse.city or 'N/A' }}</td><td>{{ warehouse.country or 'N/A' }}</td><td>{{ warehouse.address or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No warehouse locations available yet.</div>{% endif %}
         </div>
 
-        <div class="soft-panel">
-            <p>
-                XIOMY should analyze inventory turnover, assignment patterns, unexplained losses,
-                onboarding provisioning gaps, repeated maintenance events, and low-stock trends
-                to support operational continuity and financial control.
-            </p>
+        <div class="panel" id="items-table">
+            <div class="panel-head"><div><h3>Inventory items</h3><p>Master list of stock and assets with code, quantity, barcode, and pricing control.</p></div><span class="section-badge">{{ inventory_items|length }} records</span></div>
+            {% if inventory_items %}
+            <div class="table-wrap"><table class="inv-table"><thead><tr><th>Item</th><th>SKU</th><th>Barcode / QR</th><th>Quantity</th><th>Unit Cost</th><th>Status</th></tr></thead><tbody>{% for item in inventory_items %}<tr><td><strong>{{ item.name }}</strong><br /><span>{{ item.item_code or 'No code' }}</span></td><td>{{ item.sku or 'N/A' }}</td><td>{{ item.barcode or 'N/A' }}<br />{{ item.qr_code or 'N/A' }}</td><td>{{ item.quantity_on_hand or 0 }}</td><td>{{ "{:,.2f}".format(item.unit_cost or 0) }}</td><td>{{ status_chip(item.status) }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No inventory items available yet.</div>{% endif %}
         </div>
 
-        <ul class="detail-list clean-list mt-4">
-            <li>Identify unusual asset loss or high replacement frequency.</li>
-            <li>Highlight employees or processes with repeated damage patterns.</li>
-            <li>Forecast replenishment needs based on historical usage.</li>
-            <li>Support HRIS, Orientation, SG-SST, and Finance through shared inventory intelligence.</li>
-        </ul>
-    </section>
+        <div class="panel" id="movements-table">
+            <div class="panel-head"><div><h3>Stock movements</h3><p>Movement history for receiving, issuing, transfer, and scan-based tracking.</p></div><span class="section-badge">{{ stock_movements|length }} records</span></div>
+            {% if stock_movements %}
+            <div class="table-wrap"><table class="inv-table"><thead><tr><th>Item ID</th><th>Type</th><th>Quantity</th><th>Date</th><th>Reference</th><th>Scanned Code</th></tr></thead><tbody>{% for move in stock_movements %}<tr><td>{{ move.inventory_item_id }}</td><td>{{ status_chip(move.movement_type) }}</td><td>{{ move.quantity or 0 }}</td><td>{{ move.movement_date.strftime('%Y-%m-%d') if move.movement_date else 'N/A' }}</td><td>{{ move.reference_type or 'N/A' }} / {{ move.reference_id or 'N/A' }}</td><td>{{ move.scanned_code or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No stock movements available yet.</div>{% endif %}
+        </div>
 
-</div>
+        <div class="panel" id="assignments-table">
+            <div class="panel-head"><div><h3>Asset assignments</h3><p>Asset issue and return control linked to employees and item condition.</p></div><span class="section-badge">{{ asset_assignments|length }} records</span></div>
+            {% if asset_assignments %}
+            <div class="table-wrap"><table class="inv-table"><thead><tr><th>Employee ID</th><th>Item ID</th><th>Status</th><th>Assigned</th><th>Expected Return</th><th>Receipt</th></tr></thead><tbody>{% for assignment in asset_assignments %}<tr><td>{{ assignment.employee_id }}</td><td>{{ assignment.inventory_item_id }}</td><td>{{ status_chip(assignment.assignment_status) }}</td><td>{{ assignment.assigned_date.strftime('%Y-%m-%d') if assignment.assigned_date else 'N/A' }}</td><td>{{ assignment.expected_return_date.strftime('%Y-%m-%d') if assignment.expected_return_date else 'N/A' }}</td><td>{{ status_chip('Signed' if assignment.signed_receipt else 'Pending') }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No asset assignments available yet.</div>{% endif %}
+        </div>
 
+        <div class="panel" id="maintenance-table">
+            <div class="panel-head"><div><h3>Maintenance logs</h3><p>Corrective and preventive maintenance history for enterprise assets.</p></div><span class="section-badge">{{ maintenance_logs|length }} records</span></div>
+            {% if maintenance_logs %}
+            <div class="table-wrap"><table class="inv-table"><thead><tr><th>Item ID</th><th>Type</th><th>Provider</th><th>Cost</th><th>Status</th><th>Next Due</th></tr></thead><tbody>{% for log in maintenance_logs %}<tr><td>{{ log.inventory_item_id }}</td><td>{{ log.maintenance_type or 'N/A' }}</td><td>{{ log.provider or 'N/A' }}</td><td>{{ "{:,.2f}".format(log.cost or 0) }}</td><td>{{ status_chip(log.status) }}</td><td>{{ log.next_due_date.strftime('%Y-%m-%d') if log.next_due_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No maintenance logs available yet.</div>{% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}
+```

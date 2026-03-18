@@ -1,354 +1,457 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ========================================================= -->
-    <!-- URBANHRPARTNERS ENTERPRISE SUITE -->
-    <!-- templates/base.html -->
-    <!-- Full enterprise base layout -->
-    <!-- ========================================================= -->
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- ========================================================= -->
-    <!-- PAGE META -->
-    <!-- ========================================================= -->
-    <meta name="description" content="UrbanHRPartners Enterprise Suite - Integrated CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, Reports, Analytics, and XIOMY Executive AI.">
-    <meta name="author" content="UrbanHRPartners">
-    <meta name="theme-color" content="#0b1f3a">
-
-    <!-- ========================================================= -->
-    <!-- TITLE -->
-    <!-- ========================================================= -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
 
-    <!-- ========================================================= -->
-    <!-- FONTS -->
-    <!-- ========================================================= -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-    >
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/crm.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/finance.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/xiomy.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}" />
 
-    <!-- ========================================================= -->
-    <!-- GLOBAL STYLES -->
-    <!-- ========================================================= -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --navy: #0b1f3a;
+            --navy-2: #10294d;
+            --gold: #d4af37;
+            --gold-soft: #f0d67a;
+            --orange: #d97b17;
+            --silver: #c0c6cf;
+            --silver-dark: #8e98a8;
+            --white: #ffffff;
+            --ink: #132238;
+            --bg-soft: #eef3f8;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --shadow-soft: 0 12px 30px rgba(11, 31, 58, 0.16);
+            --shadow-strong: 0 16px 38px rgba(11, 31, 58, 0.24);
+            --border-soft: rgba(11, 31, 58, 0.08);
+            --danger: #b42318;
+            --success: #067647;
+            --warning: #b54708;
+            --info: #175cd3;
+        }
 
-    <!-- ========================================================= -->
-    <!-- PAGE-SPECIFIC HEAD CONTENT -->
-    <!-- ========================================================= -->
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #e8edf5 0%, #f7f9fc 100%);
+            color: var(--ink);
+            min-height: 100%;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: 290px 1fr;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, var(--navy) 0%, #08172d 100%);
+            color: var(--white);
+            padding: 22px 18px 24px;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 10px 0 25px rgba(0, 0, 0, 0.14);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 10px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 16px;
+        }
+
+        .brand-logo {
+            width: 66px;
+            height: 66px;
+            border-radius: 18px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--gold-soft);
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            margin: 4px 0 0;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.35;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.74rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.62);
+            padding: 10px 10px 8px;
+        }
+
+        .nav-grid {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.24) 0%, rgba(255, 255, 255, 0.06) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.24);
+            color: var(--white);
+            font-weight: 700;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 20px rgba(0, 0, 0, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 14px 24px rgba(0, 0, 0, 0.22);
+            border-color: rgba(240, 214, 122, 0.55);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.5) 0%, rgba(217, 123, 23, 0.42) 100%);
+            border-color: rgba(240, 214, 122, 0.88);
+            color: #fff9e8;
+        }
+
+        .nav-link small {
+            color: rgba(255, 255, 255, 0.72);
+            font-weight: 600;
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 20px 28px;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-soft);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .topbar-title-wrap h1 {
+            margin: 0;
+            font-size: 1.65rem;
+            color: var(--navy);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .topbar-title-wrap p {
+            margin: 6px 0 0;
+            color: #516079;
+            font-size: 0.95rem;
+        }
+
+        .topbar-tools {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .global-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--white);
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+            padding: 8px 10px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .global-search input {
+            border: none;
+            outline: none;
+            min-width: 220px;
+            font-size: 0.95rem;
+            color: var(--ink);
+            background: transparent;
+        }
+
+        .topbar-btn,
+        .search-btn {
+            border: none;
+            cursor: pointer;
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-weight: 700;
+            color: var(--white);
+            background: linear-gradient(180deg, var(--gold) 0%, var(--orange) 100%);
+            box-shadow: 0 8px 20px rgba(217, 123, 23, 0.24);
+        }
+
+        .topbar-btn.secondary {
+            background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%);
+            box-shadow: 0 8px 20px rgba(11, 31, 58, 0.22);
+        }
+
+        .page-body {
+            padding: 24px 28px 32px;
+        }
+
+        .page-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-soft);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .page-card h2,
+        .page-card h3 {
+            margin-top: 0;
+            color: var(--navy);
+        }
+
+        .flash-wrapper {
+            margin-bottom: 18px;
+        }
+
+        .flash-message {
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            border: 1px solid transparent;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .flash-success {
+            background: rgba(6, 118, 71, 0.1);
+            color: var(--success);
+            border-color: rgba(6, 118, 71, 0.2);
+        }
+
+        .flash-danger,
+        .flash-error {
+            background: rgba(180, 35, 24, 0.1);
+            color: var(--danger);
+            border-color: rgba(180, 35, 24, 0.2);
+        }
+
+        .flash-warning {
+            background: rgba(181, 71, 8, 0.12);
+            color: var(--warning);
+            border-color: rgba(181, 71, 8, 0.2);
+        }
+
+        .flash-info {
+            background: rgba(23, 92, 211, 0.1);
+            color: var(--info);
+            border-color: rgba(23, 92, 211, 0.2);
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #68758d;
+            font-size: 0.9rem;
+            padding: 10px 0 0;
+        }
+
+        @media (max-width: 1180px) {
+            .app-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                height: auto;
+                overflow: visible;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .topbar {
+                padding: 18px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .page-body {
+                padding: 18px;
+            }
+
+            .global-search input {
+                min-width: 0;
+                width: 100%;
+            }
+        }
+    </style>
+
     {% block extra_head %}{% endblock %}
 </head>
-<body class="uhp-body">
+<body>
+    {% set endpoint = request.endpoint or '' %}
 
-    <!-- ========================================================= -->
-    <!-- ENTERPRISE SHELL -->
-    <!-- ========================================================= -->
-    <div class="enterprise-shell">
-
-        <!-- ===================================================== -->
-        <!-- SIDEBAR -->
-        <!-- ===================================================== -->
-        <aside class="enterprise-sidebar" id="enterpriseSidebar">
-
-            <!-- ================================================= -->
-            <!-- BRAND / LOGO -->
-            <!-- ================================================= -->
-            <div class="sidebar-brand-section">
-                <a href="{{ url_for('dashboard') }}" class="brand-link" aria-label="Go to Dashboard">
-                    <div class="brand-logo-panel">
-                        <img
-                            src="{{ url_for('static', filename='img/logo.jpg') }}"
-                            alt="UrbanHRPartners Logo"
-                            class="brand-logo"
-                            onerror="this.style.display='none';"
-                        >
-                    </div>
-
-                    <div class="brand-text-panel">
-                        <div class="brand-overline">Enterprise Platform</div>
-                        <h1 class="brand-name">UrbanHRPartners</h1>
-                        <div class="brand-subname">Consulting Integrated System</div>
-                        <div class="brand-divider"></div>
-                    </div>
-                </a>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand-wrap">
+                <img
+                    src="{{ url_for('static', filename='img/logo.jpg') }}"
+                    alt="UrbanHRPartners Logo"
+                    class="brand-logo"
+                    onerror="this.style.display='none'"
+                />
+                <div>
+                    <h2 class="brand-title">UrbanHRPartners</h2>
+                    <p class="brand-subtitle">Enterprise Suite<br />CRM · HRIS · ATS · SG-SST · Finance</p>
+                </div>
             </div>
 
-            <!-- ================================================= -->
-            <!-- EXECUTIVE STATUS -->
-            <!-- ================================================= -->
-            <section class="sidebar-executive-card">
-                <div class="executive-card-top">
-                    <span class="executive-status-dot"></span>
-                    <span class="executive-status-label">Executive System Online</span>
-                </div>
-
-                <div class="executive-card-body">
-                    <h3 class="executive-name">Juan Carlos Urbano</h3>
-                    <p class="executive-title">PhD(c) Business Psychology, MA-MHRM</p>
-                    <div class="executive-role-badges">
-                        <span class="executive-badge">Founder</span>
-                        <span class="executive-badge">Strategic Lead</span>
-                        <span class="executive-badge">Enterprise Owner</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================================================= -->
-            <!-- NAVIGATION -->
-            <!-- ================================================= -->
-            <nav class="sidebar-navigation" aria-label="Primary navigation">
-
-                <a
-                    href="{{ url_for('dashboard') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'dashboard' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Dashboard</span>
+            <div class="sidebar-section-label">Executive</div>
+            <nav class="nav-grid">
+                <a class="nav-link {% if endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
+                    <span>Dashboard</span><small>Overview</small>
                 </a>
-
-                <a
-                    href="{{ url_for('crm') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'crm' or request.endpoint == 'create_client' or request.endpoint == 'create_communication_log' or request.endpoint == 'create_project' or request.endpoint == 'create_task' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">CRM</span>
+                <a class="nav-link {% if endpoint == 'xiomy_page' %}active{% endif %}" href="{{ url_for('xiomy_page') }}">
+                    <span>XIOMY</span><small>AI Office</small>
                 </a>
-
-                <a
-                    href="{{ url_for('hris') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'hris' or request.endpoint == 'create_employee_profile' or request.endpoint == 'create_point_log' or request.endpoint == 'create_disciplinary_record' or request.endpoint == 'create_sop_requirement' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">HRIS</span>
-                </a>
-
-                <a
-                    href="{{ url_for('ats') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'ats' or request.endpoint == 'create_candidate' or request.endpoint == 'promote_candidate_to_orientation' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">ATS</span>
-                </a>
-
-                <a
-                    href="{{ url_for('orientation') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'orientation' or request.endpoint == 'create_orientation_checklist' or request.endpoint == 'create_policy_acknowledgement' or request.endpoint == 'create_asset_assignment' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Orientation</span>
-                </a>
-
-                <a
-                    href="{{ url_for('sgsst') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'sgsst' or request.endpoint == 'create_risk_item' or request.endpoint == 'create_inspection_record' or request.endpoint == 'create_incident_record' or request.endpoint == 'create_training_record' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">SG-SST</span>
-                </a>
-
-                <a
-                    href="{{ url_for('inventory') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'inventory' or request.endpoint == 'create_inventory_item' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Inventory</span>
-                </a>
-
-                <a
-                    href="{{ url_for('finance') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'finance' or request.endpoint == 'create_invoice' or request.endpoint == 'create_ledger_entry' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Finance</span>
-                </a>
-
-                <a
-                    href="{{ url_for('marketing') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'marketing' or request.endpoint == 'create_marketing_campaign' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Marketing</span>
-                </a>
-
-                <a
-                    href="{{ url_for('calendar_page') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'calendar_page' or request.endpoint == 'create_calendar_event' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Calendar</span>
-                </a>
-
-                <a
-                    href="{{ url_for('reports_analytics') }}"
-                    class="nav-3d-btn {% if request.endpoint == 'reports_analytics' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">◆</span>
-                    <span class="nav-3d-text">Reports &amp; Analytics</span>
-                </a>
-
-                <a
-                    href="{{ url_for('xiomy_page') }}"
-                    class="nav-3d-btn nav-3d-btn-xiomy {% if request.endpoint == 'xiomy_page' or request.endpoint == 'xiomy' %}active{% endif %}"
-                >
-                    <span class="nav-3d-icon">✦</span>
-                    <span class="nav-3d-text">XIOMY Executive AI</span>
+                <a class="nav-link {% if endpoint == 'reports_analytics' %}active{% endif %}" href="{{ url_for('reports_analytics') }}">
+                    <span>Reports & Analytics</span><small>KPIs</small>
                 </a>
             </nav>
 
-            <!-- ================================================= -->
-            <!-- SIDEBAR FOOTER PANEL -->
-            <!-- ================================================= -->
-            <div class="sidebar-bottom-panel">
-                <div class="sidebar-mission-card">
-                    <div class="sidebar-card-title">Enterprise Command</div>
-                    <p class="sidebar-card-text">
-                        Unified environment for strategic client management, workforce systems,
-                        recruiting operations, occupational safety, finance intelligence,
-                        marketing growth, reporting, and AI executive assistance.
-                    </p>
-                </div>
-            </div>
+            <div class="sidebar-section-label">Operations</div>
+            <nav class="nav-grid">
+                <a class="nav-link {% if endpoint == 'crm' %}active{% endif %}" href="{{ url_for('crm') }}">
+                    <span>CRM</span><small>Clients</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'hris' %}active{% endif %}" href="{{ url_for('hris') }}">
+                    <span>HRIS</span><small>People</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'ats' %}active{% endif %}" href="{{ url_for('ats') }}">
+                    <span>ATS</span><small>Recruiting</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'orientation' %}active{% endif %}" href="{{ url_for('orientation') }}">
+                    <span>Orientation</span><small>Onboarding</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'sgsst' %}active{% endif %}" href="{{ url_for('sgsst') }}">
+                    <span>SG-SST</span><small>Safety</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'finance' %}active{% endif %}" href="{{ url_for('finance') }}">
+                    <span>Finance</span><small>Accounting</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'inventory' or endpoint == 'inventory_scan' %}active{% endif %}" href="{{ url_for('inventory') }}">
+                    <span>Inventory</span><small>Assets</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'marketing' %}active{% endif %}" href="{{ url_for('marketing') }}">
+                    <span>Marketing</span><small>Growth</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'calendar_page' %}active{% endif %}" href="{{ url_for('calendar_page') }}">
+                    <span>Calendar</span><small>Schedule</small>
+                </a>
+            </nav>
+
+            <div class="sidebar-section-label">System</div>
+            <nav class="nav-grid">
+                <a class="nav-link {% if endpoint == 'settings' %}active{% endif %}" href="{{ url_for('settings') }}">
+                    <span>Settings</span><small>Configuration</small>
+                </a>
+                <a class="nav-link {% if endpoint == 'login' %}active{% endif %}" href="{{ url_for('login') }}">
+                    <span>Login</span><small>Access</small>
+                </a>
+            </nav>
         </aside>
 
-        <!-- ===================================================== -->
-        <!-- MAIN WRAPPER -->
-        <!-- ===================================================== -->
-        <div class="enterprise-main-wrapper">
-
-            <!-- ================================================= -->
-            <!-- TOPBAR -->
-            <!-- ================================================= -->
-            <header class="enterprise-topbar">
-
-                <div class="topbar-left-zone">
-                    <button
-                        type="button"
-                        class="topbar-menu-toggle"
-                        aria-label="Toggle sidebar"
-                        onclick="document.getElementById('enterpriseSidebar').classList.toggle('open');"
-                    >
-                        ☰
-                    </button>
-
-                    <div class="topbar-title-block">
-                        <div class="topbar-overline">UrbanHRPartners Enterprise Navigation</div>
-                        <h2 class="topbar-main-title">
-                            {% block page_heading %}UrbanHRPartners Enterprise Suite{% endblock %}
-                        </h2>
-                    </div>
+        <div class="content-area">
+            <header class="topbar">
+                <div class="topbar-title-wrap">
+                    <h1>{% block page_title %}UrbanHRPartners Enterprise Suite{% endblock %}</h1>
+                    <p>{% block page_subtitle %}Integrated enterprise ecosystem for consulting, HR, finance, compliance, and growth.{% endblock %}</p>
                 </div>
 
-                <div class="topbar-right-zone">
-                    <form action="{{ url_for('search') }}" method="GET" class="topbar-search-form">
-                        <input
-                            type="text"
-                            name="q"
-                            class="topbar-search-input"
-                            placeholder="Search clients, employees, candidates, projects, campaigns..."
-                            value="{{ request.args.get('q', '') }}"
-                        >
-                        <button type="submit" class="topbar-search-btn">Search</button>
+                <div class="topbar-tools">
+                    <form class="global-search" method="get" action="{{ url_for('search_results') }}">
+                        <input type="text" name="q" placeholder="Search clients, employees, candidates, projects..." value="{{ request.args.get('q', '') }}" />
+                        <button class="search-btn" type="submit">Search</button>
                     </form>
+                    <a class="topbar-btn secondary" href="{{ url_for('dashboard') }}">Executive View</a>
+                    <a class="topbar-btn" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
                 </div>
             </header>
 
-            <!-- ================================================= -->
-            <!-- QUICK STATUS STRIP -->
-            <!-- ================================================= -->
-            <section class="enterprise-status-strip">
-                <div class="status-chip">
-                    <span class="chip-label">System</span>
-                    <span class="chip-value">Online</span>
-                </div>
-
-                <div class="status-chip">
-                    <span class="chip-label">Platform</span>
-                    <span class="chip-value">Enterprise</span>
-                </div>
-
-                <div class="status-chip">
-                    <span class="chip-label">AI</span>
-                    <span class="chip-value">XIOMY Ready</span>
-                </div>
-
-                <div class="status-chip">
-                    <span class="chip-label">Date</span>
-                    <span class="chip-value">{{ today if today is defined else '' }}</span>
-                </div>
-            </section>
-
-            <!-- ================================================= -->
-            <!-- FLASH MESSAGES -->
-            <!-- ================================================= -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <section class="flash-message-section">
-                        {% for category, message in messages %}
-                            <div class="flash-message-card flash-{{ category }}">
-                                <div class="flash-message-label">
-                                    {{ category|upper }}
-                                </div>
-                                <div class="flash-message-text">
+            <main class="page-body">
+                <div class="flash-wrapper">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="flash-message flash-{{ category }}">
                                     {{ message }}
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </section>
-                {% endif %}
-            {% endwith %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
 
-            <!-- ================================================= -->
-            <!-- PAGE CONTENT -->
-            <!-- ================================================= -->
-            <main class="enterprise-content-area">
                 {% block content %}{% endblock %}
+
+                <div class="footer-note">
+                    UrbanHRPartners Enterprise Suite · Premium integrated ecosystem
+                </div>
             </main>
-
-            <!-- ================================================= -->
-            <!-- FOOTER -->
-            <!-- ================================================= -->
-            <footer class="enterprise-footer">
-                <div class="enterprise-footer-left">
-                    <div class="footer-brand-line">
-                        <strong>UrbanHRPartners Enterprise Suite</strong>
-                    </div>
-                    <div class="footer-description-line">
-                        Integrated CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Calendar, Reports, Analytics, and XIOMY Executive AI.
-                    </div>
-                </div>
-
-                <div class="enterprise-footer-right">
-                    <div class="footer-copy-line">
-                        &copy; {{ current_year if current_year is defined else 2026 }} UrbanHRPartners. All rights reserved.
-                    </div>
-                </div>
-            </footer>
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- OPTIONAL GLOBAL SCRIPTS -->
-    <!-- ========================================================= -->
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const flashMessages = document.querySelectorAll(".flash-message-card");
-            flashMessages.forEach((item) => {
-                setTimeout(() => {
-                    item.classList.add("flash-fade-out");
-                }, 5000);
-            });
-        });
-    </script>
-
-    <!-- ========================================================= -->
-    <!-- PAGE-SPECIFIC SCRIPTS -->
-    <!-- ========================================================= -->
+    <script src="{{ url_for('static', filename='js/crm.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/industry_loader.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/finance.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/xiomy.js') }}"></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
+```

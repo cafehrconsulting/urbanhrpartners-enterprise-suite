@@ -1,1119 +1,860 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}SG-SST | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}SG-SST Command Center{% endblock %}
+{% block page_title %}SG-SST Command Center{% endblock %}
+{% block page_subtitle %}Manage safety policy, legal compliance, hazards, incidents, inspections, medical surveillance, PPE, audits, and minimum standards from one integrated occupational health and safety workspace.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .sg-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .sg-banner,
+    .sg-summary {
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
+        border: 1px solid rgba(11,31,58,0.08);
+    }
+
+    .sg-banner {
+        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 52%, rgba(217,123,23,0.9) 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sg-banner::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
+    }
+
+    .sg-banner h2 {
+        margin: 0 0 10px;
+        font-size: 1.9rem;
+        color: #fff8e6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .sg-banner p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+    }
+
+    .sg-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .sg-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 800;
+        color: #fffdf5;
+    }
+
+    .sg-summary {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
+    }
+
+    .sg-summary h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+    }
+
+    .summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.06);
+    }
+
+    .summary-item strong { color: #0b1f3a; }
+    .summary-pill {
+        min-width: 64px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 14px;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
+        border: 1px solid rgba(212,175,55,0.26);
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
+    }
+
+    .kpi-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5e6d85;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .kpi-card .value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .kpi-card .note {
+        color: #6b7a91;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .sg-layout {
+        display: grid;
+        grid-template-columns: 430px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-stack,
+    .data-stack {
+        display: grid;
+        gap: 22px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.97);
+        border-radius: 24px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
+        padding: 22px;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1.14rem;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #61718a;
+        line-height: 1.45;
+        font-size: 0.94rem;
+    }
+
+    .section-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
+        border: 1px solid rgba(212,175,55,0.24);
+    }
+
+    .enterprise-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field,
+    .field-full {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field-full { grid-column: 1 / -1; }
+
+    .enterprise-form label {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .enterprise-form input,
+    .enterprise-form select,
+    .enterprise-form textarea {
+        width: 100%;
+        border: 1px solid rgba(11,31,58,0.12);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        color: #132238;
+        background: #fff;
+        outline: none;
+    }
+
+    .enterprise-form textarea {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 800;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
+        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(11,31,58,0.07);
+    }
+
+    .sg-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 820px;
+        background: #fff;
+    }
+
+    .sg-table th,
+    .sg-table td {
+        padding: 13px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(11,31,58,0.07);
+        vertical-align: top;
+    }
+
+    .sg-table th {
+        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
+        color: #0b1f3a;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .sg-table td {
+        font-size: 0.95rem;
+        color: #334155;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        border: 1px solid rgba(11,31,58,0.08);
+        background: rgba(11,31,58,0.05);
+        color: #0b1f3a;
+    }
+
+    .status-active,
+    .status-open,
+    .status-completed,
+    .status-compliant,
+    .status-received {
+        background: rgba(6,118,71,0.12);
+        color: #067647;
+        border-color: rgba(6,118,71,0.18);
+    }
+
+    .status-pending,
+    .status-draft,
+    .status-scheduled {
+        background: rgba(181,71,8,0.12);
+        color: #b54708;
+        border-color: rgba(181,71,8,0.18);
+    }
+
+    .status-closed,
+    .status-inactive,
+    .status-non-compliant {
+        background: rgba(100,116,139,0.12);
+        color: #475569;
+        border-color: rgba(100,116,139,0.18);
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 20px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
+        border: 1px dashed rgba(11,31,58,0.12);
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-link {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.08);
+        color: #0b1f3a;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1320px) {
+        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .sg-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+        .sg-hero,
+        .kpi-grid,
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% macro status_chip(value) -%}
+    {% set raw = (value or 'N/A') %}
+    {% set normalized = raw|string|lower|replace(' ', '-') %}
+    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
+{%- endmacro %}
 
 {% block content %}
+<section class="sg-hero">
+    <div class="sg-banner">
+        <h2>Occupational safety, compliance, and risk control center</h2>
+        <p>
+            This SG-SST workspace centralizes safety policy, legal matrix tracking, hazard identification,
+            annual work planning, incidents, inspections, corrective action, PPE control, medical surveillance,
+            audits, and minimum standard compliance evidence.
+        </p>
+        <div class="sg-chip-row">
+            <span class="sg-chip">Policy management</span>
+            <span class="sg-chip">Hazard matrix</span>
+            <span class="sg-chip">Incident control</span>
+            <span class="sg-chip">PPE oversight</span>
+            <span class="sg-chip">Audits & standards</span>
+        </div>
+    </div>
 
-<div class="page-grid">
-
-    <!-- =======================================================
-         SAFE RENDER VARIABLES
-         Keeps the module stable if app.py sends fewer objects
-         than the template expects.
-    ======================================================== -->
-    {% set safe_sgsst_stats = sgsst_stats if sgsst_stats is defined and sgsst_stats else {} %}
-    {% set safe_risk_items = risk_items if risk_items is defined and risk_items else [] %}
-    {% set safe_inspections = inspections if inspections is defined and inspections else [] %}
-    {% set safe_incidents = incidents if incidents is defined and incidents else [] %}
-    {% set safe_trainings = trainings if trainings is defined and trainings else (training_records if training_records is defined and training_records else []) %}
-    {% set safe_policies = policies if policies is defined and policies else [] %}
-    {% set safe_legal_requirements = legal_requirements if legal_requirements is defined and legal_requirements else [] %}
-    {% set safe_ppe_records = ppe_records if ppe_records is defined and ppe_records else [] %}
-    {% set safe_audits = audits if audits is defined and audits else [] %}
-    {% set safe_improvements = improvements if improvements is defined and improvements else [] %}
-    {% set safe_employees = employees if employees is defined and employees else [] %}
-
-    <!-- =======================================================
-         HERO
-    ======================================================== -->
-    <section class="hero-panel">
-
-        <div class="hero-left">
-
-            <span class="hero-badge">
-                Occupational Health &amp; Safety Management System
-            </span>
-
-            <h1 class="hero-title">
-                SG-SST Command Center
-            </h1>
-
-            <p class="hero-text">
-                Centralized safety governance platform supporting
-                risk management, legal compliance, inspections,
-                incident prevention, training, PPE control,
-                audits, and continuous improvement.
-            </p>
-
-            <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="#risk-center">Risk Matrix</a>
-                <a class="btn btn-secondary btn-lg" href="#incident-center">Incidents</a>
-                <a class="btn btn-ghost btn-lg" href="#audit-center">Audits</a>
+    <div class="sg-summary">
+        <div class="panel-head">
+            <div>
+                <h3>Safety operations summary</h3>
+                <p>Immediate visibility into risk exposure, events, and compliance activity.</p>
             </div>
+            <span class="section-badge">SG-SST Live</span>
+        </div>
+        <div class="summary-list">
+            <div class="summary-item"><strong>Hazards</strong><span class="summary-pill">{{ sgsst_stats.hazards_count }}</span></div>
+            <div class="summary-item"><strong>Incidents</strong><span class="summary-pill">{{ sgsst_stats.incidents_count }}</span></div>
+            <div class="summary-item"><strong>Inspections</strong><span class="summary-pill">{{ sgsst_stats.inspections_count }}</span></div>
+            <div class="summary-item"><strong>Corrective Actions</strong><span class="summary-pill">{{ sgsst_stats.corrective_actions_count }}</span></div>
+            <div class="summary-item"><strong>Audits</strong><span class="summary-pill">{{ sgsst_stats.audits_count }}</span></div>
+        </div>
+    </div>
+</section>
 
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Policies</button>
-                    <button class="tab-button" type="button">Legal Matrix</button>
-                    <button class="tab-button" type="button">Risk Matrix</button>
-                    <button class="tab-button" type="button">Incidents</button>
-                    <button class="tab-button" type="button">Audits</button>
+<section class="kpi-grid">
+    <article class="kpi-card">
+        <div class="label">Policies</div>
+        <div class="value">{{ safety_policies|length }}</div>
+        <div class="note">Controlled policy records and review cycles.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Legal Matrix</div>
+        <div class="value">{{ legal_requirements|length }}</div>
+        <div class="note">Applicable laws and requirement monitoring.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Hazards</div>
+        <div class="value">{{ sgsst_stats.hazards_count }}</div>
+        <div class="note">Risk sources currently tracked in the system.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Medical</div>
+        <div class="value">{{ medical_surveillance_records|length }}</div>
+        <div class="note">Medical surveillance records and exam tracking.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Minimum Standards</div>
+        <div class="value">{{ minimum_standard_assessments|length }}</div>
+        <div class="note">Minimum standards assessments and compliance evidence.</div>
+    </article>
+</section>
+
+<section class="sg-layout">
+    <div class="form-stack">
+        <div class="panel" id="policy-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create safety policy</h3>
+                    <p>Register official policy versions, approvals, and effective review dates.</p>
                 </div>
+                <span class="section-badge">Policy</span>
             </div>
-
+            <form class="enterprise-form" method="post" action="{{ url_for('add_safety_policy') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="policy_title">Title</label><input id="policy_title" name="title" type="text" required /></div>
+                    <div class="field"><label for="policy_version">Version</label><input id="policy_version" name="version" type="text" /></div>
+                    <div class="field"><label for="effective_date">Effective Date</label><input id="effective_date" name="effective_date" type="date" /></div>
+                    <div class="field"><label for="review_date">Review Date</label><input id="review_date" name="review_date" type="date" /></div>
+                    <div class="field"><label for="approved_by">Approved By</label><input id="approved_by" name="approved_by" type="text" /></div>
+                    <div class="field-full"><label for="policy_file_path">File Path</label><input id="policy_file_path" name="file_path" type="text" /></div>
+                    <div class="field-full"><label for="policy_description">Description</label><textarea id="policy_description" name="description"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Policy</button>
+                    <a class="btn-secondary" href="#policies-table">Review Policies</a>
+                </div>
+            </form>
         </div>
 
-        <div class="hero-right">
-
-            <div class="hero-status-card">
-
-                <h3 class="section-title">Executive Overview</h3>
-                <p class="section-subtitle">
-                    Organized visibility into occupational safety governance and compliance control.
-                </p>
-
-                <ul class="status-list mt-3">
-                    <li><strong>Governance:</strong> policies and legal compliance</li>
-                    <li><strong>Planning:</strong> hazard identification and risk evaluation</li>
-                    <li><strong>Implementation:</strong> training, inspections, and PPE control</li>
-                    <li><strong>Evaluation:</strong> incident investigations and audits</li>
-                    <li><strong>Improvement:</strong> corrective action and prevention plans</li>
-                </ul>
-
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('hris') }}">HRIS</a>
-                    <a class="btn btn-secondary" href="{{ url_for('reports_analytics') }}">Reports</a>
+        <div class="panel" id="legal-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create legal requirement</h3>
+                    <p>Track law, article, compliance status, evidence, and responsible owner.</p>
                 </div>
-
+                <span class="section-badge">Legal</span>
             </div>
-
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         EXECUTIVE DASHBOARD
-    ======================================================== -->
-    <section class="summary-grid">
-
-        <div class="summary-card">
-            <h3>Hazards</h3>
-            <p>
-                {% if safe_sgsst_stats.risk_items is defined %}
-                    {{ safe_sgsst_stats.risk_items }}
-                {% elif safe_sgsst_stats.hazards_registered is defined %}
-                    {{ safe_sgsst_stats.hazards_registered }}
-                {% else %}
-                    {{ safe_risk_items|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Hazards identified</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Open Incidents</h3>
-            <p>
-                {% if safe_sgsst_stats.open_incidents is defined %}
-                    {{ safe_sgsst_stats.open_incidents }}
-                {% elif safe_sgsst_stats.incidents is defined %}
-                    {{ safe_sgsst_stats.incidents }}
-                {% else %}
-                    {{ safe_incidents|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Active investigations</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Inspections</h3>
-            <p>
-                {% if safe_sgsst_stats.inspections is defined %}
-                    {{ safe_sgsst_stats.inspections }}
-                {% else %}
-                    {{ safe_inspections|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Inspection records</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Training</h3>
-            <p>
-                {% if safe_sgsst_stats.trainings is defined %}
-                    {{ safe_sgsst_stats.trainings }}
-                {% else %}
-                    {{ safe_trainings|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Safety training sessions</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>PPE Assigned</h3>
-            <p>{{ safe_ppe_records|length }}</p>
-            <span class="summary-note">Protective equipment issued</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Audits</h3>
-            <p>{{ safe_audits|length }}</p>
-            <span class="summary-note">Internal audits conducted</span>
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         POLICY MANAGEMENT
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>Policy Management</h1>
-            <p>
-                SG-SST policy records, ownership, governance updates, and review cycle visibility.
-            </p>
-        </div>
-
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Policy Register</button>
-            <button class="tab-button" type="button">Version Control</button>
-            <button class="tab-button" type="button">Governance</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <form method="POST" action="#" class="crm-form">
-
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="sgsst_policy_title">Policy Title</label>
-                        <input type="text" id="sgsst_policy_title" name="title" placeholder="Policy title">
-                    </div>
-
-                    <div>
-                        <label for="sgsst_policy_version">Version</label>
-                        <input type="text" id="sgsst_policy_version" name="version" placeholder="Version number">
-                    </div>
-
-                    <div>
-                        <label for="sgsst_policy_owner">Owner</label>
-                        <input type="text" id="sgsst_policy_owner" name="owner" placeholder="Responsible person">
-                    </div>
-
-                    <div>
-                        <label for="sgsst_policy_review_date">Review Date</label>
-                        <input type="date" id="sgsst_policy_review_date" name="review_date">
-                    </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_legal_requirement') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="jurisdiction">Jurisdiction</label><input id="jurisdiction" name="jurisdiction" type="text" value="Colombia" /></div>
+                    <div class="field"><label for="law_name">Law Name</label><input id="law_name" name="law_name" type="text" required /></div>
+                    <div class="field"><label for="article_or_section">Article / Section</label><input id="article_or_section" name="article_or_section" type="text" /></div>
+                    <div class="field"><label for="compliance_status">Compliance Status</label><input id="compliance_status" name="compliance_status" type="text" value="Pending" /></div>
+                    <div class="field"><label for="responsible_person">Responsible Person</label><input id="responsible_person" name="responsible_person" type="text" /></div>
+                    <div class="field"><label for="legal_review_date">Review Date</label><input id="legal_review_date" name="review_date" type="date" /></div>
+                    <div class="field-full"><label for="requirement_description">Requirement Description</label><textarea id="requirement_description" name="requirement_description" required></textarea></div>
+                    <div class="field-full"><label for="evidence_path">Evidence Path</label><input id="evidence_path" name="evidence_path" type="text" /></div>
+                    <div class="field-full"><label for="legal_notes">Notes</label><textarea id="legal_notes" name="notes"></textarea></div>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button class="btn btn-primary" type="submit">Create Policy</button>
-                    <button class="btn btn-secondary" type="reset">Clear Form</button>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Legal Requirement</button>
+                    <a class="btn-secondary" href="#legal-table">Review Legal Matrix</a>
                 </div>
-
             </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Policy</th>
-                        <th>Version</th>
-                        <th>Owner</th>
-                        <th>Review Date</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_policies %}
-                        {% for p in safe_policies %}
-                        <tr>
-                            <td>{{ p.title if p.title is defined and p.title else 'N/A' }}</td>
-                            <td>{{ p.version if p.version is defined and p.version else 'N/A' }}</td>
-                            <td>{{ p.owner if p.owner is defined and p.owner else 'N/A' }}</td>
-                            <td>{{ p.review_date if p.review_date is defined and p.review_date else 'N/A' }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No SG-SST policies available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         LEGAL MATRIX
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>Legal Compliance Matrix</h1>
-            <p>
-                Reference structure for legal standards, ownership, compliance state, and follow-up control.
-            </p>
-        </div>
-
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Requirement Register</button>
-            <button class="tab-button" type="button">Compliance Status</button>
-            <button class="tab-button" type="button">Ownership</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <form method="POST" action="#" class="crm-form">
-
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="legal_standard">Standard</label>
-                        <input type="text" id="legal_standard" name="standard" placeholder="Standard or regulation">
-                    </div>
-
-                    <div>
-                        <label for="legal_reference">Reference</label>
-                        <input type="text" id="legal_reference" name="reference" placeholder="Article or section">
-                    </div>
-
-                    <div>
-                        <label for="legal_topic">Topic</label>
-                        <input type="text" id="legal_topic" name="topic" placeholder="Topic or subject">
-                    </div>
-
-                    <div>
-                        <label for="legal_owner">Owner</label>
-                        <input type="text" id="legal_owner" name="owner" placeholder="Responsible owner">
-                    </div>
-
-                    <div>
-                        <label for="legal_status">Status</label>
-                        <select id="legal_status" name="status">
-                            <option value="Compliant">Compliant</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Non-Compliant">Non-Compliant</option>
-                        </select>
-                    </div>
+        <div class="panel" id="hazard-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create hazard</h3>
+                    <p>Register hazards, probability, consequence, controls, and review dates.</p>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button class="btn btn-primary" type="submit">Add Requirement</button>
-                    <button class="btn btn-secondary" type="reset">Clear Form</button>
+                <span class="section-badge">Hazard</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_hazard') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="hazard_code">Hazard Code</label><input id="hazard_code" name="hazard_code" type="text" /></div>
+                    <div class="field"><label for="area">Area</label><input id="area" name="area" type="text" /></div>
+                    <div class="field"><label for="process">Process</label><input id="process" name="process" type="text" /></div>
+                    <div class="field"><label for="activity">Activity</label><input id="activity" name="activity" type="text" /></div>
+                    <div class="field"><label for="hazard_type">Hazard Type</label><input id="hazard_type" name="hazard_type" type="text" /></div>
+                    <div class="field"><label for="exposed_population">Exposed Population</label><input id="exposed_population" name="exposed_population" type="text" /></div>
+                    <div class="field"><label for="probability">Probability</label><input id="probability" name="probability" type="number" value="1" /></div>
+                    <div class="field"><label for="consequence">Consequence</label><input id="consequence" name="consequence" type="number" value="1" /></div>
+                    <div class="field"><label for="risk_level">Risk Level</label><input id="risk_level" name="risk_level" type="text" /></div>
+                    <div class="field"><label for="hazard_status">Status</label><input id="hazard_status" name="status" type="text" value="Open" /></div>
+                    <div class="field"><label for="hazard_responsible_person">Responsible Person</label><input id="hazard_responsible_person" name="responsible_person" type="text" /></div>
+                    <div class="field"><label for="next_review_date">Next Review Date</label><input id="next_review_date" name="next_review_date" type="date" /></div>
+                    <div class="field-full"><label for="hazard_description">Description</label><textarea id="hazard_description" name="description" required></textarea></div>
+                    <div class="field-full"><label for="existing_controls">Existing Controls</label><textarea id="existing_controls" name="existing_controls"></textarea></div>
+                    <div class="field-full"><label for="control_measures">Control Measures</label><textarea id="control_measures" name="control_measures"></textarea></div>
                 </div>
-
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Hazard</button>
+                    <a class="btn-secondary" href="#hazards-table">Review Hazards</a>
+                </div>
             </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Standard</th>
-                        <th>Reference</th>
-                        <th>Topic</th>
-                        <th>Owner</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_legal_requirements %}
-                        {% for l in safe_legal_requirements %}
-                        <tr>
-                            <td>{{ l.standard if l.standard is defined and l.standard else 'N/A' }}</td>
-                            <td>{{ l.reference if l.reference is defined and l.reference else 'N/A' }}</td>
-                            <td>{{ l.topic if l.topic is defined and l.topic else 'N/A' }}</td>
-                            <td>{{ l.owner if l.owner is defined and l.owner else 'N/A' }}</td>
-                            <td>
-                                {% set legal_status = l.status if l.status is defined and l.status else 'N/A' %}
-                                {% if legal_status in ['Compliant'] %}
-                                    <span class="badge badge-success">{{ legal_status }}</span>
-                                {% elif legal_status in ['Pending'] %}
-                                    <span class="badge badge-warning">{{ legal_status }}</span>
-                                {% elif legal_status in ['Non-Compliant'] %}
-                                    <span class="badge badge-danger">{{ legal_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ legal_status }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5">No legal requirements available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         RISK MATRIX
-    ======================================================== -->
-    <section class="panel-card" id="risk-center">
-
-        <div class="module-header">
-            <h1>Hazard Risk Matrix</h1>
-            <p>
-                Hazard registration, risk level visibility, and control planning aligned with the current backend.
-            </p>
-        </div>
-
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Risk Entry</button>
-            <button class="tab-button" type="button">Hazard Mapping</button>
-            <button class="tab-button" type="button">Control Ownership</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <form method="POST" action="{{ url_for('create_risk_item') }}" class="crm-form">
-
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="risk_area">Area</label>
-                        <input type="text" id="risk_area" name="area" placeholder="Area">
-                    </div>
-
-                    <div>
-                        <label for="risk_hazard">Hazard</label>
-                        <input type="text" id="risk_hazard" name="hazard" placeholder="Hazard">
-                    </div>
-
-                    <div>
-                        <label for="risk_classification">Classification</label>
-                        <select id="risk_classification" name="classification">
-                            <option value="Physical">Physical</option>
-                            <option value="Chemical">Chemical</option>
-                            <option value="Biological">Biological</option>
-                            <option value="Psychosocial">Psychosocial</option>
-                            <option value="Safety">Safety</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="risk_level">Risk Level</label>
-                        <select id="risk_level" name="risk_level">
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="risk_control_measure">Control Measure</label>
-                        <input type="text" id="risk_control_measure" name="control_measure" placeholder="Primary control">
-                    </div>
-
-                    <div>
-                        <label for="risk_responsible_party">Responsible Party</label>
-                        <input type="text" id="risk_responsible_party" name="responsible_party" placeholder="Responsible owner">
-                    </div>
+        <div class="panel" id="workplan-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create annual work plan item</h3>
+                    <p>Plan activities, deadlines, owners, and progress for SG-SST execution.</p>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button class="btn btn-primary" type="submit">Add Risk</button>
-                    <button class="btn btn-secondary" type="reset">Clear Form</button>
+                <span class="section-badge">Plan</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_annual_work_plan') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="plan_year">Year</label><input id="plan_year" name="year" type="number" value="{{ current_year if current_year is defined else '' }}" /></div>
+                    <div class="field"><label for="plan_status">Status</label><input id="plan_status" name="status" type="text" value="Pending" /></div>
+                    <div class="field-full"><label for="activity_name">Activity</label><input id="activity_name" name="activity" type="text" required /></div>
+                    <div class="field-full"><label for="objective">Objective</label><textarea id="objective" name="objective"></textarea></div>
+                    <div class="field"><label for="plan_responsible_person">Responsible Person</label><input id="plan_responsible_person" name="responsible_person" type="text" /></div>
+                    <div class="field"><label for="plan_due_date">Due Date</label><input id="plan_due_date" name="due_date" type="date" /></div>
+                    <div class="field"><label for="progress_percent">Progress %</label><input id="progress_percent" name="progress_percent" type="number" step="0.01" /></div>
+                    <div class="field"><label for="indicator_name">Indicator Name</label><input id="indicator_name" name="indicator_name" type="text" /></div>
+                    <div class="field-full"><label for="plan_evidence_path">Evidence Path</label><input id="plan_evidence_path" name="evidence_path" type="text" /></div>
+                    <div class="field-full"><label for="plan_notes">Notes</label><textarea id="plan_notes" name="notes"></textarea></div>
                 </div>
-
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Work Plan Item</button>
+                    <a class="btn-secondary" href="#plans-table">Review Work Plan</a>
+                </div>
             </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Area</th>
-                        <th>Hazard</th>
-                        <th>Classification</th>
-                        <th>Risk</th>
-                        <th>Owner</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_risk_items %}
-                        {% for r in safe_risk_items %}
-                        <tr>
-                            <td>{{ r.area if r.area is defined and r.area else 'N/A' }}</td>
-                            <td>{{ r.hazard if r.hazard is defined and r.hazard else 'N/A' }}</td>
-                            <td>{{ r.classification if r.classification is defined and r.classification else 'N/A' }}</td>
-                            <td>
-                                {% set risk_level = r.risk_level if r.risk_level is defined and r.risk_level else 'N/A' %}
-                                {% if risk_level in ['High'] %}
-                                    <span class="badge badge-danger">{{ risk_level }}</span>
-                                {% elif risk_level in ['Medium'] %}
-                                    <span class="badge badge-warning">{{ risk_level }}</span>
-                                {% elif risk_level in ['Low'] %}
-                                    <span class="badge badge-success">{{ risk_level }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ risk_level }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if r.responsible_party is defined and r.responsible_party %}
-                                    {{ r.responsible_party }}
-                                {% elif r.owner is defined and r.owner %}
-                                    {{ r.owner }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5">No risk items available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         INSPECTIONS
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>Inspection Management</h1>
-            <p>
-                Inspection visibility, responsible areas, findings, and inspection control records.
-            </p>
-        </div>
-
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Inspection Register</button>
-            <button class="tab-button" type="button">Area Control</button>
-            <button class="tab-button" type="button">Findings</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <form method="POST" action="{{ url_for('create_inspection_record') }}" class="crm-form">
-
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="inspection_name">Inspection Name</label>
-                        <input type="text" id="inspection_name" name="inspection_name" placeholder="Inspection title">
-                    </div>
-
-                    <div>
-                        <label for="inspection_area">Area</label>
-                        <input type="text" id="inspection_area" name="area" placeholder="Area">
-                    </div>
-
-                    <div>
-                        <label for="inspection_type">Inspection Type</label>
-                        <input type="text" id="inspection_type" name="inspection_type" placeholder="Type or scope">
-                    </div>
-
-                    <div>
-                        <label for="inspection_inspector">Inspector</label>
-                        <input type="text" id="inspection_inspector" name="inspector" placeholder="Inspector name">
-                    </div>
-
-                    <div>
-                        <label for="inspection_date">Inspection Date</label>
-                        <input type="date" id="inspection_date" name="inspection_date">
-                    </div>
-
-                    <div>
-                        <label for="inspection_status">Status</label>
-                        <select id="inspection_status" name="status">
-                            <option value="Open">Open</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
+        <div class="panel" id="incident-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create incident</h3>
+                    <p>Report events, classify severity, and trigger investigation and corrective action.</p>
                 </div>
-
-                <div class="mt-3">
-                    <label for="inspection_findings">Findings</label>
-                    <textarea id="inspection_findings" name="findings" placeholder="Inspection findings, concerns, and notes."></textarea>
+                <span class="section-badge">Incident</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_incident') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="incident_code">Incident Code</label><input id="incident_code" name="incident_code" type="text" /></div>
+                    <div class="field"><label for="incident_employee_id">Employee ID</label><input id="incident_employee_id" name="employee_id" type="number" /></div>
+                    <div class="field"><label for="hazard_id">Hazard ID</label><input id="hazard_id" name="hazard_id" type="number" /></div>
+                    <div class="field"><label for="project_id">Project ID</label><input id="project_id" name="project_id" type="number" /></div>
+                    <div class="field"><label for="incident_date">Incident Date</label><input id="incident_date" name="incident_date" type="date" /></div>
+                    <div class="field"><label for="incident_time">Incident Time</label><input id="incident_time" name="incident_time" type="text" /></div>
+                    <div class="field"><label for="incident_location">Location</label><input id="incident_location" name="location" type="text" /></div>
+                    <div class="field"><label for="incident_type">Incident Type</label><input id="incident_type" name="incident_type" type="text" /></div>
+                    <div class="field"><label for="severity">Severity</label><input id="severity" name="severity" type="text" /></div>
+                    <div class="field"><label for="reported_by">Reported By</label><input id="reported_by" name="reported_by" type="text" /></div>
+                    <div class="field"><label for="incident_status">Status</label><input id="incident_status" name="status" type="text" value="Open" /></div>
+                    <div class="field checkbox-row"><label><input name="lost_time" type="checkbox" /> Lost Time</label></div>
+                    <div class="field-full"><label for="incident_description">Description</label><textarea id="incident_description" name="description" required></textarea></div>
+                    <div class="field-full"><label for="immediate_actions">Immediate Actions</label><textarea id="immediate_actions" name="immediate_actions"></textarea></div>
+                    <div class="field-full"><label for="incident_evidence_path">Evidence Path</label><input id="incident_evidence_path" name="evidence_path" type="text" /></div>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button class="btn btn-primary" type="submit">Create Inspection Record</button>
-                    <button class="btn btn-secondary" type="reset">Clear Form</button>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Incident</button>
+                    <a class="btn-secondary" href="#incidents-table">Review Incidents</a>
                 </div>
-
             </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Area</th>
-                        <th>Inspection Type</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_inspections %}
-                        {% for i in safe_inspections %}
-                        <tr>
-                            <td>{{ i.area if i.area is defined and i.area else 'N/A' }}</td>
-                            <td>
-                                {% if i.inspection_type is defined and i.inspection_type %}
-                                    {{ i.inspection_type }}
-                                {% elif i.inspection_name is defined and i.inspection_name %}
-                                    {{ i.inspection_name }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>{{ i.inspection_date if i.inspection_date is defined and i.inspection_date else 'N/A' }}</td>
-                            <td>
-                                {% set inspection_status = i.status if i.status is defined and i.status else 'N/A' %}
-                                {% if inspection_status in ['Closed'] %}
-                                    <span class="badge badge-success">{{ inspection_status }}</span>
-                                {% elif inspection_status in ['In Progress'] %}
-                                    <span class="badge badge-warning">{{ inspection_status }}</span>
-                                {% elif inspection_status in ['Open'] %}
-                                    <span class="badge badge-danger">{{ inspection_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ inspection_status }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No inspection records available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         INCIDENTS
-    ======================================================== -->
-    <section class="panel-card" id="incident-center">
-
-        <div class="module-header">
-            <h1>Incident Management</h1>
-            <p>
-                Incident registration, affected employee visibility, corrective action control, and status follow-up.
-            </p>
-        </div>
-
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Incident Entry</button>
-            <button class="tab-button" type="button">Investigation</button>
-            <button class="tab-button" type="button">Corrective Action</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <form method="POST" action="{{ url_for('create_incident_record') }}" class="crm-form">
-
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="incident_employee_id">Employee</label>
-                        <select id="incident_employee_id" name="employee_id">
-                            <option value="">Select employee</option>
-                            {% for employee in safe_employees %}
-                                <option value="{{ employee.id }}">
-                                    {% if employee.full_name is defined and employee.full_name %}
-                                        {{ employee.full_name }}
-                                    {% elif employee.first_name is defined or employee.last_name is defined %}
-                                        {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                    {% else %}
-                                        Employee #{{ employee.id }}
-                                    {% endif %}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="incident_type">Incident Type</label>
-                        <input type="text" id="incident_type" name="incident_type" placeholder="Incident type">
-                    </div>
-
-                    <div>
-                        <label for="incident_area">Area</label>
-                        <input type="text" id="incident_area" name="area" placeholder="Area">
-                    </div>
-
-                    <div>
-                        <label for="incident_date">Incident Date</label>
-                        <input type="date" id="incident_date" name="incident_date">
-                    </div>
-
-                    <div>
-                        <label for="incident_status">Status</label>
-                        <select id="incident_status" name="status">
-                            <option value="Open">Open</option>
-                            <option value="In Review">In Review</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="incident_affected_person">Affected Person</label>
-                        <input type="text" id="incident_affected_person" name="affected_person" placeholder="Affected person reference">
-                    </div>
+        <div class="panel" id="inspection-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create inspection</h3>
+                    <p>Register inspections, findings, risk rating, and corrective action needs.</p>
                 </div>
-
-                <div class="mt-3">
-                    <label for="incident_description">Description</label>
-                    <textarea id="incident_description" name="description" placeholder="Describe the incident and initial facts."></textarea>
+                <span class="section-badge">Inspection</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_inspection') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="inspection_hazard_id">Hazard ID</label><input id="inspection_hazard_id" name="hazard_id" type="number" /></div>
+                    <div class="field"><label for="inspection_type">Inspection Type</label><input id="inspection_type" name="inspection_type" type="text" /></div>
+                    <div class="field"><label for="inspection_location">Location</label><input id="inspection_location" name="location" type="text" /></div>
+                    <div class="field"><label for="inspection_date">Inspection Date</label><input id="inspection_date" name="inspection_date" type="date" /></div>
+                    <div class="field"><label for="inspector_name">Inspector Name</label><input id="inspector_name" name="inspector_name" type="text" /></div>
+                    <div class="field"><label for="checklist_used">Checklist Used</label><input id="checklist_used" name="checklist_used" type="text" /></div>
+                    <div class="field"><label for="inspection_risk_level">Risk Level</label><input id="inspection_risk_level" name="risk_level" type="text" /></div>
+                    <div class="field"><label for="inspection_status">Status</label><input id="inspection_status" name="status" type="text" value="Completed" /></div>
+                    <div class="field checkbox-row"><label><input name="corrective_actions_required" type="checkbox" /> Corrective Actions Required</label></div>
+                    <div class="field-full"><label for="findings">Findings</label><textarea id="findings" name="findings"></textarea></div>
+                    <div class="field-full"><label for="inspection_evidence_path">Evidence Path</label><input id="inspection_evidence_path" name="evidence_path" type="text" /></div>
                 </div>
-
-                <div class="mt-3">
-                    <label for="incident_corrective_action">Corrective Action</label>
-                    <textarea id="incident_corrective_action" name="corrective_action" placeholder="Document actions taken or planned."></textarea>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Inspection</button>
+                    <a class="btn-secondary" href="#inspections-table">Review Inspections</a>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button class="btn btn-primary" type="submit">Create Incident Record</button>
-                    <button class="btn btn-secondary" type="reset">Clear Form</button>
-                </div>
-
             </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Person</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>Area</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_incidents %}
-                        {% for inc in safe_incidents %}
-                        <tr>
-                            <td>
-                                {% if inc.affected_person is defined and inc.affected_person %}
-                                    {{ inc.affected_person }}
-                                {% elif inc.employee is defined and inc.employee %}
-                                    {% if inc.employee.full_name is defined and inc.employee.full_name %}
-                                        {{ inc.employee.full_name }}
-                                    {% else %}
-                                        Employee #{{ inc.employee_id if inc.employee_id is defined else 'N/A' }}
-                                    {% endif %}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>{{ inc.incident_type if inc.incident_type is defined and inc.incident_type else 'N/A' }}</td>
-                            <td>{{ inc.incident_date if inc.incident_date is defined and inc.incident_date else 'N/A' }}</td>
-                            <td>{{ inc.area if inc.area is defined and inc.area else 'N/A' }}</td>
-                            <td>
-                                {% set incident_status = inc.status if inc.status is defined and inc.status else 'N/A' %}
-                                {% if incident_status in ['Closed'] %}
-                                    <span class="badge badge-success">{{ incident_status }}</span>
-                                {% elif incident_status in ['In Review'] %}
-                                    <span class="badge badge-warning">{{ incident_status }}</span>
-                                {% elif incident_status in ['Open'] %}
-                                    <span class="badge badge-danger">{{ incident_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ incident_status }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5">No incident records available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-         TRAINING
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>Training &amp; Competency</h1>
-            <p>
-                Safety training records, status visibility, facilitator references, and competency traceability.
-            </p>
-        </div>
-
-        <div class="tabs-bar mt-4">
-            <button class="tab-button active" type="button">Training Register</button>
-            <button class="tab-button" type="button">Competency</button>
-            <button class="tab-button" type="button">Completion Status</button>
-        </div>
-
-        <div class="tab-content-panel mt-4">
-            <form method="POST" action="{{ url_for('create_training_record') }}" class="crm-form">
-
-                <div class="form-grid two-col">
-                    <div>
-                        <label for="training_employee_id">Employee</label>
-                        <select id="training_employee_id" name="employee_id">
-                            <option value="">Select employee</option>
-                            {% for employee in safe_employees %}
-                                <option value="{{ employee.id }}">
-                                    {% if employee.full_name is defined and employee.full_name %}
-                                        {{ employee.full_name }}
-                                    {% elif employee.first_name is defined or employee.last_name is defined %}
-                                        {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                    {% else %}
-                                        Employee #{{ employee.id }}
-                                    {% endif %}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="training_name">Training</label>
-                        <input type="text" id="training_name" name="training_name" placeholder="Training title">
-                    </div>
-
-                    <div>
-                        <label for="training_trainer">Facilitator / Trainer</label>
-                        <input type="text" id="training_trainer" name="trainer" placeholder="Facilitator">
-                    </div>
-
-                    <div>
-                        <label for="training_date">Date</label>
-                        <input type="date" id="training_date" name="training_date">
-                    </div>
-
-                    <div>
-                        <label for="training_status">Status</label>
-                        <select id="training_status" name="status">
-                            <option value="Completed">Completed</option>
-                            <option value="Scheduled">Scheduled</option>
-                            <option value="Pending">Pending</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="training_certificate">Certificate</label>
-                        <input type="text" id="training_certificate" name="certificate" placeholder="Certificate or evidence reference">
-                    </div>
+        <div class="panel" id="action-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create corrective action</h3>
+                    <p>Track CAPA, preventive actions, and improvement plan execution.</p>
                 </div>
-
-                <div class="form-actions mt-4">
-                    <button class="btn btn-primary" type="submit">Create Training Record</button>
-                    <button class="btn btn-secondary" type="reset">Clear Form</button>
+                <span class="section-badge">Action</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_corrective_action') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="action_incident_id">Incident ID</label><input id="action_incident_id" name="incident_id" type="number" /></div>
+                    <div class="field"><label for="source_type">Source Type</label><input id="source_type" name="source_type" type="text" /></div>
+                    <div class="field"><label for="source_id">Source ID</label><input id="source_id" name="source_id" type="number" /></div>
+                    <div class="field"><label for="action_type">Action Type</label><input id="action_type" name="action_type" type="text" /></div>
+                    <div class="field"><label for="action_responsible_person">Responsible Person</label><input id="action_responsible_person" name="responsible_person" type="text" /></div>
+                    <div class="field"><label for="action_due_date">Due Date</label><input id="action_due_date" name="due_date" type="date" /></div>
+                    <div class="field"><label for="completion_date">Completion Date</label><input id="completion_date" name="completion_date" type="date" /></div>
+                    <div class="field"><label for="action_status">Status</label><input id="action_status" name="status" type="text" value="Open" /></div>
+                    <div class="field-full"><label for="action_description">Description</label><textarea id="action_description" name="description" required></textarea></div>
+                    <div class="field-full"><label for="effectiveness_review">Effectiveness Review</label><textarea id="effectiveness_review" name="effectiveness_review"></textarea></div>
+                    <div class="field-full"><label for="action_evidence_path">Evidence Path</label><input id="action_evidence_path" name="evidence_path" type="text" /></div>
                 </div>
-
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Corrective Action</button>
+                    <a class="btn-secondary" href="#actions-table">Review Actions</a>
+                </div>
             </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Training</th>
-                        <th>Facilitator</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_trainings %}
-                        {% for t in safe_trainings %}
-                        <tr>
-                            <td>
-                                {% if t.training_name is defined and t.training_name %}
-                                    {{ t.training_name }}
-                                {% elif t.title is defined and t.title %}
-                                    {{ t.title }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if t.trainer is defined and t.trainer %}
-                                    {{ t.trainer }}
-                                {% elif t.facilitator is defined and t.facilitator %}
-                                    {{ t.facilitator }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>{{ t.training_date if t.training_date is defined and t.training_date else 'N/A' }}</td>
-                            <td>
-                                {% set training_status = t.status if t.status is defined and t.status else 'N/A' %}
-                                {% if training_status in ['Completed'] %}
-                                    <span class="badge badge-success">{{ training_status }}</span>
-                                {% elif training_status in ['Scheduled'] %}
-                                    <span class="badge badge-info">{{ training_status }}</span>
-                                {% elif training_status in ['Pending'] %}
-                                    <span class="badge badge-warning">{{ training_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ training_status }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No training records available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
+        <div class="panel" id="medical-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create medical surveillance record</h3>
+                    <p>Track occupational exams, fitness results, restrictions, and next control date.</p>
+                </div>
+                <span class="section-badge">Medical</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_medical_surveillance') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="medical_employee_id">Employee ID</label><input id="medical_employee_id" name="employee_id" type="number" required /></div>
+                    <div class="field"><label for="exam_type">Exam Type</label><input id="exam_type" name="exam_type" type="text" required /></div>
+                    <div class="field"><label for="exam_date">Exam Date</label><input id="exam_date" name="exam_date" type="date" /></div>
+                    <div class="field"><label for="medical_provider">Provider</label><input id="medical_provider" name="provider" type="text" /></div>
+                    <div class="field"><label for="fitness_status">Fitness Status</label><input id="fitness_status" name="fitness_status" type="text" /></div>
+                    <div class="field"><label for="next_exam_date">Next Exam Date</label><input id="next_exam_date" name="next_exam_date" type="date" /></div>
+                    <div class="field-full"><label for="restrictions">Restrictions</label><textarea id="restrictions" name="restrictions"></textarea></div>
+                    <div class="field-full"><label for="confidential_notes">Confidential Notes</label><textarea id="confidential_notes" name="confidential_notes"></textarea></div>
+                    <div class="field-full"><label for="medical_file_path">File Path</label><input id="medical_file_path" name="file_path" type="text" /></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Medical Record</button>
+                    <a class="btn-secondary" href="#medical-table">Review Medical</a>
+                </div>
+            </form>
         </div>
 
-    </section>
-
-    <!-- =======================================================
-         PPE
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>PPE Management</h1>
-            <p>
-                Protective equipment visibility, delivery tracking, and assignment readiness across the workforce.
-            </p>
+        <div class="panel" id="ppe-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create PPE assignment</h3>
+                    <p>Control protective equipment issuance, receipts, and return tracking.</p>
+                </div>
+                <span class="section-badge">PPE</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_ppe_assignment') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="ppe_employee_id">Employee ID</label><input id="ppe_employee_id" name="employee_id" type="number" required /></div>
+                    <div class="field"><label for="inventory_item_id">Inventory Item ID</label><input id="inventory_item_id" name="inventory_item_id" type="number" required /></div>
+                    <div class="field"><label for="assignment_date">Assignment Date</label><input id="assignment_date" name="assignment_date" type="date" /></div>
+                    <div class="field"><label for="return_date">Return Date</label><input id="return_date" name="return_date" type="date" /></div>
+                    <div class="field"><label for="condition_on_delivery">Condition on Delivery</label><input id="condition_on_delivery" name="condition_on_delivery" type="text" /></div>
+                    <div class="field checkbox-row"><label><input name="signed_receipt" type="checkbox" /> Signed Receipt</label></div>
+                    <div class="field-full"><label for="ppe_notes">Notes</label><textarea id="ppe_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create PPE Assignment</button>
+                    <a class="btn-secondary" href="#ppe-table">Review PPE</a>
+                </div>
+            </form>
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
+        <div class="panel" id="audit-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create safety audit</h3>
+                    <p>Track audit scope, findings, scoring, and supporting report file path.</p>
+                </div>
+                <span class="section-badge">Audit</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_safety_audit') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="audit_name">Audit Name</label><input id="audit_name" name="audit_name" type="text" required /></div>
+                    <div class="field"><label for="audit_type">Audit Type</label><input id="audit_type" name="audit_type" type="text" /></div>
+                    <div class="field"><label for="audit_date">Audit Date</label><input id="audit_date" name="audit_date" type="date" /></div>
+                    <div class="field"><label for="auditor_name">Auditor Name</label><input id="auditor_name" name="auditor_name" type="text" /></div>
+                    <div class="field"><label for="audit_score">Score</label><input id="audit_score" name="score" type="number" step="0.01" /></div>
+                    <div class="field"><label for="audit_status">Status</label><input id="audit_status" name="status" type="text" value="Open" /></div>
+                    <div class="field-full"><label for="audit_scope">Scope</label><textarea id="audit_scope" name="scope"></textarea></div>
+                    <div class="field-full"><label for="audit_findings">Findings</label><textarea id="audit_findings" name="findings"></textarea></div>
+                    <div class="field-full"><label for="report_path">Report Path</label><input id="report_path" name="report_path" type="text" /></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Audit</button>
+                    <a class="btn-secondary" href="#audits-table">Review Audits</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>PPE</th>
-                        <th>Status</th>
-                        <th>Expiration</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_ppe_records %}
-                        {% for p in safe_ppe_records %}
-                        <tr>
-                            <td>{{ p.employee_name if p.employee_name is defined and p.employee_name else 'N/A' }}</td>
-                            <td>
-                                {% if p.ppe_item is defined and p.ppe_item %}
-                                    {{ p.ppe_item }}
-                                {% elif p.asset_name is defined and p.asset_name %}
-                                    {{ p.asset_name }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% set ppe_status = p.status if p.status is defined and p.status else 'N/A' %}
-                                {% if ppe_status in ['Assigned', 'Delivered'] %}
-                                    <span class="badge badge-success">{{ ppe_status }}</span>
-                                {% elif ppe_status in ['Prepared'] %}
-                                    <span class="badge badge-info">{{ ppe_status }}</span>
-                                {% elif ppe_status in ['Pending'] %}
-                                    <span class="badge badge-warning">{{ ppe_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ ppe_status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ p.expiration_date if p.expiration_date is defined and p.expiration_date else 'N/A' }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No PPE records available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
+    <div class="data-stack">
+        <div class="panel">
+            <div class="tabs">
+                <a class="tab-link" href="#policies-table">Policies</a>
+                <a class="tab-link" href="#legal-table">Legal Matrix</a>
+                <a class="tab-link" href="#hazards-table">Hazards</a>
+                <a class="tab-link" href="#plans-table">Work Plan</a>
+                <a class="tab-link" href="#incidents-table">Incidents</a>
+                <a class="tab-link" href="#inspections-table">Inspections</a>
+                <a class="tab-link" href="#actions-table">Actions</a>
+                <a class="tab-link" href="#medical-table">Medical</a>
+                <a class="tab-link" href="#ppe-table">PPE</a>
+                <a class="tab-link" href="#audits-table">Audits</a>
+                <a class="tab-link" href="#standards-table">Minimum Standards</a>
+            </div>
         </div>
 
-    </section>
-
-    <!-- =======================================================
-         AUDIT CENTER
-    ======================================================== -->
-    <section class="panel-card" id="audit-center">
-
-        <div class="module-header">
-            <h1>Audit Center</h1>
-            <p>
-                Audit visibility, scope control, and review of internal compliance performance.
-            </p>
+        <div class="panel" id="policies-table">
+            <div class="panel-head"><div><h3>Safety policies</h3><p>Policy documents, approvals, and review cycle control.</p></div><span class="section-badge">{{ safety_policies|length }} records</span></div>
+            {% if safety_policies %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Title</th><th>Version</th><th>Approved By</th><th>Effective</th><th>Review</th></tr></thead><tbody>{% for item in safety_policies %}<tr><td><strong>{{ item.title }}</strong></td><td>{{ item.version or 'N/A' }}</td><td>{{ item.approved_by or 'N/A' }}</td><td>{{ item.effective_date.strftime('%Y-%m-%d') if item.effective_date else 'N/A' }}</td><td>{{ item.review_date.strftime('%Y-%m-%d') if item.review_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No safety policies available yet.</div>{% endif %}
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Audit</th>
-                        <th>Scope</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_audits %}
-                        {% for a in safe_audits %}
-                        <tr>
-                            <td>{{ a.title if a.title is defined and a.title else 'N/A' }}</td>
-                            <td>{{ a.scope if a.scope is defined and a.scope else 'N/A' }}</td>
-                            <td>{{ a.audit_date if a.audit_date is defined and a.audit_date else 'N/A' }}</td>
-                            <td>
-                                {% set audit_status = a.status if a.status is defined and a.status else 'N/A' %}
-                                {% if audit_status in ['Closed', 'Completed'] %}
-                                    <span class="badge badge-success">{{ audit_status }}</span>
-                                {% elif audit_status in ['In Progress'] %}
-                                    <span class="badge badge-warning">{{ audit_status }}</span>
-                                {% elif audit_status in ['Open', 'Pending'] %}
-                                    <span class="badge badge-info">{{ audit_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ audit_status }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No audits available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
+        <div class="panel" id="legal-table">
+            <div class="panel-head"><div><h3>Legal matrix</h3><p>Applicable law control, status, ownership, and evidence visibility.</p></div><span class="section-badge">{{ legal_requirements|length }} records</span></div>
+            {% if legal_requirements %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Law</th><th>Jurisdiction</th><th>Article</th><th>Status</th><th>Responsible</th><th>Review</th></tr></thead><tbody>{% for item in legal_requirements %}<tr><td><strong>{{ item.law_name }}</strong></td><td>{{ item.jurisdiction or 'N/A' }}</td><td>{{ item.article_or_section or 'N/A' }}</td><td>{{ status_chip(item.compliance_status) }}</td><td>{{ item.responsible_person or 'N/A' }}</td><td>{{ item.review_date.strftime('%Y-%m-%d') if item.review_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No legal requirements available yet.</div>{% endif %}
         </div>
 
-    </section>
-
-    <!-- =======================================================
-         SAFETY INDICATORS
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>Safety Indicators</h1>
-            <p>
-                Executive indicator areas for continuous SG-SST visibility and future analytics.
-            </p>
+        <div class="panel" id="hazards-table">
+            <div class="panel-head"><div><h3>Hazards</h3><p>Risk source registry with controls, risk scoring, and ownership.</p></div><span class="section-badge">{{ hazards|length }} records</span></div>
+            {% if hazards %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Hazard</th><th>Area</th><th>Type</th><th>Risk Level</th><th>Score</th><th>Status</th></tr></thead><tbody>{% for hazard in hazards %}<tr><td><strong>{{ hazard.hazard_code or 'No code' }}</strong><br /><span>{{ hazard.description[:70] ~ ('...' if hazard.description and hazard.description|length > 70 else '') if hazard.description else 'No description' }}</span></td><td>{{ hazard.area or 'N/A' }}</td><td>{{ hazard.hazard_type or 'N/A' }}</td><td>{{ status_chip(hazard.risk_level) }}</td><td>{{ hazard.risk_score or 0 }}</td><td>{{ status_chip(hazard.status) }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No hazards available yet.</div>{% endif %}
         </div>
 
-        <ul class="clean-list mt-4">
-            <li>Incident Frequency Rate</li>
-            <li>Inspection Completion Rate</li>
-            <li>Training Compliance Rate</li>
-            <li>Corrective Action Closure Rate</li>
-        </ul>
-
-    </section>
-
-    <!-- =======================================================
-         IMPROVEMENT PLANS
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>Improvement Plans</h1>
-            <p>
-                Action plans, origin tracking, responsible ownership, and follow-up deadlines for continuous improvement.
-            </p>
+        <div class="panel" id="plans-table">
+            <div class="panel-head"><div><h3>Annual work plan</h3><p>Execution planning for SG-SST actions, owners, and progress.</p></div><span class="section-badge">{{ annual_work_plans|length }} records</span></div>
+            {% if annual_work_plans %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Year</th><th>Activity</th><th>Responsible</th><th>Due Date</th><th>Progress</th><th>Status</th></tr></thead><tbody>{% for item in annual_work_plans %}<tr><td>{{ item.year }}</td><td><strong>{{ item.activity }}</strong></td><td>{{ item.responsible_person or 'N/A' }}</td><td>{{ item.due_date.strftime('%Y-%m-%d') if item.due_date else 'N/A' }}</td><td>{{ item.progress_percent or 0 }}%</td><td>{{ status_chip(item.status) }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No annual work plan items available yet.</div>{% endif %}
         </div>
 
-        <div class="data-table-wrapper mt-4">
-            <table class="data-table">
-
-                <thead>
-                    <tr>
-                        <th>Action</th>
-                        <th>Origin</th>
-                        <th>Responsible</th>
-                        <th>Deadline</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% if safe_improvements %}
-                        {% for i in safe_improvements %}
-                        <tr>
-                            <td>{{ i.action if i.action is defined and i.action else 'N/A' }}</td>
-                            <td>{{ i.origin if i.origin is defined and i.origin else 'N/A' }}</td>
-                            <td>{{ i.responsible if i.responsible is defined and i.responsible else 'N/A' }}</td>
-                            <td>{{ i.deadline if i.deadline is defined and i.deadline else 'N/A' }}</td>
-                            <td>
-                                {% set imp_status = i.status if i.status is defined and i.status else 'N/A' %}
-                                {% if imp_status in ['Closed', 'Completed'] %}
-                                    <span class="badge badge-success">{{ imp_status }}</span>
-                                {% elif imp_status in ['In Progress'] %}
-                                    <span class="badge badge-warning">{{ imp_status }}</span>
-                                {% elif imp_status in ['Open', 'Pending'] %}
-                                    <span class="badge badge-info">{{ imp_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ imp_status }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5">No improvement plans available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-
-            </table>
+        <div class="panel" id="incidents-table">
+            <div class="panel-head"><div><h3>Incidents</h3><p>Event reporting with severity, location, and investigation trigger visibility.</p></div><span class="section-badge">{{ incidents|length }} records</span></div>
+            {% if incidents %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Incident</th><th>Type</th><th>Severity</th><th>Status</th><th>Location</th><th>Date</th></tr></thead><tbody>{% for item in incidents %}<tr><td><strong>{{ item.incident_code or 'No code' }}</strong></td><td>{{ item.incident_type or 'N/A' }}</td><td>{{ status_chip(item.severity) }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.location or 'N/A' }}</td><td>{{ item.incident_date.strftime('%Y-%m-%d') if item.incident_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No incidents available yet.</div>{% endif %}
         </div>
 
-    </section>
-
-    <!-- =======================================================
-         XIOMY SAFETY INTELLIGENCE
-    ======================================================== -->
-    <section class="panel-card">
-
-        <div class="module-header">
-            <h1>XIOMY Safety Intelligence</h1>
-            <p>
-                Future AI-powered safety analysis engine that will identify hazard trends,
-                training gaps, inspection weaknesses, compliance risks, and predictive workplace
-                safety signals for executive review.
-            </p>
+        <div class="panel" id="inspections-table">
+            <div class="panel-head"><div><h3>Inspections</h3><p>Inspection execution and findings tied to risk level and corrective need.</p></div><span class="section-badge">{{ inspections|length }} records</span></div>
+            {% if inspections %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Type</th><th>Location</th><th>Inspector</th><th>Risk Level</th><th>Status</th><th>Date</th></tr></thead><tbody>{% for item in inspections %}<tr><td>{{ item.inspection_type or 'N/A' }}</td><td>{{ item.location or 'N/A' }}</td><td>{{ item.inspector_name or 'N/A' }}</td><td>{{ status_chip(item.risk_level) }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.inspection_date.strftime('%Y-%m-%d') if item.inspection_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No inspections available yet.</div>{% endif %}
         </div>
 
-        <div class="action-row mt-4">
-            <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-            <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+        <div class="panel" id="actions-table">
+            <div class="panel-head"><div><h3>Corrective actions</h3><p>CAPA execution visibility by source, owner, and due date.</p></div><span class="section-badge">{{ corrective_actions|length }} records</span></div>
+            {% if corrective_actions %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Action Type</th><th>Source</th><th>Responsible</th><th>Due Date</th><th>Status</th><th>Completion</th></tr></thead><tbody>{% for item in corrective_actions %}<tr><td>{{ item.action_type or 'N/A' }}</td><td>{{ item.source_type or 'N/A' }} / {{ item.source_id or 'N/A' }}</td><td>{{ item.responsible_person or 'N/A' }}</td><td>{{ item.due_date.strftime('%Y-%m-%d') if item.due_date else 'N/A' }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.completion_date.strftime('%Y-%m-%d') if item.completion_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No corrective actions available yet.</div>{% endif %}
         </div>
 
-    </section>
+        <div class="panel" id="medical-table">
+            <div class="panel-head"><div><h3>Medical surveillance</h3><p>Occupational exam control, restrictions, and next due date tracking.</p></div><span class="section-badge">{{ medical_surveillance_records|length }} records</span></div>
+            {% if medical_surveillance_records %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Employee ID</th><th>Exam Type</th><th>Provider</th><th>Fitness Status</th><th>Exam Date</th><th>Next Exam</th></tr></thead><tbody>{% for item in medical_surveillance_records %}<tr><td>{{ item.employee_id }}</td><td>{{ item.exam_type }}</td><td>{{ item.provider or 'N/A' }}</td><td>{{ status_chip(item.fitness_status) }}</td><td>{{ item.exam_date.strftime('%Y-%m-%d') if item.exam_date else 'N/A' }}</td><td>{{ item.next_exam_date.strftime('%Y-%m-%d') if item.next_exam_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No medical surveillance records available yet.</div>{% endif %}
+        </div>
 
-</div>
+        <div class="panel" id="ppe-table">
+            <div class="panel-head"><div><h3>PPE assignments</h3><p>Protective equipment issuance and signed receipt evidence tracking.</p></div><span class="section-badge">{{ ppe_assignments|length }} records</span></div>
+            {% if ppe_assignments %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Employee ID</th><th>Item ID</th><th>Assigned</th><th>Return</th><th>Receipt</th><th>Condition</th></tr></thead><tbody>{% for item in ppe_assignments %}<tr><td>{{ item.employee_id }}</td><td>{{ item.inventory_item_id }}</td><td>{{ item.assignment_date.strftime('%Y-%m-%d') if item.assignment_date else 'N/A' }}</td><td>{{ item.return_date.strftime('%Y-%m-%d') if item.return_date else 'N/A' }}</td><td>{{ status_chip('Signed' if item.signed_receipt else 'Pending') }}</td><td>{{ item.condition_on_delivery or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No PPE assignments available yet.</div>{% endif %}
+        </div>
 
+        <div class="panel" id="audits-table">
+            <div class="panel-head"><div><h3>Safety audits</h3><p>Audit program control including score, findings, and status.</p></div><span class="section-badge">{{ safety_audits|length }} records</span></div>
+            {% if safety_audits %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Audit</th><th>Type</th><th>Auditor</th><th>Score</th><th>Status</th><th>Date</th></tr></thead><tbody>{% for item in safety_audits %}<tr><td><strong>{{ item.audit_name }}</strong></td><td>{{ item.audit_type or 'N/A' }}</td><td>{{ item.auditor_name or 'N/A' }}</td><td>{{ item.score or 0 }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.audit_date.strftime('%Y-%m-%d') if item.audit_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No safety audits available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="standards-table">
+            <div class="panel-head"><div><h3>Minimum standards assessments</h3><p>Minimum standards scoring and evidence-backed compliance control.</p></div><span class="section-badge">{{ minimum_standard_assessments|length }} records</span></div>
+            {% if minimum_standard_assessments %}
+            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Year</th><th>Standard</th><th>Company Size</th><th>Score</th><th>Status</th></tr></thead><tbody>{% for item in minimum_standard_assessments %}<tr><td>{{ item.year }}</td><td><strong>{{ item.standard_name }}</strong></td><td>{{ item.company_size or 'N/A' }}</td><td>{{ item.score or 0 }}</td><td>{{ status_chip(item.compliance_status) }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No minimum standard assessments available yet.</div>{% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}
+```

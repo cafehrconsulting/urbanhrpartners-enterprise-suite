@@ -1,846 +1,1035 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}HRIS | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}HRIS Workforce Command Center{% endblock %}
+{% block page_title %}HRIS Command Center{% endblock %}
+{% block page_subtitle %}Manage employee records, attendance, leave, training, payroll support, disciplinary cases, and labor relations from one integrated enterprise workspace.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hris-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .hris-banner,
+    .hris-summary {
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
+        border: 1px solid rgba(11,31,58,0.08);
+    }
+
+    .hris-banner {
+        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 56%, rgba(192,198,207,0.82) 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hris-banner::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
+    }
+
+    .hris-banner h2 {
+        margin: 0 0 10px;
+        font-size: 1.9rem;
+        color: #fff8e6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hris-banner p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+    }
+
+    .hris-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hris-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 800;
+        color: #fffdf5;
+    }
+
+    .hris-summary {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
+    }
+
+    .hris-summary h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+    }
+
+    .summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.06);
+    }
+
+    .summary-item strong { color: #0b1f3a; }
+    .summary-pill {
+        min-width: 64px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 14px;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
+        border: 1px solid rgba(212,175,55,0.26);
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
+    }
+
+    .kpi-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5e6d85;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .kpi-card .value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .kpi-card .note {
+        color: #6b7a91;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .hris-layout {
+        display: grid;
+        grid-template-columns: 430px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-stack,
+    .data-stack {
+        display: grid;
+        gap: 22px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.97);
+        border-radius: 24px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
+        padding: 22px;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1.14rem;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #61718a;
+        line-height: 1.45;
+        font-size: 0.94rem;
+    }
+
+    .section-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
+        border: 1px solid rgba(212,175,55,0.24);
+    }
+
+    .enterprise-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field,
+    .field-full {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field-full {
+        grid-column: 1 / -1;
+    }
+
+    .enterprise-form label {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .enterprise-form input,
+    .enterprise-form select,
+    .enterprise-form textarea {
+        width: 100%;
+        border: 1px solid rgba(11,31,58,0.12);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        color: #132238;
+        background: #fff;
+        outline: none;
+    }
+
+    .enterprise-form textarea {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 800;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
+        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(11,31,58,0.07);
+    }
+
+    .hris-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 780px;
+        background: #fff;
+    }
+
+    .hris-table th,
+    .hris-table td {
+        padding: 13px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(11,31,58,0.07);
+        vertical-align: top;
+    }
+
+    .hris-table th {
+        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
+        color: #0b1f3a;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .hris-table td {
+        font-size: 0.95rem;
+        color: #334155;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        border: 1px solid rgba(11,31,58,0.08);
+        background: rgba(11,31,58,0.05);
+        color: #0b1f3a;
+    }
+
+    .status-active,
+    .status-open,
+    .status-completed,
+    .status-present,
+    .status-approved,
+    .status-accepted {
+        background: rgba(6,118,71,0.12);
+        color: #067647;
+        border-color: rgba(6,118,71,0.18);
+    }
+
+    .status-pending,
+    .status-draft,
+    .status-scheduled {
+        background: rgba(181,71,8,0.12);
+        color: #b54708;
+        border-color: rgba(181,71,8,0.18);
+    }
+
+    .status-closed,
+    .status-inactive,
+    .status-terminated,
+    .status-declined {
+        background: rgba(100,116,139,0.12);
+        color: #475569;
+        border-color: rgba(100,116,139,0.18);
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 20px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
+        border: 1px dashed rgba(11,31,58,0.12);
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-link {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.08);
+        color: #0b1f3a;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1320px) {
+        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .hris-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+        .hris-hero,
+        .kpi-grid,
+        .form-grid,
+        .form-grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% macro status_chip(value) -%}
+    {% set raw = (value or 'N/A') %}
+    {% set normalized = raw|string|lower|replace(' ', '-') %}
+    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
+{%- endmacro %}
 
 {% block content %}
-<div class="page-grid">
-
-    <!-- =====================================================
-         SAFE RENDER VARIABLES
-         Keeps HRIS page stable if app.py provides alternate
-         field names or if some collections are empty.
-    ====================================================== -->
-    {% set safe_employees = employees if employees is defined and employees else [] %}
-    {% set safe_point_logs = point_logs if point_logs is defined and point_logs else [] %}
-    {% set safe_sop_requirements = sop_requirements if sop_requirements is defined and sop_requirements else [] %}
-    {% set safe_disciplinary_records = disciplinary_records if disciplinary_records is defined and disciplinary_records else [] %}
-    {% set safe_workforce_stats = workforce_stats if workforce_stats is defined and workforce_stats else {} %}
-
-    <!-- =====================================================
-         HRIS HERO
-    ====================================================== -->
-    <section class="hero-panel">
-        <div class="hero-left">
-            <span class="hero-badge">Human Resources Information System</span>
-            <h1 class="hero-title">HRIS Workforce Command Center</h1>
-            <p class="hero-text">
-                Premium workforce administration environment for employee records,
-                disciplinary visibility, SOP compliance, point tracking, training history,
-                document readiness, and workforce intelligence across the enterprise suite.
-            </p>
-
-            <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="#employee-registration">Register Employee</a>
-                <a class="btn btn-secondary btn-lg" href="#disciplinary-center">Disciplinary Records</a>
-                <a class="btn btn-ghost btn-lg" href="#sop-center">SOP Tracking</a>
-            </div>
-
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Employees</button>
-                    <button class="tab-button" type="button">Discipline</button>
-                    <button class="tab-button" type="button">SOP</button>
-                    <button class="tab-button" type="button">Points</button>
-                    <button class="tab-button" type="button">Analytics</button>
-                </div>
-            </div>
+<section class="hris-hero">
+    <div class="hris-banner">
+        <h2>Enterprise workforce administration and labor control</h2>
+        <p>
+            This HRIS workspace centralizes employee master files, attendance, leave, training records,
+            payroll support information, disciplinary action workflows, and labor relations case management.
+        </p>
+        <div class="hris-chip-row">
+            <span class="hris-chip">Employee records</span>
+            <span class="hris-chip">Attendance & leave</span>
+            <span class="hris-chip">Training history</span>
+            <span class="hris-chip">Disciplinary cases</span>
+            <span class="hris-chip">Labor relations</span>
         </div>
+    </div>
 
-        <div class="hero-right">
-            <div class="hero-status-card">
-                <h3 class="section-title">HRIS Executive Snapshot</h3>
-                <p class="section-subtitle">
-                    Organized workforce visibility for operational leadership and HR control.
-                </p>
-
-                <ul class="status-list mt-3">
-                    <li><strong>Workforce Control:</strong> employee master records and role visibility</li>
-                    <li><strong>Compliance Support:</strong> SOP, policy, and accountability structure</li>
-                    <li><strong>Relations Monitoring:</strong> disciplinary and formal action history</li>
-                    <li><strong>Growth Direction:</strong> future XIOMY workforce intelligence and risk alerts</li>
-                </ul>
-
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('orientation') }}">Orientation</a>
-                    <a class="btn btn-secondary" href="{{ url_for('ats') }}">ATS</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         SUMMARY CARDS
-    ====================================================== -->
-    <section class="summary-grid">
-        <div class="summary-card">
-            <h3>Total Employees</h3>
-            <p>
-                {% if safe_workforce_stats.total_employees is defined %}
-                    {{ safe_workforce_stats.total_employees }}
-                {% else %}
-                    {{ safe_employees|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">All workforce profiles registered</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Active Employees</h3>
-            <p>
-                {% if safe_workforce_stats.active_employees is defined %}
-                    {{ safe_workforce_stats.active_employees }}
-                {% else %}
-                    {{ safe_employees|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Currently active workforce population</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Disciplinary Cases</h3>
-            <p>
-                {% if safe_workforce_stats.disciplinary_cases is defined %}
-                    {{ safe_workforce_stats.disciplinary_cases }}
-                {% else %}
-                    {{ safe_disciplinary_records|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Formal employee relations records</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>SOP Requirements</h3>
-            <p>
-                {% if safe_workforce_stats.sop_requirements is defined %}
-                    {{ safe_workforce_stats.sop_requirements }}
-                {% else %}
-                    {{ safe_sop_requirements|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Role-based procedural controls</span>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         EXECUTIVE PURPOSE
-    ====================================================== -->
-    <section class="two-column-grid">
-        <div class="panel-card">
-            <h3>HRIS Executive Purpose</h3>
-            <p class="section-subtitle">
-                This module operates as the workforce administration core of the platform.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Employee Master Control</div>
-                    <div class="activity-item-meta">
-                        Maintain identity, role, department, status, and core employment data
-                        in a centralized workforce environment.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Employee Relations &amp; Accountability</div>
-                    <div class="activity-item-meta">
-                        Track disciplinary actions, formal records, compliance issues, and
-                        accountability events with a structured HR lens.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Operational Workforce Readiness</div>
-                    <div class="activity-item-meta">
-                        Connect SOP requirements, training expectations, point logs, and
-                        future analytics to strengthen performance and consistency.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <h3>Leadership Priorities</h3>
-            <p class="section-subtitle">
-                Workforce controls that should remain visible to leadership and XIOMY.
-            </p>
-
-            <ul class="clean-list mt-4">
-                <li>Protect data quality for employee records and role assignments.</li>
-                <li>Track disciplinary history carefully and consistently.</li>
-                <li>Ensure SOP obligations align with each role and department.</li>
-                <li>Use point logs to document positive and negative patterns transparently.</li>
-                <li>Prepare the workforce structure for analytics, readiness, and risk review.</li>
-            </ul>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="#analytics-panels">Workforce Analytics</a>
-                <a class="btn btn-secondary" href="#point-log-center">Point Logs</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         EMPLOYEE REGISTRATION + DISCIPLINARY CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="employee-registration">
-            <div class="module-header">
-                <h1>Employee Registration Center</h1>
-                <p>
-                    Create centralized workforce records with operational, organizational,
-                    and employment details.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Core Profile</button>
-                <button class="tab-button" type="button">Role Structure</button>
-                <button class="tab-button" type="button">Employment Status</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_employee_profile') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="employee_first_name">First Name</label>
-                            <input type="text" id="employee_first_name" name="first_name" placeholder="First name" required>
-                        </div>
-
-                        <div>
-                            <label for="employee_last_name">Last Name</label>
-                            <input type="text" id="employee_last_name" name="last_name" placeholder="Last name" required>
-                        </div>
-
-                        <div>
-                            <label for="employee_full_name">Full Name</label>
-                            <input type="text" id="employee_full_name" name="full_name" placeholder="Full employee name">
-                        </div>
-
-                        <div>
-                            <label for="employee_id_code">Employee ID</label>
-                            <input type="text" id="employee_id_code" name="employee_id" placeholder="Internal employee ID">
-                        </div>
-
-                        <div>
-                            <label for="employee_email">Email</label>
-                            <input type="email" id="employee_email" name="email" placeholder="employee@company.com">
-                        </div>
-
-                        <div>
-                            <label for="employee_phone">Phone</label>
-                            <input type="text" id="employee_phone" name="phone" placeholder="Phone number">
-                        </div>
-
-                        <div>
-                            <label for="employee_department">Department</label>
-                            <input type="text" id="employee_department" name="department" placeholder="Department or business unit">
-                        </div>
-
-                        <div>
-                            <label for="employee_position">Job Title / Position</label>
-                            <input type="text" id="employee_position" name="position" placeholder="Role or position title">
-                        </div>
-
-                        <div>
-                            <label for="employee_status">Employment Status</label>
-                            <select id="employee_status" name="status">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="On Leave">On Leave</option>
-                                <option value="Suspended">Suspended</option>
-                                <option value="Separated">Separated</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="employee_start_date">Hire Date</label>
-                            <input type="date" id="employee_start_date" name="hire_date">
-                        </div>
-
-                        <div>
-                            <label for="employee_salary">Salary</label>
-                            <input type="number" step="0.01" id="employee_salary" name="salary" placeholder="0.00">
-                        </div>
-
-                        <div>
-                            <label for="employee_supervisor">Supervisor / Manager</label>
-                            <input type="text" id="employee_supervisor" name="supervisor" placeholder="Manager or reporting line">
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="employee_notes">Employment Notes</label>
-                        <textarea id="employee_notes" name="notes" placeholder="Relevant notes about assignment, role expectations, or employment context."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Employee Profile</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="panel-card" id="disciplinary-center">
-            <div class="module-header">
-                <h1>Disciplinary Record Center</h1>
-                <p>
-                    Record formal employee relations actions, accountability history, and
-                    case details with professional structure.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Case Entry</button>
-                <button class="tab-button" type="button">Action Type</button>
-                <button class="tab-button" type="button">Resolution</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_disciplinary_record') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="discipline_employee_id">Employee</label>
-                            <select id="discipline_employee_id" name="employee_id">
-                                <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="discipline_record_date">Record Date</label>
-                            <input type="date" id="discipline_record_date" name="record_date">
-                        </div>
-
-                        <div>
-                            <label for="discipline_case_type">Case Type</label>
-                            <select id="discipline_case_type" name="case_type">
-                                <option value="Counseling">Counseling</option>
-                                <option value="Verbal Warning">Verbal Warning</option>
-                                <option value="Written Warning">Written Warning</option>
-                                <option value="Suspension">Suspension</option>
-                                <option value="Final Warning">Final Warning</option>
-                                <option value="Termination Review">Termination Review</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="discipline_status">Status</label>
-                            <select id="discipline_status" name="status">
-                                <option value="Open">Open</option>
-                                <option value="In Review">In Review</option>
-                                <option value="Resolved">Resolved</option>
-                                <option value="Closed">Closed</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="discipline_description">Issue / Allegation</label>
-                        <textarea id="discipline_description" name="description" placeholder="Describe the incident, misconduct concern, or formal issue."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="discipline_action_taken">Resolution / Outcome</label>
-                        <textarea id="discipline_action_taken" name="action_taken" placeholder="Document the outcome, action taken, and follow-up expectation."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Disciplinary Record</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         SOP CENTER + POINT LOG CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="sop-center">
-            <div class="module-header">
-                <h1>SOP Requirement Center</h1>
-                <p>
-                    Map role-based SOP expectations, required procedures, and operational accountability.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Requirement Entry</button>
-                <button class="tab-button" type="button">Role Mapping</button>
-                <button class="tab-button" type="button">Compliance Notes</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_sop_requirement') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="sop_job_title">Job Title / Role</label>
-                            <input type="text" id="sop_job_title" name="job_title" placeholder="Role linked to the requirement" required>
-                        </div>
-
-                        <div>
-                            <label for="sop_department">Department</label>
-                            <input type="text" id="sop_department" name="department" placeholder="Department or function">
-                        </div>
-
-                        <div>
-                            <label for="sop_title">SOP / Requirement Name</label>
-                            <input type="text" id="sop_title" name="title" placeholder="Procedure or requirement title" required>
-                        </div>
-
-                        <div>
-                            <label for="sop_required">Required</label>
-                            <select id="sop_required" name="required_selector">
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-3 form-checkbox-row">
-                        <label class="checkbox-inline" for="sop_required_checkbox">
-                            <input type="checkbox" id="sop_required_checkbox" name="required" checked>
-                            Mark as required operational obligation
-                        </label>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="sop_requirement">Requirement / Description</label>
-                        <textarea id="sop_requirement" name="requirement" placeholder="Describe the SOP, expected behavior, required procedure, or performance obligation."></textarea>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="sop_description">Additional Notes</label>
-                        <textarea id="sop_description" name="description" placeholder="Add support notes, implementation details, or compliance expectations."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create SOP Requirement</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="panel-card" id="point-log-center">
-            <div class="module-header">
-                <h1>Point Log Center</h1>
-                <p>
-                    Record positive and negative point events to strengthen accountability,
-                    recognition, and performance transparency.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Entry</button>
-                <button class="tab-button" type="button">Recognition</button>
-                <button class="tab-button" type="button">Corrective Trend</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_point_log') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="point_employee_id">Employee</label>
-                            <select id="point_employee_id" name="employee_id">
-                                <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="point_category">Point Type</label>
-                            <select id="point_category" name="category">
-                                <option value="Positive">Positive</option>
-                                <option value="Negative">Negative</option>
-                                <option value="Performance">Performance</option>
-                                <option value="Conduct">Conduct</option>
-                                <option value="Attendance">Attendance</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="point_value">Points</label>
-                            <input type="number" id="point_value" name="points" placeholder="Numeric value" required>
-                        </div>
-
-                        <div>
-                            <label for="point_date">Date</label>
-                            <input type="date" id="point_date" name="log_date">
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="point_reason">Reason / Event Description</label>
-                        <textarea id="point_reason" name="reason" placeholder="Explain the behavior, achievement, issue, or event that generated the point entry."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Point Log</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         EMPLOYEE TABLE
-    ====================================================== -->
-    <section class="table-shell">
-        <div class="table-toolbar">
+    <div class="hris-summary">
+        <div class="panel-head">
             <div>
-                <h3 class="section-title">Employee Workforce Table</h3>
-                <p class="section-subtitle">Central employee profile visibility and organizational structure.</p>
+                <h3>People operations summary</h3>
+                <p>Immediate visibility into workforce volume and labor-management workload.</p>
             </div>
+            <span class="section-badge">HRIS Live</span>
+        </div>
+        <div class="summary-list">
+            <div class="summary-item"><strong>Total Employees</strong><span class="summary-pill">{{ hris_stats.employees_count }}</span></div>
+            <div class="summary-item"><strong>Departments</strong><span class="summary-pill">{{ hris_stats.departments_count }}</span></div>
+            <div class="summary-item"><strong>Leave Requests</strong><span class="summary-pill">{{ hris_stats.leave_requests_count }}</span></div>
+            <div class="summary-item"><strong>Disciplinary Cases</strong><span class="summary-pill">{{ hris_stats.disciplinary_cases_count }}</span></div>
+            <div class="summary-item"><strong>Labor Cases</strong><span class="summary-pill">{{ hris_stats.labor_cases_count }}</span></div>
+        </div>
+    </div>
+</section>
 
-            <div class="action-row">
-                <a class="btn btn-primary btn-sm" href="#employee-registration">New Employee</a>
-                <a class="btn btn-secondary btn-sm" href="#sop-center">SOP Center</a>
+<section class="kpi-grid">
+    <article class="kpi-card">
+        <div class="label">Employees</div>
+        <div class="value">{{ hris_stats.employees_count }}</div>
+        <div class="note">Workforce records loaded into the enterprise HRIS.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Departments</div>
+        <div class="value">{{ departments|length }}</div>
+        <div class="note">Organizational structure supporting people operations.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Job Titles</div>
+        <div class="value">{{ job_titles|length }}</div>
+        <div class="note">Controlled position catalog for workforce assignment.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Training Records</div>
+        <div class="value">{{ training_records|length }}</div>
+        <div class="note">Employee capability and compliance learning evidence.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Payroll Records</div>
+        <div class="value">{{ payroll_records|length }}</div>
+        <div class="note">Payroll support entries already captured in the suite.</div>
+    </article>
+</section>
+
+<section class="hris-layout">
+    <div class="form-stack">
+        <div class="panel" id="department-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create department</h3>
+                    <p>Build the workforce structure for reporting lines and budgeting.</p>
+                </div>
+                <span class="section-badge">Org</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_department') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="dept_name">Department Name</label><input id="dept_name" name="name" type="text" required /></div>
+                    <div class="field"><label for="dept_code">Code</label><input id="dept_code" name="code" type="text" /></div>
+                    <div class="field-full"><label for="dept_description">Description</label><textarea id="dept_description" name="description"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Department</button>
+                    <a class="btn-secondary" href="#departments-table">Review Departments</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="job-title-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create job title</h3>
+                    <p>Define the controlled position catalog for employee assignment.</p>
+                </div>
+                <span class="section-badge">Position</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_job_title') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="job_title">Title</label><input id="job_title" name="title" type="text" required /></div>
+                    <div class="field"><label for="salary_grade">Salary Grade</label><input id="salary_grade" name="salary_grade" type="text" /></div>
+                    <div class="field-full"><label for="job_description">Description</label><textarea id="job_description" name="description"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Job Title</button>
+                    <a class="btn-secondary" href="#employees-table">Review Employees</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="employee-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create employee</h3>
+                    <p>Capture the complete employee master file aligned to HRIS and compliance workflows.</p>
+                </div>
+                <span class="section-badge">Employee</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_employee') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="employee_code">Employee Code</label><input id="employee_code" name="employee_code" type="text" /></div>
+                    <div class="field"><label for="first_name">First Name</label><input id="first_name" name="first_name" type="text" required /></div>
+                    <div class="field"><label for="middle_name">Middle Name</label><input id="middle_name" name="middle_name" type="text" /></div>
+                    <div class="field"><label for="last_name">Last Name</label><input id="last_name" name="last_name" type="text" required /></div>
+                    <div class="field"><label for="employee_email">Email</label><input id="employee_email" name="email" type="email" /></div>
+                    <div class="field"><label for="employee_phone">Phone</label><input id="employee_phone" name="phone" type="text" /></div>
+                    <div class="field"><label for="alternate_phone">Alternate Phone</label><input id="alternate_phone" name="alternate_phone" type="text" /></div>
+                    <div class="field"><label for="national_id">National ID</label><input id="national_id" name="national_id" type="text" /></div>
+                    <div class="field"><label for="birth_date">Birth Date</label><input id="birth_date" name="birth_date" type="date" /></div>
+                    <div class="field"><label for="gender">Gender</label><input id="gender" name="gender" type="text" /></div>
+                    <div class="field"><label for="marital_status">Marital Status</label><input id="marital_status" name="marital_status" type="text" /></div>
+                    <div class="field"><label for="employee_country">Country</label><input id="employee_country" name="country" type="text" /></div>
+                    <div class="field"><label for="employee_state">State / Region</label><input id="employee_state" name="state" type="text" /></div>
+                    <div class="field"><label for="employee_city">City</label><input id="employee_city" name="city" type="text" /></div>
+                    <div class="field-full"><label for="employee_address">Address</label><input id="employee_address" name="address" type="text" /></div>
+                    <div class="field"><label for="emergency_contact_name">Emergency Contact</label><input id="emergency_contact_name" name="emergency_contact_name" type="text" /></div>
+                    <div class="field"><label for="emergency_contact_phone">Emergency Phone</label><input id="emergency_contact_phone" name="emergency_contact_phone" type="text" /></div>
+                    <div class="field">
+                        <label for="department_id">Department</label>
+                        <select id="department_id" name="department_id">
+                            <option value="">Select department</option>
+                            {% for department in departments %}
+                            <option value="{{ department.id }}">{{ department.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="job_title_id">Job Title</label>
+                        <select id="job_title_id" name="job_title_id">
+                            <option value="">Select title</option>
+                            {% for job_title in job_titles %}
+                            <option value="{{ job_title.id }}">{{ job_title.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="manager_id">Manager ID</label><input id="manager_id" name="manager_id" type="number" /></div>
+                    <div class="field"><label for="work_location_id">Work Location ID</label><input id="work_location_id" name="work_location_id" type="number" /></div>
+                    <div class="field"><label for="employment_type">Employment Type</label><input id="employment_type" name="employment_type" type="text" /></div>
+                    <div class="field"><label for="contract_type">Contract Type</label><input id="contract_type" name="contract_type" type="text" /></div>
+                    <div class="field"><label for="hire_date">Hire Date</label><input id="hire_date" name="hire_date" type="date" /></div>
+                    <div class="field"><label for="termination_date">Termination Date</label><input id="termination_date" name="termination_date" type="date" /></div>
+                    <div class="field"><label for="employment_status">Employment Status</label><input id="employment_status" name="employment_status" type="text" value="Active" /></div>
+                    <div class="field"><label for="salary">Salary</label><input id="salary" name="salary" type="number" step="0.01" /></div>
+                    <div class="field"><label for="currency">Currency</label><input id="currency" name="currency" type="text" value="USD" /></div>
+                    <div class="field"><label for="pay_frequency">Pay Frequency</label><input id="pay_frequency" name="pay_frequency" type="text" /></div>
+                    <div class="field-full"><label for="benefits_summary">Benefits Summary</label><textarea id="benefits_summary" name="benefits_summary"></textarea></div>
+                    <div class="field-full"><label for="profile_photo_path">Profile Photo Path</label><input id="profile_photo_path" name="profile_photo_path" type="text" /></div>
+                    <div class="field-full"><label for="employee_notes">Notes</label><textarea id="employee_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Employee</button>
+                    <a class="btn-secondary" href="#employees-table">Review Employees</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="leave-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create leave request</h3>
+                    <p>Track employee time off, approvals, and operational absence planning.</p>
+                </div>
+                <span class="section-badge">Leave</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_leave_request') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="leave_employee_id">Employee</label>
+                        <select id="leave_employee_id" name="employee_id" required>
+                            <option value="">Select employee</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="leave_type">Leave Type</label><input id="leave_type" name="leave_type" type="text" required /></div>
+                    <div class="field"><label for="leave_start_date">Start Date</label><input id="leave_start_date" name="start_date" type="date" /></div>
+                    <div class="field"><label for="leave_end_date">End Date</label><input id="leave_end_date" name="end_date" type="date" /></div>
+                    <div class="field"><label for="days_requested">Days Requested</label><input id="days_requested" name="days_requested" type="number" step="0.01" /></div>
+                    <div class="field"><label for="leave_status">Status</label><input id="leave_status" name="status" type="text" value="Pending" /></div>
+                    <div class="field-full"><label for="request_reason">Request Reason</label><textarea id="request_reason" name="request_reason"></textarea></div>
+                    <div class="field"><label for="approver_name">Approver Name</label><input id="approver_name" name="approver_name" type="text" /></div>
+                    <div class="field-full"><label for="approval_notes">Approval Notes</label><textarea id="approval_notes" name="approval_notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Leave Request</button>
+                    <a class="btn-secondary" href="#leave-table">Review Leave</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="training-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create training record</h3>
+                    <p>Log internal, external, and compliance-related employee training history.</p>
+                </div>
+                <span class="section-badge">Training</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_training_record') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="training_employee_id">Employee</label>
+                        <select id="training_employee_id" name="employee_id" required>
+                            <option value="">Select employee</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="training_name">Training Name</label><input id="training_name" name="training_name" type="text" required /></div>
+                    <div class="field"><label for="training_category">Category</label><input id="training_category" name="category" type="text" /></div>
+                    <div class="field"><label for="training_provider">Provider</label><input id="training_provider" name="provider" type="text" /></div>
+                    <div class="field"><label for="training_date">Training Date</label><input id="training_date" name="training_date" type="date" /></div>
+                    <div class="field"><label for="expiration_date">Expiration Date</label><input id="expiration_date" name="expiration_date" type="date" /></div>
+                    <div class="field"><label for="training_status">Status</label><input id="training_status" name="status" type="text" value="Completed" /></div>
+                    <div class="field"><label for="training_score">Score</label><input id="training_score" name="score" type="number" step="0.01" /></div>
+                    <div class="field-full"><label for="certificate_path">Certificate Path</label><input id="certificate_path" name="certificate_path" type="text" /></div>
+                    <div class="field-full"><label for="training_notes">Notes</label><textarea id="training_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Training Record</button>
+                    <a class="btn-secondary" href="#training-table">Review Training</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="disciplinary-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create disciplinary record</h3>
+                    <p>Support formal due process for USA and Colombia labor frameworks.</p>
+                </div>
+                <span class="section-badge">Discipline</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_disciplinary_record') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="disc_employee_id">Employee</label>
+                        <select id="disc_employee_id" name="employee_id" required>
+                            <option value="">Select employee</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="case_number">Case Number</label><input id="case_number" name="case_number" type="text" required /></div>
+                    <div class="field"><label for="country_framework">Country Framework</label><input id="country_framework" name="country_framework" type="text" placeholder="USA / Colombia" /></div>
+                    <div class="field"><label for="labor_framework">Labor Framework</label><input id="labor_framework" name="labor_framework" type="text" placeholder="FLRA / CST / Policy" /></div>
+                    <div class="field"><label for="incident_date">Incident Date</label><input id="incident_date" name="incident_date" type="date" /></div>
+                    <div class="field"><label for="report_date">Report Date</label><input id="report_date" name="report_date" type="date" /></div>
+                    <div class="field"><label for="incident_type">Incident Type</label><input id="incident_type" name="incident_type" type="text" /></div>
+                    <div class="field"><label for="violation_category">Violation Category</label><input id="violation_category" name="violation_category" type="text" /></div>
+                    <div class="field"><label for="severity_level">Severity Level</label><input id="severity_level" name="severity_level" type="text" /></div>
+                    <div class="field"><label for="policy_violation">Policy Violation</label><input id="policy_violation" name="policy_violation" type="text" /></div>
+                    <div class="field"><label for="investigator_name">Investigator</label><input id="investigator_name" name="investigator_name" type="text" /></div>
+                    <div class="field"><label for="action_type">Action Type</label><input id="action_type" name="action_type" type="text" /></div>
+                    <div class="field"><label for="action_taken">Action Taken</label><input id="action_taken" name="action_taken" type="text" /></div>
+                    <div class="field"><label for="suspension_days">Suspension Days</label><input id="suspension_days" name="suspension_days" type="number" /></div>
+                    <div class="field"><label for="decision_official">Decision Official</label><input id="decision_official" name="decision_official" type="text" /></div>
+                    <div class="field"><label for="appeal_status">Appeal Status</label><input id="appeal_status" name="appeal_status" type="text" /></div>
+                    <div class="field"><label for="disciplinary_status">Status</label><input id="disciplinary_status" name="status" type="text" value="Open" /></div>
+                    <div class="field-full"><label for="description">Description</label><textarea id="description" name="description" required></textarea></div>
+                    <div class="field-full"><label for="evidence_summary">Evidence Summary</label><textarea id="evidence_summary" name="evidence_summary"></textarea></div>
+                    <div class="field-full"><label for="witness_summary">Witness Summary</label><textarea id="witness_summary" name="witness_summary"></textarea></div>
+                    <div class="field-full"><label for="outcome">Outcome</label><textarea id="outcome" name="outcome"></textarea></div>
+                    <div class="field"><label><input name="due_process_completed" type="checkbox" /> Due Process Completed</label></div>
+                    <div class="field"><label><input name="employee_response_received" type="checkbox" /> Employee Response Received</label></div>
+                    <div class="field"><label><input name="union_representation_requested" type="checkbox" /> Union Representation Requested</label></div>
+                    <div class="field"><label><input name="appeal_flag" type="checkbox" /> Appeal Filed</label></div>
+                    <div class="field-full"><label for="notice_file_path">Notice File Path</label><input id="notice_file_path" name="notice_file_path" type="text" /></div>
+                    <div class="field-full"><label for="decision_file_path">Decision File Path</label><input id="decision_file_path" name="decision_file_path" type="text" /></div>
+                    <div class="field-full"><label for="disciplinary_notes">Notes</label><textarea id="disciplinary_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Disciplinary Record</button>
+                    <a class="btn-secondary" href="#disciplinary-table">Review Cases</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="labor-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create labor case</h3>
+                    <p>Track FLRA, labor grievances, descargos, sanctions, and case resolution history.</p>
+                </div>
+                <span class="section-badge">Labor</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_labor_case') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="labor_employee_id">Employee</label>
+                        <select id="labor_employee_id" name="employee_id" required>
+                            <option value="">Select employee</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="labor_case_number">Case Number</label><input id="labor_case_number" name="case_number" type="text" required /></div>
+                    <div class="field"><label for="framework">Framework</label><input id="framework" name="framework" type="text" placeholder="FLRA / Colombia Labor / Internal" /></div>
+                    <div class="field"><label for="case_type">Case Type</label><input id="case_type" name="case_type" type="text" /></div>
+                    <div class="field-full"><label for="subject">Subject</label><input id="subject" name="subject" type="text" required /></div>
+                    <div class="field"><label for="filed_date">Filed Date</label><input id="filed_date" name="filed_date" type="date" /></div>
+                    <div class="field"><label for="hearing_date">Hearing Date</label><input id="hearing_date" name="hearing_date" type="date" /></div>
+                    <div class="field"><label for="response_deadline">Response Deadline</label><input id="response_deadline" name="response_deadline" type="date" /></div>
+                    <div class="field"><label for="union_name">Union Name</label><input id="union_name" name="union_name" type="text" /></div>
+                    <div class="field"><label for="representative_name">Representative</label><input id="representative_name" name="representative_name" type="text" /></div>
+                    <div class="field"><label for="employer_representative">Employer Representative</label><input id="employer_representative" name="employer_representative" type="text" /></div>
+                    <div class="field"><label for="labor_status">Status</label><input id="labor_status" name="status" type="text" value="Open" /></div>
+                    <div class="field"><label for="resolution_date">Resolution Date</label><input id="resolution_date" name="resolution_date" type="date" /></div>
+                    <div class="field"><label for="legal_risk_level">Legal Risk Level</label><input id="legal_risk_level" name="legal_risk_level" type="text" /></div>
+                    <div class="field-full"><label for="labor_description">Description</label><textarea id="labor_description" name="description" required></textarea></div>
+                    <div class="field-full"><label for="resolution">Resolution</label><textarea id="resolution" name="resolution"></textarea></div>
+                    <div class="field-full"><label for="file_path">File Path</label><input id="file_path" name="file_path" type="text" /></div>
+                    <div class="field-full"><label for="labor_notes">Notes</label><textarea id="labor_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Labor Case</button>
+                    <a class="btn-secondary" href="#labor-table">Review Labor Cases</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="data-stack">
+        <div class="panel">
+            <div class="tabs">
+                <a class="tab-link" href="#departments-table">Departments</a>
+                <a class="tab-link" href="#employees-table">Employees</a>
+                <a class="tab-link" href="#leave-table">Leave</a>
+                <a class="tab-link" href="#training-table">Training</a>
+                <a class="tab-link" href="#payroll-table">Payroll</a>
+                <a class="tab-link" href="#disciplinary-table">Disciplinary</a>
+                <a class="tab-link" href="#labor-table">Labor Cases</a>
             </div>
         </div>
 
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Job Title</th>
-                        <th>Status</th>
-                        <th>Email</th>
-                        <th>Hire Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if safe_employees %}
-                        {% for employee in safe_employees %}
+        <div class="panel" id="departments-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Departments</h3>
+                    <p>Organizational structure driving workforce grouping and accountability.</p>
+                </div>
+                <span class="section-badge">{{ departments|length }} records</span>
+            </div>
+            {% if departments %}
+            <div class="table-wrap">
+                <table class="hris-table">
+                    <thead>
                         <tr>
-                            <td>
-                                {% if employee.full_name is defined and employee.full_name %}
-                                    {{ employee.full_name }}
-                                {% else %}
-                                    {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                {% endif %}
-                            </td>
-                            <td>{{ employee.department if employee.department is defined and employee.department else 'N/A' }}</td>
-                            <td>
-                                {% if employee.position is defined and employee.position %}
-                                    {{ employee.position }}
-                                {% elif employee.job_title is defined and employee.job_title %}
-                                    {{ employee.job_title }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% set emp_status = employee.status if employee.status is defined and employee.status else 'N/A' %}
-                                {% if emp_status in ['Active'] %}
-                                    <span class="badge badge-success">{{ emp_status }}</span>
-                                {% elif emp_status in ['On Leave', 'Suspended'] %}
-                                    <span class="badge badge-warning">{{ emp_status }}</span>
-                                {% elif emp_status in ['Separated', 'Inactive'] %}
-                                    <span class="badge badge-danger">{{ emp_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ emp_status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ employee.email if employee.email is defined and employee.email else 'N/A' }}</td>
-                            <td>{{ employee.hire_date if employee.hire_date is defined and employee.hire_date else 'N/A' }}</td>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for department in departments %}
+                        <tr>
+                            <td><strong>{{ department.name }}</strong></td>
+                            <td>{{ department.code or 'N/A' }}</td>
+                            <td>{{ department.description or 'N/A' }}</td>
                         </tr>
                         {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6">No employee profiles available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         DISCIPLINARY TABLE + SOP TABLE
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Disciplinary Records</h3>
-                    <p class="section-subtitle">Formal employee relations history and accountability tracking.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#disciplinary-center">New Case</a>
-                </div>
+                    </tbody>
+                </table>
             </div>
+            {% else %}<div class="empty-state">No departments available yet.</div>{% endif %}
+        </div>
 
-            <div class="data-table-wrapper">
-                <table class="data-table">
+        <div class="panel" id="employees-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Employees</h3>
+                    <p>Core workforce registry aligned with HRIS, payroll, discipline, and compliance processes.</p>
+                </div>
+                <span class="section-badge">{{ employees|length }} records</span>
+            </div>
+            {% if employees %}
+            <div class="table-wrap">
+                <table class="hris-table">
                     <thead>
                         <tr>
                             <th>Employee</th>
-                            <th>Action Type</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Department ID</th>
+                            <th>Hire Date</th>
+                            <th>Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td><strong>{{ employee.full_name }}</strong><br /><span>{{ employee.employee_code or 'No code' }}</span></td>
+                            <td>{{ employee.email or 'N/A' }}</td>
+                            <td>{{ status_chip(employee.employment_status) }}</td>
+                            <td>{{ employee.department_id or 'N/A' }}</td>
+                            <td>{{ employee.hire_date.strftime('%Y-%m-%d') if employee.hire_date else 'N/A' }}</td>
+                            <td>{{ "{:,.2f}".format(employee.salary or 0) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}<div class="empty-state">No employees available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="leave-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Leave requests</h3>
+                    <p>Time off requests and approval workflow visibility.</p>
+                </div>
+                <span class="section-badge">{{ leave_requests|length }} records</span>
+            </div>
+            {% if leave_requests %}
+            <div class="table-wrap">
+                <table class="hris-table">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in leave_requests %}
+                        <tr>
+                            <td>{{ leave.employee_id }}</td>
+                            <td>{{ leave.leave_type }}</td>
+                            <td>{{ status_chip(leave.status) }}</td>
+                            <td>{{ leave.start_date.strftime('%Y-%m-%d') if leave.start_date else 'N/A' }}</td>
+                            <td>{{ leave.end_date.strftime('%Y-%m-%d') if leave.end_date else 'N/A' }}</td>
+                            <td>{{ leave.days_requested or 0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}<div class="empty-state">No leave requests available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="training-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Training records</h3>
+                    <p>Employee development and compliance learning evidence trail.</p>
+                </div>
+                <span class="section-badge">{{ training_records|length }} records</span>
+            </div>
+            {% if training_records %}
+            <div class="table-wrap">
+                <table class="hris-table">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Training</th>
+                            <th>Category</th>
                             <th>Status</th>
                             <th>Date</th>
+                            <th>Score</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if safe_disciplinary_records %}
-                            {% for record in safe_disciplinary_records %}
-                            <tr>
-                                <td>
-                                    {% if record.employee is defined and record.employee %}
-                                        {% if record.employee.full_name is defined and record.employee.full_name %}
-                                            {{ record.employee.full_name }}
-                                        {% elif record.employee.first_name is defined or record.employee.last_name is defined %}
-                                            {{ (record.employee.first_name if record.employee.first_name is defined else '') ~ ' ' ~ (record.employee.last_name if record.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ record.employee_id if record.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif record.employee_name is defined and record.employee_name %}
-                                        {{ record.employee_name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if record.case_type is defined and record.case_type %}
-                                        {{ record.case_type }}
-                                    {% elif record.action_type is defined and record.action_type %}
-                                        {{ record.action_type }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set record_status = record.status if record.status is defined and record.status else 'N/A' %}
-                                    {% if record_status in ['Resolved', 'Closed'] %}
-                                        <span class="badge badge-success">{{ record_status }}</span>
-                                    {% elif record_status in ['In Review'] %}
-                                        <span class="badge badge-warning">{{ record_status }}</span>
-                                    {% elif record_status in ['Open'] %}
-                                        <span class="badge badge-danger">{{ record_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ record_status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if record.record_date is defined and record.record_date %}
-                                        {{ record.record_date }}
-                                    {% elif record.case_date is defined and record.case_date %}
-                                        {{ record.case_date }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No disciplinary records available.</td>
-                            </tr>
-                        {% endif %}
+                        {% for training in training_records %}
+                        <tr>
+                            <td>{{ training.employee_id }}</td>
+                            <td><strong>{{ training.training_name }}</strong></td>
+                            <td>{{ training.category or 'N/A' }}</td>
+                            <td>{{ status_chip(training.status) }}</td>
+                            <td>{{ training.training_date.strftime('%Y-%m-%d') if training.training_date else 'N/A' }}</td>
+                            <td>{{ training.score or 0 }}</td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}<div class="empty-state">No training records available yet.</div>{% endif %}
         </div>
 
-        <div class="table-shell">
-            <div class="table-toolbar">
+        <div class="panel" id="payroll-table">
+            <div class="panel-head">
                 <div>
-                    <h3 class="section-title">SOP Requirements</h3>
-                    <p class="section-subtitle">Role-based procedural and operational obligations.</p>
+                    <h3>Payroll records</h3>
+                    <p>Payroll support layer connected to finance and employee compensation history.</p>
                 </div>
-                <div class="action-row">
-                    <a class="btn btn-secondary btn-sm" href="#sop-center">New SOP</a>
-                </div>
+                <span class="section-badge">{{ payroll_records|length }} records</span>
             </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
+            {% if payroll_records %}
+            <div class="table-wrap">
+                <table class="hris-table">
                     <thead>
                         <tr>
-                            <th>Role</th>
-                            <th>Department</th>
-                            <th>Requirement</th>
-                            <th>Required</th>
+                            <th>Employee ID</th>
+                            <th>Status</th>
+                            <th>Period Start</th>
+                            <th>Period End</th>
+                            <th>Gross Pay</th>
+                            <th>Net Pay</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if safe_sop_requirements %}
-                            {% for sop in safe_sop_requirements %}
-                            <tr>
-                                <td>{{ sop.job_title if sop.job_title is defined and sop.job_title else 'N/A' }}</td>
-                                <td>{{ sop.department if sop.department is defined and sop.department else 'N/A' }}</td>
-                                <td>
-                                    {% if sop.title is defined and sop.title %}
-                                        {{ sop.title }}
-                                    {% elif sop.requirement_name is defined and sop.requirement_name %}
-                                        {{ sop.requirement_name }}
-                                    {% elif sop.requirement is defined and sop.requirement %}
-                                        {{ sop.requirement }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if sop.required is defined %}
-                                        {% if sop.required %}
-                                            <span class="badge badge-success">Required</span>
-                                        {% else %}
-                                            <span class="badge badge-neutral">Optional</span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="badge badge-neutral">N/A</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No SOP requirements available.</td>
-                            </tr>
-                        {% endif %}
+                        {% for payroll in payroll_records %}
+                        <tr>
+                            <td>{{ payroll.employee_id }}</td>
+                            <td>{{ status_chip(payroll.status) }}</td>
+                            <td>{{ payroll.pay_period_start.strftime('%Y-%m-%d') if payroll.pay_period_start else 'N/A' }}</td>
+                            <td>{{ payroll.pay_period_end.strftime('%Y-%m-%d') if payroll.pay_period_end else 'N/A' }}</td>
+                            <td>{{ "{:,.2f}".format(payroll.gross_pay or 0) }}</td>
+                            <td>{{ "{:,.2f}".format(payroll.net_pay or 0) }}</td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}<div class="empty-state">No payroll records available yet.</div>{% endif %}
         </div>
-    </section>
 
-    <!-- =====================================================
-         POINT LOG TABLE + ANALYTICS PANELS
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
+        <div class="panel" id="disciplinary-table">
+            <div class="panel-head">
                 <div>
-                    <h3 class="section-title">Point Logs</h3>
-                    <p class="section-subtitle">Positive and negative point history for workforce accountability.</p>
+                    <h3>Disciplinary records</h3>
+                    <p>Formal labor due process workflow supporting investigations, action, and appeals.</p>
                 </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#point-log-center">New Log</a>
-                </div>
+                <span class="section-badge">{{ disciplinary_records|length }} records</span>
             </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
+            {% if disciplinary_records %}
+            <div class="table-wrap">
+                <table class="hris-table">
                     <thead>
                         <tr>
-                            <th>Employee</th>
-                            <th>Type</th>
-                            <th>Points</th>
-                            <th>Date</th>
+                            <th>Case</th>
+                            <th>Employee ID</th>
+                            <th>Framework</th>
+                            <th>Action Type</th>
+                            <th>Status</th>
+                            <th>Appeal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if safe_point_logs %}
-                            {% for log in safe_point_logs %}
-                            <tr>
-                                <td>
-                                    {% if log.employee is defined and log.employee %}
-                                        {% if log.employee.full_name is defined and log.employee.full_name %}
-                                            {{ log.employee.full_name }}
-                                        {% elif log.employee.first_name is defined or log.employee.last_name is defined %}
-                                            {{ (log.employee.first_name if log.employee.first_name is defined else '') ~ ' ' ~ (log.employee.last_name if log.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ log.employee_id if log.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif log.employee_name is defined and log.employee_name %}
-                                        {{ log.employee_name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set point_type = log.category if log.category is defined and log.category else (log.point_type if log.point_type is defined and log.point_type else 'N/A') %}
-                                    {% if point_type == 'Positive' %}
-                                        <span class="badge badge-success">{{ point_type }}</span>
-                                    {% elif point_type == 'Negative' %}
-                                        <span class="badge badge-danger">{{ point_type }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ point_type }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ log.points if log.points is defined else '0' }}</td>
-                                <td>{{ log.log_date if log.log_date is defined and log.log_date else 'N/A' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No point logs available.</td>
-                            </tr>
-                        {% endif %}
+                        {% for case in disciplinary_records %}
+                        <tr>
+                            <td><strong>{{ case.case_number }}</strong><br /><span>{{ case.incident_type or 'No incident type' }}</span></td>
+                            <td>{{ case.employee_id }}</td>
+                            <td>{{ case.country_framework }} / {{ case.labor_framework or 'N/A' }}</td>
+                            <td>{{ case.action_type or 'N/A' }}</td>
+                            <td>{{ status_chip(case.status) }}</td>
+                            <td>{{ status_chip('Yes' if case.appeal_flag else 'No') }}</td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}<div class="empty-state">No disciplinary records available yet.</div>{% endif %}
         </div>
 
-        <div class="panel-card" id="analytics-panels">
-            <h3>Workforce Analytics Direction</h3>
-            <p class="section-subtitle">
-                Executive interpretation and future XIOMY workforce intelligence foundation.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Employee Risk Visibility</div>
-                    <div class="activity-item-meta">
-                        HRIS will support future detection of recurring disciplinary patterns,
-                        attendance issues, and employee relations concerns.
-                    </div>
+        <div class="panel" id="labor-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Labor cases</h3>
+                    <p>Union, grievance, FLRA, and Colombia labor case management control.</p>
                 </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Performance &amp; Accountability Signals</div>
-                    <div class="activity-item-meta">
-                        Point logs, SOP obligations, and HR record consistency create the basis
-                        for stronger workforce analytics and management decisions.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">XIOMY Workforce Intelligence</div>
-                    <div class="activity-item-meta">
-                        XIOMY will later summarize workforce concerns, role readiness,
-                        operational risk, and human capital trends for owner-level review.
-                    </div>
-                </div>
+                <span class="section-badge">{{ labor_cases|length }} records</span>
             </div>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            {% if labor_cases %}
+            <div class="table-wrap">
+                <table class="hris-table">
+                    <thead>
+                        <tr>
+                            <th>Case</th>
+                            <th>Employee ID</th>
+                            <th>Framework</th>
+                            <th>Case Type</th>
+                            <th>Status</th>
+                            <th>Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for labor_case in labor_cases %}
+                        <tr>
+                            <td><strong>{{ labor_case.case_number }}</strong><br /><span>{{ labor_case.subject }}</span></td>
+                            <td>{{ labor_case.employee_id }}</td>
+                            <td>{{ labor_case.framework }}</td>
+                            <td>{{ labor_case.case_type }}</td>
+                            <td>{{ status_chip(labor_case.status) }}</td>
+                            <td>{{ labor_case.legal_risk_level or 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+            {% else %}<div class="empty-state">No labor cases available yet.</div>{% endif %}
         </div>
-    </section>
-
-</div>
+    </div>
+</section>
 {% endblock %}
+```

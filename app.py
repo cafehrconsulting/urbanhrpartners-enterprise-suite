@@ -1,1508 +1,1973 @@
 # =========================================================
 # UrbanHRPartners Enterprise Suite
 # app.py
-# Full enterprise-safe application controller
-# Render-ready / HTML deploy-ready / no shrinking
+# FULL FLASK CONTROLLER ALIGNED TO ENTERPRISE models.py
 # =========================================================
 
 import os
 from datetime import datetime, date
 from pathlib import Path
-from typing import Any
 
 from flask import (
     Flask,
     flash,
-    jsonify,
     redirect,
     render_template,
     request,
-    send_from_directory,
     url_for,
 )
-from flask_sqlalchemy import SQLAlchemy
-from jinja2 import TemplateNotFound
-from sqlalchemy import inspect
-from werkzeug.utils import secure_filename
+from sqlalchemy import func
+
+from models import (
+    db,
+    User,
+    Role,
+    Permission,
+    UserRole,
+    RolePermission,
+    AuditLog,
+    SystemSetting,
+    Notification,
+    Department,
+    JobTitle,
+    WorkLocation,
+    CostCenter,
+    Client,
+    Contact,
+    Lead,
+    Opportunity,
+    Project,
+    CommunicationLog,
+    ClientDocument,
+    Task,
+    Employee,
+    Attendance,
+    LeaveRequest,
+    PerformanceReview,
+    EmployeeDocument,
+    TrainingRecord,
+    DisciplinaryRecord,
+    LaborCase,
+    JobOpening,
+    Candidate,
+    Resume,
+    ResumeOptimizationRecord,
+    Interview,
+    CandidateEvaluation,
+    CandidateStageHistory,
+    OfferLetter,
+    OrientationChecklist,
+    PolicyAcknowledgement,
+    SafetyPolicy,
+    LegalRequirement,
+    Hazard,
+    AnnualWorkPlan,
+    SGSSTTraining,
+    SGSSTTrainingAttendance,
+    MedicalSurveillance,
+    Incident,
+    Investigation,
+    Inspection,
+    CorrectiveAction,
+    PPEAssignment,
+    EmergencyPlan,
+    EmergencyDrill,
+    Contractor,
+    ContractorComplianceDocument,
+    SafetyAudit,
+    ManagementReview,
+    MinimumStandardAssessment,
+    Committee,
+    CommitteeMember,
+    Account,
+    FinancialPeriod,
+    JournalEntry,
+    JournalLine,
+    Vendor,
+    Invoice,
+    InvoiceLine,
+    Bill,
+    BillLine,
+    Payment,
+    BankAccount,
+    BankTransaction,
+    Reconciliation,
+    Budget,
+    Forecast,
+    RecurringTransaction,
+    PurchaseOrder,
+    PurchaseOrderLine,
+    GoodsReceipt,
+    GoodsReceiptLine,
+    PayrollRecord,
+    PayrollItem,
+    EmployeeTaxRecord,
+    TaxRate,
+    InventoryCategory,
+    WarehouseLocation,
+    InventoryItem,
+    StockMovement,
+    AssetAssignment,
+    MaintenanceLog,
+    Campaign,
+    ContentAsset,
+    LeadConversion,
+    KPIRecord,
+    AnalyticsSnapshot,
+    ReportRequest,
+    ExportLog,
+)
+
 
 # =========================================================
-# DATABASE
-# =========================================================
-
-db = SQLAlchemy()
-
-# =========================================================
-# HELPERS / PATHS
+# PATHS / CONFIG HELPERS
 # =========================================================
 
 BASE_DIR = Path(__file__).resolve().parent
-UPLOAD_FOLDER = BASE_DIR / "uploads"
-CLIENT_PROGRAMS_FOLDER = BASE_DIR / "client_programs"
-STATIC_FOLDER = BASE_DIR / "static"
-TEMPLATES_FOLDER = BASE_DIR / "templates"
-
-UPLOAD_FOLDER.mkdir(exist_ok=True)
-CLIENT_PROGRAMS_FOLDER.mkdir(exist_ok=True)
-
-ALLOWED_EXTENSIONS = {
-    "pdf",
-    "png",
-    "jpg",
-    "jpeg",
-    "gif",
-    "doc",
-    "docx",
-    "xls",
-    "xlsx",
-    "txt",
-    "csv",
-}
-
-# =========================================================
-# OPTIONAL XIOMY IMPORT
-# =========================================================
-
-try:
-    from services.xiomy_ai import XiomyAI as ImportedXiomyAI
-except Exception:
-    ImportedXiomyAI = None
-
-
-class SafeXiomyAI:
-    def __init__(self, db_instance):
-        self.db = db_instance
-        self.name = "XIOMY"
-        self.version = "1.0 Enterprise"
-        self.status = "active"
-        self.created = datetime.utcnow()
-
-    def system_status(self):
-        return {
-            "ai_name": self.name,
-            "version": self.version,
-            "status": self.status,
-            "created": self.created.isoformat(),
-        }
-
-    def greeting(self):
-        hour = datetime.now().hour
-        if hour < 12:
-            period = "Good morning"
-        elif hour < 18:
-            period = "Good afternoon"
-        else:
-            period = "Good evening"
-        return f"{period}. XIOMY Executive AI is ready to assist UrbanHRPartners Enterprise operations."
-
-    def insight(self):
-        return (
-            "Cross-module intelligence is active. Monitor CRM pipeline, HR performance, "
-            "recruiting velocity, SG-SST compliance, finance forecasting, and enterprise "
-            "growth indicators from one executive environment."
-        )
-
-
-def build_xiomy_instance(db_instance):
-    if ImportedXiomyAI is None:
-        return SafeXiomyAI(db_instance)
-
-    try:
-        instance = ImportedXiomyAI(db_instance)
-        return instance
-    except Exception:
-        return SafeXiomyAI(db_instance)
-
-
-# =========================================================
-# OPTIONAL MODELS IMPORT
-# =========================================================
-
-Client = None
-CommunicationLog = None
-Project = None
-InventoryItem = None
-Finance = None
-Invoice = None
-Task = None
-MarketingCampaign = None
-CalendarEvent = None
-Candidate = None
-EmployeeProfile = None
-PointLog = None
-SOPRequirement = None
-DisciplinaryRecord = None
-OrientationChecklist = None
-AssetAssignment = None
-PolicyAcknowledgement = None
-RiskMatrixItem = None
-InspectionRecord = None
-IncidentRecord = None
-TrainingRecord = None
-User = None
-models_db = None
-
-try:
-    from models import (
-        db as models_db,
-        Client,
-        CommunicationLog,
-        Project,
-        InventoryItem,
-        Finance,
-        Invoice,
-        Task,
-        MarketingCampaign,
-        CalendarEvent,
-        Candidate,
-        EmployeeProfile,
-        PointLog,
-        SOPRequirement,
-        DisciplinaryRecord,
-        OrientationChecklist,
-        AssetAssignment,
-        PolicyAcknowledgement,
-        RiskMatrixItem,
-        InspectionRecord,
-        IncidentRecord,
-        TrainingRecord,
-        User,
-    )
-except Exception:
-    try:
-        from models import db as models_db  # type: ignore
-    except Exception:
-        models_db = None
-
-# =========================================================
-# CORE UTILITIES
-# =========================================================
+INSTANCE_DIR = BASE_DIR / "instance"
+UPLOADS_DIR = BASE_DIR / "uploads"
+EXPORTS_DIR = BASE_DIR / "exports"
 
 
 def normalize_database_url(raw_url: str | None) -> str:
     if not raw_url:
-        return f"sqlite:///{BASE_DIR / 'urbanhrpartners.db'}"
+        return f"sqlite:///{INSTANCE_DIR / 'urbanhrpartners.db'}"
     if raw_url.startswith("postgres://"):
         return raw_url.replace("postgres://", "postgresql://", 1)
     return raw_url
 
 
-def allowed_file(filename: str) -> bool:
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+def ensure_directories() -> None:
+    directories = [
+        INSTANCE_DIR,
+        UPLOADS_DIR,
+        UPLOADS_DIR / "resumes",
+        UPLOADS_DIR / "client_docs",
+        UPLOADS_DIR / "sgsst_docs",
+        UPLOADS_DIR / "invoices",
+        UPLOADS_DIR / "employee_docs",
+        EXPORTS_DIR,
+        EXPORTS_DIR / "reports",
+        EXPORTS_DIR / "csv",
+        EXPORTS_DIR / "pdf",
+        EXPORTS_DIR / "xlsx",
+    ]
+    for directory in directories:
+        directory.mkdir(parents=True, exist_ok=True)
 
 
-def safe_count(model: Any) -> int:
+# =========================================================
+# SMALL UTILS
+# =========================================================
+
+
+def as_str(value: str | None, default: str = "") -> str:
+    return (value or default).strip()
+
+
+def as_float(value: str | None, default: float = 0.0) -> float:
     try:
-        if model is None:
-            return 0
-        return db.session.query(model).count()
-    except Exception:
-        return 0
+        return float((value or "").strip())
+    except (TypeError, ValueError, AttributeError):
+        return default
 
 
-def safe_all(model: Any, limit: int | None = None, order_attr: str | None = None):
+def as_int(value: str | None, default: int = 0) -> int:
     try:
-        if model is None:
-            return []
-        query = model.query
-        if order_attr and hasattr(model, order_attr):
-            query = query.order_by(getattr(model, order_attr).desc())
-        if limit:
-            query = query.limit(limit)
-        return query.all()
-    except Exception:
-        return []
+        return int((value or "").strip())
+    except (TypeError, ValueError, AttributeError):
+        return default
 
 
-def safe_first(model: Any, **filters):
-    try:
-        if model is None:
-            return None
-        return model.query.filter_by(**filters).first()
-    except Exception:
-        return None
+def as_bool(value: str | None) -> bool:
+    return str(value).lower() in {"1", "true", "yes", "on"}
 
 
-def parse_date(value: str | None):
+def as_date(value: str | None):
     if not value:
         return None
-    value = value.strip()
-    if not value:
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
         return None
-    for fmt in ("%Y-%m-%d", "%m/%d/%Y"):
-        try:
-            return datetime.strptime(value, fmt).date()
-        except ValueError:
-            continue
-    return None
 
 
-def parse_datetime(value: str | None):
-    if not value:
-        return None
-    value = value.strip()
+def as_datetime(value: str | None):
     if not value:
         return None
     for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
         try:
-            parsed = datetime.strptime(value, fmt)
-            if fmt == "%Y-%m-%d":
-                return datetime.combine(parsed.date(), datetime.min.time())
-            return parsed
+            return datetime.strptime(value, fmt)
         except ValueError:
             continue
     return None
 
 
-def as_float(value: Any, default: float = 0.0) -> float:
-    try:
-        if value in (None, ""):
-            return default
-        return float(value)
-    except Exception:
-        return default
+def render_with_fallback(template_name: str, **context):
+    templates = set(app.jinja_env.list_templates())
+    if template_name in templates:
+        return render_template(template_name, **context)
+    fallback_name = "template_missing.html"
+    if fallback_name in templates:
+        context["missing_template"] = template_name
+        return render_template(fallback_name, **context), 200
+    return f"Template '{template_name}' is missing.", 200
 
 
-def as_int(value: Any, default: int = 0) -> int:
-    try:
-        if value in (None, ""):
-            return default
-        return int(value)
-    except Exception:
-        return default
-
-
-def template_exists(template_name: str) -> bool:
-    return (TEMPLATES_FOLDER / template_name).exists()
-
-
-def render_or_fallback(template_name: str, **context):
-    if template_exists(template_name):
-        try:
-            return render_template(template_name, **context)
-        except TemplateNotFound:
-            pass
-    fallback_template = "template_missing.html"
-    if template_exists(fallback_template):
-        return render_template(fallback_template, template_name=template_name, **context)
-    return f"Missing template: {template_name}", 500
-
-
-def commit_with_feedback(success_message: str, error_prefix: str, redirect_endpoint: str):
+def safe_commit(message: str):
     try:
         db.session.commit()
-        flash(success_message, "success")
-    except Exception as exc:
+        flash(message, "success")
+    except Exception as exc:  # noqa: BLE001
         db.session.rollback()
-        flash(f"{error_prefix}: {exc}", "danger")
-    return redirect(url_for(redirect_endpoint))
+        flash(f"Database error: {exc}", "danger")
 
 
-# =========================================================
-# XIOMY SAFE HELPERS
-# =========================================================
+def seed_defaults() -> None:
+    admin_email = os.getenv("ADMIN_EMAIL", "admin@urbanhrconsulting.cloud")
+    admin_password = os.getenv("ADMIN_PASSWORD", "ChangeMe123!")
 
-def safe_xiomy_greeting(xiomy_ai):
-    try:
-        if hasattr(xiomy_ai, "greeting") and callable(getattr(xiomy_ai, "greeting")):
-            return xiomy_ai.greeting()
-    except Exception:
-        pass
+    if not Role.query.filter_by(name="Admin").first():
+        db.session.add(Role(name="Admin", description="Full access administrator"))
+    if not Role.query.filter_by(name="HR").first():
+        db.session.add(Role(name="HR", description="HR and people operations"))
+    if not Role.query.filter_by(name="Finance").first():
+        db.session.add(Role(name="Finance", description="Finance and accounting access"))
+    db.session.commit()
 
-    return "XIOMY Executive AI is ready to support UrbanHRPartners operations."
+    admin = User.query.filter_by(email=admin_email).first()
+    if not admin:
+        admin = User(
+            email=admin_email,
+            password_hash=admin_password,
+            full_name="System Administrator",
+            notes="Initial seeded admin user.",
+        )
+        db.session.add(admin)
+        db.session.commit()
 
-
-def safe_xiomy_insight(xiomy_ai):
-    try:
-        if hasattr(xiomy_ai, "insight") and callable(getattr(xiomy_ai, "insight")):
-            return xiomy_ai.insight()
-    except Exception:
-        pass
-
-    return (
-        "Executive enterprise monitoring is active. Review CRM performance, workforce data, "
-        "recruiting progress, SG-SST compliance, financial health, and growth indicators "
-        "from the dashboard."
-    )
-
-
-def safe_xiomy_status(xiomy_ai):
-    try:
-        if hasattr(xiomy_ai, "system_status") and callable(getattr(xiomy_ai, "system_status")):
-            status = xiomy_ai.system_status()
-            if isinstance(status, dict):
-                return status
-    except Exception:
-        pass
-
-    return {
-        "ai_name": "XIOMY",
-        "version": "1.0 Enterprise",
-        "status": "active",
-        "created": datetime.utcnow().isoformat(),
-    }
-
-
-# =========================================================
-# MODEL FIELD HELPERS
-# =========================================================
-
-def model_columns(model: Any) -> set[str]:
-    try:
-        return {c.key for c in inspect(model).columns}
-    except Exception:
-        return set()
-
-
-def filter_payload_by_columns(model: Any, payload: dict) -> dict:
-    cols = model_columns(model)
-    return {k: v for k, v in payload.items() if k in cols}
-
-
-# =========================================================
-# DASHBOARD / MODULE CONTEXT BUILDERS
-# =========================================================
-
-def build_dashboard_stats():
-    total_clients = safe_count(Client)
-    total_projects = safe_count(Project)
-    total_tasks = safe_count(Task)
-    total_candidates = safe_count(Candidate)
-    total_employees = safe_count(EmployeeProfile)
-    total_campaigns = safe_count(MarketingCampaign)
-    total_incidents = safe_count(IncidentRecord)
-    total_invoices = safe_count(Invoice)
-    inventory_items = safe_count(InventoryItem)
-
-    open_tasks = 0
-    total_revenue = 0.0
-
-    try:
-        if Task is not None:
-            tasks = Task.query.all()
-            open_tasks = len([
-                t for t in tasks
-                if str(getattr(t, "status", "")).lower() not in {"completed", "closed", "done"}
-            ])
-    except Exception:
-        open_tasks = 0
-
-    try:
-        if Invoice is not None:
-            invoices = Invoice.query.all()
-            total_revenue = sum(as_float(getattr(i, "amount", 0.0), 0.0) for i in invoices)
-    except Exception:
-        total_revenue = 0.0
-
-    return {
-        "total_clients": total_clients,
-        "total_projects": total_projects,
-        "total_tasks": total_tasks,
-        "open_tasks": open_tasks,
-        "inventory_items": inventory_items,
-        "total_invoices": total_invoices,
-        "total_revenue": round(total_revenue, 2),
-        "total_candidates": total_candidates,
-        "total_employees": total_employees,
-        "total_campaigns": total_campaigns,
-        "total_incidents": total_incidents,
-    }
-
-
-def build_crm_context():
-    clients = safe_all(Client, order_attr="id")
-    communication_logs = safe_all(CommunicationLog, limit=50, order_attr="id")
-    projects = safe_all(Project, limit=50, order_attr="id")
-    tasks = safe_all(Task, limit=50, order_attr="id")
-
-    pipeline_value = 0.0
-    try:
-        for project in projects:
-            pipeline_value += as_float(getattr(project, "budget", getattr(project, "estimated_value", 0.0)), 0.0)
-    except Exception:
-        pipeline_value = 0.0
-
-    crm_stats = {
-        "total_clients": len(clients),
-        "active_projects": len(projects),
-        "communications": len(communication_logs),
-        "tasks": len(tasks),
-        "pipeline_value": round(pipeline_value, 2),
-    }
-
-    return {
-        "clients": clients,
-        "communication_logs": communication_logs,
-        "communications": communication_logs,
-        "projects": projects,
-        "tasks": tasks,
-        "crm_stats": crm_stats,
-    }
-
-
-def build_hris_context():
-    employees = safe_all(EmployeeProfile, order_attr="id")
-    point_logs = safe_all(PointLog, limit=50, order_attr="id")
-    sop_requirements = safe_all(SOPRequirement, limit=50, order_attr="id")
-    disciplinary_records = safe_all(DisciplinaryRecord, limit=50, order_attr="id")
-
-    active_employees = 0
-    try:
-        active_employees = len([
-            e for e in employees
-            if str(getattr(e, "status", "Active")).lower() in {"active", "current", "working"}
-        ])
-    except Exception:
-        active_employees = 0
-
-    workforce_stats = {
-        "total_employees": len(employees),
-        "active_employees": active_employees,
-        "disciplinary_cases": len(disciplinary_records),
-        "point_logs": len(point_logs),
-        "sop_requirements": len(sop_requirements),
-    }
-
-    return {
-        "employees": employees,
-        "point_logs": point_logs,
-        "sop_requirements": sop_requirements,
-        "disciplinary_records": disciplinary_records,
-        "workforce_stats": workforce_stats,
-    }
-
-
-def build_ats_context():
-    candidates = safe_all(Candidate, order_attr="id")
-    orientation_items = safe_all(OrientationChecklist, limit=50, order_attr="id")
-
-    ats_stats = {
-        "total_candidates": len(candidates),
-        "interview_stage": len([
-            c for c in candidates
-            if str(getattr(c, "stage", "")).lower() in {"interview", "interviewing"}
-        ]),
-        "offers": len([
-            c for c in candidates
-            if str(getattr(c, "stage", "")).lower() in {"offer", "offered"}
-        ]),
-        "onboarding_ready": len(orientation_items),
-    }
-
-    return {
-        "candidates": candidates,
-        "orientation_items": orientation_items,
-        "ats_stats": ats_stats,
-    }
-
-
-def build_orientation_context():
-    checklists = safe_all(OrientationChecklist, limit=100, order_attr="id")
-    acknowledgements = safe_all(PolicyAcknowledgement, limit=100, order_attr="id")
-    assignments = safe_all(AssetAssignment, limit=100, order_attr="id")
-
-    orientation_stats = {
-        "checklists": len(checklists),
-        "acknowledgements": len(acknowledgements),
-        "assets_assigned": len(assignments),
-    }
-
-    return {
-        "orientation_checklists": checklists,
-        "policy_acknowledgements": acknowledgements,
-        "asset_assignments": assignments,
-        "orientation_stats": orientation_stats,
-    }
-
-
-def build_sgsst_context():
-    risk_items = safe_all(RiskMatrixItem, limit=100, order_attr="id")
-    inspections = safe_all(InspectionRecord, limit=100, order_attr="id")
-    incidents = safe_all(IncidentRecord, limit=100, order_attr="id")
-    trainings = safe_all(TrainingRecord, limit=100, order_attr="id")
-
-    sgsst_stats = {
-        "risk_items": len(risk_items),
-        "inspections": len(inspections),
-        "incidents": len(incidents),
-        "trainings": len(trainings),
-    }
-
-    return {
-        "risk_items": risk_items,
-        "inspections": inspections,
-        "incidents": incidents,
-        "trainings": trainings,
-        "sgsst_stats": sgsst_stats,
-    }
-
-
-def build_inventory_context():
-    items = safe_all(InventoryItem, limit=200, order_attr="id")
-
-    total_value = 0.0
-    low_stock = 0
-    try:
-        for item in items:
-            qty = as_float(getattr(item, "quantity", 0), 0)
-            unit_cost = as_float(getattr(item, "unit_cost", 0), 0)
-            total_value += qty * unit_cost
-            if qty <= as_float(getattr(item, "reorder_level", 0), 0):
-                low_stock += 1
-    except Exception:
-        total_value = 0.0
-        low_stock = 0
-
-    inventory_stats = {
-        "total_items": len(items),
-        "low_stock_items": low_stock,
-        "inventory_value": round(total_value, 2),
-    }
-
-    return {
-        "inventory_items": items,
-        "inventory_stats": inventory_stats,
-    }
-
-
-def build_finance_context():
-    invoices = safe_all(Invoice, limit=200, order_attr="id")
-    ledger_entries = safe_all(Finance, limit=200, order_attr="id")
-
-    invoice_total = 0.0
-    ledger_total = 0.0
-    paid_total = 0.0
-    outstanding_total = 0.0
-
-    try:
-        for invoice in invoices:
-            amount = as_float(getattr(invoice, "amount", 0.0), 0.0)
-            invoice_total += amount
-            status = str(getattr(invoice, "status", "")).lower()
-            if status in {"paid", "closed", "collected"}:
-                paid_total += amount
-            else:
-                outstanding_total += amount
-    except Exception:
-        pass
-
-    try:
-        for entry in ledger_entries:
-            ledger_total += as_float(getattr(entry, "amount", 0.0), 0.0)
-    except Exception:
-        pass
-
-    finance_stats = {
-        "invoice_count": len(invoices),
-        "ledger_entries": len(ledger_entries),
-        "invoice_total": round(invoice_total, 2),
-        "paid_total": round(paid_total, 2),
-        "outstanding_total": round(outstanding_total, 2),
-        "ledger_total": round(ledger_total, 2),
-    }
-
-    return {
-        "invoices": invoices,
-        "ledger_entries": ledger_entries,
-        "finance_stats": finance_stats,
-    }
-
-
-def build_marketing_context():
-    campaigns = safe_all(MarketingCampaign, limit=100, order_attr="id")
-    marketing_stats = {
-        "total_campaigns": len(campaigns),
-        "active_campaigns": len([
-            c for c in campaigns
-            if str(getattr(c, "status", "")).lower() in {"active", "running", "live"}
-        ]),
-    }
-    return {
-        "campaigns": campaigns,
-        "marketing_stats": marketing_stats,
-    }
-
-
-def build_calendar_context():
-    events = safe_all(CalendarEvent, limit=100, order_attr="id")
-    calendar_stats = {
-        "upcoming_events": len(events),
-    }
-    return {
-        "calendar_events": events,
-        "calendar_stats": calendar_stats,
-    }
-
-
-def build_reports_context():
-    dashboard_stats = build_dashboard_stats()
-    return {
-        "dashboard_stats": dashboard_stats,
-        "generated_at": datetime.utcnow(),
-    }
+    admin_role = Role.query.filter_by(name="Admin").first()
+    if admin_role and not UserRole.query.filter_by(user_id=admin.id, role_id=admin_role.id).first():
+        db.session.add(UserRole(user_id=admin.id, role_id=admin_role.id))
+        db.session.commit()
 
 
 # =========================================================
 # APP FACTORY
 # =========================================================
 
-def create_app():
-    app = Flask(
+
+def create_app() -> Flask:
+    flask_app = Flask(
         __name__,
-        template_folder=str(TEMPLATES_FOLDER),
-        static_folder=str(STATIC_FOLDER),
+        template_folder=str(BASE_DIR / "templates"),
+        static_folder=str(BASE_DIR / "static"),
+        instance_path=str(INSTANCE_DIR),
+        instance_relative_config=True,
     )
 
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "urbanhrpartners-enterprise-secret")
-    app.config["SQLALCHEMY_DATABASE_URI"] = normalize_database_url(os.getenv("DATABASE_URL"))
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["UPLOAD_FOLDER"] = str(UPLOAD_FOLDER)
-    app.config["MAX_CONTENT_LENGTH"] = 25 * 1024 * 1024
+    ensure_directories()
 
-    db.init_app(app)
+    flask_app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "urbanhrpartners-secret-key")
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = normalize_database_url(os.getenv("DATABASE_URL"))
+    flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    flask_app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+    flask_app.config["UPLOAD_FOLDER"] = str(UPLOADS_DIR)
 
-    if models_db is not None and models_db is not db:
-        try:
-            models_db.init_app(app)
-        except Exception:
-            pass
+    db.init_app(flask_app)
 
-    xiomy_ai = build_xiomy_instance(db)
+    with flask_app.app_context():
+        db.create_all()
+        seed_defaults()
 
-    @app.context_processor
-    def inject_globals():
-        return {
-            "current_year": datetime.utcnow().year,
-            "today": date.today(),
-            "dashboard_quick_stats": build_dashboard_stats(),
-        }
+    return flask_app
 
-    @app.before_request
-    def ensure_directories():
-        UPLOAD_FOLDER.mkdir(exist_ok=True)
-        CLIENT_PROGRAMS_FOLDER.mkdir(exist_ok=True)
-
-    # =====================================================
-    # STARTUP DATABASE SAFETY
-    # =====================================================
-
-    with app.app_context():
-        try:
-            db.create_all()
-        except Exception:
-            pass
-
-        if User is not None:
-            try:
-                admin_email = os.getenv("ADMIN_EMAIL", "admin@urbanhrconsulting.cloud")
-                admin_password = os.getenv("ADMIN_PASSWORD", "Admin123!")
-                existing_admin = User.query.filter_by(email=admin_email).first()
-                if not existing_admin:
-                    user_kwargs = {}
-                    columns = model_columns(User)
-
-                    if "name" in columns:
-                        user_kwargs["name"] = "System Administrator"
-                    if "email" in columns:
-                        user_kwargs["email"] = admin_email
-                    if "password" in columns:
-                        user_kwargs["password"] = admin_password
-                    elif "password_hash" in columns:
-                        user_kwargs["password_hash"] = admin_password
-                    if "role" in columns:
-                        user_kwargs["role"] = "admin"
-                    if "is_admin" in columns:
-                        user_kwargs["is_admin"] = True
-
-                    db.session.add(User(**user_kwargs))
-                    db.session.commit()
-            except Exception:
-                db.session.rollback()
-
-    # =====================================================
-    # CORE ROUTES
-    # =====================================================
-
-    @app.route("/")
-    def index():
-        return redirect(url_for("dashboard"))
-
-    @app.route("/health")
-    def health():
-        return jsonify({
-            "status": "ok",
-            "application": "UrbanHRPartners Enterprise Suite",
-            "timestamp": datetime.utcnow().isoformat(),
-        })
-
-    @app.route("/uploads/<path:filename>")
-    def uploaded_file(filename):
-        return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
-
-    # =====================================================
-    # DASHBOARD
-    # =====================================================
-
-    @app.route("/dashboard")
-    def dashboard():
-        dashboard_stats = build_dashboard_stats()
-        recent_clients = safe_all(Client, limit=5, order_attr="id")
-        recent_projects = safe_all(Project, limit=5, order_attr="id")
-        recent_candidates = safe_all(Candidate, limit=5, order_attr="id")
-        recent_invoices = safe_all(Invoice, limit=5, order_attr="id")
-        recent_incidents = safe_all(IncidentRecord, limit=5, order_attr="id")
-
-        return render_or_fallback(
-            "dashboard.html",
-            dashboard_stats=dashboard_stats,
-            recent_clients=recent_clients,
-            recent_projects=recent_projects,
-            recent_candidates=recent_candidates,
-            recent_invoices=recent_invoices,
-            recent_incidents=recent_incidents,
-            xiomy_greeting=safe_xiomy_greeting(xiomy_ai),
-            xiomy_insight=safe_xiomy_insight(xiomy_ai),
-        )
-
-    # =====================================================
-    # CRM ROUTES
-    # =====================================================
-
-    @app.route("/crm")
-    def crm():
-        return render_or_fallback("crm.html", **build_crm_context())
-
-    @app.route("/crm/client/create", methods=["POST"])
-    def create_client():
-        if Client is None:
-            flash("Client model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
-
-        raw_payload = {
-            "name": (request.form.get("name") or "").strip(),
-            "company_name": (request.form.get("company_name") or "").strip(),
-            "contact_person": (request.form.get("contact_person") or "").strip(),
-            "email": (request.form.get("email") or "").strip(),
-            "phone": (request.form.get("phone") or "").strip(),
-            "industry": (request.form.get("industry") or "").strip(),
-            "status": (request.form.get("status") or "Prospect").strip(),
-            "address": (request.form.get("address") or "").strip(),
-            "needs": (request.form.get("needs") or "").strip(),
-            "notes": (request.form.get("notes") or "").strip(),
-        }
-
-        if not raw_payload["name"] and not raw_payload["company_name"]:
-            flash("Client name or company name is required.", "danger")
-            return redirect(url_for("crm"))
-
-        payload = filter_payload_by_columns(Client, raw_payload)
-        client_columns = model_columns(Client)
-
-        if "name" in client_columns and not payload.get("name"):
-            payload["name"] = raw_payload["company_name"] or "Unnamed Client"
-
-        db.session.add(Client(**payload))
-        return commit_with_feedback("Client created successfully.", "Unable to create client", "crm")
-
-    @app.route("/crm/communication-log/create", methods=["POST"])
-    def create_communication_log():
-        if CommunicationLog is None:
-            flash("CommunicationLog model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
-
-        client_id = request.form.get("client_id", type=int)
-        if not client_id:
-            flash("Client is required before saving a communication log.", "danger")
-            return redirect(url_for("crm"))
-
-        if Client is not None:
-            client = Client.query.get(client_id)
-            if not client:
-                flash("Selected client was not found.", "danger")
-                return redirect(url_for("crm"))
-
-        raw_payload = {
-            "client_id": client_id,
-            "client_name": (request.form.get("client_name") or "").strip(),
-            "channel": (request.form.get("channel") or request.form.get("communication_type") or "General").strip(),
-            "communication_type": (request.form.get("communication_type") or request.form.get("channel") or "General").strip(),
-            "direction": (request.form.get("direction") or "Outbound").strip(),
-            "contact_person": (request.form.get("contact_person") or "").strip(),
-            "subject": (request.form.get("subject") or "").strip(),
-            "summary": (request.form.get("summary") or "").strip(),
-            "message": (request.form.get("message") or "").strip(),
-            "action_items": (request.form.get("action_items") or "").strip(),
-            "action_required": request.form.get("action_required") == "on",
-            "log_date": parse_date(request.form.get("log_date")) or date.today(),
-            "follow_up_date": parse_date(request.form.get("follow_up_date")),
-        }
-
-        payload = filter_payload_by_columns(CommunicationLog, raw_payload)
-        db.session.add(CommunicationLog(**payload))
-        return commit_with_feedback("Communication log created successfully.", "Unable to save communication log", "crm")
-
-    @app.route("/crm/project/create", methods=["POST"])
-    def create_project():
-        if Project is None:
-            flash("Project model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
-
-        raw_payload = {
-            "client_id": request.form.get("client_id", type=int),
-            "client_name": (request.form.get("client_name") or "").strip(),
-            "name": (request.form.get("name") or request.form.get("project_name") or "").strip(),
-            "project_name": (request.form.get("project_name") or request.form.get("name") or "").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "status": (request.form.get("status") or "Planned").strip(),
-            "estimated_value": as_float(request.form.get("estimated_value"), 0.0),
-            "budget": as_float(request.form.get("budget") or request.form.get("estimated_value"), 0.0),
-            "start_date": parse_date(request.form.get("start_date")),
-            "end_date": parse_date(request.form.get("end_date")),
-        }
-
-        payload = filter_payload_by_columns(Project, raw_payload)
-        db.session.add(Project(**payload))
-        return commit_with_feedback("Project created successfully.", "Unable to create project", "crm")
-
-    @app.route("/crm/task/create", methods=["POST"])
-    def create_task():
-        if Task is None:
-            flash("Task model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
-
-        raw_payload = {
-            "title": (request.form.get("title") or "").strip(),
-            "description": (request.form.get("description") or request.form.get("notes") or "").strip(),
-            "notes": (request.form.get("notes") or "").strip(),
-            "status": (request.form.get("status") or "Open").strip(),
-            "priority": (request.form.get("priority") or "Normal").strip(),
-            "due_date": parse_date(request.form.get("due_date")),
-            "client_id": request.form.get("client_id", type=int),
-            "client_name": (request.form.get("client_name") or "").strip(),
-            "project_id": request.form.get("project_id", type=int),
-        }
-
-        if not raw_payload["title"]:
-            flash("Task title is required.", "danger")
-            return redirect(url_for("crm"))
-
-        payload = filter_payload_by_columns(Task, raw_payload)
-        db.session.add(Task(**payload))
-        return commit_with_feedback("Task created successfully.", "Unable to create task", "crm")
-
-    # =====================================================
-    # HRIS ROUTES
-    # =====================================================
-
-    @app.route("/hris")
-    def hris():
-        return render_or_fallback("hris.html", **build_hris_context())
-
-    @app.route("/hris/employee/create", methods=["POST"])
-    def create_employee_profile():
-        if EmployeeProfile is None:
-            flash("EmployeeProfile model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
-
-        raw_payload = {
-            "employee_id": (request.form.get("employee_id") or "").strip(),
-            "first_name": (request.form.get("first_name") or "").strip(),
-            "last_name": (request.form.get("last_name") or "").strip(),
-            "full_name": (request.form.get("full_name") or "").strip(),
-            "email": (request.form.get("email") or "").strip(),
-            "phone": (request.form.get("phone") or "").strip(),
-            "position": (request.form.get("position") or "").strip(),
-            "department": (request.form.get("department") or "").strip(),
-            "status": (request.form.get("status") or "Active").strip(),
-            "hire_date": parse_date(request.form.get("hire_date")),
-            "salary": as_float(request.form.get("salary"), 0.0),
-        }
-
-        employee_columns = model_columns(EmployeeProfile)
-        if "full_name" in employee_columns and not raw_payload["full_name"]:
-            raw_payload["full_name"] = f"{raw_payload['first_name']} {raw_payload['last_name']}".strip()
-
-        payload = filter_payload_by_columns(EmployeeProfile, raw_payload)
-        db.session.add(EmployeeProfile(**payload))
-        return commit_with_feedback("Employee profile created successfully.", "Unable to create employee profile", "hris")
-
-    @app.route("/hris/point-log/create", methods=["POST"])
-    def create_point_log():
-        if PointLog is None:
-            flash("PointLog model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
-
-        raw_payload = {
-            "employee_id": request.form.get("employee_id", type=int),
-            "points": as_int(request.form.get("points"), 0),
-            "reason": (request.form.get("reason") or "").strip(),
-            "category": (request.form.get("category") or "Performance").strip(),
-            "log_date": parse_date(request.form.get("log_date")) or date.today(),
-        }
-
-        payload = filter_payload_by_columns(PointLog, raw_payload)
-        db.session.add(PointLog(**payload))
-        return commit_with_feedback("Point log created successfully.", "Unable to create point log", "hris")
-
-    @app.route("/hris/disciplinary-record/create", methods=["POST"])
-    def create_disciplinary_record():
-        if DisciplinaryRecord is None:
-            flash("DisciplinaryRecord model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
-
-        raw_payload = {
-            "employee_id": request.form.get("employee_id", type=int),
-            "case_type": (request.form.get("case_type") or "").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "action_taken": (request.form.get("action_taken") or "").strip(),
-            "record_date": parse_date(request.form.get("record_date")) or date.today(),
-            "status": (request.form.get("status") or "Open").strip(),
-        }
-
-        payload = filter_payload_by_columns(DisciplinaryRecord, raw_payload)
-        db.session.add(DisciplinaryRecord(**payload))
-        return commit_with_feedback("Disciplinary record created successfully.", "Unable to create disciplinary record", "hris")
-
-    @app.route("/hris/sop-requirement/create", methods=["POST"])
-    def create_sop_requirement():
-        if SOPRequirement is None:
-            flash("SOPRequirement model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
-
-        raw_payload = {
-            "job_title": (request.form.get("job_title") or "").strip(),
-            "title": (request.form.get("title") or "").strip(),
-            "requirement": (request.form.get("requirement") or "").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "required": request.form.get("required") == "on",
-        }
-
-        payload = filter_payload_by_columns(SOPRequirement, raw_payload)
-        db.session.add(SOPRequirement(**payload))
-        return commit_with_feedback("SOP requirement created successfully.", "Unable to create SOP requirement", "hris")
-
-    # =====================================================
-    # ATS ROUTES
-    # =====================================================
-
-    @app.route("/ats")
-    def ats():
-        return render_or_fallback("ats.html", **build_ats_context())
-
-    @app.route("/ats/candidate/create", methods=["POST"])
-    def create_candidate():
-        if Candidate is None:
-            flash("Candidate model is not available in models.py.", "danger")
-            return redirect(url_for("ats"))
-
-        resume_filename = None
-        uploaded_resume = request.files.get("resume")
-        if uploaded_resume and uploaded_resume.filename and allowed_file(uploaded_resume.filename):
-            resume_filename = secure_filename(uploaded_resume.filename)
-            uploaded_resume.save(UPLOAD_FOLDER / resume_filename)
-
-        raw_payload = {
-            "first_name": (request.form.get("first_name") or "").strip(),
-            "last_name": (request.form.get("last_name") or "").strip(),
-            "full_name": (request.form.get("full_name") or "").strip(),
-            "email": (request.form.get("email") or "").strip(),
-            "phone": (request.form.get("phone") or "").strip(),
-            "position_applied": (request.form.get("position_applied") or "").strip(),
-            "stage": (request.form.get("stage") or "Applied").strip(),
-            "status": (request.form.get("status") or "New").strip(),
-            "notes": (request.form.get("notes") or "").strip(),
-            "resume_filename": resume_filename,
-        }
-
-        candidate_columns = model_columns(Candidate)
-        if "full_name" in candidate_columns and not raw_payload["full_name"]:
-            raw_payload["full_name"] = f"{raw_payload['first_name']} {raw_payload['last_name']}".strip()
-
-        payload = filter_payload_by_columns(Candidate, raw_payload)
-        db.session.add(Candidate(**payload))
-        return commit_with_feedback("Candidate created successfully.", "Unable to create candidate", "ats")
-
-    @app.route("/ats/candidate/<int:candidate_id>/promote", methods=["POST"])
-    def promote_candidate_to_orientation(candidate_id: int):
-        if Candidate is None:
-            flash("Candidate model is not available in models.py.", "danger")
-            return redirect(url_for("ats"))
-
-        candidate = Candidate.query.get_or_404(candidate_id)
-
-        try:
-            if hasattr(candidate, "stage"):
-                candidate.stage = "Orientation"
-            if hasattr(candidate, "status"):
-                candidate.status = "Onboarding"
-
-            if OrientationChecklist is not None:
-                checklist_payload = {
-                    "candidate_id": candidate_id,
-                    "employee_name": getattr(candidate, "full_name", None) or getattr(candidate, "first_name", ""),
-                    "title": "Pre-Orientation Readiness",
-                    "status": "Pending",
-                }
-                checklist_payload = filter_payload_by_columns(OrientationChecklist, checklist_payload)
-                db.session.add(OrientationChecklist(**checklist_payload))
-
-            db.session.commit()
-            flash("Candidate promoted to orientation successfully.", "success")
-        except Exception as exc:
-            db.session.rollback()
-            flash(f"Unable to promote candidate: {exc}", "danger")
-
-        return redirect(url_for("ats"))
-
-    # =====================================================
-    # ORIENTATION ROUTES
-    # =====================================================
-
-    @app.route("/orientation")
-    def orientation():
-        return render_or_fallback("orientation.html", **build_orientation_context())
-
-    @app.route("/orientation/checklist/create", methods=["POST"])
-    def create_orientation_checklist():
-        if OrientationChecklist is None:
-            flash("OrientationChecklist model is not available in models.py.", "danger")
-            return redirect(url_for("orientation"))
-
-        raw_payload = {
-            "candidate_id": request.form.get("candidate_id", type=int),
-            "employee_id": request.form.get("employee_id", type=int),
-            "employee_name": (request.form.get("employee_name") or "").strip(),
-            "title": (request.form.get("title") or "Orientation Task").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "status": (request.form.get("status") or "Pending").strip(),
-            "due_date": parse_date(request.form.get("due_date")),
-        }
-
-        payload = filter_payload_by_columns(OrientationChecklist, raw_payload)
-        db.session.add(OrientationChecklist(**payload))
-        return commit_with_feedback("Orientation checklist item created successfully.", "Unable to create orientation checklist item", "orientation")
-
-    @app.route("/orientation/policy-acknowledgement/create", methods=["POST"])
-    def create_policy_acknowledgement():
-        if PolicyAcknowledgement is None:
-            flash("PolicyAcknowledgement model is not available in models.py.", "danger")
-            return redirect(url_for("orientation"))
-
-        raw_payload = {
-            "employee_id": request.form.get("employee_id", type=int),
-            "policy_name": (request.form.get("policy_name") or "").strip(),
-            "acknowledged": request.form.get("acknowledged") == "on",
-            "acknowledged_date": parse_date(request.form.get("acknowledged_date")) or date.today(),
-            "notes": (request.form.get("notes") or "").strip(),
-        }
-
-        payload = filter_payload_by_columns(PolicyAcknowledgement, raw_payload)
-        db.session.add(PolicyAcknowledgement(**payload))
-        return commit_with_feedback("Policy acknowledgement saved successfully.", "Unable to save policy acknowledgement", "orientation")
-
-    @app.route("/orientation/asset-assignment/create", methods=["POST"])
-    def create_asset_assignment():
-        if AssetAssignment is None:
-            flash("AssetAssignment model is not available in models.py.", "danger")
-            return redirect(url_for("orientation"))
-
-        raw_payload = {
-            "employee_id": request.form.get("employee_id", type=int),
-            "inventory_item_id": request.form.get("inventory_item_id", type=int),
-            "asset_name": (request.form.get("asset_name") or "").strip(),
-            "assignment_date": parse_date(request.form.get("assignment_date")) or date.today(),
-            "return_due_date": parse_date(request.form.get("return_due_date")),
-            "status": (request.form.get("status") or "Assigned").strip(),
-        }
-
-        payload = filter_payload_by_columns(AssetAssignment, raw_payload)
-        db.session.add(AssetAssignment(**payload))
-        return commit_with_feedback("Asset assignment created successfully.", "Unable to create asset assignment", "orientation")
-
-    # =====================================================
-    # SG-SST ROUTES
-    # =====================================================
-
-    @app.route("/sgsst")
-    def sgsst():
-        return render_or_fallback("sgsst.html", **build_sgsst_context())
-
-    @app.route("/sgsst/risk/create", methods=["POST"])
-    def create_risk_item():
-        if RiskMatrixItem is None:
-            flash("RiskMatrixItem model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
-
-        raw_payload = {
-            "area": (request.form.get("area") or "").strip(),
-            "hazard": (request.form.get("hazard") or "").strip(),
-            "risk_level": (request.form.get("risk_level") or "Medium").strip(),
-            "control_measure": (request.form.get("control_measure") or "").strip(),
-            "responsible_party": (request.form.get("responsible_party") or "").strip(),
-        }
-
-        payload = filter_payload_by_columns(RiskMatrixItem, raw_payload)
-        db.session.add(RiskMatrixItem(**payload))
-        return commit_with_feedback("Risk matrix item created successfully.", "Unable to create risk matrix item", "sgsst")
-
-    @app.route("/sgsst/inspection/create", methods=["POST"])
-    def create_inspection_record():
-        if InspectionRecord is None:
-            flash("InspectionRecord model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
-
-        raw_payload = {
-            "inspection_name": (request.form.get("inspection_name") or "").strip(),
-            "area": (request.form.get("area") or "").strip(),
-            "inspector": (request.form.get("inspector") or "").strip(),
-            "inspection_date": parse_date(request.form.get("inspection_date")) or date.today(),
-            "findings": (request.form.get("findings") or "").strip(),
-            "status": (request.form.get("status") or "Open").strip(),
-        }
-
-        payload = filter_payload_by_columns(InspectionRecord, raw_payload)
-        db.session.add(InspectionRecord(**payload))
-        return commit_with_feedback("Inspection record created successfully.", "Unable to create inspection record", "sgsst")
-
-    @app.route("/sgsst/incident/create", methods=["POST"])
-    def create_incident_record():
-        if IncidentRecord is None:
-            flash("IncidentRecord model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
-
-        raw_payload = {
-            "employee_id": request.form.get("employee_id", type=int),
-            "incident_type": (request.form.get("incident_type") or "").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "incident_date": parse_date(request.form.get("incident_date")) or date.today(),
-            "status": (request.form.get("status") or "Open").strip(),
-            "corrective_action": (request.form.get("corrective_action") or "").strip(),
-        }
-
-        payload = filter_payload_by_columns(IncidentRecord, raw_payload)
-        db.session.add(IncidentRecord(**payload))
-        return commit_with_feedback("Incident record created successfully.", "Unable to create incident record", "sgsst")
-
-    @app.route("/sgsst/training/create", methods=["POST"])
-    def create_training_record():
-        if TrainingRecord is None:
-            flash("TrainingRecord model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
-
-        raw_payload = {
-            "employee_id": request.form.get("employee_id", type=int),
-            "training_name": (request.form.get("training_name") or "").strip(),
-            "training_date": parse_date(request.form.get("training_date")) or date.today(),
-            "trainer": (request.form.get("trainer") or "").strip(),
-            "status": (request.form.get("status") or "Completed").strip(),
-            "certificate": (request.form.get("certificate") or "").strip(),
-        }
-
-        payload = filter_payload_by_columns(TrainingRecord, raw_payload)
-        db.session.add(TrainingRecord(**payload))
-        return commit_with_feedback("Training record created successfully.", "Unable to create training record", "sgsst")
-
-    # =====================================================
-    # INVENTORY ROUTES
-    # =====================================================
-
-    @app.route("/inventory")
-    def inventory():
-        return render_or_fallback("inventory.html", **build_inventory_context())
-
-    @app.route("/inventory/item/create", methods=["POST"])
-    def create_inventory_item():
-        if InventoryItem is None:
-            flash("InventoryItem model is not available in models.py.", "danger")
-            return redirect(url_for("inventory"))
-
-        raw_payload = {
-            "name": (request.form.get("name") or "").strip(),
-            "sku": (request.form.get("sku") or "").strip(),
-            "barcode": (request.form.get("barcode") or "").strip(),
-            "category": (request.form.get("category") or "").strip(),
-            "quantity": as_float(request.form.get("quantity"), 0.0),
-            "unit_cost": as_float(request.form.get("unit_cost"), 0.0),
-            "reorder_level": as_float(request.form.get("reorder_level"), 0.0),
-            "location": (request.form.get("location") or "").strip(),
-            "status": (request.form.get("status") or "Available").strip(),
-        }
-
-        payload = filter_payload_by_columns(InventoryItem, raw_payload)
-        db.session.add(InventoryItem(**payload))
-        return commit_with_feedback("Inventory item created successfully.", "Unable to create inventory item", "inventory")
-
-    # =====================================================
-    # FINANCE ROUTES
-    # =====================================================
-
-    @app.route("/finance")
-    def finance():
-        return render_or_fallback("finance.html", **build_finance_context())
-
-    @app.route("/finance/invoice/create", methods=["POST"])
-    def create_invoice():
-        if Invoice is None:
-            flash("Invoice model is not available in models.py.", "danger")
-            return redirect(url_for("finance"))
-
-        raw_payload = {
-            "invoice_number": (request.form.get("invoice_number") or "").strip(),
-            "client_name": (request.form.get("client_name") or "").strip(),
-            "project_name": (request.form.get("project_name") or "").strip(),
-            "amount": as_float(request.form.get("amount") or request.form.get("invoice_amount"), 0.0),
-            "due_date": parse_date(request.form.get("due_date")),
-            "status": (request.form.get("status") or "Pending").strip(),
-            "notes": (request.form.get("notes") or "").strip(),
-        }
-
-        if not raw_payload["invoice_number"]:
-            raw_payload["invoice_number"] = f"INV-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
-
-        payload = filter_payload_by_columns(Invoice, raw_payload)
-        db.session.add(Invoice(**payload))
-
-        if Finance is not None:
-            try:
-                ledger_payload = {
-                    "entry_type": "Invoice",
-                    "description": f"Invoice {raw_payload['invoice_number']}",
-                    "amount": raw_payload["amount"],
-                    "entry_date": date.today(),
-                    "status": "Posted",
-                }
-                ledger_payload = filter_payload_by_columns(Finance, ledger_payload)
-                if ledger_payload:
-                    db.session.add(Finance(**ledger_payload))
-            except Exception:
-                pass
-
-        return commit_with_feedback("Invoice created successfully.", "Unable to create invoice", "finance")
-
-    @app.route("/finance/ledger/create", methods=["POST"])
-    def create_ledger_entry():
-        if Finance is None:
-            flash("Finance model is not available in models.py.", "danger")
-            return redirect(url_for("finance"))
-
-        raw_payload = {
-            "entry_type": (request.form.get("entry_type") or "General").strip(),
-            "category": (request.form.get("category") or "").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "amount": as_float(request.form.get("amount"), 0.0),
-            "entry_date": parse_date(request.form.get("entry_date")) or date.today(),
-            "status": (request.form.get("status") or "Posted").strip(),
-        }
-
-        payload = filter_payload_by_columns(Finance, raw_payload)
-        db.session.add(Finance(**payload))
-        return commit_with_feedback("Ledger entry created successfully.", "Unable to create ledger entry", "finance")
-
-    # =====================================================
-    # MARKETING ROUTES
-    # =====================================================
-
-    @app.route("/marketing")
-    def marketing():
-        return render_or_fallback("marketing.html", **build_marketing_context())
-
-    @app.route("/marketing/campaign/create", methods=["POST"])
-    def create_marketing_campaign():
-        if MarketingCampaign is None:
-            flash("MarketingCampaign model is not available in models.py.", "danger")
-            return redirect(url_for("marketing"))
-
-        raw_payload = {
-            "name": (request.form.get("name") or "").strip(),
-            "channel": (request.form.get("channel") or "").strip(),
-            "audience": (request.form.get("audience") or "").strip(),
-            "budget": as_float(request.form.get("budget"), 0.0),
-            "status": (request.form.get("status") or "Draft").strip(),
-            "start_date": parse_date(request.form.get("start_date")),
-            "end_date": parse_date(request.form.get("end_date")),
-            "notes": (request.form.get("notes") or "").strip(),
-        }
-
-        payload = filter_payload_by_columns(MarketingCampaign, raw_payload)
-        db.session.add(MarketingCampaign(**payload))
-        return commit_with_feedback("Marketing campaign created successfully.", "Unable to create marketing campaign", "marketing")
-
-    # =====================================================
-    # CALENDAR ROUTES
-    # =====================================================
-
-    @app.route("/calendar")
-    def calendar_page():
-        return render_or_fallback("calendar.html", **build_calendar_context())
-
-    @app.route("/calendar/event/create", methods=["POST"])
-    def create_calendar_event():
-        if CalendarEvent is None:
-            flash("CalendarEvent model is not available in models.py.", "danger")
-            return redirect(url_for("calendar_page"))
-
-        raw_payload = {
-            "title": (request.form.get("title") or "").strip(),
-            "description": (request.form.get("description") or "").strip(),
-            "location": (request.form.get("location") or "").strip(),
-            "start_time": parse_datetime(request.form.get("start_time")),
-            "end_time": parse_datetime(request.form.get("end_time")),
-            "status": (request.form.get("status") or "Scheduled").strip(),
-        }
-
-        payload = filter_payload_by_columns(CalendarEvent, raw_payload)
-        db.session.add(CalendarEvent(**payload))
-        return commit_with_feedback("Calendar event created successfully.", "Unable to create calendar event", "calendar_page")
-
-    # =====================================================
-    # REPORTS / ANALYTICS
-    # =====================================================
-
-    @app.route("/reports-analytics")
-    def reports_analytics():
-        return render_or_fallback("reports_analytics.html", **build_reports_context())
-
-    @app.route("/api/dashboard-stats")
-    def api_dashboard_stats():
-        return jsonify(build_dashboard_stats())
-
-    # =====================================================
-    # XIOMY ROUTES
-    # =====================================================
-
-    @app.route("/xiomy-page")
-    def xiomy_page():
-        return render_or_fallback(
-            "xiomy.html",
-            xiomy_status=safe_xiomy_status(xiomy_ai),
-            xiomy_greeting=safe_xiomy_greeting(xiomy_ai),
-            xiomy_insight=safe_xiomy_insight(xiomy_ai),
-            dashboard_stats=build_dashboard_stats(),
-        )
-
-    @app.route("/xiomy")
-    def xiomy():
-        return jsonify({
-            "assistant": "XIOMY",
-            "status": "online",
-            "system": safe_xiomy_status(xiomy_ai),
-            "greeting": safe_xiomy_greeting(xiomy_ai),
-            "insight": safe_xiomy_insight(xiomy_ai),
-            "dashboard": build_dashboard_stats(),
-            "timestamp": datetime.utcnow().isoformat(),
-        })
-
-    # =====================================================
-    # FILE UPLOADS
-    # =====================================================
-
-    @app.route("/files/upload", methods=["POST"])
-    def upload_file():
-        uploaded = request.files.get("file")
-        if not uploaded or not uploaded.filename:
-            flash("No file selected.", "danger")
-            return redirect(request.referrer or url_for("dashboard"))
-
-        if not allowed_file(uploaded.filename):
-            flash("File type not allowed.", "danger")
-            return redirect(request.referrer or url_for("dashboard"))
-
-        filename = secure_filename(uploaded.filename)
-        save_path = UPLOAD_FOLDER / filename
-        uploaded.save(save_path)
-        flash("File uploaded successfully.", "success")
-        return redirect(request.referrer or url_for("dashboard"))
-
-    # =====================================================
-    # SEARCH ROUTE
-    # =====================================================
-
-    @app.route("/search")
-    def search():
-        query = (request.args.get("q") or "").strip().lower()
-        results = {
-            "clients": [],
-            "projects": [],
-            "candidates": [],
-            "employees": [],
-            "campaigns": [],
-        }
-
-        if not query:
-            return render_or_fallback("search_results.html", query=query, results=results)
-
-        def matches(value: Any) -> bool:
-            return query in str(value or "").lower()
-
-        try:
-            for client in safe_all(Client):
-                if (
-                    matches(getattr(client, "name", ""))
-                    or matches(getattr(client, "company_name", ""))
-                    or matches(getattr(client, "email", ""))
-                ):
-                    results["clients"].append(client)
-        except Exception:
-            pass
-
-        try:
-            for project in safe_all(Project):
-                if matches(getattr(project, "name", "")) or matches(getattr(project, "project_name", "")):
-                    results["projects"].append(project)
-        except Exception:
-            pass
-
-        try:
-            for candidate in safe_all(Candidate):
-                if matches(getattr(candidate, "full_name", "")) or matches(getattr(candidate, "email", "")):
-                    results["candidates"].append(candidate)
-        except Exception:
-            pass
-
-        try:
-            for employee in safe_all(EmployeeProfile):
-                if matches(getattr(employee, "full_name", "")) or matches(getattr(employee, "email", "")):
-                    results["employees"].append(employee)
-        except Exception:
-            pass
-
-        try:
-            for campaign in safe_all(MarketingCampaign):
-                if matches(getattr(campaign, "name", "")) or matches(getattr(campaign, "channel", "")):
-                    results["campaigns"].append(campaign)
-        except Exception:
-            pass
-
-        return render_or_fallback("search_results.html", query=query, results=results)
-
-    # =====================================================
-    # ERROR HANDLERS
-    # =====================================================
-
-    @app.errorhandler(404)
-    def not_found(error):
-        return render_or_fallback("404.html", error=error), 404
-
-    @app.errorhandler(500)
-    def server_error(error):
-        try:
-            db.session.rollback()
-        except Exception:
-            pass
-        return render_or_fallback("500.html", error=error), 500
-
-    return app
-
-
-# =========================================================
-# APP INSTANCE
-# =========================================================
 
 app = create_app()
+
+
+# =========================================================
+# DASHBOARD / CORE PAGES
+# =========================================================
+
+
+@app.route("/")
+def index():
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/dashboard")
+def dashboard():
+    dashboard_stats = {
+        "clients_count": Client.query.count(),
+        "leads_count": Lead.query.count(),
+        "projects_count": Project.query.count(),
+        "employees_count": Employee.query.count(),
+        "job_openings_count": JobOpening.query.count(),
+        "candidates_count": Candidate.query.count(),
+        "hazards_count": Hazard.query.count(),
+        "incidents_count": Incident.query.count(),
+        "inventory_items_count": InventoryItem.query.count(),
+        "campaigns_count": Campaign.query.count(),
+        "invoices_count": Invoice.query.count(),
+        "bills_count": Bill.query.count(),
+    }
+
+    finance_stats = {
+        "invoice_total": db.session.query(func.coalesce(func.sum(Invoice.total_amount), 0)).scalar() or 0,
+        "invoice_balance_due": db.session.query(func.coalesce(func.sum(Invoice.balance_due), 0)).scalar() or 0,
+        "bill_total": db.session.query(func.coalesce(func.sum(Bill.total_amount), 0)).scalar() or 0,
+        "payments_total": db.session.query(func.coalesce(func.sum(Payment.amount), 0)).scalar() or 0,
+    }
+
+    recent_clients = Client.query.order_by(Client.created_at.desc()).limit(5).all()
+    recent_employees = Employee.query.order_by(Employee.created_at.desc()).limit(5).all()
+    recent_candidates = Candidate.query.order_by(Candidate.created_at.desc()).limit(5).all()
+    recent_incidents = Incident.query.order_by(Incident.created_at.desc()).limit(5).all()
+
+    return render_with_fallback(
+        "dashboard.html",
+        dashboard_stats=dashboard_stats,
+        finance_stats=finance_stats,
+        recent_clients=recent_clients,
+        recent_employees=recent_employees,
+        recent_candidates=recent_candidates,
+        recent_incidents=recent_incidents,
+        current_year=date.today().year,
+    )
+
+
+@app.route("/login")
+def login():
+    return render_with_fallback("login.html")
+
+
+@app.route("/settings")
+def settings():
+    settings_list = SystemSetting.query.order_by(SystemSetting.setting_key.asc()).all()
+    return render_with_fallback("settings.html", settings_list=settings_list)
+
+
+@app.route("/calendar")
+def calendar_page():
+    tasks = Task.query.order_by(Task.due_date.asc().nulls_last()).limit(50).all()
+    interviews = Interview.query.order_by(Interview.scheduled_at.asc()).limit(50).all()
+    drills = EmergencyDrill.query.order_by(EmergencyDrill.drill_date.asc().nulls_last()).limit(50).all()
+    return render_with_fallback("calendar.html", tasks=tasks, interviews=interviews, drills=drills)
+
+
+@app.route("/search")
+def search_results():
+    q = as_str(request.args.get("q"))
+    clients = Client.query.filter(Client.name.ilike(f"%{q}%")).limit(20).all() if q else []
+    employees = Employee.query.filter(Employee.full_name.ilike(f"%{q}%")).limit(20).all() if q else []
+    candidates = Candidate.query.filter(Candidate.full_name.ilike(f"%{q}%")).limit(20).all() if q else []
+    projects = Project.query.filter(Project.name.ilike(f"%{q}%")).limit(20).all() if q else []
+    return render_with_fallback(
+        "search_results.html",
+        q=q,
+        clients=clients,
+        employees=employees,
+        candidates=candidates,
+        projects=projects,
+    )
+
+
+# =========================================================
+# CRM ROUTES
+# =========================================================
+
+
+@app.route("/crm")
+def crm():
+    clients = Client.query.order_by(Client.created_at.desc()).all()
+    contacts = Contact.query.order_by(Contact.created_at.desc()).limit(50).all()
+    leads = Lead.query.order_by(Lead.created_at.desc()).all()
+    opportunities = Opportunity.query.order_by(Opportunity.created_at.desc()).all()
+    projects = Project.query.order_by(Project.created_at.desc()).all()
+    communications = CommunicationLog.query.order_by(CommunicationLog.created_at.desc()).limit(50).all()
+    tasks = Task.query.filter_by(module="CRM").order_by(Task.created_at.desc()).limit(50).all()
+
+    crm_stats = {
+        "clients_count": Client.query.count(),
+        "leads_count": Lead.query.count(),
+        "opportunities_count": Opportunity.query.count(),
+        "projects_count": Project.query.count(),
+        "communications_count": CommunicationLog.query.count(),
+    }
+
+    return render_with_fallback(
+        "crm.html",
+        clients=clients,
+        contacts=contacts,
+        leads=leads,
+        opportunities=opportunities,
+        projects=projects,
+        communications=communications,
+        tasks=tasks,
+        crm_stats=crm_stats,
+    )
+
+
+@app.route("/crm/create-client", methods=["POST"])
+def create_client():
+    client = Client(
+        client_code=as_str(request.form.get("client_code")),
+        name=as_str(request.form.get("name")),
+        legal_name=as_str(request.form.get("legal_name")),
+        industry=as_str(request.form.get("industry")),
+        subindustry=as_str(request.form.get("subindustry")),
+        country=as_str(request.form.get("country")),
+        state=as_str(request.form.get("state")),
+        city=as_str(request.form.get("city")),
+        address=as_str(request.form.get("address")),
+        website=as_str(request.form.get("website")),
+        language=as_str(request.form.get("language")),
+        tax_id_type=as_str(request.form.get("tax_id_type")),
+        tax_id_number=as_str(request.form.get("tax_id_number")),
+        phone=as_str(request.form.get("phone")),
+        email=as_str(request.form.get("email")),
+        status=as_str(request.form.get("status"), "Active"),
+        lead_source=as_str(request.form.get("lead_source")),
+        account_owner=as_str(request.form.get("account_owner")),
+        health_score=as_float(request.form.get("health_score")),
+        annual_revenue_estimate=as_float(request.form.get("annual_revenue_estimate")),
+        employee_count_estimate=as_int(request.form.get("employee_count_estimate"), None),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(client)
+    safe_commit("Client created successfully.")
+    return redirect(url_for("crm"))
+
+
+@app.route("/crm/create-contact", methods=["POST"])
+def create_contact():
+    contact = Contact(
+        client_id=as_int(request.form.get("client_id")),
+        first_name=as_str(request.form.get("first_name")),
+        last_name=as_str(request.form.get("last_name")),
+        title=as_str(request.form.get("title")),
+        department=as_str(request.form.get("department")),
+        email=as_str(request.form.get("email")),
+        phone=as_str(request.form.get("phone")),
+        mobile=as_str(request.form.get("mobile")),
+        preferred_language=as_str(request.form.get("preferred_language")),
+        is_primary=as_bool(request.form.get("is_primary")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(contact)
+    safe_commit("Contact created successfully.")
+    return redirect(url_for("crm"))
+
+
+@app.route("/crm/create-lead", methods=["POST"])
+def create_lead():
+    lead = Lead(
+        client_id=as_int(request.form.get("client_id"), None),
+        lead_name=as_str(request.form.get("lead_name")),
+        source=as_str(request.form.get("source")),
+        campaign_name=as_str(request.form.get("campaign_name")),
+        status=as_str(request.form.get("status"), "New"),
+        industry=as_str(request.form.get("industry")),
+        country=as_str(request.form.get("country")),
+        estimated_value=as_float(request.form.get("estimated_value")),
+        probability=as_float(request.form.get("probability")),
+        assigned_to=as_str(request.form.get("assigned_to")),
+        next_follow_up=as_date(request.form.get("next_follow_up")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(lead)
+    safe_commit("Lead created successfully.")
+    return redirect(url_for("crm"))
+
+
+@app.route("/crm/create-opportunity", methods=["POST"])
+def create_opportunity():
+    opportunity = Opportunity(
+        client_id=as_int(request.form.get("client_id")),
+        title=as_str(request.form.get("title")),
+        stage=as_str(request.form.get("stage"), "Prospecting"),
+        value=as_float(request.form.get("value")),
+        probability=as_float(request.form.get("probability")),
+        expected_close_date=as_date(request.form.get("expected_close_date")),
+        service_line=as_str(request.form.get("service_line")),
+        assigned_to=as_str(request.form.get("assigned_to")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(opportunity)
+    safe_commit("Opportunity created successfully.")
+    return redirect(url_for("crm"))
+
+
+@app.route("/crm/create-project", methods=["POST"])
+def create_project():
+    project = Project(
+        client_id=as_int(request.form.get("client_id")),
+        project_code=as_str(request.form.get("project_code")),
+        name=as_str(request.form.get("name")),
+        description=as_str(request.form.get("description")),
+        status=as_str(request.form.get("status"), "Planned"),
+        priority=as_str(request.form.get("priority"), "Medium"),
+        start_date=as_date(request.form.get("start_date")),
+        end_date=as_date(request.form.get("end_date")),
+        budget=as_float(request.form.get("budget")),
+        actual_cost=as_float(request.form.get("actual_cost")),
+        revenue=as_float(request.form.get("revenue")),
+        project_manager=as_str(request.form.get("project_manager")),
+        cost_center_id=as_int(request.form.get("cost_center_id"), None),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(project)
+    safe_commit("Project created successfully.")
+    return redirect(url_for("crm"))
+
+
+@app.route("/crm/create-communication-log", methods=["POST"])
+def create_communication_log():
+    communication = CommunicationLog(
+        client_id=as_int(request.form.get("client_id")),
+        contact_id=as_int(request.form.get("contact_id"), None),
+        project_id=as_int(request.form.get("project_id"), None),
+        communication_type=as_str(request.form.get("communication_type")),
+        direction=as_str(request.form.get("direction"), "Outbound"),
+        subject=as_str(request.form.get("subject")),
+        summary=as_str(request.form.get("summary")),
+        action_items=as_str(request.form.get("action_items")),
+        follow_up_date=as_date(request.form.get("follow_up_date")),
+        created_by=as_str(request.form.get("created_by")),
+        attachment_path=as_str(request.form.get("attachment_path")),
+    )
+    db.session.add(communication)
+    safe_commit("Communication log created successfully.")
+    return redirect(url_for("crm"))
+
+
+@app.route("/crm/create-task", methods=["POST"])
+def create_task():
+    task = Task(
+        client_id=as_int(request.form.get("client_id"), None),
+        employee_id=as_int(request.form.get("employee_id"), None),
+        project_id=as_int(request.form.get("project_id"), None),
+        title=as_str(request.form.get("title")),
+        description=as_str(request.form.get("description")),
+        status=as_str(request.form.get("status"), "Open"),
+        priority=as_str(request.form.get("priority"), "Medium"),
+        due_date=as_date(request.form.get("due_date")),
+        completed_date=as_date(request.form.get("completed_date")),
+        assigned_to=as_str(request.form.get("assigned_to")),
+        module=as_str(request.form.get("module"), "CRM"),
+    )
+    db.session.add(task)
+    safe_commit("Task created successfully.")
+    return redirect(url_for("crm"))
+
+
+# =========================================================
+# HRIS ROUTES
+# =========================================================
+
+
+@app.route("/hris")
+def hris():
+    employees = Employee.query.order_by(Employee.created_at.desc()).all()
+    departments = Department.query.order_by(Department.name.asc()).all()
+    job_titles = JobTitle.query.order_by(JobTitle.title.asc()).all()
+    leave_requests = LeaveRequest.query.order_by(LeaveRequest.created_at.desc()).limit(50).all()
+    disciplinary_records = DisciplinaryRecord.query.order_by(DisciplinaryRecord.created_at.desc()).limit(50).all()
+    labor_cases = LaborCase.query.order_by(LaborCase.created_at.desc()).limit(50).all()
+    training_records = TrainingRecord.query.order_by(TrainingRecord.created_at.desc()).limit(50).all()
+    payroll_records = PayrollRecord.query.order_by(PayrollRecord.created_at.desc()).limit(50).all()
+
+    hris_stats = {
+        "employees_count": Employee.query.count(),
+        "departments_count": Department.query.count(),
+        "leave_requests_count": LeaveRequest.query.count(),
+        "disciplinary_cases_count": DisciplinaryRecord.query.count(),
+        "labor_cases_count": LaborCase.query.count(),
+    }
+
+    return render_with_fallback(
+        "hris.html",
+        employees=employees,
+        departments=departments,
+        job_titles=job_titles,
+        leave_requests=leave_requests,
+        disciplinary_records=disciplinary_records,
+        labor_cases=labor_cases,
+        training_records=training_records,
+        payroll_records=payroll_records,
+        hris_stats=hris_stats,
+    )
+
+
+@app.route("/hris/add-department", methods=["POST"])
+def add_department():
+    department = Department(
+        name=as_str(request.form.get("name")),
+        code=as_str(request.form.get("code")),
+        description=as_str(request.form.get("description")),
+    )
+    db.session.add(department)
+    safe_commit("Department created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-job-title", methods=["POST"])
+def add_job_title():
+    job_title = JobTitle(
+        title=as_str(request.form.get("title")),
+        description=as_str(request.form.get("description")),
+        salary_grade=as_str(request.form.get("salary_grade")),
+    )
+    db.session.add(job_title)
+    safe_commit("Job title created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-employee", methods=["POST"])
+def add_employee():
+    first_name = as_str(request.form.get("first_name"))
+    middle_name = as_str(request.form.get("middle_name"))
+    last_name = as_str(request.form.get("last_name"))
+    full_name = " ".join(part for part in [first_name, middle_name, last_name] if part).strip()
+
+    employee = Employee(
+        employee_code=as_str(request.form.get("employee_code")),
+        first_name=first_name,
+        middle_name=middle_name,
+        last_name=last_name,
+        full_name=full_name,
+        email=as_str(request.form.get("email")),
+        phone=as_str(request.form.get("phone")),
+        alternate_phone=as_str(request.form.get("alternate_phone")),
+        address=as_str(request.form.get("address")),
+        city=as_str(request.form.get("city")),
+        state=as_str(request.form.get("state")),
+        country=as_str(request.form.get("country")),
+        national_id=as_str(request.form.get("national_id")),
+        birth_date=as_date(request.form.get("birth_date")),
+        gender=as_str(request.form.get("gender")),
+        marital_status=as_str(request.form.get("marital_status")),
+        emergency_contact_name=as_str(request.form.get("emergency_contact_name")),
+        emergency_contact_phone=as_str(request.form.get("emergency_contact_phone")),
+        department_id=as_int(request.form.get("department_id"), None),
+        job_title_id=as_int(request.form.get("job_title_id"), None),
+        manager_id=as_int(request.form.get("manager_id"), None),
+        work_location_id=as_int(request.form.get("work_location_id"), None),
+        employment_type=as_str(request.form.get("employment_type")),
+        contract_type=as_str(request.form.get("contract_type")),
+        hire_date=as_date(request.form.get("hire_date")),
+        termination_date=as_date(request.form.get("termination_date")),
+        employment_status=as_str(request.form.get("employment_status"), "Active"),
+        salary=as_float(request.form.get("salary")),
+        currency=as_str(request.form.get("currency"), "USD"),
+        pay_frequency=as_str(request.form.get("pay_frequency")),
+        benefits_summary=as_str(request.form.get("benefits_summary")),
+        profile_photo_path=as_str(request.form.get("profile_photo_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(employee)
+    safe_commit("Employee created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-attendance", methods=["POST"])
+def add_attendance():
+    attendance = Attendance(
+        employee_id=as_int(request.form.get("employee_id")),
+        attendance_date=as_date(request.form.get("attendance_date")),
+        check_in=as_datetime(request.form.get("check_in")),
+        check_out=as_datetime(request.form.get("check_out")),
+        hours_worked=as_float(request.form.get("hours_worked")),
+        status=as_str(request.form.get("status"), "Present"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(attendance)
+    safe_commit("Attendance record created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-leave-request", methods=["POST"])
+def add_leave_request():
+    leave_request = LeaveRequest(
+        employee_id=as_int(request.form.get("employee_id")),
+        leave_type=as_str(request.form.get("leave_type")),
+        start_date=as_date(request.form.get("start_date")),
+        end_date=as_date(request.form.get("end_date")),
+        days_requested=as_float(request.form.get("days_requested")),
+        status=as_str(request.form.get("status"), "Pending"),
+        request_reason=as_str(request.form.get("request_reason")),
+        approver_name=as_str(request.form.get("approver_name")),
+        approval_notes=as_str(request.form.get("approval_notes")),
+    )
+    db.session.add(leave_request)
+    safe_commit("Leave request created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-training-record", methods=["POST"])
+def add_training_record():
+    training_record = TrainingRecord(
+        employee_id=as_int(request.form.get("employee_id")),
+        training_name=as_str(request.form.get("training_name")),
+        category=as_str(request.form.get("category")),
+        provider=as_str(request.form.get("provider")),
+        training_date=as_date(request.form.get("training_date")),
+        expiration_date=as_date(request.form.get("expiration_date")),
+        certificate_path=as_str(request.form.get("certificate_path")),
+        status=as_str(request.form.get("status"), "Completed"),
+        score=as_float(request.form.get("score")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(training_record)
+    safe_commit("Training record created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-disciplinary-record", methods=["POST"])
+def add_disciplinary_record():
+    disciplinary_record = DisciplinaryRecord(
+        employee_id=as_int(request.form.get("employee_id")),
+        case_number=as_str(request.form.get("case_number")),
+        country_framework=as_str(request.form.get("country_framework")),
+        labor_framework=as_str(request.form.get("labor_framework")),
+        incident_date=as_date(request.form.get("incident_date")),
+        report_date=as_date(request.form.get("report_date")),
+        incident_type=as_str(request.form.get("incident_type")),
+        violation_category=as_str(request.form.get("violation_category")),
+        severity_level=as_str(request.form.get("severity_level")),
+        policy_violation=as_str(request.form.get("policy_violation")),
+        description=as_str(request.form.get("description")),
+        evidence_summary=as_str(request.form.get("evidence_summary")),
+        witness_summary=as_str(request.form.get("witness_summary")),
+        investigator_name=as_str(request.form.get("investigator_name")),
+        action_type=as_str(request.form.get("action_type")),
+        action_taken=as_str(request.form.get("action_taken")),
+        suspension_days=as_int(request.form.get("suspension_days")),
+        due_process_completed=as_bool(request.form.get("due_process_completed")),
+        employee_response_received=as_bool(request.form.get("employee_response_received")),
+        union_representation_requested=as_bool(request.form.get("union_representation_requested")),
+        decision_official=as_str(request.form.get("decision_official")),
+        outcome=as_str(request.form.get("outcome")),
+        appeal_flag=as_bool(request.form.get("appeal_flag")),
+        appeal_status=as_str(request.form.get("appeal_status")),
+        status=as_str(request.form.get("status"), "Open"),
+        notice_file_path=as_str(request.form.get("notice_file_path")),
+        decision_file_path=as_str(request.form.get("decision_file_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(disciplinary_record)
+    safe_commit("Disciplinary record created successfully.")
+    return redirect(url_for("hris"))
+
+
+@app.route("/hris/add-labor-case", methods=["POST"])
+def add_labor_case():
+    labor_case = LaborCase(
+        employee_id=as_int(request.form.get("employee_id")),
+        case_number=as_str(request.form.get("case_number")),
+        framework=as_str(request.form.get("framework")),
+        case_type=as_str(request.form.get("case_type")),
+        subject=as_str(request.form.get("subject")),
+        description=as_str(request.form.get("description")),
+        filed_date=as_date(request.form.get("filed_date")),
+        hearing_date=as_date(request.form.get("hearing_date")),
+        response_deadline=as_date(request.form.get("response_deadline")),
+        union_name=as_str(request.form.get("union_name")),
+        representative_name=as_str(request.form.get("representative_name")),
+        employer_representative=as_str(request.form.get("employer_representative")),
+        status=as_str(request.form.get("status"), "Open"),
+        resolution=as_str(request.form.get("resolution")),
+        resolution_date=as_date(request.form.get("resolution_date")),
+        legal_risk_level=as_str(request.form.get("legal_risk_level")),
+        file_path=as_str(request.form.get("file_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(labor_case)
+    safe_commit("Labor case created successfully.")
+    return redirect(url_for("hris"))
+
+
+# =========================================================
+# ATS ROUTES
+# =========================================================
+
+
+@app.route("/ats")
+def ats():
+    job_openings = JobOpening.query.order_by(JobOpening.created_at.desc()).all()
+    candidates = Candidate.query.order_by(Candidate.created_at.desc()).all()
+    resumes = Resume.query.order_by(Resume.created_at.desc()).limit(50).all()
+    interviews = Interview.query.order_by(Interview.created_at.desc()).limit(50).all()
+    offers = OfferLetter.query.order_by(OfferLetter.created_at.desc()).limit(50).all()
+    resume_services = ResumeOptimizationRecord.query.order_by(ResumeOptimizationRecord.created_at.desc()).limit(50).all()
+
+    ats_stats = {
+        "job_openings_count": JobOpening.query.count(),
+        "candidates_count": Candidate.query.count(),
+        "resumes_count": Resume.query.count(),
+        "interviews_count": Interview.query.count(),
+        "offers_count": OfferLetter.query.count(),
+    }
+
+    return render_with_fallback(
+        "ats.html",
+        job_openings=job_openings,
+        candidates=candidates,
+        resumes=resumes,
+        interviews=interviews,
+        offers=offers,
+        resume_services=resume_services,
+        ats_stats=ats_stats,
+    )
+
+
+@app.route("/ats/add-job-opening", methods=["POST"])
+def add_job_opening():
+    job_opening = JobOpening(
+        requisition_number=as_str(request.form.get("requisition_number")),
+        title=as_str(request.form.get("title")),
+        department_id=as_int(request.form.get("department_id"), None),
+        hiring_manager=as_str(request.form.get("hiring_manager")),
+        location=as_str(request.form.get("location")),
+        employment_type=as_str(request.form.get("employment_type")),
+        salary_min=as_float(request.form.get("salary_min")),
+        salary_max=as_float(request.form.get("salary_max")),
+        currency=as_str(request.form.get("currency"), "USD"),
+        openings_count=as_int(request.form.get("openings_count"), 1),
+        description=as_str(request.form.get("description")),
+        requirements=as_str(request.form.get("requirements")),
+        status=as_str(request.form.get("status"), "Open"),
+        posting_date=as_date(request.form.get("posting_date")),
+        closing_date=as_date(request.form.get("closing_date")),
+        source_channel=as_str(request.form.get("source_channel")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(job_opening)
+    safe_commit("Job opening created successfully.")
+    return redirect(url_for("ats"))
+
+
+@app.route("/ats/add-candidate", methods=["POST"])
+def add_candidate():
+    first_name = as_str(request.form.get("first_name"))
+    middle_name = as_str(request.form.get("middle_name"))
+    last_name = as_str(request.form.get("last_name"))
+    full_name = " ".join(part for part in [first_name, middle_name, last_name] if part).strip()
+
+    candidate = Candidate(
+        job_opening_id=as_int(request.form.get("job_opening_id"), None),
+        candidate_code=as_str(request.form.get("candidate_code")),
+        first_name=first_name,
+        middle_name=middle_name,
+        last_name=last_name,
+        full_name=full_name,
+        email=as_str(request.form.get("email")),
+        phone=as_str(request.form.get("phone")),
+        city=as_str(request.form.get("city")),
+        state=as_str(request.form.get("state")),
+        country=as_str(request.form.get("country")),
+        linkedin_url=as_str(request.form.get("linkedin_url")),
+        portfolio_url=as_str(request.form.get("portfolio_url")),
+        source=as_str(request.form.get("source")),
+        stage=as_str(request.form.get("stage"), "Applied"),
+        status=as_str(request.form.get("status"), "Active"),
+        years_experience=as_float(request.form.get("years_experience")),
+        desired_salary=as_float(request.form.get("desired_salary")),
+        available_start_date=as_date(request.form.get("available_start_date")),
+        recruiter_name=as_str(request.form.get("recruiter_name")),
+        federal_resume_mode=as_bool(request.form.get("federal_resume_mode")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(candidate)
+    safe_commit("Candidate created successfully.")
+    return redirect(url_for("ats"))
+
+
+@app.route("/ats/add-resume", methods=["POST"])
+def add_resume():
+    resume = Resume(
+        candidate_id=as_int(request.form.get("candidate_id")),
+        file_name=as_str(request.form.get("file_name")),
+        file_path=as_str(request.form.get("file_path")),
+        parsed_text=as_str(request.form.get("parsed_text")),
+        skills=as_str(request.form.get("skills")),
+        experience_summary=as_str(request.form.get("experience_summary")),
+        education_summary=as_str(request.form.get("education_summary")),
+        ats_score=as_float(request.form.get("ats_score")),
+        keyword_match_score=as_float(request.form.get("keyword_match_score")),
+        version_label=as_str(request.form.get("version_label")),
+        is_primary=as_bool(request.form.get("is_primary")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(resume)
+    safe_commit("Resume record created successfully.")
+    return redirect(url_for("ats"))
+
+
+@app.route("/ats/add-interview", methods=["POST"])
+def add_interview():
+    interview = Interview(
+        candidate_id=as_int(request.form.get("candidate_id")),
+        job_opening_id=as_int(request.form.get("job_opening_id")),
+        interview_type=as_str(request.form.get("interview_type")),
+        interview_round=as_str(request.form.get("interview_round")),
+        scheduled_at=as_datetime(request.form.get("scheduled_at")),
+        interviewer_name=as_str(request.form.get("interviewer_name")),
+        location_or_link=as_str(request.form.get("location_or_link")),
+        status=as_str(request.form.get("status"), "Scheduled"),
+        feedback=as_str(request.form.get("feedback")),
+        score=as_float(request.form.get("score")),
+    )
+    db.session.add(interview)
+    safe_commit("Interview created successfully.")
+    return redirect(url_for("ats"))
+
+
+@app.route("/ats/add-offer-letter", methods=["POST"])
+def add_offer_letter():
+    offer_letter = OfferLetter(
+        candidate_id=as_int(request.form.get("candidate_id")),
+        job_opening_id=as_int(request.form.get("job_opening_id")),
+        offer_date=as_date(request.form.get("offer_date")),
+        proposed_start_date=as_date(request.form.get("proposed_start_date")),
+        salary_offer=as_float(request.form.get("salary_offer")),
+        currency=as_str(request.form.get("currency"), "USD"),
+        employment_type=as_str(request.form.get("employment_type")),
+        status=as_str(request.form.get("status"), "Draft"),
+        letter_path=as_str(request.form.get("letter_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(offer_letter)
+    safe_commit("Offer letter created successfully.")
+    return redirect(url_for("ats"))
+
+
+@app.route("/ats/add-resume-optimization", methods=["POST"])
+def add_resume_optimization():
+    optimization = ResumeOptimizationRecord(
+        candidate_id=as_int(request.form.get("candidate_id")),
+        target_role=as_str(request.form.get("target_role")),
+        target_industry=as_str(request.form.get("target_industry")),
+        job_description_text=as_str(request.form.get("job_description_text")),
+        original_resume_path=as_str(request.form.get("original_resume_path")),
+        optimized_resume_path=as_str(request.form.get("optimized_resume_path")),
+        optimization_type=as_str(request.form.get("optimization_type")),
+        ats_score_before=as_float(request.form.get("ats_score_before")),
+        ats_score_after=as_float(request.form.get("ats_score_after")),
+        match_score=as_float(request.form.get("match_score")),
+        recommendations=as_str(request.form.get("recommendations")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(optimization)
+    safe_commit("Resume optimization record created successfully.")
+    return redirect(url_for("ats"))
+
+
+# =========================================================
+# ORIENTATION ROUTES
+# =========================================================
+
+
+@app.route("/orientation")
+def orientation():
+    orientation_checklists = OrientationChecklist.query.order_by(OrientationChecklist.created_at.desc()).all()
+    policy_acknowledgements = PolicyAcknowledgement.query.order_by(PolicyAcknowledgement.created_at.desc()).all()
+    employees = Employee.query.order_by(Employee.full_name.asc()).all()
+    return render_with_fallback(
+        "orientation.html",
+        orientation_checklists=orientation_checklists,
+        policy_acknowledgements=policy_acknowledgements,
+        employees=employees,
+    )
+
+
+@app.route("/orientation/add-checklist-item", methods=["POST"])
+def add_checklist_item():
+    checklist_item = OrientationChecklist(
+        employee_id=as_int(request.form.get("employee_id")),
+        checklist_name=as_str(request.form.get("checklist_name")),
+        item_name=as_str(request.form.get("item_name")),
+        module=as_str(request.form.get("module")),
+        responsible_person=as_str(request.form.get("responsible_person")),
+        due_date=as_date(request.form.get("due_date")),
+        completed=as_bool(request.form.get("completed")),
+        completed_date=as_date(request.form.get("completed_date")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(checklist_item)
+    safe_commit("Orientation checklist item created successfully.")
+    return redirect(url_for("orientation"))
+
+
+@app.route("/orientation/add-policy-acknowledgement", methods=["POST"])
+def add_policy_acknowledgement():
+    acknowledgement = PolicyAcknowledgement(
+        employee_id=as_int(request.form.get("employee_id")),
+        policy_name=as_str(request.form.get("policy_name")),
+        policy_version=as_str(request.form.get("policy_version")),
+        acknowledged=as_bool(request.form.get("acknowledged")),
+        acknowledged_date=as_date(request.form.get("acknowledged_date")),
+        file_path=as_str(request.form.get("file_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(acknowledgement)
+    safe_commit("Policy acknowledgement created successfully.")
+    return redirect(url_for("orientation"))
+
+
+# =========================================================
+# SG-SST ROUTES
+# =========================================================
+
+
+@app.route("/sgsst")
+def sgsst():
+    safety_policies = SafetyPolicy.query.order_by(SafetyPolicy.created_at.desc()).all()
+    legal_requirements = LegalRequirement.query.order_by(LegalRequirement.created_at.desc()).all()
+    hazards = Hazard.query.order_by(Hazard.created_at.desc()).all()
+    annual_work_plans = AnnualWorkPlan.query.order_by(AnnualWorkPlan.created_at.desc()).all()
+    incidents = Incident.query.order_by(Incident.created_at.desc()).all()
+    inspections = Inspection.query.order_by(Inspection.created_at.desc()).all()
+    corrective_actions = CorrectiveAction.query.order_by(CorrectiveAction.created_at.desc()).all()
+    ppe_assignments = PPEAssignment.query.order_by(PPEAssignment.created_at.desc()).all()
+    medical_surveillance_records = MedicalSurveillance.query.order_by(MedicalSurveillance.created_at.desc()).all()
+    safety_audits = SafetyAudit.query.order_by(SafetyAudit.created_at.desc()).all()
+    minimum_standard_assessments = MinimumStandardAssessment.query.order_by(MinimumStandardAssessment.created_at.desc()).all()
+
+    sgsst_stats = {
+        "hazards_count": Hazard.query.count(),
+        "incidents_count": Incident.query.count(),
+        "inspections_count": Inspection.query.count(),
+        "corrective_actions_count": CorrectiveAction.query.count(),
+        "audits_count": SafetyAudit.query.count(),
+    }
+
+    return render_with_fallback(
+        "sgsst.html",
+        safety_policies=safety_policies,
+        legal_requirements=legal_requirements,
+        hazards=hazards,
+        annual_work_plans=annual_work_plans,
+        incidents=incidents,
+        inspections=inspections,
+        corrective_actions=corrective_actions,
+        ppe_assignments=ppe_assignments,
+        medical_surveillance_records=medical_surveillance_records,
+        safety_audits=safety_audits,
+        minimum_standard_assessments=minimum_standard_assessments,
+        sgsst_stats=sgsst_stats,
+    )
+
+
+@app.route("/sgsst/add-safety-policy", methods=["POST"])
+def add_safety_policy():
+    record = SafetyPolicy(
+        title=as_str(request.form.get("title")),
+        version=as_str(request.form.get("version")),
+        effective_date=as_date(request.form.get("effective_date")),
+        review_date=as_date(request.form.get("review_date")),
+        approved_by=as_str(request.form.get("approved_by")),
+        file_path=as_str(request.form.get("file_path")),
+        description=as_str(request.form.get("description")),
+    )
+    db.session.add(record)
+    safe_commit("Safety policy created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-legal-requirement", methods=["POST"])
+def add_legal_requirement():
+    record = LegalRequirement(
+        jurisdiction=as_str(request.form.get("jurisdiction"), "Colombia"),
+        law_name=as_str(request.form.get("law_name")),
+        article_or_section=as_str(request.form.get("article_or_section")),
+        requirement_description=as_str(request.form.get("requirement_description")),
+        compliance_status=as_str(request.form.get("compliance_status"), "Pending"),
+        responsible_person=as_str(request.form.get("responsible_person")),
+        review_date=as_date(request.form.get("review_date")),
+        evidence_path=as_str(request.form.get("evidence_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(record)
+    safe_commit("Legal requirement created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-hazard", methods=["POST"])
+def add_hazard():
+    probability = as_int(request.form.get("probability"), 1)
+    consequence = as_int(request.form.get("consequence"), 1)
+    hazard = Hazard(
+        hazard_code=as_str(request.form.get("hazard_code")),
+        area=as_str(request.form.get("area")),
+        process=as_str(request.form.get("process")),
+        activity=as_str(request.form.get("activity")),
+        hazard_type=as_str(request.form.get("hazard_type")),
+        description=as_str(request.form.get("description")),
+        exposed_population=as_str(request.form.get("exposed_population")),
+        existing_controls=as_str(request.form.get("existing_controls")),
+        probability=probability,
+        consequence=consequence,
+        risk_score=probability * consequence,
+        risk_level=as_str(request.form.get("risk_level")),
+        control_measures=as_str(request.form.get("control_measures")),
+        responsible_person=as_str(request.form.get("responsible_person")),
+        next_review_date=as_date(request.form.get("next_review_date")),
+        status=as_str(request.form.get("status"), "Open"),
+    )
+    db.session.add(hazard)
+    safe_commit("Hazard created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-annual-work-plan", methods=["POST"])
+def add_annual_work_plan():
+    record = AnnualWorkPlan(
+        year=as_int(request.form.get("year"), date.today().year),
+        activity=as_str(request.form.get("activity")),
+        objective=as_str(request.form.get("objective")),
+        responsible_person=as_str(request.form.get("responsible_person")),
+        due_date=as_date(request.form.get("due_date")),
+        progress_percent=as_float(request.form.get("progress_percent")),
+        status=as_str(request.form.get("status"), "Pending"),
+        indicator_name=as_str(request.form.get("indicator_name")),
+        evidence_path=as_str(request.form.get("evidence_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(record)
+    safe_commit("Annual work plan item created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-incident", methods=["POST"])
+def add_incident():
+    incident = Incident(
+        incident_code=as_str(request.form.get("incident_code")),
+        employee_id=as_int(request.form.get("employee_id"), None),
+        hazard_id=as_int(request.form.get("hazard_id"), None),
+        project_id=as_int(request.form.get("project_id"), None),
+        incident_date=as_date(request.form.get("incident_date")),
+        incident_time=as_str(request.form.get("incident_time")),
+        location=as_str(request.form.get("location")),
+        incident_type=as_str(request.form.get("incident_type")),
+        severity=as_str(request.form.get("severity")),
+        description=as_str(request.form.get("description")),
+        immediate_actions=as_str(request.form.get("immediate_actions")),
+        lost_time=as_bool(request.form.get("lost_time")),
+        reported_by=as_str(request.form.get("reported_by")),
+        status=as_str(request.form.get("status"), "Open"),
+        evidence_path=as_str(request.form.get("evidence_path")),
+    )
+    db.session.add(incident)
+    safe_commit("Incident created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-investigation", methods=["POST"])
+def add_investigation():
+    investigation = Investigation(
+        incident_id=as_int(request.form.get("incident_id")),
+        investigator_name=as_str(request.form.get("investigator_name")),
+        methodology=as_str(request.form.get("methodology")),
+        root_cause=as_str(request.form.get("root_cause")),
+        contributing_factors=as_str(request.form.get("contributing_factors")),
+        recommendations=as_str(request.form.get("recommendations")),
+        conclusion=as_str(request.form.get("conclusion")),
+        closure_date=as_date(request.form.get("closure_date")),
+        status=as_str(request.form.get("status"), "Open"),
+        file_path=as_str(request.form.get("file_path")),
+    )
+    db.session.add(investigation)
+    safe_commit("Investigation created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-inspection", methods=["POST"])
+def add_inspection():
+    inspection = Inspection(
+        hazard_id=as_int(request.form.get("hazard_id"), None),
+        inspection_type=as_str(request.form.get("inspection_type")),
+        location=as_str(request.form.get("location")),
+        inspection_date=as_date(request.form.get("inspection_date")),
+        inspector_name=as_str(request.form.get("inspector_name")),
+        checklist_used=as_str(request.form.get("checklist_used")),
+        findings=as_str(request.form.get("findings")),
+        risk_level=as_str(request.form.get("risk_level")),
+        corrective_actions_required=as_bool(request.form.get("corrective_actions_required")),
+        status=as_str(request.form.get("status"), "Completed"),
+        evidence_path=as_str(request.form.get("evidence_path")),
+    )
+    db.session.add(inspection)
+    safe_commit("Inspection created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-corrective-action", methods=["POST"])
+def add_corrective_action():
+    record = CorrectiveAction(
+        incident_id=as_int(request.form.get("incident_id"), None),
+        source_type=as_str(request.form.get("source_type")),
+        source_id=as_int(request.form.get("source_id"), None),
+        action_type=as_str(request.form.get("action_type")),
+        description=as_str(request.form.get("description")),
+        responsible_person=as_str(request.form.get("responsible_person")),
+        due_date=as_date(request.form.get("due_date")),
+        completion_date=as_date(request.form.get("completion_date")),
+        effectiveness_review=as_str(request.form.get("effectiveness_review")),
+        status=as_str(request.form.get("status"), "Open"),
+        evidence_path=as_str(request.form.get("evidence_path")),
+    )
+    db.session.add(record)
+    safe_commit("Corrective action created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-medical-surveillance", methods=["POST"])
+def add_medical_surveillance():
+    record = MedicalSurveillance(
+        employee_id=as_int(request.form.get("employee_id")),
+        exam_type=as_str(request.form.get("exam_type")),
+        exam_date=as_date(request.form.get("exam_date")),
+        provider=as_str(request.form.get("provider")),
+        restrictions=as_str(request.form.get("restrictions")),
+        fitness_status=as_str(request.form.get("fitness_status")),
+        next_exam_date=as_date(request.form.get("next_exam_date")),
+        confidential_notes=as_str(request.form.get("confidential_notes")),
+        file_path=as_str(request.form.get("file_path")),
+    )
+    db.session.add(record)
+    safe_commit("Medical surveillance record created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-ppe-assignment", methods=["POST"])
+def add_ppe_assignment():
+    record = PPEAssignment(
+        employee_id=as_int(request.form.get("employee_id")),
+        inventory_item_id=as_int(request.form.get("inventory_item_id")),
+        assignment_date=as_date(request.form.get("assignment_date")),
+        return_date=as_date(request.form.get("return_date")),
+        condition_on_delivery=as_str(request.form.get("condition_on_delivery")),
+        signed_receipt=as_bool(request.form.get("signed_receipt")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(record)
+    safe_commit("PPE assignment created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+@app.route("/sgsst/add-safety-audit", methods=["POST"])
+def add_safety_audit():
+    audit = SafetyAudit(
+        audit_name=as_str(request.form.get("audit_name")),
+        audit_type=as_str(request.form.get("audit_type")),
+        audit_date=as_date(request.form.get("audit_date")),
+        auditor_name=as_str(request.form.get("auditor_name")),
+        scope=as_str(request.form.get("scope")),
+        findings=as_str(request.form.get("findings")),
+        score=as_float(request.form.get("score")),
+        status=as_str(request.form.get("status"), "Open"),
+        report_path=as_str(request.form.get("report_path")),
+    )
+    db.session.add(audit)
+    safe_commit("Safety audit created successfully.")
+    return redirect(url_for("sgsst"))
+
+
+# =========================================================
+# FINANCE ROUTES
+# =========================================================
+
+
+@app.route("/finance")
+def finance():
+    accounts = Account.query.order_by(Account.account_code.asc()).all()
+    invoices = Invoice.query.order_by(Invoice.created_at.desc()).all()
+    bills = Bill.query.order_by(Bill.created_at.desc()).all()
+    payments = Payment.query.order_by(Payment.created_at.desc()).all()
+    vendors = Vendor.query.order_by(Vendor.name.asc()).all()
+    bank_accounts = BankAccount.query.order_by(BankAccount.created_at.desc()).all()
+    budgets = Budget.query.order_by(Budget.created_at.desc()).all()
+    forecasts = Forecast.query.order_by(Forecast.created_at.desc()).all()
+    purchase_orders = PurchaseOrder.query.order_by(PurchaseOrder.created_at.desc()).all()
+    payroll_records = PayrollRecord.query.order_by(PayrollRecord.created_at.desc()).all()
+    tax_rates = TaxRate.query.order_by(TaxRate.created_at.desc()).all()
+
+    finance_stats = {
+        "accounts_count": Account.query.count(),
+        "invoices_count": Invoice.query.count(),
+        "bills_count": Bill.query.count(),
+        "payments_count": Payment.query.count(),
+        "invoice_total": db.session.query(func.coalesce(func.sum(Invoice.total_amount), 0)).scalar() or 0,
+        "bill_total": db.session.query(func.coalesce(func.sum(Bill.total_amount), 0)).scalar() or 0,
+        "payment_total": db.session.query(func.coalesce(func.sum(Payment.amount), 0)).scalar() or 0,
+    }
+
+    return render_with_fallback(
+        "finance.html",
+        accounts=accounts,
+        invoices=invoices,
+        bills=bills,
+        payments=payments,
+        vendors=vendors,
+        bank_accounts=bank_accounts,
+        budgets=budgets,
+        forecasts=forecasts,
+        purchase_orders=purchase_orders,
+        payroll_records=payroll_records,
+        tax_rates=tax_rates,
+        finance_stats=finance_stats,
+    )
+
+
+@app.route("/finance/add-account", methods=["POST"])
+def add_account():
+    account = Account(
+        account_code=as_str(request.form.get("account_code")),
+        account_name=as_str(request.form.get("account_name")),
+        account_type=as_str(request.form.get("account_type")),
+        parent_account_id=as_int(request.form.get("parent_account_id"), None),
+        description=as_str(request.form.get("description")),
+    )
+    db.session.add(account)
+    safe_commit("Account created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-vendor", methods=["POST"])
+def add_vendor():
+    vendor = Vendor(
+        vendor_code=as_str(request.form.get("vendor_code")),
+        name=as_str(request.form.get("name")),
+        tax_id=as_str(request.form.get("tax_id")),
+        contact_person=as_str(request.form.get("contact_person")),
+        email=as_str(request.form.get("email")),
+        phone=as_str(request.form.get("phone")),
+        address=as_str(request.form.get("address")),
+        city=as_str(request.form.get("city")),
+        country=as_str(request.form.get("country")),
+        payment_terms=as_str(request.form.get("payment_terms")),
+        status=as_str(request.form.get("status"), "Active"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(vendor)
+    safe_commit("Vendor created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/create-invoice", methods=["POST"])
+def create_invoice():
+    invoice = Invoice(
+        invoice_number=as_str(request.form.get("invoice_number")),
+        client_id=as_int(request.form.get("client_id")),
+        project_id=as_int(request.form.get("project_id"), None),
+        invoice_date=as_date(request.form.get("invoice_date")),
+        due_date=as_date(request.form.get("due_date")),
+        subtotal=as_float(request.form.get("subtotal")),
+        tax_amount=as_float(request.form.get("tax_amount")),
+        discount_amount=as_float(request.form.get("discount_amount")),
+        total_amount=as_float(request.form.get("total_amount")),
+        amount_paid=as_float(request.form.get("amount_paid")),
+        balance_due=as_float(request.form.get("balance_due")),
+        currency=as_str(request.form.get("currency"), "USD"),
+        status=as_str(request.form.get("status"), "Draft"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(invoice)
+    safe_commit("Invoice created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-invoice-line", methods=["POST"])
+def add_invoice_line():
+    line = InvoiceLine(
+        invoice_id=as_int(request.form.get("invoice_id")),
+        description=as_str(request.form.get("description")),
+        quantity=as_float(request.form.get("quantity"), 1),
+        unit_price=as_float(request.form.get("unit_price")),
+        line_total=as_float(request.form.get("line_total")),
+        revenue_account_id=as_int(request.form.get("revenue_account_id"), None),
+    )
+    db.session.add(line)
+    safe_commit("Invoice line created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/create-bill", methods=["POST"])
+def create_bill():
+    bill = Bill(
+        bill_number=as_str(request.form.get("bill_number")),
+        vendor_id=as_int(request.form.get("vendor_id")),
+        purchase_order_id=as_int(request.form.get("purchase_order_id"), None),
+        bill_date=as_date(request.form.get("bill_date")),
+        due_date=as_date(request.form.get("due_date")),
+        subtotal=as_float(request.form.get("subtotal")),
+        tax_amount=as_float(request.form.get("tax_amount")),
+        total_amount=as_float(request.form.get("total_amount")),
+        amount_paid=as_float(request.form.get("amount_paid")),
+        balance_due=as_float(request.form.get("balance_due")),
+        status=as_str(request.form.get("status"), "Open"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(bill)
+    safe_commit("Bill created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-bill-line", methods=["POST"])
+def add_bill_line():
+    line = BillLine(
+        bill_id=as_int(request.form.get("bill_id")),
+        description=as_str(request.form.get("description")),
+        quantity=as_float(request.form.get("quantity"), 1),
+        unit_cost=as_float(request.form.get("unit_cost")),
+        line_total=as_float(request.form.get("line_total")),
+        expense_account_id=as_int(request.form.get("expense_account_id"), None),
+        inventory_item_id=as_int(request.form.get("inventory_item_id"), None),
+    )
+    db.session.add(line)
+    safe_commit("Bill line created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/create-payment", methods=["POST"])
+def create_payment():
+    payment = Payment(
+        payment_number=as_str(request.form.get("payment_number")),
+        invoice_id=as_int(request.form.get("invoice_id"), None),
+        bill_id=as_int(request.form.get("bill_id"), None),
+        payment_date=as_date(request.form.get("payment_date")),
+        amount=as_float(request.form.get("amount")),
+        payment_method=as_str(request.form.get("payment_method")),
+        bank_account_id=as_int(request.form.get("bank_account_id"), None),
+        reference=as_str(request.form.get("reference")),
+        direction=as_str(request.form.get("direction")),
+        status=as_str(request.form.get("status"), "Posted"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(payment)
+    safe_commit("Payment created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-bank-account", methods=["POST"])
+def add_bank_account():
+    bank_account = BankAccount(
+        account_name=as_str(request.form.get("account_name")),
+        bank_name=as_str(request.form.get("bank_name")),
+        account_number=as_str(request.form.get("account_number")),
+        currency=as_str(request.form.get("currency"), "USD"),
+        opening_balance=as_float(request.form.get("opening_balance")),
+        current_balance=as_float(request.form.get("current_balance")),
+        status=as_str(request.form.get("status"), "Active"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(bank_account)
+    safe_commit("Bank account created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-budget", methods=["POST"])
+def add_budget():
+    budget = Budget(
+        budget_name=as_str(request.form.get("budget_name")),
+        fiscal_year=as_int(request.form.get("fiscal_year"), date.today().year),
+        cost_center_id=as_int(request.form.get("cost_center_id"), None),
+        department_id=as_int(request.form.get("department_id"), None),
+        account_id=as_int(request.form.get("account_id"), None),
+        amount=as_float(request.form.get("amount")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(budget)
+    safe_commit("Budget created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-forecast", methods=["POST"])
+def add_forecast():
+    forecast = Forecast(
+        forecast_name=as_str(request.form.get("forecast_name")),
+        forecast_period=as_str(request.form.get("forecast_period")),
+        module=as_str(request.form.get("module")),
+        projected_revenue=as_float(request.form.get("projected_revenue")),
+        projected_expense=as_float(request.form.get("projected_expense")),
+        projected_profit=as_float(request.form.get("projected_profit")),
+        assumptions=as_str(request.form.get("assumptions")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(forecast)
+    safe_commit("Forecast created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/create-purchase-order", methods=["POST"])
+def create_purchase_order():
+    record = PurchaseOrder(
+        po_number=as_str(request.form.get("po_number")),
+        vendor_id=as_int(request.form.get("vendor_id")),
+        order_date=as_date(request.form.get("order_date")),
+        expected_date=as_date(request.form.get("expected_date")),
+        subtotal=as_float(request.form.get("subtotal")),
+        tax_amount=as_float(request.form.get("tax_amount")),
+        total_amount=as_float(request.form.get("total_amount")),
+        status=as_str(request.form.get("status"), "Draft"),
+        approved_by=as_str(request.form.get("approved_by")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(record)
+    safe_commit("Purchase order created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-purchase-order-line", methods=["POST"])
+def add_purchase_order_line():
+    line = PurchaseOrderLine(
+        purchase_order_id=as_int(request.form.get("purchase_order_id")),
+        inventory_item_id=as_int(request.form.get("inventory_item_id"), None),
+        description=as_str(request.form.get("description")),
+        quantity=as_float(request.form.get("quantity")),
+        unit_cost=as_float(request.form.get("unit_cost")),
+        line_total=as_float(request.form.get("line_total")),
+    )
+    db.session.add(line)
+    safe_commit("Purchase order line created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/create-goods-receipt", methods=["POST"])
+def create_goods_receipt():
+    receipt = GoodsReceipt(
+        receipt_number=as_str(request.form.get("receipt_number")),
+        purchase_order_id=as_int(request.form.get("purchase_order_id")),
+        receipt_date=as_date(request.form.get("receipt_date")),
+        received_by=as_str(request.form.get("received_by")),
+        status=as_str(request.form.get("status"), "Received"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(receipt)
+    safe_commit("Goods receipt created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-goods-receipt-line", methods=["POST"])
+def add_goods_receipt_line():
+    line = GoodsReceiptLine(
+        goods_receipt_id=as_int(request.form.get("goods_receipt_id")),
+        inventory_item_id=as_int(request.form.get("inventory_item_id")),
+        quantity_received=as_float(request.form.get("quantity_received")),
+        condition_notes=as_str(request.form.get("condition_notes")),
+    )
+    db.session.add(line)
+    safe_commit("Goods receipt line created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/create-payroll-record", methods=["POST"])
+def create_payroll_record():
+    record = PayrollRecord(
+        employee_id=as_int(request.form.get("employee_id")),
+        pay_period_start=as_date(request.form.get("pay_period_start")),
+        pay_period_end=as_date(request.form.get("pay_period_end")),
+        gross_pay=as_float(request.form.get("gross_pay")),
+        overtime_pay=as_float(request.form.get("overtime_pay")),
+        bonus_pay=as_float(request.form.get("bonus_pay")),
+        deductions_total=as_float(request.form.get("deductions_total")),
+        taxes_total=as_float(request.form.get("taxes_total")),
+        employer_cost_total=as_float(request.form.get("employer_cost_total")),
+        net_pay=as_float(request.form.get("net_pay")),
+        status=as_str(request.form.get("status"), "Draft"),
+        journal_entry_id=as_int(request.form.get("journal_entry_id"), None),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(record)
+    safe_commit("Payroll record created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-payroll-item", methods=["POST"])
+def add_payroll_item():
+    item = PayrollItem(
+        payroll_record_id=as_int(request.form.get("payroll_record_id")),
+        item_type=as_str(request.form.get("item_type")),
+        item_name=as_str(request.form.get("item_name")),
+        amount=as_float(request.form.get("amount")),
+        account_id=as_int(request.form.get("account_id"), None),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(item)
+    safe_commit("Payroll item created successfully.")
+    return redirect(url_for("finance"))
+
+
+@app.route("/finance/add-tax-rate", methods=["POST"])
+def add_tax_rate():
+    tax_rate = TaxRate(
+        tax_name=as_str(request.form.get("tax_name")),
+        jurisdiction=as_str(request.form.get("jurisdiction")),
+        rate_percent=as_float(request.form.get("rate_percent")),
+        tax_category=as_str(request.form.get("tax_category")),
+        effective_date=as_date(request.form.get("effective_date")),
+        expiration_date=as_date(request.form.get("expiration_date")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(tax_rate)
+    safe_commit("Tax rate created successfully.")
+    return redirect(url_for("finance"))
+
+
+# =========================================================
+# INVENTORY ROUTES
+# =========================================================
+
+
+@app.route("/inventory")
+def inventory():
+    categories = InventoryCategory.query.order_by(InventoryCategory.name.asc()).all()
+    warehouse_locations = WarehouseLocation.query.order_by(WarehouseLocation.name.asc()).all()
+    inventory_items = InventoryItem.query.order_by(InventoryItem.created_at.desc()).all()
+    stock_movements = StockMovement.query.order_by(StockMovement.created_at.desc()).limit(100).all()
+    asset_assignments = AssetAssignment.query.order_by(AssetAssignment.created_at.desc()).all()
+    maintenance_logs = MaintenanceLog.query.order_by(MaintenanceLog.created_at.desc()).all()
+
+    inventory_stats = {
+        "categories_count": InventoryCategory.query.count(),
+        "items_count": InventoryItem.query.count(),
+        "stock_movements_count": StockMovement.query.count(),
+        "asset_assignments_count": AssetAssignment.query.count(),
+    }
+
+    return render_with_fallback(
+        "inventory.html",
+        categories=categories,
+        warehouse_locations=warehouse_locations,
+        inventory_items=inventory_items,
+        stock_movements=stock_movements,
+        asset_assignments=asset_assignments,
+        maintenance_logs=maintenance_logs,
+        inventory_stats=inventory_stats,
+    )
+
+
+@app.route("/inventory/add-category", methods=["POST"])
+def add_inventory_category():
+    category = InventoryCategory(
+        name=as_str(request.form.get("name")),
+        description=as_str(request.form.get("description")),
+    )
+    db.session.add(category)
+    safe_commit("Inventory category created successfully.")
+    return redirect(url_for("inventory"))
+
+
+@app.route("/inventory/add-warehouse-location", methods=["POST"])
+def add_warehouse_location():
+    location = WarehouseLocation(
+        name=as_str(request.form.get("name")),
+        code=as_str(request.form.get("code")),
+        address=as_str(request.form.get("address")),
+        city=as_str(request.form.get("city")),
+        country=as_str(request.form.get("country")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(location)
+    safe_commit("Warehouse location created successfully.")
+    return redirect(url_for("inventory"))
+
+
+@app.route("/inventory/add-item", methods=["POST"])
+def add_inventory_item():
+    item = InventoryItem(
+        item_code=as_str(request.form.get("item_code")),
+        name=as_str(request.form.get("name")),
+        description=as_str(request.form.get("description")),
+        category_id=as_int(request.form.get("category_id"), None),
+        warehouse_location_id=as_int(request.form.get("warehouse_location_id"), None),
+        vendor_id=as_int(request.form.get("vendor_id"), None),
+        sku=as_str(request.form.get("sku")),
+        serial_number=as_str(request.form.get("serial_number")),
+        barcode=as_str(request.form.get("barcode")),
+        qr_code=as_str(request.form.get("qr_code")),
+        unit_of_measure=as_str(request.form.get("unit_of_measure"), "Unit"),
+        quantity_on_hand=as_float(request.form.get("quantity_on_hand")),
+        minimum_stock=as_float(request.form.get("minimum_stock")),
+        maximum_stock=as_float(request.form.get("maximum_stock")),
+        reorder_point=as_float(request.form.get("reorder_point")),
+        unit_cost=as_float(request.form.get("unit_cost")),
+        average_cost=as_float(request.form.get("average_cost")),
+        sale_price=as_float(request.form.get("sale_price")),
+        item_type=as_str(request.form.get("item_type"), "Inventory"),
+        status=as_str(request.form.get("status"), "Active"),
+        image_path=as_str(request.form.get("image_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(item)
+    safe_commit("Inventory item created successfully.")
+    return redirect(url_for("inventory"))
+
+
+@app.route("/inventory/add-stock-movement", methods=["POST"])
+def add_stock_movement():
+    movement = StockMovement(
+        inventory_item_id=as_int(request.form.get("inventory_item_id")),
+        movement_type=as_str(request.form.get("movement_type")),
+        quantity=as_float(request.form.get("quantity")),
+        movement_date=as_date(request.form.get("movement_date")) or date.today(),
+        from_location_id=as_int(request.form.get("from_location_id"), None),
+        to_location_id=as_int(request.form.get("to_location_id"), None),
+        reference_type=as_str(request.form.get("reference_type")),
+        reference_id=as_int(request.form.get("reference_id"), None),
+        scanned_code=as_str(request.form.get("scanned_code")),
+        performed_by=as_str(request.form.get("performed_by")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(movement)
+    safe_commit("Stock movement created successfully.")
+    return redirect(url_for("inventory"))
+
+
+@app.route("/inventory/assign-asset", methods=["POST"])
+def assign_asset():
+    assignment = AssetAssignment(
+        employee_id=as_int(request.form.get("employee_id")),
+        inventory_item_id=as_int(request.form.get("inventory_item_id")),
+        assigned_date=as_date(request.form.get("assigned_date")),
+        expected_return_date=as_date(request.form.get("expected_return_date")),
+        actual_return_date=as_date(request.form.get("actual_return_date")),
+        assignment_status=as_str(request.form.get("assignment_status"), "Assigned"),
+        condition_on_issue=as_str(request.form.get("condition_on_issue")),
+        condition_on_return=as_str(request.form.get("condition_on_return")),
+        signed_receipt=as_bool(request.form.get("signed_receipt")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(assignment)
+    safe_commit("Asset assignment created successfully.")
+    return redirect(url_for("inventory"))
+
+
+@app.route("/inventory/add-maintenance-log", methods=["POST"])
+def add_maintenance_log():
+    log = MaintenanceLog(
+        inventory_item_id=as_int(request.form.get("inventory_item_id")),
+        maintenance_type=as_str(request.form.get("maintenance_type")),
+        maintenance_date=as_date(request.form.get("maintenance_date")),
+        provider=as_str(request.form.get("provider")),
+        cost=as_float(request.form.get("cost")),
+        findings=as_str(request.form.get("findings")),
+        next_due_date=as_date(request.form.get("next_due_date")),
+        status=as_str(request.form.get("status"), "Completed"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(log)
+    safe_commit("Maintenance log created successfully.")
+    return redirect(url_for("inventory"))
+
+
+@app.route("/inventory/scan")
+def inventory_scan():
+    inventory_items = InventoryItem.query.order_by(InventoryItem.name.asc()).all()
+    return render_with_fallback("inventory_scan.html", inventory_items=inventory_items)
+
+
+# =========================================================
+# MARKETING ROUTES
+# =========================================================
+
+
+@app.route("/marketing")
+def marketing():
+    campaigns = Campaign.query.order_by(Campaign.created_at.desc()).all()
+    content_assets = ContentAsset.query.order_by(ContentAsset.created_at.desc()).all()
+    lead_conversions = LeadConversion.query.order_by(LeadConversion.created_at.desc()).all()
+
+    marketing_stats = {
+        "campaigns_count": Campaign.query.count(),
+        "content_assets_count": ContentAsset.query.count(),
+        "lead_conversions_count": LeadConversion.query.count(),
+        "campaign_budget_total": db.session.query(func.coalesce(func.sum(Campaign.budget), 0)).scalar() or 0,
+        "campaign_revenue_total": db.session.query(func.coalesce(func.sum(Campaign.revenue_generated), 0)).scalar() or 0,
+    }
+
+    return render_with_fallback(
+        "marketing.html",
+        campaigns=campaigns,
+        content_assets=content_assets,
+        lead_conversions=lead_conversions,
+        marketing_stats=marketing_stats,
+    )
+
+
+@app.route("/marketing/create-campaign", methods=["POST"])
+def create_campaign():
+    campaign = Campaign(
+        campaign_code=as_str(request.form.get("campaign_code")),
+        name=as_str(request.form.get("name")),
+        channel=as_str(request.form.get("channel")),
+        objective=as_str(request.form.get("objective")),
+        target_audience=as_str(request.form.get("target_audience")),
+        start_date=as_date(request.form.get("start_date")),
+        end_date=as_date(request.form.get("end_date")),
+        budget=as_float(request.form.get("budget")),
+        actual_spend=as_float(request.form.get("actual_spend")),
+        impressions=as_int(request.form.get("impressions")),
+        clicks=as_int(request.form.get("clicks")),
+        leads_generated=as_int(request.form.get("leads_generated")),
+        conversions=as_int(request.form.get("conversions")),
+        revenue_generated=as_float(request.form.get("revenue_generated")),
+        roi=as_float(request.form.get("roi")),
+        status=as_str(request.form.get("status"), "Draft"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(campaign)
+    safe_commit("Campaign created successfully.")
+    return redirect(url_for("marketing"))
+
+
+@app.route("/marketing/add-content-asset", methods=["POST"])
+def add_content_asset():
+    asset = ContentAsset(
+        campaign_id=as_int(request.form.get("campaign_id"), None),
+        asset_name=as_str(request.form.get("asset_name")),
+        asset_type=as_str(request.form.get("asset_type")),
+        platform=as_str(request.form.get("platform")),
+        file_path=as_str(request.form.get("file_path")),
+        publish_date=as_date(request.form.get("publish_date")),
+        status=as_str(request.form.get("status"), "Draft"),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(asset)
+    safe_commit("Content asset created successfully.")
+    return redirect(url_for("marketing"))
+
+
+@app.route("/marketing/add-lead-conversion", methods=["POST"])
+def add_lead_conversion():
+    conversion = LeadConversion(
+        lead_id=as_int(request.form.get("lead_id")),
+        campaign_id=as_int(request.form.get("campaign_id"), None),
+        conversion_status=as_str(request.form.get("conversion_status"), "Open"),
+        conversion_date=as_date(request.form.get("conversion_date")),
+        revenue_amount=as_float(request.form.get("revenue_amount")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(conversion)
+    safe_commit("Lead conversion created successfully.")
+    return redirect(url_for("marketing"))
+
+
+# =========================================================
+# REPORTS / ANALYTICS / XIOMY ROUTES
+# =========================================================
+
+
+@app.route("/reports-analytics")
+def reports_analytics():
+    kpi_records = KPIRecord.query.order_by(KPIRecord.created_at.desc()).all()
+    analytics_snapshots = AnalyticsSnapshot.query.order_by(AnalyticsSnapshot.created_at.desc()).all()
+    report_requests = ReportRequest.query.order_by(ReportRequest.created_at.desc()).all()
+    export_logs = ExportLog.query.order_by(ExportLog.created_at.desc()).all()
+    return render_with_fallback(
+        "reports_analytics.html",
+        kpi_records=kpi_records,
+        analytics_snapshots=analytics_snapshots,
+        report_requests=report_requests,
+        export_logs=export_logs,
+    )
+
+
+@app.route("/reports-analytics/add-kpi-record", methods=["POST"])
+def add_kpi_record():
+    kpi = KPIRecord(
+        module=as_str(request.form.get("module")),
+        kpi_name=as_str(request.form.get("kpi_name")),
+        kpi_value=as_float(request.form.get("kpi_value")),
+        kpi_date=as_date(request.form.get("kpi_date")) or date.today(),
+        unit=as_str(request.form.get("unit")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(kpi)
+    safe_commit("KPI record created successfully.")
+    return redirect(url_for("reports_analytics"))
+
+
+@app.route("/reports-analytics/add-analytics-snapshot", methods=["POST"])
+def add_analytics_snapshot():
+    snapshot = AnalyticsSnapshot(
+        module=as_str(request.form.get("module")),
+        snapshot_name=as_str(request.form.get("snapshot_name")),
+        period_label=as_str(request.form.get("period_label")),
+        json_data=as_str(request.form.get("json_data")),
+        summary=as_str(request.form.get("summary")),
+    )
+    db.session.add(snapshot)
+    safe_commit("Analytics snapshot created successfully.")
+    return redirect(url_for("reports_analytics"))
+
+
+@app.route("/reports-analytics/add-report-request", methods=["POST"])
+def add_report_request():
+    report_request = ReportRequest(
+        module=as_str(request.form.get("module")),
+        report_name=as_str(request.form.get("report_name")),
+        filters_json=as_str(request.form.get("filters_json")),
+        requested_by=as_str(request.form.get("requested_by")),
+        status=as_str(request.form.get("status"), "Pending"),
+        generated_file_path=as_str(request.form.get("generated_file_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(report_request)
+    safe_commit("Report request created successfully.")
+    return redirect(url_for("reports_analytics"))
+
+
+@app.route("/reports-analytics/add-export-log", methods=["POST"])
+def add_export_log():
+    export_log = ExportLog(
+        module=as_str(request.form.get("module")),
+        export_type=as_str(request.form.get("export_type")),
+        record_count=as_int(request.form.get("record_count")),
+        generated_by=as_str(request.form.get("generated_by")),
+        file_path=as_str(request.form.get("file_path")),
+        notes=as_str(request.form.get("notes")),
+    )
+    db.session.add(export_log)
+    safe_commit("Export log created successfully.")
+    return redirect(url_for("reports_analytics"))
+
+
+@app.route("/xiomy-page")
+def xiomy_page():
+    dashboard_stats = {
+        "clients": Client.query.count(),
+        "employees": Employee.query.count(),
+        "candidates": Candidate.query.count(),
+        "incidents": Incident.query.count(),
+        "inventory_items": InventoryItem.query.count(),
+        "invoices": Invoice.query.count(),
+        "campaigns": Campaign.query.count(),
+    }
+    return render_with_fallback("xiomy.html", dashboard_stats=dashboard_stats)
+
+
+# =========================================================
+# ERROR HANDLERS
+# =========================================================
+
+
+@app.errorhandler(404)
+def not_found(error):  # noqa: ARG001
+    return render_with_fallback("404.html"), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):  # noqa: ARG001
+    db.session.rollback()
+    return render_with_fallback("500.html"), 500
+
 
 # =========================================================
 # LOCAL RUN
 # =========================================================
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=True)

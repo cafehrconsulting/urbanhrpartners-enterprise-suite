@@ -1,517 +1,966 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}ATS | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}ATS Command Center{% endblock %}
+{% block page_title %}ATS Command Center{% endblock %}
+{% block page_subtitle %}Manage requisitions, candidates, resumes, interviews, offers, and professional resume optimization from one integrated recruiting workspace.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .ats-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .ats-banner,
+    .ats-summary {
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
+        border: 1px solid rgba(11,31,58,0.08);
+    }
+
+    .ats-banner {
+        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 56%, rgba(212,175,55,0.88) 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ats-banner::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
+    }
+
+    .ats-banner h2 {
+        margin: 0 0 10px;
+        font-size: 1.9rem;
+        color: #fff8e6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ats-banner p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+    }
+
+    .ats-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ats-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 800;
+        color: #fffdf5;
+    }
+
+    .ats-summary {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
+    }
+
+    .ats-summary h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+    }
+
+    .summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.06);
+    }
+
+    .summary-item strong { color: #0b1f3a; }
+    .summary-pill {
+        min-width: 64px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 14px;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
+        border: 1px solid rgba(212,175,55,0.26);
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
+    }
+
+    .kpi-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5e6d85;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .kpi-card .value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .kpi-card .note {
+        color: #6b7a91;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .ats-layout {
+        display: grid;
+        grid-template-columns: 430px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-stack,
+    .data-stack {
+        display: grid;
+        gap: 22px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.97);
+        border-radius: 24px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
+        padding: 22px;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1.14rem;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #61718a;
+        line-height: 1.45;
+        font-size: 0.94rem;
+    }
+
+    .section-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
+        border: 1px solid rgba(212,175,55,0.24);
+    }
+
+    .enterprise-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field,
+    .field-full {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field-full {
+        grid-column: 1 / -1;
+    }
+
+    .enterprise-form label {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .enterprise-form input,
+    .enterprise-form select,
+    .enterprise-form textarea {
+        width: 100%;
+        border: 1px solid rgba(11,31,58,0.12);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        color: #132238;
+        background: #fff;
+        outline: none;
+    }
+
+    .enterprise-form textarea {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 800;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
+        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(11,31,58,0.07);
+    }
+
+    .ats-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 780px;
+        background: #fff;
+    }
+
+    .ats-table th,
+    .ats-table td {
+        padding: 13px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(11,31,58,0.07);
+        vertical-align: top;
+    }
+
+    .ats-table th {
+        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
+        color: #0b1f3a;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .ats-table td {
+        font-size: 0.95rem;
+        color: #334155;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        border: 1px solid rgba(11,31,58,0.08);
+        background: rgba(11,31,58,0.05);
+        color: #0b1f3a;
+    }
+
+    .status-active,
+    .status-open,
+    .status-completed,
+    .status-applied,
+    .status-posted,
+    .status-scheduled {
+        background: rgba(6,118,71,0.12);
+        color: #067647;
+        border-color: rgba(6,118,71,0.18);
+    }
+
+    .status-pending,
+    .status-draft,
+    .status-interview,
+    .status-offer,
+    .status-screening {
+        background: rgba(181,71,8,0.12);
+        color: #b54708;
+        border-color: rgba(181,71,8,0.18);
+    }
+
+    .status-closed,
+    .status-inactive,
+    .status-rejected,
+    .status-declined {
+        background: rgba(100,116,139,0.12);
+        color: #475569;
+        border-color: rgba(100,116,139,0.18);
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 20px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
+        border: 1px dashed rgba(11,31,58,0.12);
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-link {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.08);
+        color: #0b1f3a;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1320px) {
+        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .ats-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+        .ats-hero,
+        .kpi-grid,
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% macro status_chip(value) -%}
+    {% set raw = (value or 'N/A') %}
+    {% set normalized = raw|string|lower|replace(' ', '-') %}
+    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
+{%- endmacro %}
 
 {% block content %}
-<div class="page-grid">
-
-    <!-- =====================================================
-         SAFE RENDER VARIABLES
-    ====================================================== -->
-    {% set ats_data = ats_stats if ats_stats is defined and ats_stats else {} %}
-    {% set ats_candidates = candidates if candidates is defined and candidates else [] %}
-    {% set ats_orientation_items = orientation_items if orientation_items is defined and orientation_items else [] %}
-
-    <!-- =====================================================
-         ATS HERO
-    ====================================================== -->
-    <section class="hero-panel">
-        <div class="hero-left">
-            <span class="hero-badge">Applicant Tracking & Talent Pipeline Engine</span>
-            <h1 class="hero-title">ATS Command Center</h1>
-            <p class="hero-text">
-                Premium recruitment and candidate pipeline management environment for vacancy flow,
-                hiring visibility, candidate progression, interview readiness, onboarding transition,
-                and talent acquisition intelligence across the UrbanHRPartners Enterprise Suite.
-            </p>
-
-            <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="#vacancy-center">Create Candidate Record</a>
-                <a class="btn btn-secondary btn-lg" href="#pipeline-center">Review Pipeline</a>
-                <a class="btn btn-ghost btn-lg" href="#orientation-readiness">Orientation Readiness</a>
-            </div>
-
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Candidates</button>
-                    <button class="tab-button" type="button">Pipeline</button>
-                    <button class="tab-button" type="button">Interviews</button>
-                    <button class="tab-button" type="button">Onboarding</button>
-                    <button class="tab-button" type="button">Readiness</button>
-                </div>
-            </div>
+<section class="ats-hero">
+    <div class="ats-banner">
+        <h2>Recruiting pipeline, resume intelligence, and offer control</h2>
+        <p>
+            This ATS workspace centralizes requisition management, candidate tracking, resume storage,
+            interview scheduling, offer generation, and professional resume optimization services.
+        </p>
+        <div class="ats-chip-row">
+            <span class="ats-chip">Job requisitions</span>
+            <span class="ats-chip">Candidate pipeline</span>
+            <span class="ats-chip">Resume records</span>
+            <span class="ats-chip">Interviews</span>
+            <span class="ats-chip">Resume optimization</span>
         </div>
+    </div>
 
-        <div class="hero-right">
-            <div class="hero-status-card">
-                <h3 class="section-title">ATS Executive Snapshot</h3>
-                <p class="section-subtitle">
-                    Organized visibility into talent acquisition and candidate progression.
-                </p>
-
-                <ul class="status-list mt-3">
-                    <li><strong>Pipeline Focus:</strong> candidate flow and hiring continuity</li>
-                    <li><strong>Operational Linkage:</strong> ATS to Orientation to HRIS transition</li>
-                    <li><strong>Hiring Readiness:</strong> structured onboarding preparation</li>
-                    <li><strong>Strategic Direction:</strong> future XIOMY recruiting intelligence</li>
-                </ul>
-
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('orientation') }}">Orientation</a>
-                    <a class="btn btn-secondary" href="{{ url_for('hris') }}">HRIS</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         ATS SUMMARY CARDS
-    ====================================================== -->
-    <section class="summary-grid">
-        <div class="summary-card">
-            <h3>Total Candidates</h3>
-            <p>
-                {% if ats_data.total_candidates is defined %}
-                    {{ ats_data.total_candidates }}
-                {% else %}
-                    {{ ats_candidates|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Current ATS candidate records</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Interview Stage</h3>
-            <p>
-                {% if ats_data.interview_stage is defined %}
-                    {{ ats_data.interview_stage }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Candidates currently in interview progression</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Offers / Advanced Stage</h3>
-            <p>
-                {% if ats_data.offers is defined %}
-                    {{ ats_data.offers }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Candidates approaching hiring conversion</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Onboarding Ready</h3>
-            <p>
-                {% if ats_data.onboarding_ready is defined %}
-                    {{ ats_data.onboarding_ready }}
-                {% else %}
-                    {{ ats_orientation_items|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Readiness bridge toward Orientation</span>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         EXECUTIVE WORKSPACE
-    ====================================================== -->
-    <section class="two-column-grid">
-        <div class="panel-card">
-            <h3>ATS Executive Purpose</h3>
-            <p class="section-subtitle">
-                This module is designed to function as the talent acquisition and hiring
-                pipeline command center of the platform.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Candidate Lifecycle Management</div>
-                    <div class="activity-item-meta">
-                        Manage applicants from first contact through review, selection,
-                        interviews, offer progression, and onboarding readiness.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Recruiting Visibility</div>
-                    <div class="activity-item-meta">
-                        Keep hiring organized with structured talent records, stage tracking,
-                        and better coordination between recruiter action and onboarding flow.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Enterprise Integration</div>
-                    <div class="activity-item-meta">
-                        Connect candidate flow with Orientation, HRIS, documentation readiness,
-                        equipment assignment, and future analytics.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <h3>Hiring Priority Queue</h3>
-            <p class="section-subtitle">
-                Leadership-focused reminders for stable recruiting execution and onboarding continuity.
-            </p>
-
-            <ul class="clean-list mt-4">
-                <li>Prevent pipeline stagnation by moving candidates through clear stages.</li>
-                <li>Reduce ATS bottlenecks and maintain recruiter discipline.</li>
-                <li>Prepare selected candidates for Orientation transition.</li>
-                <li>Keep talent records consistent and deploy-ready across the suite.</li>
-                <li>Prepare the ATS foundation for XIOMY hiring trend analysis.</li>
-            </ul>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="#pipeline-center">Open Pipeline</a>
-                <a class="btn btn-secondary" href="#orientation-readiness">Review Readiness</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         CANDIDATE REGISTRATION CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="vacancy-center">
-            <div class="module-header">
-                <h1>Candidate Registration Center</h1>
-                <p>
-                    Create candidate records with structured recruiting information and
-                    deploy-ready pipeline consistency.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Candidate Record</button>
-                <button class="tab-button" type="button">Application Profile</button>
-                <button class="tab-button" type="button">Recruiter Notes</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_candidate') }}" class="crm-form" enctype="multipart/form-data">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="candidate_first_name">First Name</label>
-                            <input type="text" id="candidate_first_name" name="first_name" placeholder="Candidate first name">
-                        </div>
-
-                        <div>
-                            <label for="candidate_last_name">Last Name</label>
-                            <input type="text" id="candidate_last_name" name="last_name" placeholder="Candidate last name">
-                        </div>
-
-                        <div>
-                            <label for="candidate_full_name">Full Name</label>
-                            <input type="text" id="candidate_full_name" name="full_name" placeholder="Full candidate name">
-                        </div>
-
-                        <div>
-                            <label for="candidate_email">Email</label>
-                            <input type="email" id="candidate_email" name="email" placeholder="candidate@email.com">
-                        </div>
-
-                        <div>
-                            <label for="candidate_phone">Phone</label>
-                            <input type="text" id="candidate_phone" name="phone" placeholder="Phone number">
-                        </div>
-
-                        <div>
-                            <label for="candidate_position_applied">Position Applied</label>
-                            <input type="text" id="candidate_position_applied" name="position_applied" placeholder="Position title">
-                        </div>
-
-                        <div>
-                            <label for="candidate_stage">Stage</label>
-                            <select id="candidate_stage" name="stage">
-                                <option value="Applied">Applied</option>
-                                <option value="Screening">Screening</option>
-                                <option value="Interview">Interview</option>
-                                <option value="Offer">Offer</option>
-                                <option value="Orientation">Orientation</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="candidate_status">Status</label>
-                            <select id="candidate_status" name="status">
-                                <option value="New">New</option>
-                                <option value="Active">Active</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Selected">Selected</option>
-                                <option value="Rejected">Rejected</option>
-                            </select>
-                        </div>
-
-                        <div class="full-width">
-                            <label for="candidate_resume">Resume</label>
-                            <input type="file" id="candidate_resume" name="resume">
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="candidate_notes">Recruiter Notes</label>
-                        <textarea id="candidate_notes" name="notes" placeholder="Candidate observations, strengths, concerns, interview notes, and recruiting comments."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Candidate Record</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="panel-card" id="pipeline-center">
-            <div class="module-header">
-                <h1>Pipeline Control Center</h1>
-                <p>
-                    Maintain structured visibility of candidate stages, readiness, and movement
-                    toward onboarding and workforce integration.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Pipeline Notes</button>
-                <button class="tab-button" type="button">Interviews</button>
-                <button class="tab-button" type="button">Selection</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <div class="activity-feed">
-                    <div class="activity-item">
-                        <div class="activity-item-title">Stage Control</div>
-                        <div class="activity-item-meta">
-                            Applied, Screening, Interview, Offer, and Orientation should be
-                            tracked with operational discipline and no lost candidates.
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-item-title">Recruiting Consistency</div>
-                        <div class="activity-item-meta">
-                            Keep records complete, maintain notes, and preserve executive visibility
-                            into hiring movement and bottlenecks.
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-item-title">Enterprise Transition</div>
-                        <div class="activity-item-meta">
-                            Selected candidates should flow into Orientation and then HRIS without
-                            data loss or disconnected onboarding steps.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="#candidate-table">Review Candidates</a>
-                    <a class="btn btn-secondary" href="{{ url_for('orientation') }}">Open Orientation</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         CANDIDATE TABLE
-    ====================================================== -->
-    <section class="table-shell" id="candidate-table">
-        <div class="table-toolbar">
+    <div class="ats-summary">
+        <div class="panel-head">
             <div>
-                <h3 class="section-title">Candidate Pipeline</h3>
-                <p class="section-subtitle">Current recruiting records and hiring visibility.</p>
+                <h3>Recruiting summary</h3>
+                <p>Immediate visibility into active openings, candidate flow, and document volume.</p>
             </div>
-
-            <div class="action-row">
-                <a class="btn btn-primary btn-sm" href="#vacancy-center">New Candidate</a>
-                <a class="btn btn-secondary btn-sm" href="{{ url_for('orientation') }}">Orientation</a>
-            </div>
+            <span class="section-badge">ATS Live</span>
         </div>
-
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Candidate</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Position</th>
-                        <th>Stage</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if ats_candidates %}
-                        {% for candidate in ats_candidates %}
-                        <tr>
-                            <td>
-                                {% if candidate.full_name is defined and candidate.full_name %}
-                                    {{ candidate.full_name }}
-                                {% elif candidate.first_name is defined and candidate.last_name is defined %}
-                                    {{ candidate.first_name }} {{ candidate.last_name }}
-                                {% else %}
-                                    Candidate #{{ candidate.id if candidate.id is defined else 'N/A' }}
-                                {% endif %}
-                            </td>
-                            <td>{{ candidate.email if candidate.email is defined and candidate.email else 'N/A' }}</td>
-                            <td>{{ candidate.phone if candidate.phone is defined and candidate.phone else 'N/A' }}</td>
-                            <td>{{ candidate.position_applied if candidate.position_applied is defined and candidate.position_applied else 'N/A' }}</td>
-                            <td>
-                                {% set stage_value = candidate.stage if candidate.stage is defined and candidate.stage else 'Applied' %}
-                                {% if stage_value in ['Offer', 'Orientation'] %}
-                                    <span class="badge badge-success">{{ stage_value }}</span>
-                                {% elif stage_value in ['Interview', 'Screening'] %}
-                                    <span class="badge badge-info">{{ stage_value }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ stage_value }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% set status_value = candidate.status if candidate.status is defined and candidate.status else 'New' %}
-                                {% if status_value in ['Selected', 'Active'] %}
-                                    <span class="badge badge-success">{{ status_value }}</span>
-                                {% elif status_value in ['Pending', 'New'] %}
-                                    <span class="badge badge-info">{{ status_value }}</span>
-                                {% elif status_value in ['Rejected'] %}
-                                    <span class="badge badge-warning">{{ status_value }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ status_value }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if candidate.id is defined and candidate.id %}
-                                <form method="POST" action="{{ url_for('promote_candidate_to_orientation', candidate_id=candidate.id) }}">
-                                    <button class="btn btn-primary btn-sm" type="submit">Promote</button>
-                                </form>
-                                {% else %}
-                                    <span class="badge badge-neutral">N/A</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="7">No candidates registered yet.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+        <div class="summary-list">
+            <div class="summary-item"><strong>Job Openings</strong><span class="summary-pill">{{ ats_stats.job_openings_count }}</span></div>
+            <div class="summary-item"><strong>Candidates</strong><span class="summary-pill">{{ ats_stats.candidates_count }}</span></div>
+            <div class="summary-item"><strong>Resumes</strong><span class="summary-pill">{{ ats_stats.resumes_count }}</span></div>
+            <div class="summary-item"><strong>Interviews</strong><span class="summary-pill">{{ ats_stats.interviews_count }}</span></div>
+            <div class="summary-item"><strong>Offers</strong><span class="summary-pill">{{ ats_stats.offers_count }}</span></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- =====================================================
-         ORIENTATION READINESS
-    ====================================================== -->
-    <section class="two-column-grid" id="orientation-readiness">
+<section class="kpi-grid">
+    <article class="kpi-card">
+        <div class="label">Openings</div>
+        <div class="value">{{ ats_stats.job_openings_count }}</div>
+        <div class="note">Active requisitions registered in the recruiting engine.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Candidates</div>
+        <div class="value">{{ ats_stats.candidates_count }}</div>
+        <div class="note">Candidate profiles currently moving through the pipeline.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Resumes</div>
+        <div class="value">{{ ats_stats.resumes_count }}</div>
+        <div class="note">Resume records stored for evaluation and optimization.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Interviews</div>
+        <div class="value">{{ ats_stats.interviews_count }}</div>
+        <div class="note">Scheduled or completed interview events in the suite.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Optimization</div>
+        <div class="value">{{ resume_services|length }}</div>
+        <div class="note">Professional resume writing and ATS optimization engagements.</div>
+    </article>
+</section>
 
-        <div class="table-shell">
-            <div class="table-toolbar">
+<section class="ats-layout">
+    <div class="form-stack">
+        <div class="panel" id="job-opening-form">
+            <div class="panel-head">
                 <div>
-                    <h3 class="section-title">Orientation Readiness Records</h3>
-                    <p class="section-subtitle">Candidates and onboarding bridge items prepared for transition.</p>
+                    <h3>Create job opening</h3>
+                    <p>Build the requisition structure for targeted recruiting and pipeline tracking.</p>
                 </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="{{ url_for('orientation') }}">Open Orientation</a>
-                </div>
+                <span class="section-badge">Requisition</span>
             </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_job_opening') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="requisition_number">Requisition Number</label><input id="requisition_number" name="requisition_number" type="text" required /></div>
+                    <div class="field"><label for="job_title">Title</label><input id="job_title" name="title" type="text" required /></div>
+                    <div class="field"><label for="department_id">Department ID</label><input id="department_id" name="department_id" type="number" /></div>
+                    <div class="field"><label for="hiring_manager">Hiring Manager</label><input id="hiring_manager" name="hiring_manager" type="text" /></div>
+                    <div class="field"><label for="location">Location</label><input id="location" name="location" type="text" /></div>
+                    <div class="field"><label for="employment_type">Employment Type</label><input id="employment_type" name="employment_type" type="text" /></div>
+                    <div class="field"><label for="salary_min">Salary Min</label><input id="salary_min" name="salary_min" type="number" step="0.01" /></div>
+                    <div class="field"><label for="salary_max">Salary Max</label><input id="salary_max" name="salary_max" type="number" step="0.01" /></div>
+                    <div class="field"><label for="currency">Currency</label><input id="currency" name="currency" type="text" value="USD" /></div>
+                    <div class="field"><label for="openings_count">Openings Count</label><input id="openings_count" name="openings_count" type="number" value="1" /></div>
+                    <div class="field"><label for="posting_date">Posting Date</label><input id="posting_date" name="posting_date" type="date" /></div>
+                    <div class="field"><label for="closing_date">Closing Date</label><input id="closing_date" name="closing_date" type="date" /></div>
+                    <div class="field"><label for="source_channel">Source Channel</label><input id="source_channel" name="source_channel" type="text" /></div>
+                    <div class="field"><label for="job_status">Status</label><input id="job_status" name="status" type="text" value="Open" /></div>
+                    <div class="field-full"><label for="job_description">Description</label><textarea id="job_description" name="description"></textarea></div>
+                    <div class="field-full"><label for="requirements">Requirements</label><textarea id="requirements" name="requirements"></textarea></div>
+                    <div class="field-full"><label for="job_notes">Notes</label><textarea id="job_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Job Opening</button>
+                    <a class="btn-secondary" href="#job-openings-table">Review Openings</a>
+                </div>
+            </form>
+        </div>
 
-            <div class="data-table-wrapper">
-                <table class="data-table">
+        <div class="panel" id="candidate-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create candidate</h3>
+                    <p>Register the candidate profile, recruiting source, stage, and compensation expectations.</p>
+                </div>
+                <span class="section-badge">Candidate</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_candidate') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="candidate_job_opening_id">Job Opening</label>
+                        <select id="candidate_job_opening_id" name="job_opening_id">
+                            <option value="">Select opening</option>
+                            {% for job in job_openings %}
+                            <option value="{{ job.id }}">{{ job.title }} · {{ job.requisition_number }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="candidate_code">Candidate Code</label><input id="candidate_code" name="candidate_code" type="text" /></div>
+                    <div class="field"><label for="first_name">First Name</label><input id="first_name" name="first_name" type="text" required /></div>
+                    <div class="field"><label for="middle_name">Middle Name</label><input id="middle_name" name="middle_name" type="text" /></div>
+                    <div class="field"><label for="last_name">Last Name</label><input id="last_name" name="last_name" type="text" required /></div>
+                    <div class="field"><label for="candidate_email">Email</label><input id="candidate_email" name="email" type="email" required /></div>
+                    <div class="field"><label for="candidate_phone">Phone</label><input id="candidate_phone" name="phone" type="text" /></div>
+                    <div class="field"><label for="candidate_city">City</label><input id="candidate_city" name="city" type="text" /></div>
+                    <div class="field"><label for="candidate_state">State</label><input id="candidate_state" name="state" type="text" /></div>
+                    <div class="field"><label for="candidate_country">Country</label><input id="candidate_country" name="country" type="text" /></div>
+                    <div class="field"><label for="linkedin_url">LinkedIn URL</label><input id="linkedin_url" name="linkedin_url" type="url" /></div>
+                    <div class="field"><label for="portfolio_url">Portfolio URL</label><input id="portfolio_url" name="portfolio_url" type="url" /></div>
+                    <div class="field"><label for="source">Source</label><input id="source" name="source" type="text" /></div>
+                    <div class="field"><label for="candidate_stage">Stage</label><input id="candidate_stage" name="stage" type="text" value="Applied" /></div>
+                    <div class="field"><label for="candidate_status">Status</label><input id="candidate_status" name="status" type="text" value="Active" /></div>
+                    <div class="field"><label for="years_experience">Years Experience</label><input id="years_experience" name="years_experience" type="number" step="0.01" /></div>
+                    <div class="field"><label for="desired_salary">Desired Salary</label><input id="desired_salary" name="desired_salary" type="number" step="0.01" /></div>
+                    <div class="field"><label for="available_start_date">Available Start Date</label><input id="available_start_date" name="available_start_date" type="date" /></div>
+                    <div class="field"><label for="recruiter_name">Recruiter Name</label><input id="recruiter_name" name="recruiter_name" type="text" /></div>
+                    <div class="field"><label><input name="federal_resume_mode" type="checkbox" /> Federal Resume Mode</label></div>
+                    <div class="field-full"><label for="candidate_notes">Notes</label><textarea id="candidate_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Candidate</button>
+                    <a class="btn-secondary" href="#candidates-table">Review Candidates</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="resume-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create resume record</h3>
+                    <p>Store parsed resume content, ATS scoring, and matching information.</p>
+                </div>
+                <span class="section-badge">Resume</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_resume') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="resume_candidate_id">Candidate</label>
+                        <select id="resume_candidate_id" name="candidate_id" required>
+                            <option value="">Select candidate</option>
+                            {% for candidate in candidates %}
+                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="file_name">File Name</label><input id="file_name" name="file_name" type="text" required /></div>
+                    <div class="field-full"><label for="file_path">File Path</label><input id="file_path" name="file_path" type="text" required /></div>
+                    <div class="field-full"><label for="parsed_text">Parsed Text</label><textarea id="parsed_text" name="parsed_text"></textarea></div>
+                    <div class="field-full"><label for="skills">Skills</label><textarea id="skills" name="skills"></textarea></div>
+                    <div class="field-full"><label for="experience_summary">Experience Summary</label><textarea id="experience_summary" name="experience_summary"></textarea></div>
+                    <div class="field-full"><label for="education_summary">Education Summary</label><textarea id="education_summary" name="education_summary"></textarea></div>
+                    <div class="field"><label for="ats_score">ATS Score</label><input id="ats_score" name="ats_score" type="number" step="0.01" /></div>
+                    <div class="field"><label for="keyword_match_score">Keyword Match Score</label><input id="keyword_match_score" name="keyword_match_score" type="number" step="0.01" /></div>
+                    <div class="field"><label for="version_label">Version Label</label><input id="version_label" name="version_label" type="text" /></div>
+                    <div class="field"><label><input name="is_primary" type="checkbox" checked /> Primary Resume</label></div>
+                    <div class="field-full"><label for="resume_notes">Notes</label><textarea id="resume_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Resume Record</button>
+                    <a class="btn-secondary" href="#resumes-table">Review Resumes</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="interview-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create interview</h3>
+                    <p>Schedule interview events with round, interviewer, result tracking, and score.</p>
+                </div>
+                <span class="section-badge">Interview</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_interview') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="interview_candidate_id">Candidate</label>
+                        <select id="interview_candidate_id" name="candidate_id" required>
+                            <option value="">Select candidate</option>
+                            {% for candidate in candidates %}
+                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="interview_job_opening_id">Job Opening</label>
+                        <select id="interview_job_opening_id" name="job_opening_id" required>
+                            <option value="">Select opening</option>
+                            {% for job in job_openings %}
+                            <option value="{{ job.id }}">{{ job.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="interview_type">Interview Type</label><input id="interview_type" name="interview_type" type="text" /></div>
+                    <div class="field"><label for="interview_round">Round</label><input id="interview_round" name="interview_round" type="text" /></div>
+                    <div class="field"><label for="scheduled_at">Scheduled At</label><input id="scheduled_at" name="scheduled_at" type="datetime-local" /></div>
+                    <div class="field"><label for="interviewer_name">Interviewer</label><input id="interviewer_name" name="interviewer_name" type="text" /></div>
+                    <div class="field-full"><label for="location_or_link">Location or Link</label><input id="location_or_link" name="location_or_link" type="text" /></div>
+                    <div class="field"><label for="interview_status">Status</label><input id="interview_status" name="status" type="text" value="Scheduled" /></div>
+                    <div class="field"><label for="interview_score">Score</label><input id="interview_score" name="score" type="number" step="0.01" /></div>
+                    <div class="field-full"><label for="feedback">Feedback</label><textarea id="feedback" name="feedback"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Interview</button>
+                    <a class="btn-secondary" href="#interviews-table">Review Interviews</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="offer-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create offer letter</h3>
+                    <p>Formalize compensation offers, proposed start dates, and acceptance status.</p>
+                </div>
+                <span class="section-badge">Offer</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_offer_letter') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="offer_candidate_id">Candidate</label>
+                        <select id="offer_candidate_id" name="candidate_id" required>
+                            <option value="">Select candidate</option>
+                            {% for candidate in candidates %}
+                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="offer_job_opening_id">Job Opening</label>
+                        <select id="offer_job_opening_id" name="job_opening_id" required>
+                            <option value="">Select opening</option>
+                            {% for job in job_openings %}
+                            <option value="{{ job.id }}">{{ job.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="offer_date">Offer Date</label><input id="offer_date" name="offer_date" type="date" /></div>
+                    <div class="field"><label for="proposed_start_date">Proposed Start Date</label><input id="proposed_start_date" name="proposed_start_date" type="date" /></div>
+                    <div class="field"><label for="salary_offer">Salary Offer</label><input id="salary_offer" name="salary_offer" type="number" step="0.01" /></div>
+                    <div class="field"><label for="offer_currency">Currency</label><input id="offer_currency" name="currency" type="text" value="USD" /></div>
+                    <div class="field"><label for="offer_employment_type">Employment Type</label><input id="offer_employment_type" name="employment_type" type="text" /></div>
+                    <div class="field"><label for="offer_status">Status</label><input id="offer_status" name="status" type="text" value="Draft" /></div>
+                    <div class="field-full"><label for="letter_path">Letter Path</label><input id="letter_path" name="letter_path" type="text" /></div>
+                    <div class="field-full"><label for="offer_notes">Notes</label><textarea id="offer_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Offer</button>
+                    <a class="btn-secondary" href="#offers-table">Review Offers</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="optimization-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create resume optimization record</h3>
+                    <p>Track professional resume writing, ATS alignment, and federal resume improvement.</p>
+                </div>
+                <span class="section-badge">Optimization</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_resume_optimization') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="optimization_candidate_id">Candidate</label>
+                        <select id="optimization_candidate_id" name="candidate_id" required>
+                            <option value="">Select candidate</option>
+                            {% for candidate in candidates %}
+                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="target_role">Target Role</label><input id="target_role" name="target_role" type="text" /></div>
+                    <div class="field"><label for="target_industry">Target Industry</label><input id="target_industry" name="target_industry" type="text" /></div>
+                    <div class="field"><label for="optimization_type">Optimization Type</label><input id="optimization_type" name="optimization_type" type="text" placeholder="ATS / Federal / Executive" /></div>
+                    <div class="field"><label for="ats_score_before">ATS Score Before</label><input id="ats_score_before" name="ats_score_before" type="number" step="0.01" /></div>
+                    <div class="field"><label for="ats_score_after">ATS Score After</label><input id="ats_score_after" name="ats_score_after" type="number" step="0.01" /></div>
+                    <div class="field"><label for="match_score">Match Score</label><input id="match_score" name="match_score" type="number" step="0.01" /></div>
+                    <div class="field-full"><label for="original_resume_path">Original Resume Path</label><input id="original_resume_path" name="original_resume_path" type="text" /></div>
+                    <div class="field-full"><label for="optimized_resume_path">Optimized Resume Path</label><input id="optimized_resume_path" name="optimized_resume_path" type="text" /></div>
+                    <div class="field-full"><label for="job_description_text">Job Description Text</label><textarea id="job_description_text" name="job_description_text"></textarea></div>
+                    <div class="field-full"><label for="recommendations">Recommendations</label><textarea id="recommendations" name="recommendations"></textarea></div>
+                    <div class="field-full"><label for="optimization_notes">Notes</label><textarea id="optimization_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Optimization Record</button>
+                    <a class="btn-secondary" href="#optimization-table">Review Optimization</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="data-stack">
+        <div class="panel">
+            <div class="tabs">
+                <a class="tab-link" href="#job-openings-table">Openings</a>
+                <a class="tab-link" href="#candidates-table">Candidates</a>
+                <a class="tab-link" href="#resumes-table">Resumes</a>
+                <a class="tab-link" href="#interviews-table">Interviews</a>
+                <a class="tab-link" href="#offers-table">Offers</a>
+                <a class="tab-link" href="#optimization-table">Optimization</a>
+            </div>
+        </div>
+
+        <div class="panel" id="job-openings-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Job openings</h3>
+                    <p>Active requisitions, compensation ranges, and posting status.</p>
+                </div>
+                <span class="section-badge">{{ job_openings|length }} records</span>
+            </div>
+            {% if job_openings %}
+            <div class="table-wrap">
+                <table class="ats-table">
                     <thead>
                         <tr>
-                            <th>Record</th>
-                            <th>Candidate / Employee</th>
+                            <th>Opening</th>
                             <th>Status</th>
-                            <th>Due Date</th>
+                            <th>Location</th>
+                            <th>Hiring Manager</th>
+                            <th>Salary Range</th>
+                            <th>Closing Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if ats_orientation_items %}
-                            {% for item in ats_orientation_items %}
-                            <tr>
-                                <td>
-                                    {% if item.title is defined and item.title %}
-                                        {{ item.title }}
-                                    {% else %}
-                                        Orientation Item #{{ item.id if item.id is defined else 'N/A' }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if item.employee_name is defined and item.employee_name %}
-                                        {{ item.employee_name }}
-                                    {% else %}
-                                        Candidate #{{ item.candidate_id if item.candidate_id is defined else 'N/A' }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% set item_status = item.status if item.status is defined and item.status else 'Pending' %}
-                                    {% if item_status in ['Completed'] %}
-                                        <span class="badge badge-success">{{ item_status }}</span>
-                                    {% elif item_status in ['Pending', 'In Progress'] %}
-                                        <span class="badge badge-info">{{ item_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ item_status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ item.due_date if item.due_date is defined and item.due_date else 'N/A' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No orientation readiness records available.</td>
-                            </tr>
-                        {% endif %}
+                        {% for job in job_openings %}
+                        <tr>
+                            <td><strong>{{ job.title }}</strong><br /><span>{{ job.requisition_number }}</span></td>
+                            <td>{{ status_chip(job.status) }}</td>
+                            <td>{{ job.location or 'N/A' }}</td>
+                            <td>{{ job.hiring_manager or 'N/A' }}</td>
+                            <td>{{ "{:,.2f}".format(job.salary_min or 0) }} - {{ "{:,.2f}".format(job.salary_max or 0) }}</td>
+                            <td>{{ job.closing_date.strftime('%Y-%m-%d') if job.closing_date else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}<div class="empty-state">No job openings available yet.</div>{% endif %}
         </div>
 
-        <div class="panel-card">
-            <h3>ATS Strategic Direction</h3>
-            <p class="section-subtitle">
-                Enterprise recruiting should remain organized, scalable, and connected to downstream modules.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Pipeline Discipline</div>
-                    <div class="activity-item-meta">
-                        Maintain candidate movement across stages without losing records or recruiter context.
-                    </div>
+        <div class="panel" id="candidates-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Candidates</h3>
+                    <p>Recruiting pipeline records with source, stage, and compensation intent.</p>
                 </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Onboarding Bridge</div>
-                    <div class="activity-item-meta">
-                        Use Orientation readiness records to move selected candidates into structured onboarding.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Future XIOMY Recruiting Intelligence</div>
-                    <div class="activity-item-meta">
-                        XIOMY will eventually analyze talent trends, hiring bottlenecks, and candidate readiness patterns.
-                    </div>
-                </div>
+                <span class="section-badge">{{ candidates|length }} records</span>
             </div>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+            {% if candidates %}
+            <div class="table-wrap">
+                <table class="ats-table">
+                    <thead>
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Stage</th>
+                            <th>Status</th>
+                            <th>Source</th>
+                            <th>Desired Salary</th>
+                            <th>Federal Mode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidate in candidates %}
+                        <tr>
+                            <td><strong>{{ candidate.full_name }}</strong><br /><span>{{ candidate.candidate_code or 'No code' }}</span></td>
+                            <td>{{ status_chip(candidate.stage) }}</td>
+                            <td>{{ status_chip(candidate.status) }}</td>
+                            <td>{{ candidate.source or 'N/A' }}</td>
+                            <td>{{ "{:,.2f}".format(candidate.desired_salary or 0) }}</td>
+                            <td>{{ status_chip('Yes' if candidate.federal_resume_mode else 'No') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+            {% else %}<div class="empty-state">No candidates available yet.</div>{% endif %}
         </div>
-    </section>
 
-</div>
+        <div class="panel" id="resumes-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Resumes</h3>
+                    <p>Stored resume records with ATS metrics and matching detail.</p>
+                </div>
+                <span class="section-badge">{{ resumes|length }} records</span>
+            </div>
+            {% if resumes %}
+            <div class="table-wrap">
+                <table class="ats-table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Candidate ID</th>
+                            <th>ATS Score</th>
+                            <th>Keyword Match</th>
+                            <th>Version</th>
+                            <th>Primary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for resume in resumes %}
+                        <tr>
+                            <td><strong>{{ resume.file_name }}</strong></td>
+                            <td>{{ resume.candidate_id }}</td>
+                            <td>{{ resume.ats_score or 0 }}</td>
+                            <td>{{ resume.keyword_match_score or 0 }}</td>
+                            <td>{{ resume.version_label or 'N/A' }}</td>
+                            <td>{{ status_chip('Yes' if resume.is_primary else 'No') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}<div class="empty-state">No resume records available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="interviews-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Interviews</h3>
+                    <p>Interview events, scheduling, interviewer ownership, and scoring visibility.</p>
+                </div>
+                <span class="section-badge">{{ interviews|length }} records</span>
+            </div>
+            {% if interviews %}
+            <div class="table-wrap">
+                <table class="ats-table">
+                    <thead>
+                        <tr>
+                            <th>Candidate ID</th>
+                            <th>Job Opening ID</th>
+                            <th>Type</th>
+                            <th>Round</th>
+                            <th>Status</th>
+                            <th>Scheduled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for interview in interviews %}
+                        <tr>
+                            <td>{{ interview.candidate_id }}</td>
+                            <td>{{ interview.job_opening_id }}</td>
+                            <td>{{ interview.interview_type or 'N/A' }}</td>
+                            <td>{{ interview.interview_round or 'N/A' }}</td>
+                            <td>{{ status_chip(interview.status) }}</td>
+                            <td>{{ interview.scheduled_at.strftime('%Y-%m-%d %H:%M') if interview.scheduled_at else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}<div class="empty-state">No interviews available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="offers-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Offer letters</h3>
+                    <p>Compensation proposals and pre-hire commitment tracking.</p>
+                </div>
+                <span class="section-badge">{{ offers|length }} records</span>
+            </div>
+            {% if offers %}
+            <div class="table-wrap">
+                <table class="ats-table">
+                    <thead>
+                        <tr>
+                            <th>Candidate ID</th>
+                            <th>Job Opening ID</th>
+                            <th>Status</th>
+                            <th>Salary Offer</th>
+                            <th>Start Date</th>
+                            <th>Offer Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offer in offers %}
+                        <tr>
+                            <td>{{ offer.candidate_id }}</td>
+                            <td>{{ offer.job_opening_id }}</td>
+                            <td>{{ status_chip(offer.status) }}</td>
+                            <td>{{ "{:,.2f}".format(offer.salary_offer or 0) }}</td>
+                            <td>{{ offer.proposed_start_date.strftime('%Y-%m-%d') if offer.proposed_start_date else 'N/A' }}</td>
+                            <td>{{ offer.offer_date.strftime('%Y-%m-%d') if offer.offer_date else 'N/A' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}<div class="empty-state">No offer records available yet.</div>{% endif %}
+        </div>
+
+        <div class="panel" id="optimization-table">
+            <div class="panel-head">
+                <div>
+                    <h3>Resume optimization records</h3>
+                    <p>Professional resume writing, ATS scoring improvements, and target-role alignment.</p>
+                </div>
+                <span class="section-badge">{{ resume_services|length }} records</span>
+            </div>
+            {% if resume_services %}
+            <div class="table-wrap">
+                <table class="ats-table">
+                    <thead>
+                        <tr>
+                            <th>Candidate ID</th>
+                            <th>Target Role</th>
+                            <th>Type</th>
+                            <th>Before</th>
+                            <th>After</th>
+                            <th>Match Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in resume_services %}
+                        <tr>
+                            <td>{{ service.candidate_id }}</td>
+                            <td><strong>{{ service.target_role or 'N/A' }}</strong></td>
+                            <td>{{ service.optimization_type or 'N/A' }}</td>
+                            <td>{{ service.ats_score_before or 0 }}</td>
+                            <td>{{ service.ats_score_after or 0 }}</td>
+                            <td>{{ service.match_score or 0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}<div class="empty-state">No optimization records available yet.</div>{% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}
+```

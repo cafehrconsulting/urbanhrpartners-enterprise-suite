@@ -1,673 +1,605 @@
+```html
 {% extends "base.html" %}
 
-{% block title %}
-Marketing | UrbanHRPartners Enterprise Suite
+{% block title %}Marketing | UrbanHRPartners Enterprise Suite{% endblock %}
+{% block page_title %}Marketing Command Center{% endblock %}
+{% block page_subtitle %}Manage campaigns, content assets, lead conversions, budget performance, and growth execution from one integrated marketing workspace.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .mkt-hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .mkt-banner,
+    .mkt-summary {
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
+        border: 1px solid rgba(11,31,58,0.08);
+    }
+
+    .mkt-banner {
+        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 52%, rgba(217,123,23,0.9) 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mkt-banner::after {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
+    }
+
+    .mkt-banner h2 {
+        margin: 0 0 10px;
+        font-size: 1.9rem;
+        color: #fff8e6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mkt-banner p {
+        margin: 0 0 18px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+    }
+
+    .mkt-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mkt-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-weight: 800;
+        color: #fffdf5;
+    }
+
+    .mkt-summary {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
+    }
+
+    .mkt-summary h3 {
+        margin-top: 0;
+        color: #0b1f3a;
+    }
+
+    .summary-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.06);
+    }
+
+    .summary-item strong { color: #0b1f3a; }
+    .summary-pill {
+        min-width: 84px;
+        text-align: center;
+        padding: 9px 12px;
+        border-radius: 14px;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
+        border: 1px solid rgba(212,175,55,0.26);
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
+    }
+
+    .kpi-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5e6d85;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .kpi-card .value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .kpi-card .note {
+        color: #6b7a91;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .mkt-layout {
+        display: grid;
+        grid-template-columns: 430px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-stack,
+    .data-stack {
+        display: grid;
+        gap: 22px;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.97);
+        border-radius: 24px;
+        border: 1px solid rgba(11,31,58,0.08);
+        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
+        padding: 22px;
+    }
+
+    .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .panel-head h3 {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1.14rem;
+    }
+
+    .panel-head p {
+        margin: 6px 0 0;
+        color: #61718a;
+        line-height: 1.45;
+        font-size: 0.94rem;
+    }
+
+    .section-badge {
+        white-space: nowrap;
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 900;
+        color: #0b1f3a;
+        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
+        border: 1px solid rgba(212,175,55,0.24);
+    }
+
+    .enterprise-form {
+        display: grid;
+        gap: 14px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field,
+    .field-full {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .field-full { grid-column: 1 / -1; }
+
+    .enterprise-form label {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #31445f;
+    }
+
+    .enterprise-form input,
+    .enterprise-form select,
+    .enterprise-form textarea {
+        width: 100%;
+        border: 1px solid rgba(11,31,58,0.12);
+        border-radius: 14px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+        color: #132238;
+        background: #fff;
+        outline: none;
+    }
+
+    .enterprise-form textarea {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 800;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
+        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
+        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(11,31,58,0.07);
+    }
+
+    .mkt-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 840px;
+        background: #fff;
+    }
+
+    .mkt-table th,
+    .mkt-table td {
+        padding: 13px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(11,31,58,0.07);
+        vertical-align: top;
+    }
+
+    .mkt-table th {
+        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
+        color: #0b1f3a;
+        font-size: 0.86rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .mkt-table td {
+        font-size: 0.95rem;
+        color: #334155;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 0.82rem;
+        border: 1px solid rgba(11,31,58,0.08);
+        background: rgba(11,31,58,0.05);
+        color: #0b1f3a;
+    }
+
+    .status-active,
+    .status-open,
+    .status-published,
+    .status-completed {
+        background: rgba(6,118,71,0.12);
+        color: #067647;
+        border-color: rgba(6,118,71,0.18);
+    }
+
+    .status-pending,
+    .status-draft,
+    .status-planned {
+        background: rgba(181,71,8,0.12);
+        color: #b54708;
+        border-color: rgba(181,71,8,0.18);
+    }
+
+    .status-closed,
+    .status-inactive,
+    .status-lost {
+        background: rgba(100,116,139,0.12);
+        color: #475569;
+        border-color: rgba(100,116,139,0.18);
+    }
+
+    .empty-state {
+        padding: 22px;
+        border-radius: 20px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
+        border: 1px dashed rgba(11,31,58,0.12);
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .tab-link {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
+        border: 1px solid rgba(11,31,58,0.08);
+        color: #0b1f3a;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1320px) {
+        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .mkt-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 980px) {
+        .mkt-hero,
+        .kpi-grid,
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
 
-{% block page_heading %}Marketing Command Center{% endblock %}
+{% macro status_chip(value) -%}
+    {% set raw = (value or 'N/A') %}
+    {% set normalized = raw|string|lower|replace(' ', '-') %}
+    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
+{%- endmacro %}
 
 {% block content %}
-
-<div class="page-grid">
-
-    <!-- =====================================================
-         SAFE RENDER VARIABLES
-    ====================================================== -->
-    {% set safe_marketing_stats = marketing_stats if marketing_stats is defined and marketing_stats else {} %}
-    {% set safe_campaigns = campaigns if campaigns is defined and campaigns else [] %}
-    {% set safe_leads = leads if leads is defined and leads else [] %}
-    {% set safe_social_posts = social_posts if social_posts is defined and social_posts else [] %}
-    {% set safe_content_calendar = content_calendar if content_calendar is defined and content_calendar else [] %}
-    {% set safe_analytics = analytics if analytics is defined and analytics else [] %}
-
-    <!-- =====================================================
-         HERO PANEL
-    ====================================================== -->
-    <section class="hero-panel">
-
-        <div class="hero-left">
-
-            <span class="hero-badge">
-                Marketing &amp; Growth Platform
-            </span>
-
-            <h1 class="hero-title">
-                Marketing Command Center
-            </h1>
-
-            <p class="hero-text">
-                Enterprise marketing management environment supporting
-                campaign planning, lead generation, social media content,
-                analytics, and growth optimization powered by XIOMY.
-            </p>
-
-            <div class="hero-actions">
-
-                <a class="btn btn-primary btn-lg" href="#campaign-center">
-                    Campaigns
-                </a>
-
-                <a class="btn btn-secondary btn-lg" href="#lead-center">
-                    Leads
-                </a>
-
-                <a class="btn btn-ghost btn-lg" href="#analytics-center">
-                    Analytics
-                </a>
-
-            </div>
-
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Campaigns</button>
-                    <button class="tab-button" type="button">Leads</button>
-                    <button class="tab-button" type="button">Content</button>
-                    <button class="tab-button" type="button">Social</button>
-                    <button class="tab-button" type="button">Analytics</button>
-                </div>
-            </div>
-
+<section class="mkt-hero">
+    <div class="mkt-banner">
+        <h2>Campaign performance, content execution, and growth conversion control</h2>
+        <p>
+            This marketing workspace centralizes campaign planning, channel tracking, content asset execution,
+            lead conversion follow-through, and performance visibility so the enterprise can connect spend,
+            demand generation, and revenue growth in one place.
+        </p>
+        <div class="mkt-chip-row">
+            <span class="mkt-chip">Campaigns</span>
+            <span class="mkt-chip">Content assets</span>
+            <span class="mkt-chip">Lead conversion</span>
+            <span class="mkt-chip">Budget vs revenue</span>
+            <span class="mkt-chip">ROI tracking</span>
         </div>
+    </div>
 
-        <div class="hero-right">
-
-            <div class="hero-status-card">
-
-                <h3 class="section-title">Marketing Overview</h3>
-                <p class="section-subtitle">
-                    Organized visibility into growth activity, demand capture, and conversion direction.
-                </p>
-
-                <ul class="status-list mt-3">
-
-                    <li><strong>Campaigns:</strong> marketing initiatives and channel execution</li>
-                    <li><strong>Leads:</strong> potential clients captured and nurtured</li>
-                    <li><strong>Channels:</strong> social media, web, and email visibility</li>
-                    <li><strong>Analytics:</strong> performance indicators and growth signals</li>
-                    <li><strong>Optimization:</strong> future XIOMY-driven commercial insights</li>
-
-                </ul>
-
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('crm') }}">CRM Lead Link</a>
-                    <a class="btn btn-secondary" href="{{ url_for('reports_analytics') }}">Reports</a>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- =====================================================
-         DASHBOARD
-    ====================================================== -->
-    <section class="summary-grid">
-
-        <div class="summary-card">
-            <h3>Active Campaigns</h3>
-            <p>
-                {% if safe_marketing_stats.active_campaigns is defined %}
-                    {{ safe_marketing_stats.active_campaigns }}
-                {% else %}
-                    {{ safe_campaigns|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Marketing campaigns running</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Leads Captured</h3>
-            <p>{{ safe_leads|length }}</p>
-            <span class="summary-note">Potential clients identified</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Conversions</h3>
-            <p>
-                {% if safe_marketing_stats.conversions is defined %}
-                    {{ safe_marketing_stats.conversions }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Converted prospects</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Website Visits</h3>
-            <p>
-                {% if safe_marketing_stats.visits is defined %}
-                    {{ safe_marketing_stats.visits }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Traffic activity</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Social Engagement</h3>
-            <p>
-                {% if safe_marketing_stats.engagement is defined %}
-                    {{ safe_marketing_stats.engagement }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Likes, comments, shares</span>
-        </div>
-
-        <div class="summary-card">
-            <h3>Email Subscribers</h3>
-            <p>
-                {% if safe_marketing_stats.subscribers is defined %}
-                    {{ safe_marketing_stats.subscribers }}
-                {% else %}
-                    0
-                {% endif %}
-            </p>
-            <span class="summary-note">Audience growth</span>
-        </div>
-
-    </section>
-
-    <!-- =====================================================
-         PURPOSE + GROWTH PRIORITIES
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card">
-            <h3>Marketing Executive Purpose</h3>
-            <p class="section-subtitle">
-                This module operates as the growth, visibility, and lead-generation engine of the platform.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Campaign Direction</div>
-                    <div class="activity-item-meta">
-                        Organize promotional initiatives across digital channels and connect growth efforts to real business outcomes.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Lead Generation &amp; Nurturing</div>
-                    <div class="activity-item-meta">
-                        Capture interest, structure follow-up, and connect opportunities to CRM for client conversion discipline.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Commercial Intelligence</div>
-                    <div class="activity-item-meta">
-                        Prepare campaign and audience data for XIOMY-driven trend analysis, optimization, and growth signals.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <h3>Growth Leadership Priorities</h3>
-            <p class="section-subtitle">
-                Commercial controls that should remain visible to leadership and XIOMY.
-            </p>
-
-            <ul class="clean-list mt-4">
-                <li>Connect every campaign to leads, opportunities, and revenue direction.</li>
-                <li>Maintain consistency between web traffic, message quality, and conversion flow.</li>
-                <li>Identify channels that perform well and reduce waste in weak campaigns.</li>
-                <li>Keep content, lead management, and CRM aligned in one commercial pipeline.</li>
-                <li>Prepare the module for future XIOMY forecasting, segmentation, and optimization logic.</li>
-            </ul>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="#analytics-center">Growth Analytics</a>
-                <a class="btn btn-secondary" href="#lead-center">Lead Center</a>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- =====================================================
-         CAMPAIGN MANAGEMENT + LEAD CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="campaign-center">
-
-            <div class="module-header">
-                <h1>Campaign Manager</h1>
-                <p>
-                    Create and control campaigns across service promotion, audience targeting, and market penetration.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Campaign Entry</button>
-                <button class="tab-button" type="button">Channel Strategy</button>
-                <button class="tab-button" type="button">Budget Focus</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_marketing_campaign') }}" class="crm-form">
-
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="campaign_name">Campaign Name</label>
-                            <input type="text" id="campaign_name" name="name" placeholder="Campaign title" required>
-                        </div>
-
-                        <div>
-                            <label for="campaign_channel">Channel</label>
-                            <input type="text" id="campaign_channel" name="channel" placeholder="Facebook, Instagram, Website, Email..." required>
-                        </div>
-
-                        <div>
-                            <label for="campaign_audience">Audience</label>
-                            <input type="text" id="campaign_audience" name="audience" placeholder="SMEs, nonprofits, HR buyers, executives...">
-                        </div>
-
-                        <div>
-                            <label for="campaign_budget">Budget</label>
-                            <input type="number" step="0.01" id="campaign_budget" name="budget" placeholder="0.00">
-                        </div>
-
-                        <div>
-                            <label for="campaign_status">Status</label>
-                            <select id="campaign_status" name="status">
-                                <option value="Draft">Draft</option>
-                                <option value="Active">Active</option>
-                                <option value="Paused">Paused</option>
-                                <option value="Completed">Completed</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="campaign_start_date">Start Date</label>
-                            <input type="date" id="campaign_start_date" name="start_date">
-                        </div>
-
-                        <div>
-                            <label for="campaign_end_date">End Date</label>
-                            <input type="date" id="campaign_end_date" name="end_date">
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="campaign_notes">Notes</label>
-                        <textarea id="campaign_notes" name="notes" placeholder="Campaign goals, messaging, expected outcomes, or launch notes."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Campaign</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-
-                </form>
-            </div>
-
-        </div>
-
-        <div class="panel-card" id="lead-center">
-
-            <div class="module-header">
-                <h1>Lead Management Center</h1>
-                <p>
-                    Structure captured interest, contact details, and conversion opportunity flow connected to CRM.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Lead Entry</button>
-                <button class="tab-button" type="button">Qualification</button>
-                <button class="tab-button" type="button">Follow-Up</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="#" class="crm-form">
-
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="lead_name">Lead Name</label>
-                            <input type="text" id="lead_name" name="lead_name" placeholder="Lead or company name">
-                        </div>
-
-                        <div>
-                            <label for="lead_email">Email</label>
-                            <input type="email" id="lead_email" name="email" placeholder="lead@company.com">
-                        </div>
-
-                        <div>
-                            <label for="lead_phone">Phone</label>
-                            <input type="text" id="lead_phone" name="phone" placeholder="Phone number">
-                        </div>
-
-                        <div>
-                            <label for="lead_source">Lead Source</label>
-                            <input type="text" id="lead_source" name="source" placeholder="Website, ad, referral, social media...">
-                        </div>
-
-                        <div>
-                            <label for="lead_stage">Stage</label>
-                            <select id="lead_stage" name="stage">
-                                <option value="New">New</option>
-                                <option value="Contacted">Contacted</option>
-                                <option value="Qualified">Qualified</option>
-                                <option value="Proposal">Proposal</option>
-                                <option value="Converted">Converted</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="lead_interest">Interest</label>
-                            <input type="text" id="lead_interest" name="interest" placeholder="HR, ATS, SG-SST, Finance, Marketing...">
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="lead_notes">Notes</label>
-                        <textarea id="lead_notes" name="notes" placeholder="Lead needs, business size, urgency, or follow-up remarks."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Save Lead</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
-                    </div>
-
-                </form>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- =====================================================
-         CONTENT + SOCIAL CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card">
-            <div class="module-header">
-                <h1>Content Planning Center</h1>
-                <p>
-                    Structure planned promotional messaging, educational content, and market-facing communication.
-                </p>
-            </div>
-
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Content Entry</button>
-                <button class="tab-button" type="button">Scheduling</button>
-                <button class="tab-button" type="button">Purpose</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="#" class="crm-form">
-
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="content_title">Content Title</label>
-                            <input type="text" id="content_title" name="title" placeholder="Post, campaign, article, reel topic...">
-                        </div>
-
-                        <div>
-                            <label for="content_channel">Channel</label>
-                            <input type="text" id="content_channel" name="channel" placeholder="Website, LinkedIn, Instagram, Facebook...">
-                        </div>
-
-                        <div>
-                            <label for="content_publish_date">Publish Date</label>
-                            <input type="date" id="content_publish_date" name="publish_date">
-                        </div>
-
-                        <div>
-                            <label for="content_goal">Goal</label>
-                            <select id="content_goal" name="goal">
-                                <option value="Awareness">Awareness</option>
-                                <option value="Lead Generation">Lead Generation</option>
-                                <option value="Education">Education</option>
-                                <option value="Conversion">Conversion</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="content_notes">Content Notes</label>
-                        <textarea id="content_notes" name="notes" placeholder="Topic angle, CTA, target audience, or commercial purpose."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Save Content Plan</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <div class="module-header">
-                <h1>Social Media Direction</h1>
-                <p>
-                    Control social visibility, channel consistency, and campaign-linked content execution.
-                </p>
-            </div>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Channel Consistency</div>
-                    <div class="activity-item-meta">
-                        Align visual branding, messaging quality, and service positioning across all social channels.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Lead Conversion Focus</div>
-                    <div class="activity-item-meta">
-                        Move beyond content publishing into measurable demand generation and commercial conversion.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">XIOMY Growth Signals</div>
-                    <div class="activity-item-meta">
-                        Future XIOMY intelligence should analyze audience reaction, post patterns, and campaign traction.
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('crm') }}">Open CRM</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- =====================================================
-         CAMPAIGN TABLE
-    ====================================================== -->
-    <section class="table-shell">
-        <div class="table-toolbar">
+    <div class="mkt-summary">
+        <div class="panel-head">
             <div>
-                <h3 class="section-title">Campaign Register</h3>
-                <p class="section-subtitle">Current marketing initiatives and execution visibility.</p>
+                <h3>Growth summary</h3>
+                <p>Immediate visibility into campaign volume, assets, and conversion activity.</p>
             </div>
-
-            <div class="action-row">
-                <a class="btn btn-primary btn-sm" href="#campaign-center">New Campaign</a>
-                <a class="btn btn-secondary btn-sm" href="#analytics-center">Growth Analytics</a>
-            </div>
+            <span class="section-badge">Marketing Live</span>
         </div>
-
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Campaign</th>
-                        <th>Channel</th>
-                        <th>Audience</th>
-                        <th>Budget</th>
-                        <th>Status</th>
-                        <th>Dates</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if safe_campaigns %}
-                        {% for campaign in safe_campaigns %}
-                        <tr>
-                            <td>{{ campaign.name if campaign.name is defined and campaign.name else 'N/A' }}</td>
-                            <td>{{ campaign.channel if campaign.channel is defined and campaign.channel else 'N/A' }}</td>
-                            <td>{{ campaign.audience if campaign.audience is defined and campaign.audience else 'N/A' }}</td>
-                            <td>{{ campaign.budget if campaign.budget is defined else 0 }}</td>
-                            <td>
-                                {% set camp_status = campaign.status if campaign.status is defined and campaign.status else 'Draft' %}
-                                {% if camp_status in ['Active'] %}
-                                    <span class="badge badge-success">{{ camp_status }}</span>
-                                {% elif camp_status in ['Draft', 'Paused'] %}
-                                    <span class="badge badge-warning">{{ camp_status }}</span>
-                                {% elif camp_status in ['Completed'] %}
-                                    <span class="badge badge-info">{{ camp_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ camp_status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if campaign.start_date is defined and campaign.start_date %}
-                                    {{ campaign.start_date }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                                -
-                                {% if campaign.end_date is defined and campaign.end_date %}
-                                    {{ campaign.end_date }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6">No campaigns available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+        <div class="summary-list">
+            <div class="summary-item"><strong>Campaigns</strong><span class="summary-pill">{{ marketing_stats.campaigns_count }}</span></div>
+            <div class="summary-item"><strong>Assets</strong><span class="summary-pill">{{ marketing_stats.content_assets_count }}</span></div>
+            <div class="summary-item"><strong>Conversions</strong><span class="summary-pill">{{ marketing_stats.lead_conversions_count }}</span></div>
+            <div class="summary-item"><strong>Budget Total</strong><span class="summary-pill">{{ "{:,.0f}".format(marketing_stats.campaign_budget_total or 0) }}</span></div>
+            <div class="summary-item"><strong>Revenue Total</strong><span class="summary-pill">{{ "{:,.0f}".format(marketing_stats.campaign_revenue_total or 0) }}</span></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- =====================================================
-         LEADS TABLE + ANALYTICS
-    ====================================================== -->
-    <section class="two-column-grid">
+<section class="kpi-grid">
+    <article class="kpi-card">
+        <div class="label">Campaigns</div>
+        <div class="value">{{ marketing_stats.campaigns_count }}</div>
+        <div class="note">Campaign records available for tracking and optimization.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Content Assets</div>
+        <div class="value">{{ marketing_stats.content_assets_count }}</div>
+        <div class="note">Creative and channel assets supporting distribution.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Lead Conversions</div>
+        <div class="value">{{ marketing_stats.lead_conversions_count }}</div>
+        <div class="note">Lead-to-revenue actions recorded in the suite.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Budget Total</div>
+        <div class="value">{{ "{:,.0f}".format(marketing_stats.campaign_budget_total or 0) }}</div>
+        <div class="note">Planned spend across registered campaigns.</div>
+    </article>
+    <article class="kpi-card">
+        <div class="label">Revenue Total</div>
+        <div class="value">{{ "{:,.0f}".format(marketing_stats.campaign_revenue_total or 0) }}</div>
+        <div class="note">Revenue attributed to marketing execution.</div>
+    </article>
+</section>
 
-        <div class="table-shell">
-            <div class="table-toolbar">
+<section class="mkt-layout">
+    <div class="form-stack">
+        <div class="panel" id="campaign-form">
+            <div class="panel-head">
                 <div>
-                    <h3 class="section-title">Lead Register</h3>
-                    <p class="section-subtitle">Structured lead visibility for follow-up and conversion discipline.</p>
+                    <h3>Create campaign</h3>
+                    <p>Register objectives, channels, budget, volume, and ROI indicators.</p>
                 </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#lead-center">New Lead</a>
-                </div>
+                <span class="section-badge">Campaign</span>
             </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('create_campaign') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="campaign_code">Campaign Code</label><input id="campaign_code" name="campaign_code" type="text" /></div>
+                    <div class="field"><label for="campaign_name">Campaign Name</label><input id="campaign_name" name="name" type="text" required /></div>
+                    <div class="field"><label for="channel">Channel</label><input id="channel" name="channel" type="text" /></div>
+                    <div class="field"><label for="objective">Objective</label><input id="objective" name="objective" type="text" /></div>
+                    <div class="field"><label for="start_date">Start Date</label><input id="start_date" name="start_date" type="date" /></div>
+                    <div class="field"><label for="end_date">End Date</label><input id="end_date" name="end_date" type="date" /></div>
+                    <div class="field"><label for="budget">Budget</label><input id="budget" name="budget" type="number" step="0.01" /></div>
+                    <div class="field"><label for="actual_spend">Actual Spend</label><input id="actual_spend" name="actual_spend" type="number" step="0.01" /></div>
+                    <div class="field"><label for="impressions">Impressions</label><input id="impressions" name="impressions" type="number" /></div>
+                    <div class="field"><label for="clicks">Clicks</label><input id="clicks" name="clicks" type="number" /></div>
+                    <div class="field"><label for="leads_generated">Leads Generated</label><input id="leads_generated" name="leads_generated" type="number" /></div>
+                    <div class="field"><label for="conversions">Conversions</label><input id="conversions" name="conversions" type="number" /></div>
+                    <div class="field"><label for="revenue_generated">Revenue Generated</label><input id="revenue_generated" name="revenue_generated" type="number" step="0.01" /></div>
+                    <div class="field"><label for="roi">ROI</label><input id="roi" name="roi" type="number" step="0.01" /></div>
+                    <div class="field"><label for="campaign_status">Status</label><input id="campaign_status" name="status" type="text" value="Draft" /></div>
+                    <div class="field-full"><label for="target_audience">Target Audience</label><textarea id="target_audience" name="target_audience"></textarea></div>
+                    <div class="field-full"><label for="campaign_notes">Notes</label><textarea id="campaign_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Campaign</button>
+                    <a class="btn-secondary" href="#campaigns-table">Review Campaigns</a>
+                </div>
+            </form>
+        </div>
 
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Source</th>
-                            <th>Email</th>
-                            <th>Stage</th>
-                            <th>Interest</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_leads %}
-                            {% for lead in safe_leads %}
-                            <tr>
-                                <td>{{ lead.lead_name if lead.lead_name is defined and lead.lead_name else (lead.name if lead.name is defined and lead.name else 'N/A') }}</td>
-                                <td>{{ lead.source if lead.source is defined and lead.source else 'N/A' }}</td>
-                                <td>{{ lead.email if lead.email is defined and lead.email else 'N/A' }}</td>
-                                <td>
-                                    {% set lead_stage = lead.stage if lead.stage is defined and lead.stage else 'New' %}
-                                    {% if lead_stage in ['Converted'] %}
-                                        <span class="badge badge-success">{{ lead_stage }}</span>
-                                    {% elif lead_stage in ['Qualified', 'Proposal'] %}
-                                        <span class="badge badge-info">{{ lead_stage }}</span>
-                                    {% elif lead_stage in ['New', 'Contacted'] %}
-                                        <span class="badge badge-warning">{{ lead_stage }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ lead_stage }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ lead.interest if lead.interest is defined and lead.interest else 'N/A' }}</td>
-                            </tr>
+        <div class="panel" id="asset-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create content asset</h3>
+                    <p>Register creative assets, platform usage, file path, and publishing status.</p>
+                </div>
+                <span class="section-badge">Asset</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_content_asset') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="asset_campaign_id">Campaign</label>
+                        <select id="asset_campaign_id" name="campaign_id">
+                            <option value="">Select campaign</option>
+                            {% for campaign in campaigns %}
+                            <option value="{{ campaign.id }}">{{ campaign.name }}</option>
                             {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="5">No leads available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+                        </select>
+                    </div>
+                    <div class="field"><label for="asset_name">Asset Name</label><input id="asset_name" name="asset_name" type="text" required /></div>
+                    <div class="field"><label for="asset_type">Asset Type</label><input id="asset_type" name="asset_type" type="text" /></div>
+                    <div class="field"><label for="platform">Platform</label><input id="platform" name="platform" type="text" /></div>
+                    <div class="field"><label for="publish_date">Publish Date</label><input id="publish_date" name="publish_date" type="date" /></div>
+                    <div class="field"><label for="asset_status">Status</label><input id="asset_status" name="status" type="text" value="Draft" /></div>
+                    <div class="field-full"><label for="asset_file_path">File Path</label><input id="asset_file_path" name="file_path" type="text" /></div>
+                    <div class="field-full"><label for="asset_notes">Notes</label><textarea id="asset_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Asset</button>
+                    <a class="btn-secondary" href="#assets-table">Review Assets</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel" id="conversion-form">
+            <div class="panel-head">
+                <div>
+                    <h3>Create lead conversion</h3>
+                    <p>Track campaign-linked conversions and attributed revenue outcome.</p>
+                </div>
+                <span class="section-badge">Conversion</span>
+            </div>
+            <form class="enterprise-form" method="post" action="{{ url_for('add_lead_conversion') }}">
+                <div class="form-grid">
+                    <div class="field"><label for="lead_id">Lead ID</label><input id="lead_id" name="lead_id" type="number" required /></div>
+                    <div class="field">
+                        <label for="conversion_campaign_id">Campaign</label>
+                        <select id="conversion_campaign_id" name="campaign_id">
+                            <option value="">Select campaign</option>
+                            {% for campaign in campaigns %}
+                            <option value="{{ campaign.id }}">{{ campaign.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field"><label for="conversion_status">Conversion Status</label><input id="conversion_status" name="conversion_status" type="text" value="Open" /></div>
+                    <div class="field"><label for="conversion_date">Conversion Date</label><input id="conversion_date" name="conversion_date" type="date" /></div>
+                    <div class="field"><label for="revenue_amount">Revenue Amount</label><input id="revenue_amount" name="revenue_amount" type="number" step="0.01" /></div>
+                    <div class="field-full"><label for="conversion_notes">Notes</label><textarea id="conversion_notes" name="notes"></textarea></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Create Conversion</button>
+                    <a class="btn-secondary" href="#conversions-table">Review Conversions</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="data-stack">
+        <div class="panel">
+            <div class="tabs">
+                <a class="tab-link" href="#campaigns-table">Campaigns</a>
+                <a class="tab-link" href="#assets-table">Assets</a>
+                <a class="tab-link" href="#conversions-table">Conversions</a>
             </div>
         </div>
 
-        <div class="panel-card" id="analytics-center">
-            <h3>Marketing Analytics Direction</h3>
-            <p class="section-subtitle">
-                Executive interpretation and future XIOMY optimization logic for growth performance.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Traffic & Conversion Signals</div>
-                    <div class="activity-item-meta">
-                        Review visits, lead capture patterns, and conversion movement to identify effective commercial channels.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Campaign Efficiency</div>
-                    <div class="activity-item-meta">
-                        Compare budget effort, channel reach, and outcome quality to reduce wasted spend and improve results.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">XIOMY Growth Intelligence</div>
-                    <div class="activity-item-meta">
-                        XIOMY will later summarize marketing traction, audience response, lead quality, and content success patterns.
-                    </div>
-                </div>
-            </div>
-
-            <div class="summary-grid mt-4">
-                <div class="summary-card">
-                    <h3>Campaign Count</h3>
-                    <p>{{ safe_campaigns|length }}</p>
-                    <span class="summary-note">Tracked initiatives</span>
-                </div>
-
-                <div class="summary-card">
-                    <h3>Lead Count</h3>
-                    <p>{{ safe_leads|length }}</p>
-                    <span class="summary-note">Demand captured</span>
-                </div>
-            </div>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
-            </div>
+        <div class="panel" id="campaigns-table">
+            <div class="panel-head"><div><h3>Campaigns</h3><p>Growth campaigns with budget, reach, conversion, and revenue tracking.</p></div><span class="section-badge">{{ campaigns|length }} records</span></div>
+            {% if campaigns %}
+            <div class="table-wrap"><table class="mkt-table"><thead><tr><th>Campaign</th><th>Channel</th><th>Status</th><th>Budget</th><th>Revenue</th><th>ROI</th></tr></thead><tbody>{% for campaign in campaigns %}<tr><td><strong>{{ campaign.name }}</strong><br /><span>{{ campaign.campaign_code or 'No code' }}</span></td><td>{{ campaign.channel or 'N/A' }}</td><td>{{ status_chip(campaign.status) }}</td><td>{{ "{:,.2f}".format(campaign.budget or 0) }}</td><td>{{ "{:,.2f}".format(campaign.revenue_generated or 0) }}</td><td>{{ campaign.roi or 0 }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No campaigns available yet.</div>{% endif %}
         </div>
 
-    </section>
+        <div class="panel" id="assets-table">
+            <div class="panel-head"><div><h3>Content assets</h3><p>Creative execution records by campaign, platform, and publication state.</p></div><span class="section-badge">{{ content_assets|length }} records</span></div>
+            {% if content_assets %}
+            <div class="table-wrap"><table class="mkt-table"><thead><tr><th>Asset</th><th>Campaign ID</th><th>Type</th><th>Platform</th><th>Status</th><th>Publish Date</th></tr></thead><tbody>{% for asset in content_assets %}<tr><td><strong>{{ asset.asset_name }}</strong></td><td>{{ asset.campaign_id or 'N/A' }}</td><td>{{ asset.asset_type or 'N/A' }}</td><td>{{ asset.platform or 'N/A' }}</td><td>{{ status_chip(asset.status) }}</td><td>{{ asset.publish_date.strftime('%Y-%m-%d') if asset.publish_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No content assets available yet.</div>{% endif %}
+        </div>
 
-</div>
-
+        <div class="panel" id="conversions-table">
+            <div class="panel-head"><div><h3>Lead conversions</h3><p>Conversion outcomes with linked campaigns and attributed revenue.</p></div><span class="section-badge">{{ lead_conversions|length }} records</span></div>
+            {% if lead_conversions %}
+            <div class="table-wrap"><table class="mkt-table"><thead><tr><th>Lead ID</th><th>Campaign ID</th><th>Status</th><th>Revenue</th><th>Date</th></tr></thead><tbody>{% for conversion in lead_conversions %}<tr><td>{{ conversion.lead_id }}</td><td>{{ conversion.campaign_id or 'N/A' }}</td><td>{{ status_chip(conversion.conversion_status) }}</td><td>{{ "{:,.2f}".format(conversion.revenue_amount or 0) }}</td><td>{{ conversion.conversion_date.strftime('%Y-%m-%d') if conversion.conversion_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
+            {% else %}<div class="empty-state">No lead conversions available yet.</div>{% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}
+```
