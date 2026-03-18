@@ -1,585 +1,1162 @@
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-
-db = SQLAlchemy()
-
-# =========================================================
-# USERS
-# =========================================================
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    email = db.Column(db.String(200), unique=True, nullable=False)
-    password = db.Column(db.String(255))
-    password_hash = db.Column(db.String(255))
-    role = db.Column(db.String(100), default="user")
-    is_admin = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# CLIENTS / CRM
-# =========================================================
-
-class Client(db.Model):
-    __tablename__ = "clients"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    # Core identity
-    name = db.Column(db.String(200), nullable=False)
-    company_name = db.Column(db.String(200))
-    contact_person = db.Column(db.String(200))
-
-    # Contact
-    email = db.Column(db.String(200))
-    phone = db.Column(db.String(100))
-    address = db.Column(db.String(300))
-
-    # Global business intelligence
-    industry = db.Column(db.String(200))
-    country = db.Column(db.String(120), default="Colombia")
-    language = db.Column(db.String(100), default="Spanish")
-    region = db.Column(db.String(120))
-
-    # Tax / legal identification
-    tax_id_type = db.Column(db.String(50))
-    tax_id_number = db.Column(db.String(100))
-
-    # Business status
-    status = db.Column(db.String(100), default="Prospect")
-    risk_level = db.Column(db.String(50))
-
-    # Strategic notes
-    needs = db.Column(db.Text)
-    notes = db.Column(db.Text)
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    communication_logs = db.relationship("CommunicationLog", backref="client", lazy=True)
-    projects = db.relationship("Project", backref="client", lazy=True)
-    sgsst_documents = db.relationship("SGSSTDocument", backref="client", lazy=True)
-
-
-class CommunicationLog(db.Model):
-    __tablename__ = "communication_logs"
-
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"))
-    client_name = db.Column(db.String(200))
-    channel = db.Column(db.String(100))
-    communication_type = db.Column(db.String(100))
-    direction = db.Column(db.String(100))
-    contact_person = db.Column(db.String(200))
-    subject = db.Column(db.String(255))
-    summary = db.Column(db.Text)
-    message = db.Column(db.Text)
-    action_items = db.Column(db.Text)
-    action_required = db.Column(db.Boolean, default=False)
-    log_date = db.Column(db.Date)
-    follow_up_date = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Project(db.Model):
-    __tablename__ = "projects"
-
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"))
-    client_name = db.Column(db.String(200))
-    name = db.Column(db.String(200))
-    project_name = db.Column(db.String(200))
-    description = db.Column(db.Text)
-    status = db.Column(db.String(100), default="Planned")
-    estimated_value = db.Column(db.Float, default=0)
-    budget = db.Column(db.Float, default=0)
-    start_date = db.Column(db.Date)
-    end_date = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Task(db.Model):
-    __tablename__ = "tasks"
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text)
-    notes = db.Column(db.Text)
-    status = db.Column(db.String(100), default="Open")
-    priority = db.Column(db.String(50), default="Normal")
-    due_date = db.Column(db.Date)
-    client_id = db.Column(db.Integer)
-    client_name = db.Column(db.String(200))
-    project_id = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# INVENTORY
-# =========================================================
-
-class InventoryItem(db.Model):
-    __tablename__ = "inventory_items"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    sku = db.Column(db.String(100))
-    barcode = db.Column(db.String(200))
-    category = db.Column(db.String(150))
-    quantity = db.Column(db.Float, default=0)
-    unit_cost = db.Column(db.Float, default=0)
-    reorder_level = db.Column(db.Float, default=0)
-    location = db.Column(db.String(200))
-    status = db.Column(db.String(100), default="Available")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# FINANCE
-# =========================================================
-
-class Finance(db.Model):
-    __tablename__ = "finance"
-
-    id = db.Column(db.Integer, primary_key=True)
-    entry_type = db.Column(db.String(100))
-    category = db.Column(db.String(150))
-    description = db.Column(db.String(500))
-    amount = db.Column(db.Float, default=0)
-    entry_date = db.Column(db.Date)
-    status = db.Column(db.String(100), default="Posted")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Invoice(db.Model):
-    __tablename__ = "invoices"
-
-    id = db.Column(db.Integer, primary_key=True)
-    invoice_number = db.Column(db.String(100))
-    client_name = db.Column(db.String(200))
-    project_name = db.Column(db.String(200))
-    amount = db.Column(db.Float, default=0)
-    due_date = db.Column(db.Date)
-    status = db.Column(db.String(100), default="Pending")
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Account(db.Model):
-    __tablename__ = "accounts"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    account_type = db.Column(db.String(100))
-    balance = db.Column(db.Float, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class LedgerEntry(db.Model):
-    __tablename__ = "ledger_entries"
-
-    id = db.Column(db.Integer, primary_key=True)
-    account = db.Column(db.String(200))
-    description = db.Column(db.String(500))
-    debit = db.Column(db.Float, default=0)
-    credit = db.Column(db.Float, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Budget(db.Model):
-    __tablename__ = "budgets"
-
-    id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(200))
-    allocated_amount = db.Column(db.Float, default=0)
-    spent_amount = db.Column(db.Float, default=0)
-    year = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Vendor(db.Model):
-    __tablename__ = "vendors"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    email = db.Column(db.String(200))
-    phone = db.Column(db.String(50))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Payable(db.Model):
-    __tablename__ = "payables"
-
-    id = db.Column(db.Integer, primary_key=True)
-    vendor_name = db.Column(db.String(200))
-    amount = db.Column(db.Float, default=0)
-    due_date = db.Column(db.Date)
-    status = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# HRIS
-# =========================================================
-
-class EmployeeProfile(db.Model):
-    __tablename__ = "employee_profiles"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.String(100))
-    employee_number = db.Column(db.String(100))
-    first_name = db.Column(db.String(150))
-    last_name = db.Column(db.String(150))
-    full_name = db.Column(db.String(200))
-    name = db.Column(db.String(200))
-    department = db.Column(db.String(150))
-    role = db.Column(db.String(150))
-    position = db.Column(db.String(150))
-    status = db.Column(db.String(100))
-    hire_date = db.Column(db.Date)
-    email = db.Column(db.String(200))
-    phone = db.Column(db.String(100))
-    salary = db.Column(db.Float, default=0)
-    manager = db.Column(db.String(200))
-    location = db.Column(db.String(200))
-    employment_type = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class DisciplinaryRecord(db.Model):
-    __tablename__ = "disciplinary_records"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer)
-    employee_name = db.Column(db.String(200))
-    violation_type = db.Column(db.String(200))
-    case_type = db.Column(db.String(200))
-    description = db.Column(db.Text)
-    action_taken = db.Column(db.Text)
-    date = db.Column(db.Date)
-    record_date = db.Column(db.Date)
-    status = db.Column(db.String(100), default="Open")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class PointLog(db.Model):
-    __tablename__ = "point_logs"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer)
-    employee_name = db.Column(db.String(200))
-    points = db.Column(db.Integer)
-    reason = db.Column(db.Text)
-    category = db.Column(db.String(100))
-    date = db.Column(db.Date)
-    log_date = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class SOPRequirement(db.Model):
-    __tablename__ = "sop_requirements"
-
-    id = db.Column(db.Integer, primary_key=True)
-    job_role = db.Column(db.String(200))
-    job_title = db.Column(db.String(200))
-    sop_name = db.Column(db.String(200))
-    title = db.Column(db.String(200))
-    requirement = db.Column(db.Text)
-    description = db.Column(db.Text)
-    required = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# ATS
-# =========================================================
-
-class Candidate(db.Model):
-    __tablename__ = "candidates"
-
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(150))
-    last_name = db.Column(db.String(150))
-    full_name = db.Column(db.String(200))
-    email = db.Column(db.String(200))
-    phone = db.Column(db.String(100))
-    position_applied = db.Column(db.String(200))
-    stage = db.Column(db.String(100), default="Applied")
-    status = db.Column(db.String(100), default="New")
-    notes = db.Column(db.Text)
-    resume_filename = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# SG-SST
-# =========================================================
-
-class SafetyPolicy(db.Model):
-    __tablename__ = "safety_policies"
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    version = db.Column(db.String(50))
-    owner = db.Column(db.String(200))
-    review_date = db.Column(db.Date)
-    statement = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class LegalRequirement(db.Model):
-    __tablename__ = "legal_requirements"
-
-    id = db.Column(db.Integer, primary_key=True)
-    standard = db.Column(db.String(200))
-    reference = db.Column(db.String(200))
-    topic = db.Column(db.String(200))
-    owner = db.Column(db.String(200))
-    status = db.Column(db.String(100))
-    review_date = db.Column(db.Date)
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class RiskMatrixItem(db.Model):
-    __tablename__ = "risk_matrix_items"
-
-    id = db.Column(db.Integer, primary_key=True)
-    area = db.Column(db.String(200))
-    hazard = db.Column(db.String(255))
-    risk_level = db.Column(db.String(100), default="Medium")
-    control_measure = db.Column(db.Text)
-    responsible_party = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class InspectionRecord(db.Model):
-    __tablename__ = "inspection_records"
-
-    id = db.Column(db.Integer, primary_key=True)
-    inspection_name = db.Column(db.String(255))
-    area = db.Column(db.String(200))
-    inspector = db.Column(db.String(200))
-    inspection_date = db.Column(db.Date)
-    findings = db.Column(db.Text)
-    status = db.Column(db.String(100), default="Open")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class IncidentRecord(db.Model):
-    __tablename__ = "incident_records"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer)
-    incident_type = db.Column(db.String(200))
-    description = db.Column(db.Text)
-    incident_date = db.Column(db.Date)
-    status = db.Column(db.String(100), default="Open")
-    corrective_action = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class TrainingRecord(db.Model):
-    __tablename__ = "training_records"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer)
-    title = db.Column(db.String(200))
-    training_name = db.Column(db.String(200))
-    training_type = db.Column(db.String(200))
-    training_date = db.Column(db.Date)
-    facilitator = db.Column(db.String(200))
-    trainer = db.Column(db.String(200))
-    attendance_count = db.Column(db.Integer)
-    status = db.Column(db.String(100))
-    certificate = db.Column(db.String(255))
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Inspection(db.Model):
-    __tablename__ = "inspections"
-
-    id = db.Column(db.Integer, primary_key=True)
-    area = db.Column(db.String(200))
-    inspection_type = db.Column(db.String(100))
-    inspection_date = db.Column(db.Date)
-    status = db.Column(db.String(100))
-    owner = db.Column(db.String(200))
-    due_date = db.Column(db.Date)
-    findings = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class PPERecord(db.Model):
-    __tablename__ = "ppe_records"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_name = db.Column(db.String(200))
-    ppe_item = db.Column(db.String(200))
-    status = db.Column(db.String(100))
-    assignment_date = db.Column(db.Date)
-    expiration_date = db.Column(db.Date)
-    reference = db.Column(db.String(200))
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class AuditRecord(db.Model):
-    __tablename__ = "audit_records"
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    audit_date = db.Column(db.Date)
-    scope = db.Column(db.String(200))
-    status = db.Column(db.String(100))
-    owner = db.Column(db.String(200))
-    due_date = db.Column(db.Date)
-    findings = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class ImprovementPlan(db.Model):
-    __tablename__ = "improvement_plans"
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    description = db.Column(db.Text)
-    owner = db.Column(db.String(200))
-    due_date = db.Column(db.Date)
-    status = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class SGSSTDocument(db.Model):
-    __tablename__ = "sgsst_documents"
-
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.Integer, db.ForeignKey("clients.id"))
-    folder = db.Column(db.String(200))
-    document_name = db.Column(db.String(200))
-    file_path = db.Column(db.String(500))
-    status = db.Column(db.String(50), default="pending")
-    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# MARKETING
-# =========================================================
-
-class MarketingCampaign(db.Model):
-    __tablename__ = "marketing_campaigns"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    channel = db.Column(db.String(200))
-    audience = db.Column(db.String(255))
-    budget = db.Column(db.Float, default=0)
-    status = db.Column(db.String(100), default="Draft")
-    start_date = db.Column(db.Date)
-    end_date = db.Column(db.Date)
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Lead(db.Model):
-    __tablename__ = "leads"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    email = db.Column(db.String(200))
-    source = db.Column(db.String(200))
-    status = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# CALENDAR
-# =========================================================
-
-class CalendarEvent(db.Model):
-    __tablename__ = "calendar_events"
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    description = db.Column(db.Text)
-    location = db.Column(db.String(255))
-    start_time = db.Column(db.DateTime)
-    end_time = db.Column(db.DateTime)
-    status = db.Column(db.String(100), default="Scheduled")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class Event(db.Model):
-    __tablename__ = "events"
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200))
-    date = db.Column(db.Date)
-    description = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# ANALYTICS
-# =========================================================
-
-class AnalyticsMetric(db.Model):
-    __tablename__ = "analytics_metrics"
-
-    id = db.Column(db.Integer, primary_key=True)
-    metric_name = db.Column(db.String(200))
-    metric_value = db.Column(db.Float)
-    recorded_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# =========================================================
-# ORIENTATION
-# =========================================================
-
-class OrientationChecklist(db.Model):
-    __tablename__ = "orientation_checklist"
-
-    id = db.Column(db.Integer, primary_key=True)
-    candidate_id = db.Column(db.Integer)
-    employee_id = db.Column(db.Integer)
-    employee_name = db.Column(db.String(200))
-    title = db.Column(db.String(255))
-    task = db.Column(db.String(300))
-    description = db.Column(db.Text)
-    status = db.Column(db.String(100), default="Pending")
-    completed = db.Column(db.Boolean, default=False)
-    due_date = db.Column(db.Date)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class AssetAssignment(db.Model):
-    __tablename__ = "asset_assignments"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer)
-    employee_name = db.Column(db.String(200))
-    inventory_item_id = db.Column(db.Integer)
-    asset_name = db.Column(db.String(200))
-    asset_barcode = db.Column(db.String(200))
-    assignment_date = db.Column(db.Date)
-    return_due_date = db.Column(db.Date)
-    status = db.Column(db.String(100), default="Assigned")
-    assigned_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-class PolicyAcknowledgement(db.Model):
-    __tablename__ = "policy_acknowledgements"
-
-    id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.Integer)
-    employee_name = db.Column(db.String(200))
-    policy_name = db.Column(db.String(200))
-    acknowledged = db.Column(db.Boolean, default=False)
-    acknowledged_date = db.Column(db.Date)
-    acknowledged_at = db.Column(db.DateTime)
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title or "UrbanHRPartners Enterprise Suite" }}{% endblock %}</title>
+
+    <style>
+        :root {
+            --navy: #0b1f3a;
+            --navy-deep: #07162a;
+            --navy-light: #17345c;
+            --gold: #d4af37;
+            --gold-soft: #f0c85a;
+            --orange: #e8891a;
+            --silver: #c0c7d1;
+            --silver-soft: #e6ebf1;
+            --white: #ffffff;
+            --bg: #f4f7fb;
+            --panel: #ffffff;
+            --border: #d8e0ea;
+            --success: #1f8f55;
+            --danger: #b63535;
+            --warning: #d08811;
+            --info: #2b6cb0;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --shadow-soft: 0 10px 30px rgba(11, 31, 58, 0.10);
+            --shadow-medium: 0 10px 25px rgba(11, 31, 58, 0.18);
+            --shadow-gold: 0 8px 18px rgba(212, 175, 55, 0.28);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #f8fbff 0%, #eef3f9 100%);
+            color: var(--text);
+            min-height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: 290px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+            color: var(--white);
+            padding: 22px 18px 22px 18px;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .brand-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 22px;
+            padding: 18px;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 20px;
+        }
+
+        .brand-logo-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .brand-logo {
+            width: 86px;
+            height: 86px;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at 30% 30%, var(--gold-soft), var(--gold) 46%, #916b10 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--navy);
+            font-size: 1.6rem;
+            font-weight: 800;
+            border: 3px solid rgba(255,255,255,0.18);
+            box-shadow:
+                inset 0 2px 12px rgba(255,255,255,0.22),
+                0 10px 26px rgba(0,0,0,0.25);
+        }
+
+        .brand-title {
+            font-size: 1.16rem;
+            font-weight: 800;
+            line-height: 1.3;
+            text-align: center;
+            margin-bottom: 6px;
+            color: var(--white);
+        }
+
+        .brand-subtitle {
+            font-size: 0.9rem;
+            text-align: center;
+            color: #d9e5f4;
+            line-height: 1.45;
+        }
+
+        .sidebar-section {
+            margin-top: 18px;
+            margin-bottom: 18px;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #c7d4e7;
+            margin: 14px 10px 10px;
+            font-weight: 700;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 16px;
+            color: var(--white);
+            background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.14),
+                0 6px 12px rgba(0,0,0,0.16);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.16),
+                0 10px 18px rgba(0,0,0,0.22);
+            background: linear-gradient(180deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.05) 100%);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(180deg, #f2cf69 0%, var(--gold) 55%, #b88617 100%);
+            color: var(--navy);
+            border: 1px solid rgba(255,255,255,0.35);
+            box-shadow:
+                inset 0 2px 10px rgba(255,255,255,0.35),
+                0 12px 20px rgba(212, 175, 55, 0.35);
+        }
+
+        .nav-link-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .nav-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.14);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .nav-link.active .nav-icon {
+            background: rgba(11, 31, 58, 0.12);
+        }
+
+        .nav-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-badge {
+            min-width: 26px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.16);
+            font-size: 0.74rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .nav-link.active .nav-badge {
+            background: rgba(11,31,58,0.16);
+        }
+
+        .content-wrap {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .topbar-left {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .topbar-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .topbar-subtitle {
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: linear-gradient(180deg, #ffffff 0%, #eef4fb 100%);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            box-shadow: var(--shadow-soft);
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 0 4px rgba(31, 143, 85, 0.15);
+        }
+
+        .notif-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #ffffff 0%, #eef4fb 100%);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            font-size: 1.1rem;
+            color: var(--navy);
+        }
+
+        .notif-count {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #ffcf72 0%, var(--orange) 100%);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 14px rgba(232, 137, 26, 0.25);
+            padding: 0 6px;
+        }
+
+        .user-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px 8px 8px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #ffffff 0%, #eef4fb 100%);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: linear-gradient(180deg, var(--navy-light) 0%, var(--navy) 100%);
+            color: var(--gold-soft);
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .user-role {
+            font-size: 0.79rem;
+            color: var(--muted);
+        }
+
+        .main-area {
+            padding: 26px 24px 36px;
+        }
+
+        .flash-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .flash {
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            box-shadow: var(--shadow-soft);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .flash-success {
+            background: #effcf5;
+            border-color: #b9ebca;
+            color: #14673c;
+        }
+
+        .flash-danger {
+            background: #fff0f0;
+            border-color: #f2c0c0;
+            color: #8d1f1f;
+        }
+
+        .flash-warning {
+            background: #fff8eb;
+            border-color: #efd39c;
+            color: #9a6505;
+        }
+
+        .flash-info {
+            background: #eef6ff;
+            border-color: #bdd7f8;
+            color: #1c4f89;
+        }
+
+        .page-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            padding: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .page-header-left h1 {
+            margin: 0 0 6px 0;
+            color: var(--navy);
+            font-size: 1.55rem;
+            line-height: 1.2;
+        }
+
+        .page-header-left p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 900px;
+            line-height: 1.6;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn-3d,
+        .btn-ghost,
+        .btn-danger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            text-decoration: none;
+        }
+
+        .btn-3d {
+            color: var(--navy);
+            background: linear-gradient(180deg, #ffe18a 0%, var(--gold-soft) 42%, var(--gold) 100%);
+            box-shadow:
+                inset 0 2px 10px rgba(255,255,255,0.45),
+                0 8px 0 #9c7b17,
+                0 14px 24px rgba(212,175,55,0.35);
+        }
+
+        .btn-3d:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow:
+                inset 0 2px 10px rgba(255,255,255,0.45),
+                0 3px 0 #9c7b17,
+                0 8px 16px rgba(212,175,55,0.25);
+        }
+
+        .btn-ghost {
+            color: var(--navy);
+            background: linear-gradient(180deg, #ffffff 0%, #eef4fb 100%);
+            border: 1px solid var(--border);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                0 8px 16px rgba(11,31,58,0.08);
+        }
+
+        .btn-ghost:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            color: #fff;
+            background: linear-gradient(180deg, #d95f5f 0%, #b63535 100%);
+            box-shadow:
+                inset 0 2px 8px rgba(255,255,255,0.18),
+                0 8px 0 #7c1f1f,
+                0 14px 22px rgba(182,53,53,0.25);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-danger:active {
+            transform: translateY(4px);
+            box-shadow:
+                inset 0 2px 8px rgba(255,255,255,0.18),
+                0 3px 0 #7c1f1f,
+                0 8px 14px rgba(182,53,53,0.25);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .card h3,
+        .card h4 {
+            margin-top: 0;
+            color: var(--navy);
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            min-height: 122px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            right: -26px;
+            top: -26px;
+        }
+
+        .stat-label {
+            position: relative;
+            z-index: 1;
+            font-size: 0.88rem;
+            color: #dce7f3;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold-soft);
+        }
+
+        .stat-sub {
+            position: relative;
+            z-index: 1;
+            margin-top: 8px;
+            font-size: 0.82rem;
+            color: #d7e3f2;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        thead {
+            background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+        }
+
+        th, td {
+            padding: 14px 14px;
+            border-bottom: 1px solid #e7edf5;
+            text-align: left;
+            vertical-align: top;
+            font-size: 0.94rem;
+        }
+
+        th {
+            color: var(--navy);
+            font-size: 0.84rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 800;
+        }
+
+        tr:hover td {
+            background: #fbfdff;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field label {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid #cfd9e5;
+            background: #fff;
+            font-size: 0.95rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+        }
+
+        .field textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .field-full {
+            grid-column: 1 / -1;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 0 0 14px;
+        }
+
+        .section-title h2,
+        .section-title h3 {
+            margin: 0;
+            color: var(--navy);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .pill-active,
+        .pill-open,
+        .pill-completed,
+        .pill-paid,
+        .pill-scheduled,
+        .pill-draft,
+        .pill-pending,
+        .pill-default {
+            background: #eef4fb;
+            color: var(--navy);
+            border-color: #dbe7f4;
+        }
+
+        .pill-success {
+            background: #effcf5;
+            color: #14673c;
+            border-color: #b9ebca;
+        }
+
+        .pill-warning {
+            background: #fff7e8;
+            color: #9a6505;
+            border-color: #efd39c;
+        }
+
+        .pill-danger {
+            background: #fff0f0;
+            color: #8d1f1f;
+            border-color: #f2c0c0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            border: 1px dashed #cad7e6;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
+        }
+
+        .empty-state h3 {
+            margin-top: 0;
+            color: var(--navy);
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .xiomy-panel {
+            margin-top: 24px;
+            padding: 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #0c2342 0%, #173f73 100%);
+            color: #fff;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .xiomy-title {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--gold-soft);
+            margin: 0 0 8px;
+        }
+
+        .xiomy-text {
+            margin: 0;
+            line-height: 1.6;
+            color: #dce7f4;
+            font-size: 0.92rem;
+        }
+
+        .mobile-topbar {
+            display: none;
+            padding: 14px 16px;
+            background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+            color: #fff;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .mobile-title {
+            font-weight: 900;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 1280px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .app-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .mobile-topbar {
+                display: flex;
+            }
+
+            .topbar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-area {
+                padding: 18px 14px 28px;
+            }
+
+            .topbar {
+                padding: 14px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .topbar-right {
+                justify-content: flex-start;
+            }
+
+            .grid-2,
+            .grid-3,
+            .grid-4,
+            .form-grid,
+            .form-grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .page-panel {
+                padding: 18px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-row {
+                width: 100%;
+            }
+
+            .btn-row .btn-3d,
+            .btn-row .btn-ghost,
+            .btn-row .btn-danger {
+                width: 100%;
+            }
+        }
+    </style>
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <div class="mobile-topbar">
+        <div class="mobile-title">UrbanHRPartners Enterprise Suite</div>
+        <a class="btn-ghost" href="{{ url_for('dashboard') }}">Dashboard</a>
+    </div>
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand-card">
+                <div class="brand-logo-wrap">
+                    <div class="brand-logo">UH</div>
+                </div>
+                <div class="brand-title">UrbanHRPartners</div>
+                <div class="brand-subtitle">
+                    Enterprise Suite<br>
+                    CRM · HRIS · ATS · SG-SST · Finance · Marketing · Inventory
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Core Navigation</div>
+                <div class="nav-list">
+                    <a href="{{ url_for('dashboard') }}"
+                       class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🏠</span>
+                            <span class="nav-label">Dashboard</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('crm') }}"
+                       class="nav-link {% if request.endpoint == 'crm' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🤝</span>
+                            <span class="nav-label">CRM</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('hris') }}"
+                       class="nav-link {% if request.endpoint == 'hris' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">👥</span>
+                            <span class="nav-label">HRIS</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('ats') }}"
+                       class="nav-link {% if request.endpoint == 'ats' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🧾</span>
+                            <span class="nav-label">ATS</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('orientation') }}"
+                       class="nav-link {% if request.endpoint == 'orientation' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🎓</span>
+                            <span class="nav-label">Orientation</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('sgsst') }}"
+                       class="nav-link {% if request.endpoint == 'sgsst' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🛡️</span>
+                            <span class="nav-label">SG-SST</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('inventory') }}"
+                       class="nav-link {% if request.endpoint == 'inventory' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">📦</span>
+                            <span class="nav-label">Inventory</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('finance') }}"
+                       class="nav-link {% if request.endpoint == 'finance' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">💰</span>
+                            <span class="nav-label">Finance</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('marketing') }}"
+                       class="nav-link {% if request.endpoint == 'marketing' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">📈</span>
+                            <span class="nav-label">Marketing</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('reports') }}"
+                       class="nav-link {% if request.endpoint == 'reports' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">📊</span>
+                            <span class="nav-label">Reports & Analytics</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Workflow</div>
+                <div class="nav-list">
+                    <a href="{{ url_for('calendar_view') }}"
+                       class="nav-link {% if request.endpoint == 'calendar_view' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🗓️</span>
+                            <span class="nav-label">Calendar</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('notifications') }}"
+                       class="nav-link {% if request.endpoint == 'notifications' %}active{% endif %}">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🔔</span>
+                            <span class="nav-label">Notifications</span>
+                        </div>
+                        {% if unread_notifications and unread_notifications > 0 %}
+                            <span class="nav-badge">{{ unread_notifications }}</span>
+                        {% endif %}
+                    </a>
+
+                    <a href="{{ url_for('system_routes') }}"
+                       class="nav-link">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🧭</span>
+                            <span class="nav-label">Routes Map</span>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('system_db_status') }}"
+                       class="nav-link">
+                        <div class="nav-link-left">
+                            <span class="nav-icon">🗄️</span>
+                            <span class="nav-label">DB Status</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="xiomy-panel">
+                <p class="xiomy-title">XIOMY Executive Layer</p>
+                <p class="xiomy-text">
+                    AI executive integration zone prepared for analytics, recommendations,
+                    alerts, business intelligence, and future multilingual voice workflows.
+                </p>
+            </div>
+        </aside>
+
+        <div class="content-wrap">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <div class="topbar-title">{{ page_title or "UrbanHRPartners Enterprise Suite" }}</div>
+                    <div class="topbar-subtitle">
+                        {% block topbar_subtitle %}
+                            Integrated enterprise operations platform with interconnected modules.
+                        {% endblock %}
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="status-pill">
+                        <span class="status-dot"></span>
+                        System Online
+                    </div>
+
+                    <a href="{{ url_for('notifications') }}" class="notif-link" title="Notifications">
+                        🔔
+                        {% if unread_notifications and unread_notifications > 0 %}
+                            <span class="notif-count">{{ unread_notifications }}</span>
+                        {% endif %}
+                    </a>
+
+                    {% if current_user %}
+                        <div class="user-chip">
+                            <div class="user-avatar">
+                                {{ current_user.full_name[:1] if current_user.full_name else "U" }}
+                            </div>
+                            <div class="user-meta">
+                                <span class="user-name">{{ current_user.full_name or "User" }}</span>
+                                <span class="user-role">{{ current_user.role or "Team Member" }}</span>
+                            </div>
+                        </div>
+
+                        <a href="{{ url_for('logout') }}" class="btn-danger">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn-3d">Login</a>
+                    {% endif %}
+                </div>
+            </header>
+
+            <main class="main-area">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-stack">
+                            {% for category, message in messages %}
+                                <div class="flash flash-{{ category if category in ['success','danger','warning','info'] else 'info' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}
+                <div class="page-panel">
+                    <div class="page-header">
+                        <div class="page-header-left">
+                            <h1>Welcome to UrbanHRPartners Enterprise Suite</h1>
+                            <p>
+                                This base template is active and aligned with the current backend routes.
+                                Replace child templates one by one without breaking navigation.
+                            </p>
+                        </div>
+
+                        <div class="btn-row">
+                            <a href="{{ url_for('dashboard') }}" class="btn-3d">Go to Dashboard</a>
+                            <a href="{{ url_for('system_routes') }}" class="btn-ghost">View Routes</a>
+                        </div>
+                    </div>
+
+                    <div class="grid-4">
+                        <div class="stat-card">
+                            <div class="stat-label">CRM</div>
+                            <div class="stat-value">Live</div>
+                            <div class="stat-sub">Clients, contacts, communications, projects.</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-label">HRIS</div>
+                            <div class="stat-value">Live</div>
+                            <div class="stat-sub">Employees, payroll, leave, labor actions.</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-label">ATS</div>
+                            <div class="stat-value">Live</div>
+                            <div class="stat-sub">Candidates, applications, interviews, hiring.</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-label">Finance</div>
+                            <div class="stat-value">Live</div>
+                            <div class="stat-sub">Invoices, payments, expenses, budgets.</div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+
+                <div class="footer-note">
+                    UrbanHRPartners Enterprise Suite · Render-ready base template aligned to current Flask routes
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% block scripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const flashes = document.querySelectorAll(".flash");
+            flashes.forEach(function (flash) {
+                setTimeout(function () {
+                    flash.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                    flash.style.opacity = "0";
+                    flash.style.transform = "translateY(-4px)";
+                }, 5000);
+            });
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>
