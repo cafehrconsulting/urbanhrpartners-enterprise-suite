@@ -2,8 +2,10 @@
 
 {% block title %}Dashboard | UrbanHRPartners Enterprise Suite{% endblock %}
 
+{% block topbar_title %}Executive Dashboard{% endblock %}
+
 {% block topbar_subtitle %}
-Executive command center for CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, and enterprise workflow visibility.
+Full enterprise command center for UrbanHRPartners and XIOMY, with cross-module oversight for CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Reports, and Analytics.
 {% endblock %}
 
 {% block head_extra %}
@@ -11,1121 +13,1160 @@ Executive command center for CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketi
     .dashboard-shell {
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 22px;
     }
 
-    .hero-panel {
+    .executive-hero {
         position: relative;
         overflow: hidden;
+        border-radius: 34px;
+        padding: 32px;
         background:
-            radial-gradient(circle at top right, rgba(240, 200, 90, 0.25), transparent 24%),
-            radial-gradient(circle at left bottom, rgba(232, 137, 26, 0.14), transparent 25%),
-            linear-gradient(135deg, #07162a 0%, #0b1f3a 55%, #17345c 100%);
+            radial-gradient(circle at right top, rgba(245, 215, 127, 0.18), transparent 24%),
+            radial-gradient(circle at left bottom, rgba(240, 147, 43, 0.12), transparent 22%),
+            linear-gradient(135deg, rgba(6,16,30,0.98) 0%, rgba(9,26,47,0.98) 42%, rgba(16,48,90,0.95) 100%);
+        border: 1px solid rgba(245, 215, 127, 0.18);
+        box-shadow: 0 28px 55px rgba(2, 10, 21, 0.34);
         color: #ffffff;
-        border-radius: 28px;
-        padding: 28px;
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 18px 40px rgba(11, 31, 58, 0.24);
     }
 
-    .hero-panel::before {
+    .executive-hero::before {
         content: "";
         position: absolute;
-        width: 280px;
-        height: 280px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.05);
-        top: -90px;
-        right: -90px;
+        inset: auto auto -80px -80px;
+        width: 260px;
+        height: 260px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(230,173,28,0.16), transparent 70%);
+        pointer-events: none;
     }
 
-    .hero-panel::after {
+    .executive-hero::after {
         content: "";
         position: absolute;
-        width: 190px;
-        height: 190px;
-        border-radius: 50%;
-        background: rgba(212,175,55,0.11);
-        bottom: -60px;
-        left: -60px;
+        top: -70px;
+        right: -50px;
+        width: 240px;
+        height: 240px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 72%);
+        pointer-events: none;
     }
 
-    .hero-grid {
+    .executive-grid {
         position: relative;
         z-index: 1;
         display: grid;
-        grid-template-columns: 1.5fr 1fr;
-        gap: 22px;
+        grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.95fr);
+        gap: 24px;
         align-items: stretch;
     }
 
-    .hero-left {
+    .executive-copy h3 {
+        margin: 0 0 12px;
+        font-size: clamp(1.9rem, 2.8vw, 3rem);
+        letter-spacing: -0.04em;
+        line-height: 1.06;
+    }
+
+    .executive-copy p {
+        margin: 0;
+        max-width: 920px;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: rgba(242, 246, 251, 0.84);
+    }
+
+    .hero-status-row {
+        margin-top: 22px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .hero-status-pill {
+        min-width: 132px;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: 0 14px 24px rgba(0,0,0,0.18);
+    }
+
+    .hero-status-pill .eyebrow {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: rgba(242,246,251,0.64);
+        font-weight: 800;
+    }
+
+    .hero-status-pill .value {
+        display: block;
+        font-size: 1.16rem;
+        color: #f5d77f;
+        font-weight: 800;
+    }
+
+    .executive-side-card {
+        border-radius: 28px;
+        padding: 22px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 18px 30px rgba(0,0,0,0.18);
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        gap: 16px;
-        min-width: 0;
-    }
-
-    .hero-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        width: fit-content;
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.09);
-        border: 1px solid rgba(255,255,255,0.12);
-        color: #f6d87b;
-        font-size: 0.84rem;
-        font-weight: 800;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-
-    .hero-title {
-        margin: 0;
-        font-size: 2rem;
-        line-height: 1.15;
-        font-weight: 900;
-        color: #ffffff;
-        max-width: 900px;
-    }
-
-    .hero-text {
-        margin: 0;
-        max-width: 940px;
-        font-size: 1rem;
-        line-height: 1.75;
-        color: #d9e5f4;
-    }
-
-    .hero-actions {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 4px;
-    }
-
-    .hero-metrics {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-        align-content: start;
-    }
-
-    .hero-mini-card {
-        border-radius: 22px;
-        padding: 18px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
-        border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-    }
-
-    .hero-mini-label {
-        color: #d7e3f2;
-        font-size: 0.84rem;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    .hero-mini-value {
-        color: #f6d87b;
-        font-size: 1.7rem;
-        font-weight: 900;
-        line-height: 1.1;
-    }
-
-    .hero-mini-sub {
-        margin-top: 8px;
-        color: #d7e3f2;
-        font-size: 0.84rem;
-        line-height: 1.45;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
         gap: 18px;
     }
 
-    .dashboard-stat {
-        position: relative;
-        overflow: hidden;
-        border-radius: 22px;
-        padding: 20px;
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        border: 1px solid #dce5ef;
-        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
-        min-height: 132px;
-    }
-
-    .dashboard-stat::after {
-        content: "";
-        position: absolute;
-        width: 88px;
-        height: 88px;
-        border-radius: 50%;
-        background: rgba(11,31,58,0.05);
-        top: -28px;
-        right: -28px;
-    }
-
-    .dashboard-stat.crm::after { background: rgba(11,31,58,0.06); }
-    .dashboard-stat.hris::after { background: rgba(212,175,55,0.10); }
-    .dashboard-stat.ats::after { background: rgba(232,137,26,0.10); }
-    .dashboard-stat.finance::after { background: rgba(23,52,92,0.08); }
-    .dashboard-stat.inventory::after { background: rgba(192,199,209,0.22); }
-    .dashboard-stat.sgsst::after { background: rgba(31,143,85,0.10); }
-
-    .dashboard-stat-top {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .dashboard-stat-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
-        color: #0b1f3a;
-        font-size: 1.05rem;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-    }
-
-    .dashboard-stat-label {
-        position: relative;
-        z-index: 1;
-        color: #516173;
-        font-size: 0.86rem;
-        font-weight: 800;
-        line-height: 1.4;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-
-    .dashboard-stat-value {
-        position: relative;
-        z-index: 1;
-        color: #0b1f3a;
-        font-size: 2rem;
-        line-height: 1;
-        font-weight: 900;
-        margin-bottom: 10px;
-    }
-
-    .dashboard-stat-note {
-        position: relative;
-        z-index: 1;
-        color: #6b7280;
-        font-size: 0.84rem;
-        line-height: 1.5;
-    }
-
-    .section-grid-2 {
-        display: grid;
-        grid-template-columns: 1.25fr 1fr;
-        gap: 22px;
-    }
-
-    .section-grid-3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-    }
-
-    .module-card {
-        background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
-        border-radius: 24px;
-        border: 1px solid #dce5ef;
-        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
-        overflow: hidden;
-    }
-
-    .module-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 22px 22px 16px;
-        border-bottom: 1px solid #ebf0f6;
-        flex-wrap: wrap;
-    }
-
-    .module-card-title-wrap h2,
-    .module-card-title-wrap h3 {
-        margin: 0 0 6px 0;
-        color: #0b1f3a;
-        line-height: 1.2;
-    }
-
-    .module-card-title-wrap p {
+    .executive-side-card h4 {
         margin: 0;
-        color: #6b7280;
-        line-height: 1.6;
+        color: #f5d77f;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    .executive-side-card p {
+        margin: 0;
+        color: rgba(242,246,251,0.80);
+        line-height: 1.7;
         font-size: 0.92rem;
     }
 
-    .module-card-body {
+    .executive-side-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .executive-kpi {
+        border-radius: 20px;
+        padding: 14px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+        border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .executive-kpi .label {
+        display: block;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+        color: rgba(242,246,251,0.62);
+        margin-bottom: 6px;
+        font-weight: 800;
+    }
+
+    .executive-kpi .value {
+        display: block;
+        font-size: 1.16rem;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .dashboard-card {
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,248,252,0.98));
+        border: 1px solid rgba(198,210,224,0.34);
+        box-shadow: 0 18px 40px rgba(3, 12, 26, 0.16);
+        color: #10223c;
+        overflow: hidden;
+    }
+
+    .dashboard-card.pad {
         padding: 22px;
     }
 
-    .subgrid-2 {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-7 { grid-column: span 7; }
+    .col-6 { grid-column: span 6; }
+    .col-5 { grid-column: span 5; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
 
-    .mini-summary {
-        border-radius: 18px;
-        padding: 18px;
-        background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
-        border: 1px solid #dde8f5;
-    }
-
-    .mini-summary-label {
-        color: #5b6d82;
-        font-size: 0.82rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .mini-summary-value {
-        color: #0b1f3a;
-        font-size: 1.6rem;
-        line-height: 1.1;
-        font-weight: 900;
-        margin-bottom: 8px;
-    }
-
-    .mini-summary-text {
-        color: #6b7280;
-        font-size: 0.86rem;
-        line-height: 1.5;
-    }
-
-    .list-stack {
+    .section-head {
         display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .list-item {
-        border-radius: 18px;
-        border: 1px solid #e5ebf2;
-        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-        box-shadow: 0 8px 18px rgba(11, 31, 58, 0.05);
-        padding: 16px 16px;
-    }
-
-    .list-item-top {
-        display: flex;
-        justify-content: space-between;
         align-items: flex-start;
+        justify-content: space-between;
         gap: 16px;
-        flex-wrap: wrap;
-        margin-bottom: 10px;
+        margin-bottom: 18px;
     }
 
-    .list-item-title {
+    .section-head h3,
+    .section-head h4 {
         margin: 0;
-        font-size: 1rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        line-height: 1.3;
+        color: #07162a;
+        font-size: 1.08rem;
+        letter-spacing: -0.02em;
     }
 
-    .list-item-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        color: #6b7280;
-        font-size: 0.85rem;
-        line-height: 1.4;
-    }
-
-    .list-item-text {
-        margin: 0;
-        color: #5f6d7e;
+    .section-head p {
+        margin: 7px 0 0;
+        color: #56687f;
         line-height: 1.65;
         font-size: 0.92rem;
     }
 
-    .tag-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .tag {
+    .eyebrow-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 6px 10px;
+        min-height: 32px;
+        padding: 6px 12px;
         border-radius: 999px;
-        background: #eef4fb;
-        color: #0b1f3a;
-        border: 1px solid #d8e4f2;
-        font-size: 0.78rem;
+        background: rgba(16,48,90,0.08);
+        color: #10305a;
+        border: 1px solid rgba(16,48,90,0.10);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .overview-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .overview-kpi-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 180px;
+        padding: 22px;
+        border-radius: 26px;
+        background: linear-gradient(180deg, #ffffff, #f4f8fc);
+        border: 1px solid rgba(198,210,224,0.44);
+        box-shadow: 0 18px 34px rgba(6,16,30,0.10);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .overview-kpi-card::after {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: -24px;
+        width: 120px;
+        height: 120px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(230,173,28,0.14) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .overview-kpi-card .icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, rgba(16,48,90,0.12), rgba(16,48,90,0.05));
+        border: 1px solid rgba(16,48,90,0.10);
+        color: #10305a;
+        font-size: 1.1rem;
+        font-weight: 800;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.80);
+    }
+
+    .overview-kpi-card .label {
+        display: block;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #71839b;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .overview-kpi-card .value {
+        display: block;
+        font-size: clamp(1.7rem, 2.2vw, 2.4rem);
         font-weight: 800;
         line-height: 1;
+        color: #07162a;
+        letter-spacing: -0.05em;
     }
 
-    .tag.gold {
-        background: #fff6df;
-        color: #8f6500;
-        border-color: #f0d18c;
+    .overview-kpi-card .foot {
+        color: #56687f;
+        line-height: 1.65;
+        font-size: 0.9rem;
     }
 
-    .tag.orange {
-        background: #fff2e5;
-        color: #b05e00;
-        border-color: #f1c48d;
+    .module-score-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
     }
 
-    .tag.green {
-        background: #eefcf5;
-        color: #14673c;
-        border-color: #b9ebca;
+    .module-score-card {
+        border-radius: 24px;
+        padding: 18px;
+        background: linear-gradient(180deg, #ffffff, #f7faff);
+        border: 1px solid rgba(198,210,224,0.44);
+        box-shadow: 0 14px 24px rgba(6,16,30,0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .module-score-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .module-score-title {
+        font-weight: 800;
+        color: #07162a;
+    }
+
+    .module-score-percent {
+        font-weight: 800;
+        color: #10305a;
+    }
+
+    .progress-track {
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(198,210,224,0.54), rgba(219,228,239,0.86));
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(7,22,42,0.12);
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #f5d77f 0%, #e6ad1c 42%, #dd7a11 100%);
+        box-shadow: 0 8px 14px rgba(230,173,28,0.24);
+    }
+
+    .module-score-card p {
+        margin: 0;
+        color: #56687f;
+        line-height: 1.65;
+        font-size: 0.9rem;
+    }
+
+    .ops-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .ops-card {
+        border-radius: 24px;
+        padding: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,250,253,0.98));
+        border: 1px solid rgba(198,210,224,0.44);
+        box-shadow: 0 14px 24px rgba(6,16,30,0.08);
+    }
+
+    .ops-card h4 {
+        margin: 0 0 10px;
+        font-size: 0.98rem;
+        color: #07162a;
+    }
+
+    .ops-card p {
+        margin: 0;
+        color: #56687f;
+        line-height: 1.65;
+        font-size: 0.9rem;
     }
 
     .quick-actions-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
     }
 
     .quick-action {
+        position: relative;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        padding: 18px;
-        border-radius: 20px;
-        background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-        border: 1px solid #dce5ef;
-        box-shadow: 0 10px 22px rgba(11, 31, 58, 0.07);
+        gap: 14px;
+        min-height: 170px;
+        padding: 20px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #ffffff, #f5f9fc);
+        border: 1px solid rgba(198,210,224,0.42);
+        box-shadow: 0 16px 28px rgba(6,16,30,0.08);
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
 
-    .quick-action-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 16px;
+    .quick-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 22px 34px rgba(6,16,30,0.12);
+        border-color: rgba(230,173,28,0.34);
+    }
+
+    .quick-action::after {
+        content: "";
+        position: absolute;
+        width: 110px;
+        height: 110px;
+        top: -24px;
+        right: -18px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(230,173,28,0.12) 0%, transparent 72%);
+        pointer-events: none;
+    }
+
+    .quick-action .icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, rgba(16,48,90,0.12), rgba(16,48,90,0.05));
+        border: 1px solid rgba(16,48,90,0.10);
+        color: #10305a;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .quick-action h4 {
+        margin: 0;
+        color: #07162a;
+        font-size: 1rem;
+    }
+
+    .quick-action p {
+        margin: 0;
+        color: #56687f;
+        line-height: 1.65;
+        font-size: 0.9rem;
+    }
+
+    .quick-action .cta {
+        margin-top: auto;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(180deg, #ffe18a 0%, #f0c85a 42%, #d4af37 100%);
-        color: #0b1f3a;
-        box-shadow:
-            inset 0 2px 10px rgba(255,255,255,0.45),
-            0 8px 14px rgba(212,175,55,0.22);
-        font-size: 1.15rem;
+        min-height: 42px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #f5d77f, #e6ad1c);
+        color: #10223c;
+        font-size: 0.86rem;
+        font-weight: 800;
+        box-shadow: 0 14px 22px rgba(230,173,28,0.24), inset 0 1px 0 rgba(255,255,255,0.34);
+        width: fit-content;
     }
 
-    .quick-action-title {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1rem;
-        font-weight: 900;
-        line-height: 1.3;
+    .intel-list {
+        display: grid;
+        gap: 14px;
     }
 
-    .quick-action-text {
-        margin: 0;
-        color: #6b7280;
-        font-size: 0.88rem;
-        line-height: 1.6;
-        flex-grow: 1;
-    }
-
-    .quick-action .btn-ghost,
-    .quick-action .btn-3d {
-        width: 100%;
-    }
-
-    .empty-dashboard {
-        text-align: center;
-        padding: 40px 20px;
+    .intel-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: start;
         border-radius: 20px;
-        border: 1px dashed #cfd8e3;
-        background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
+        padding: 16px;
+        background: linear-gradient(180deg, #ffffff, #f7faff);
+        border: 1px solid rgba(198,210,224,0.38);
+        box-shadow: 0 12px 20px rgba(6,16,30,0.06);
     }
 
-    .empty-dashboard h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        color: #0b1f3a;
+    .intel-bullet {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, rgba(230,173,28,0.18), rgba(221,122,17,0.10));
+        border: 1px solid rgba(230,173,28,0.20);
+        color: #9f6300;
+        font-weight: 800;
     }
 
-    .empty-dashboard p {
+    .intel-item h4 {
+        margin: 0 0 6px;
+        color: #07162a;
+        font-size: 0.98rem;
+    }
+
+    .intel-item p {
         margin: 0;
-        color: #6b7280;
+        color: #56687f;
         line-height: 1.65;
+        font-size: 0.9rem;
     }
 
-    @media (max-width: 1400px) {
-        .stats-grid {
-            grid-template-columns: repeat(3, 1fr);
+    .compliance-matrix {
+        display: grid;
+        gap: 12px;
+    }
+
+    .compliance-row {
+        display: grid;
+        grid-template-columns: minmax(160px, 0.95fr) minmax(0, 1.6fr) auto;
+        gap: 14px;
+        align-items: center;
+        border-radius: 18px;
+        padding: 14px 16px;
+        background: linear-gradient(180deg, #ffffff, #f8fbff);
+        border: 1px solid rgba(198,210,224,0.40);
+        box-shadow: 0 10px 18px rgba(6,16,30,0.06);
+    }
+
+    .compliance-row .title {
+        font-weight: 800;
+        color: #07162a;
+    }
+
+    .compliance-row .detail {
+        color: #56687f;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+
+    .status-good {
+        background: rgba(29,155,95,0.12);
+        color: #127747;
+        border: 1px solid rgba(29,155,95,0.18);
+    }
+
+    .status-watch {
+        background: rgba(211,148,22,0.14);
+        color: #9c6600;
+        border: 1px solid rgba(211,148,22,0.20);
+    }
+
+    .status-risk {
+        background: rgba(214,69,69,0.12);
+        color: #b63636;
+        border: 1px solid rgba(214,69,69,0.18);
+    }
+
+    .table-shell {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 22px;
+        border: 1px solid rgba(198,210,224,0.48);
+        background: linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 860px;
+    }
+
+    .dashboard-table thead th {
+        padding: 14px 16px;
+        background: linear-gradient(180deg, #0c2340, #102949);
+        color: #ffffff;
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        font-weight: 800;
+    }
+
+    .dashboard-table tbody td {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(219,228,239,0.86);
+        color: #10223c;
+        vertical-align: top;
+        font-size: 0.92rem;
+    }
+
+    .dashboard-table tbody tr:nth-child(even) td {
+        background: rgba(248,250,252,0.70);
+    }
+
+    .dashboard-table tbody tr:hover td {
+        background: rgba(242,193,74,0.07);
+    }
+
+    .owner-office {
+        position: relative;
+        overflow: hidden;
+        border-radius: 30px;
+        padding: 24px;
+        background:
+            radial-gradient(circle at top right, rgba(245,215,127,0.16), transparent 26%),
+            linear-gradient(135deg, rgba(7,22,42,0.98) 0%, rgba(10,29,53,0.98) 52%, rgba(12,35,64,0.96) 100%);
+        border: 1px solid rgba(245,215,127,0.18);
+        box-shadow: 0 22px 42px rgba(2, 10, 21, 0.26);
+        color: #ffffff;
+    }
+
+    .owner-office::after {
+        content: "";
+        position: absolute;
+        inset: auto -40px -40px auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(230,173,28,0.14), transparent 72%);
+        pointer-events: none;
+    }
+
+    .owner-office h3 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+        color: #f5d77f;
+    }
+
+    .owner-office p {
+        margin: 0;
+        color: rgba(242,246,251,0.80);
+        line-height: 1.75;
+        font-size: 0.94rem;
+    }
+
+    .owner-office-grid {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .owner-office-card {
+        border-radius: 20px;
+        padding: 16px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .owner-office-card .label {
+        display: block;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+        color: rgba(242,246,251,0.62);
+        margin-bottom: 6px;
+        font-weight: 800;
+    }
+
+    .owner-office-card .value {
+        display: block;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    @media (max-width: 1480px) {
+        .overview-kpi-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .quick-actions-grid {
-            grid-template-columns: repeat(2, 1fr);
+        .quick-actions-grid,
+        .ops-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
-    @media (max-width: 1180px) {
-        .hero-grid,
-        .section-grid-2,
-        .section-grid-3 {
+    @media (max-width: 1280px) {
+        .executive-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .col-8,
+        .col-7,
+        .col-6,
+        .col-5,
+        .col-4,
+        .col-3 {
+            grid-column: span 12;
+        }
+    }
+
+    @media (max-width: 980px) {
+        .overview-kpi-grid,
+        .module-score-grid,
+        .quick-actions-grid,
+        .ops-grid,
+        .owner-office-grid,
+        .executive-side-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .compliance-row {
             grid-template-columns: 1fr;
         }
     }
 
-    @media (max-width: 900px) {
-        .stats-grid,
-        .subgrid-2,
-        .quick-actions-grid {
-            grid-template-columns: 1fr;
+    @media (max-width: 640px) {
+        .executive-hero,
+        .dashboard-card.pad,
+        .owner-office {
+            padding: 20px;
+            border-radius: 24px;
         }
 
-        .hero-metrics {
-            grid-template-columns: 1fr;
+        .executive-copy h3 {
+            font-size: 1.72rem;
         }
 
-        .hero-title {
-            font-size: 1.6rem;
+        .hero-status-pill {
+            width: 100%;
         }
     }
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="dashboard-shell">
-
-    <section class="hero-panel">
-        <div class="hero-grid">
-            <div class="hero-left">
-                <div class="hero-kicker">Executive Dashboard</div>
-
-                <h1 class="hero-title">
-                    UrbanHRPartners Enterprise Suite Command Center
-                </h1>
-
-                <p class="hero-text">
-                    This dashboard centralizes visibility across your operational ecosystem:
-                    CRM, HRIS, ATS, Orientation, SG-SST, Finance, Inventory, Marketing,
-                    Notifications, and enterprise reporting. It is structured for real deploy
-                    use, visual consistency, and safe rendering on Render without breaking when
-                    some data groups are empty.
-                </p>
-
-                <div class="hero-actions">
-                    <a href="{{ url_for('crm') }}" class="btn-3d">Open CRM</a>
-                    <a href="{{ url_for('finance') }}" class="btn-ghost">Open Finance</a>
-                    <a href="{{ url_for('reports') }}" class="btn-ghost">Open Reports</a>
+{% block hero %}
+<section class="executive-hero">
+    <div class="executive-grid">
+        <div class="executive-copy">
+            <h3>Integrated Executive Command Center</h3>
+            <p>
+                This dashboard is the premium control layer for the full UrbanHRPartners ecosystem. It is designed to give the owner a unified operational picture across consulting delivery, CRM revenue generation, HRIS workforce control, ATS recruiting flow, employee orientation, SG-SST compliance execution, finance oversight, inventory visibility, marketing activity, reporting output, and XIOMY-driven enterprise intelligence.
+            </p>
+            <div class="hero-status-row">
+                <div class="hero-status-pill">
+                    <span class="eyebrow">Platform State</span>
+                    <span class="value">Foundation Stable</span>
                 </div>
-            </div>
-
-            <div class="hero-metrics">
-                <div class="hero-mini-card">
-                    <div class="hero-mini-label">Total Clients</div>
-                    <div class="hero-mini-value">{{ stats.clients if stats and stats.clients is not none else 0 }}</div>
-                    <div class="hero-mini-sub">Connected customer ecosystem and consulting reach.</div>
+                <div class="hero-status-pill">
+                    <span class="eyebrow">Project Depth</span>
+                    <span class="value">Enterprise Build</span>
                 </div>
-
-                <div class="hero-mini-card">
-                    <div class="hero-mini-label">Employees</div>
-                    <div class="hero-mini-value">{{ stats.employees if stats and stats.employees is not none else 0 }}</div>
-                    <div class="hero-mini-sub">HRIS population available inside the platform.</div>
+                <div class="hero-status-pill">
+                    <span class="eyebrow">Visual Standard</span>
+                    <span class="value">Premium 3D UI</span>
                 </div>
-
-                <div class="hero-mini-card">
-                    <div class="hero-mini-label">Open Tasks</div>
-                    <div class="hero-mini-value">{{ stats.open_tasks if stats and stats.open_tasks is not none else 0 }}</div>
-                    <div class="hero-mini-sub">Pending operational follow-up actions across modules.</div>
-                </div>
-
-                <div class="hero-mini-card">
-                    <div class="hero-mini-label">Open Invoices</div>
-                    <div class="hero-mini-value">{{ stats.open_invoices if stats and stats.open_invoices is not none else 0 }}</div>
-                    <div class="hero-mini-sub">Finance receivables that still require collection.</div>
+                <div class="hero-status-pill">
+                    <span class="eyebrow">Deployment</span>
+                    <span class="value">Render Ready</span>
                 </div>
             </div>
         </div>
-    </section>
-
-    <section class="stats-grid">
-        <div class="dashboard-stat crm">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-icon">🤝</div>
-                <span class="tag">CRM</span>
-            </div>
-            <div class="dashboard-stat-label">Clients</div>
-            <div class="dashboard-stat-value">{{ stats.clients if stats and stats.clients is not none else 0 }}</div>
-            <div class="dashboard-stat-note">Total registered client organizations in the relationship engine.</div>
-        </div>
-
-        <div class="dashboard-stat hris">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-icon">👥</div>
-                <span class="tag gold">HRIS</span>
-            </div>
-            <div class="dashboard-stat-label">Employees</div>
-            <div class="dashboard-stat-value">{{ stats.employees if stats and stats.employees is not none else 0 }}</div>
-            <div class="dashboard-stat-note">Employee master profiles and workforce records available in HRIS.</div>
-        </div>
-
-        <div class="dashboard-stat ats">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-icon">🧾</div>
-                <span class="tag orange">ATS</span>
-            </div>
-            <div class="dashboard-stat-label">Candidates</div>
-            <div class="dashboard-stat-value">{{ stats.candidates if stats and stats.candidates is not none else 0 }}</div>
-            <div class="dashboard-stat-note">Candidate records available for recruitment and hiring pipelines.</div>
-        </div>
-
-        <div class="dashboard-stat finance">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-icon">💰</div>
-                <span class="tag">Finance</span>
-            </div>
-            <div class="dashboard-stat-label">Invoices</div>
-            <div class="dashboard-stat-value">{{ stats.invoices if stats and stats.invoices is not none else 0 }}</div>
-            <div class="dashboard-stat-note">Total invoices generated across consulting and service operations.</div>
-        </div>
-
-        <div class="dashboard-stat inventory">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-icon">📦</div>
-                <span class="tag">Inventory</span>
-            </div>
-            <div class="dashboard-stat-label">Inventory Items</div>
-            <div class="dashboard-stat-value">{{ stats.inventory_items if stats and stats.inventory_items is not none else 0 }}</div>
-            <div class="dashboard-stat-note">Physical resources, assets, and barcode-trackable items in stock.</div>
-        </div>
-
-        <div class="dashboard-stat sgsst">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-icon">🛡️</div>
-                <span class="tag green">SG-SST</span>
-            </div>
-            <div class="dashboard-stat-label">Incidents</div>
-            <div class="dashboard-stat-value">{{ stats.incidents if stats and stats.incidents is not none else 0 }}</div>
-            <div class="dashboard-stat-note">Safety event records and occupational risk reporting visibility.</div>
-        </div>
-    </section>
-
-    <section class="section-grid-2">
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h2>Enterprise Financial Snapshot</h2>
-                    <p>
-                        Immediate visibility into invoiced revenue, collected cash, and expenses
-                        using the dashboard variables provided by the backend.
-                    </p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('finance') }}" class="btn-3d">Finance Module</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                <div class="subgrid-2">
-                    <div class="mini-summary">
-                        <div class="mini-summary-label">Total Invoiced</div>
-                        <div class="mini-summary-value">
-                            {{ "{:,.2f}".format(finance_stats.total_invoiced if finance_stats and finance_stats.total_invoiced is not none else 0) }}
-                        </div>
-                        <div class="mini-summary-text">
-                            Combined billed value currently registered inside the finance system.
-                        </div>
-                    </div>
-
-                    <div class="mini-summary">
-                        <div class="mini-summary-label">Total Collected</div>
-                        <div class="mini-summary-value">
-                            {{ "{:,.2f}".format(finance_stats.total_collected if finance_stats and finance_stats.total_collected is not none else 0) }}
-                        </div>
-                        <div class="mini-summary-text">
-                            Payments already recorded and recognized through the platform.
-                        </div>
-                    </div>
-
-                    <div class="mini-summary">
-                        <div class="mini-summary-label">Total Expenses</div>
-                        <div class="mini-summary-value">
-                            {{ "{:,.2f}".format(finance_stats.total_expenses if finance_stats and finance_stats.total_expenses is not none else 0) }}
-                        </div>
-                        <div class="mini-summary-text">
-                            Operational and project costs already entered in enterprise finance.
-                        </div>
-                    </div>
-
-                    <div class="mini-summary">
-                        <div class="mini-summary-label">Open Receivables</div>
-                        <div class="mini-summary-value">
-                            {{ stats.open_invoices if stats and stats.open_invoices is not none else 0 }}
-                        </div>
-                        <div class="mini-summary-text">
-                            Number of invoices still pending full payment or collection follow-up.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h2>Operational Pulse</h2>
-                    <p>
-                        Quick enterprise indicators from ATS, projects, tasks, job openings, and lead volume.
-                    </p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('reports') }}" class="btn-ghost">Analytics</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                <div class="list-stack">
-                    <div class="list-item">
-                        <div class="list-item-top">
-                            <h3 class="list-item-title">Active Projects</h3>
-                            <span class="tag gold">Projects</span>
-                        </div>
-                        <p class="list-item-text">
-                            {{ stats.projects if stats and stats.projects is not none else 0 }}
-                            project records currently available in the delivery and execution structure.
-                        </p>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-top">
-                            <h3 class="list-item-title">Active Job Postings</h3>
-                            <span class="tag orange">Recruitment</span>
-                        </div>
-                        <p class="list-item-text">
-                            {{ stats.active_job_postings if stats and stats.active_job_postings is not none else 0 }}
-                            open requisitions are available for the recruitment engine.
-                        </p>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-top">
-                            <h3 class="list-item-title">Marketing Leads</h3>
-                            <span class="tag">Growth</span>
-                        </div>
-                        <p class="list-item-text">
-                            {{ stats.marketing_leads if stats and stats.marketing_leads is not none else 0 }}
-                            leads are available for follow-up, qualification, and conversion strategy.
-                        </p>
-                    </div>
-
-                    <div class="list-item">
-                        <div class="list-item-top">
-                            <h3 class="list-item-title">Open Tasks</h3>
-                            <span class="tag green">Execution</span>
-                        </div>
-                        <p class="list-item-text">
-                            {{ stats.open_tasks if stats and stats.open_tasks is not none else 0 }}
-                            enterprise action items remain open across the current workflow structure.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-grid-3">
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h3>Recent Clients</h3>
-                    <p>Latest organizations added to CRM with business and location visibility.</p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('crm') }}" class="btn-ghost">Go to CRM</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                {% if recent_clients %}
-                    <div class="list-stack">
-                        {% for client in recent_clients %}
-                            <div class="list-item">
-                                <div class="list-item-top">
-                                    <div>
-                                        <h4 class="list-item-title">
-                                            {{ client.legal_name or "Unnamed Client" }}
-                                        </h4>
-                                        <div class="list-item-meta">
-                                            <span>{{ client.industry or "Industry not set" }}</span>
-                                            <span>{{ client.city or "City not set" }}</span>
-                                            <span>{{ client.country or "Country not set" }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        <span class="tag">{{ client.status or "Status" }}</span>
-                                    </div>
-                                </div>
-
-                                <p class="list-item-text">
-                                    {{ client.email or "No email registered." }}
-                                    {% if client.phone %}
-                                        · {{ client.phone }}
-                                    {% endif %}
-                                    {% if client.client_code %}
-                                        · Code: {{ client.client_code }}
-                                    {% endif %}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-dashboard">
-                        <h3>No clients available yet</h3>
-                        <p>
-                            The CRM route is ready. Once clients are created, they will appear here automatically.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h3>Recent Tasks</h3>
-                    <p>Action queue visibility for follow-up, execution, and internal workflow control.</p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('dashboard') }}" class="btn-ghost">Refresh View</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                {% if recent_tasks %}
-                    <div class="list-stack">
-                        {% for task in recent_tasks %}
-                            <div class="list-item">
-                                <div class="list-item-top">
-                                    <div>
-                                        <h4 class="list-item-title">{{ task.title or "Untitled Task" }}</h4>
-                                        <div class="list-item-meta">
-                                            <span>{{ task.category or "No category" }}</span>
-                                            <span>Priority: {{ task.priority or "Medium" }}</span>
-                                            {% if task.due_date %}
-                                                <span>Due: {{ task.due_date.strftime("%Y-%m-%d") }}</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        <span class="tag {% if (task.status or '') in ['Completed', 'Paid', 'Closed'] %}green{% elif (task.status or '') in ['Open', 'Pending', 'Scheduled'] %}gold{% else %}orange{% endif %}">
-                                            {{ task.status or "Open" }}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <p class="list-item-text">
-                                    {{ task.description or "No description provided." }}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-dashboard">
-                        <h3>No tasks available yet</h3>
-                        <p>
-                            Once tasks are created from CRM, HRIS, or operations workflows, they will be displayed here.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h3>Recent Notifications</h3>
-                    <p>Internal alerts, reminders, and platform event visibility from the notification system.</p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('notifications') }}" class="btn-ghost">Open Notifications</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                {% if recent_notifications %}
-                    <div class="list-stack">
-                        {% for notification in recent_notifications %}
-                            <div class="list-item">
-                                <div class="list-item-top">
-                                    <div>
-                                        <h4 class="list-item-title">{{ notification.title or "System Notification" }}</h4>
-                                        <div class="list-item-meta">
-                                            <span>{{ notification.channel or "In-App" }}</span>
-                                            {% if notification.created_at %}
-                                                <span>{{ notification.created_at.strftime("%Y-%m-%d %H:%M") }}</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        {% if notification.is_read %}
-                                            <span class="tag green">Read</span>
-                                        {% else %}
-                                            <span class="tag orange">Unread</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <p class="list-item-text">
-                                    {{ notification.message or "No message content." }}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-dashboard">
-                        <h3>No notifications yet</h3>
-                        <p>
-                            Notification records will appear here once the system begins posting events and alerts.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
-    <section class="section-grid-2">
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h2>Recent Projects</h2>
-                    <p>
-                        Delivery and consulting work currently registered in the CRM project structure.
-                    </p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('crm') }}" class="btn-3d">Projects in CRM</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                {% if recent_projects %}
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Project</th>
-                                    <th>Service Line</th>
-                                    <th>Client</th>
-                                    <th>Status</th>
-                                    <th>Budget</th>
-                                    <th>Revenue</th>
-                                    <th>Margin %</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for project in recent_projects %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ project.name or "Unnamed Project" }}</strong>
-                                            {% if project.project_code %}
-                                                <br><span class="muted">{{ project.project_code }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ project.service_line or "Not set" }}</td>
-                                        <td>{{ project.client.legal_name if project.client else "No client" }}</td>
-                                        <td>{{ project.status or "Active" }}</td>
-                                        <td>{{ "{:,.2f}".format(project.estimated_budget or 0) }}</td>
-                                        <td>{{ "{:,.2f}".format(project.actual_revenue or 0) }}</td>
-                                        <td>{{ "{:,.2f}".format(project.margin_percentage or 0) }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="empty-dashboard">
-                        <h3>No projects available yet</h3>
-                        <p>
-                            Once projects are created for client delivery or consulting engagements, they will appear here.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-title-wrap">
-                    <h2>Recent Candidates</h2>
-                    <p>
-                        Hiring pipeline visibility from the ATS with source, experience, and score context.
-                    </p>
-                </div>
-
-                <div class="btn-row">
-                    <a href="{{ url_for('ats') }}" class="btn-3d">Open ATS</a>
-                </div>
-            </div>
-
-            <div class="module-card-body">
-                {% if recent_candidates %}
-                    <div class="list-stack">
-                        {% for candidate in recent_candidates %}
-                            <div class="list-item">
-                                <div class="list-item-top">
-                                    <div>
-                                        <h4 class="list-item-title">{{ candidate.full_name or "Unnamed Candidate" }}</h4>
-                                        <div class="list-item-meta">
-                                            <span>{{ candidate.email or "No email" }}</span>
-                                            {% if candidate.source %}
-                                                <span>Source: {{ candidate.source }}</span>
-                                            {% endif %}
-                                            <span>Experience: {{ candidate.years_of_experience or 0 }} yrs</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        <span class="tag gold">ATS Score: {{ "{:,.0f}".format(candidate.ats_score or 0) }}</span>
-                                    </div>
-                                </div>
-
-                                <p class="list-item-text">
-                                    {{ candidate.current_employer or "Current employer not registered." }}
-                                    {% if candidate.city or candidate.country %}
-                                        · {{ candidate.city or "City not set" }}, {{ candidate.country or "Country not set" }}
-                                    {% endif %}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-dashboard">
-                        <h3>No candidates available yet</h3>
-                        <p>
-                            The ATS section is ready. Candidate records will appear here once recruitment begins.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
-    <section class="module-card">
-        <div class="module-card-header">
-            <div class="module-card-title-wrap">
-                <h2>Quick Enterprise Actions</h2>
+        <aside class="executive-side-card">
+            <div>
+                <h4>Owner Executive Summary</h4>
                 <p>
-                    Fast access to the major functional areas without leaving the executive dashboard.
+                    Juan Carlos Urbano’s enterprise suite is structured as an ecosystem platform with XIOMY as the strategic intelligence layer. This dashboard is prepared to hold live metrics from all modules without shrinking the operational visibility required for business growth.
                 </p>
             </div>
-
-            <div class="btn-row">
-                <a href="{{ url_for('system_routes') }}" class="btn-ghost">Routes Map</a>
-                <a href="{{ url_for('system_db_status') }}" class="btn-ghost">DB Status</a>
+            <div class="executive-side-grid">
+                <div class="executive-kpi">
+                    <span class="label">Modules</span>
+                    <span class="value">11 Active Views</span>
+                </div>
+                <div class="executive-kpi">
+                    <span class="label">Architecture</span>
+                    <span class="value">Flask + SQLAlchemy</span>
+                </div>
+                <div class="executive-kpi">
+                    <span class="label">Theme</span>
+                    <span class="value">Navy / Gold / Silver</span>
+                </div>
+                <div class="executive-kpi">
+                    <span class="label">Mode</span>
+                    <span class="value">Corrective Build</span>
+                </div>
             </div>
-        </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}
 
-        <div class="module-card-body">
+{% block topbar_actions %}
+<a href="{{ url_for('crm') if 'crm' in current_app.view_functions else '#' }}" class="ghost-chip">Open CRM</a>
+<a href="{{ url_for('finance') if 'finance' in current_app.view_functions else '#' }}" class="ghost-chip">Open Finance</a>
+<a href="{{ url_for('analytics') if 'analytics' in current_app.view_functions else '#' }}" class="action-chip">Open Analytics</a>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-shell">
+    <section class="dashboard-grid">
+        <article class="dashboard-card pad col-12">
+            <div class="section-head">
+                <div>
+                    <h3>Enterprise Overview</h3>
+                    <p>
+                        Top-level command indicators designed to summarize operational scale, active workflows, performance visibility, compliance direction, and executive readiness across the full business ecosystem.
+                    </p>
+                </div>
+                <span class="eyebrow-badge">Executive Metrics</span>
+            </div>
+            <div class="overview-kpi-grid">
+                <div class="overview-kpi-card">
+                    <div class="icon">◎</div>
+                    <div>
+                        <span class="label">CRM Pipeline</span>
+                        <span class="value">$248K</span>
+                    </div>
+                    <div class="foot">Projected consulting and software revenue pipeline combining retained accounts, implementation opportunities, and expansion proposals.</div>
+                </div>
+                <div class="overview-kpi-card">
+                    <div class="icon">◉</div>
+                    <div>
+                        <span class="label">Active Workforce</span>
+                        <span class="value">126</span>
+                    </div>
+                    <div class="foot">Current employee population example for HRIS visibility, including labor, disciplinary, onboarding, and performance management oversight.</div>
+                </div>
+                <div class="overview-kpi-card">
+                    <div class="icon">◌</div>
+                    <div>
+                        <span class="label">Open Requisitions</span>
+                        <span class="value">18</span>
+                    </div>
+                    <div class="foot">Hiring demand across consulting client accounts with readiness for resume optimization, candidate scoring, and interview scheduling.</div>
+                </div>
+                <div class="overview-kpi-card">
+                    <div class="icon">⬢</div>
+                    <div>
+                        <span class="label">Compliance Focus</span>
+                        <span class="value">92%</span>
+                    </div>
+                    <div class="foot">SG-SST and enterprise control posture showing strong program alignment with a remaining improvement window for high-priority actions.</div>
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-card pad col-7">
+            <div class="section-head">
+                <div>
+                    <h3>Module Completion and Readiness</h3>
+                    <p>
+                        Visual project-level readiness tracker for the suite modules, aligned with your requirement to preserve milestone visibility and completion percentages as the build advances.
+                    </p>
+                </div>
+                <span class="eyebrow-badge">Progress Control</span>
+            </div>
+            <div class="module-score-grid">
+                <div class="module-score-card">
+                    <div class="module-score-head">
+                        <span class="module-score-title">Dashboard</span>
+                        <span class="module-score-percent">72%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:72%;"></div></div>
+                    <p>Executive presentation layer expanded with enterprise sections, but still ready for live data wiring and cross-module charts.</p>
+                </div>
+                <div class="module-score-card">
+                    <div class="module-score-head">
+                        <span class="module-score-title">CRM</span>
+                        <span class="module-score-percent">61%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:61%;"></div></div>
+                    <p>Client hierarchy, opportunities, communications, and project margin direction exist, but the page still needs its full no-shrink enterprise body.</p>
+                </div>
+                <div class="module-score-card">
+                    <div class="module-score-head">
+                        <span class="module-score-title">HRIS</span>
+                        <span class="module-score-percent">58%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:58%;"></div></div>
+                    <p>Core employee logic exists conceptually, but the front-end needs complete workforce administration, labor actions, and formal records views.</p>
+                </div>
+                <div class="module-score-card">
+                    <div class="module-score-head">
+                        <span class="module-score-title">ATS + Orientation</span>
+                        <span class="module-score-percent">57%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:57%;"></div></div>
+                    <p>Recruiting and onboarding architecture is defined, including resume writing and onboarding readiness, but requires full page completion.</p>
+                </div>
+                <div class="module-score-card">
+                    <div class="module-score-head">
+                        <span class="module-score-title">SG-SST</span>
+                        <span class="module-score-percent">54%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:54%;"></div></div>
+                    <p>Scope is broad and must still be expanded into a full operational compliance environment with all enterprise sections preserved.</p>
+                </div>
+                <div class="module-score-card">
+                    <div class="module-score-head">
+                        <span class="module-score-title">Finance + Inventory + Marketing</span>
+                        <span class="module-score-percent">56%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:56%;"></div></div>
+                    <p>Strategic direction is clear, including QuickBooks-grade finance ambition and scanning support, but templates still need full body completion.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-card pad col-5">
+            <div class="section-head">
+                <div>
+                    <h3>XIOMY Executive Intelligence Notes</h3>
+                    <p>
+                        A dedicated intelligence summary area prepared for future AI guidance, owner prompts, business pattern detection, and multilingual executive recommendations.
+                    </p>
+                </div>
+                <span class="eyebrow-badge">XIOMY</span>
+            </div>
+            <div class="intel-list">
+                <div class="intel-item">
+                    <div class="intel-bullet">01</div>
+                    <div>
+                        <h4>Revenue Mix Opportunity</h4>
+                        <p>Cross-selling consulting retainers with software subscriptions can be surfaced here to identify higher-margin bundled service packages for SMEs.</p>
+                    </div>
+                </div>
+                <div class="intel-item">
+                    <div class="intel-bullet">02</div>
+                    <div>
+                        <h4>Talent Bottleneck Alert</h4>
+                        <p>This area is designed to flag requisitions or job families where ATS conversion is weak and HRIS workload is likely to increase.</p>
+                    </div>
+                </div>
+                <div class="intel-item">
+                    <div class="intel-bullet">03</div>
+                    <div>
+                        <h4>Compliance Priority Signal</h4>
+                        <p>XIOMY can later highlight missing inspections, overdue trainings, unresolved incidents, or policy acknowledgment gaps in this panel.</p>
+                    </div>
+                </div>
+                <div class="intel-item">
+                    <div class="intel-bullet">04</div>
+                    <div>
+                        <h4>Owner Strategy View</h4>
+                        <p>Prepared for premium executive interpretation so the owner sees not only data, but direction, urgency, and next best business actions.</p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-card pad col-12">
+            <div class="section-head">
+                <div>
+                    <h3>Cross-Module Operational Priorities</h3>
+                    <p>
+                        This section gives a broad operational picture across the ecosystem, showing which areas should receive immediate corrective development attention or business follow-up.
+                    </p>
+                </div>
+                <span class="eyebrow-badge">Operations</span>
+            </div>
+            <div class="ops-grid">
+                <div class="ops-card">
+                    <h4>CRM Commercial Expansion</h4>
+                    <p>Complete the full client pipeline page, add structured opportunity boards, communication intelligence, task extraction, and project profitability blocks.</p>
+                </div>
+                <div class="ops-card">
+                    <h4>HRIS Labor and Discipline Depth</h4>
+                    <p>Expand employee administration to include USA and Colombia labor actions, disciplinary forms, compliance trails, point logs, and formal case management.</p>
+                </div>
+                <div class="ops-card">
+                    <h4>ATS Professional Resume Services</h4>
+                    <p>Build complete recruiter-facing resume writing, optimization, screening, interview workflow, and candidate conversion sections inside ATS.</p>
+                </div>
+                <div class="ops-card">
+                    <h4>Orientation Readiness Flow</h4>
+                    <p>Add onboarding schedules, document acknowledgments, welcome packages, asset assignment readiness, and pre-start compliance control.</p>
+                </div>
+                <div class="ops-card">
+                    <h4>SG-SST Enterprise Completion</h4>
+                    <p>Restore the full intended safety depth with legal matrix, risk matrix, incidents, investigations, audits, improvement plans, indicators, and minimum standards.</p>
+                </div>
+                <div class="ops-card">
+                    <h4>Finance and Inventory Strengthening</h4>
+                    <p>Expand accounting toward QuickBooks-grade workflows while preserving inventory, barcode, QR, procurement, and ledger integration.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-card pad col-8">
+            <div class="section-head">
+                <div>
+                    <h3>Executive Quick Actions</h3>
+                    <p>
+                        Large premium action cards designed for fast navigation and future owner-centered task launching across the most important modules.
+                    </p>
+                </div>
+                <span class="eyebrow-badge">Fast Access</span>
+            </div>
             <div class="quick-actions-grid">
-                <div class="quick-action">
-                    <div class="quick-action-icon">🤝</div>
-                    <h3 class="quick-action-title">CRM Operations</h3>
-                    <p class="quick-action-text">
-                        Manage clients, contacts, communications, projects, and commercial relationships.
-                    </p>
-                    <a href="{{ url_for('crm') }}" class="btn-3d">Open CRM</a>
-                </div>
+                <a class="quick-action" href="{{ url_for('crm') if 'crm' in current_app.view_functions else '#' }}">
+                    <div class="icon">◎</div>
+                    <h4>Open Full CRM Workspace</h4>
+                    <p>Go to client relationships, projects, communication history, pipeline controls, and revenue opportunity tracking.</p>
+                    <span class="cta">Launch CRM</span>
+                </a>
+                <a class="quick-action" href="{{ url_for('hris') if 'hris' in current_app.view_functions else '#' }}">
+                    <div class="icon">◉</div>
+                    <h4>Open Workforce Administration</h4>
+                    <p>Review employee files, organizational control, labor actions, discipline, and HR operations visibility.</p>
+                    <span class="cta">Launch HRIS</span>
+                </a>
+                <a class="quick-action" href="{{ url_for('ats') if 'ats' in current_app.view_functions else '#' }}">
+                    <div class="icon">◌</div>
+                    <h4>Open ATS Recruiting Center</h4>
+                    <p>View requisitions, applicant pipelines, resume strategy, interviews, and hiring conversion activity.</p>
+                    <span class="cta">Launch ATS</span>
+                </a>
+                <a class="quick-action" href="{{ url_for('orientation') if 'orientation' in current_app.view_functions else '#' }}">
+                    <div class="icon">◇</div>
+                    <h4>Open Orientation Flow</h4>
+                    <p>Control onboarding readiness, documents, acknowledgments, welcome sequencing, and equipment preparation.</p>
+                    <span class="cta">Launch Orientation</span>
+                </a>
+                <a class="quick-action" href="{{ url_for('sg_sst') if 'sg_sst' in current_app.view_functions else '#' }}">
+                    <div class="icon">⬢</div>
+                    <h4>Open SG-SST Module</h4>
+                    <p>Go to safety structure, risk matrices, inspections, investigations, training, indicators, and audits.</p>
+                    <span class="cta">Launch SG-SST</span>
+                </a>
+                <a class="quick-action" href="{{ url_for('finance') if 'finance' in current_app.view_functions else '#' }}">
+                    <div class="icon">◍</div>
+                    <h4>Open Finance Command</h4>
+                    <p>Review accounting, revenue, expenses, invoice controls, ledger movement, and budget intelligence.</p>
+                    <span class="cta">Launch Finance</span>
+                </a>
+            </div>
+        </article>
 
-                <div class="quick-action">
-                    <div class="quick-action-icon">👥</div>
-                    <h3 class="quick-action-title">HRIS Operations</h3>
-                    <p class="quick-action-text">
-                        Access employee profiles, payroll, labor actions, leave, and workforce administration.
+        <article class="dashboard-card pad col-4">
+            <div class="section-head">
+                <div>
+                    <h3>Compliance Snapshot</h3>
+                    <p>
+                        This summary is structured to give immediate visibility to the most critical control areas across SG-SST, onboarding, and policy governance.
                     </p>
-                    <a href="{{ url_for('hris') }}" class="btn-3d">Open HRIS</a>
                 </div>
-
-                <div class="quick-action">
-                    <div class="quick-action-icon">🧾</div>
-                    <h3 class="quick-action-title">Recruitment & ATS</h3>
-                    <p class="quick-action-text">
-                        Manage postings, candidate applications, resume strategy, interviews, and hiring.
-                    </p>
-                    <a href="{{ url_for('ats') }}" class="btn-3d">Open ATS</a>
+                <span class="eyebrow-badge">Control View</span>
+            </div>
+            <div class="compliance-matrix">
+                <div class="compliance-row">
+                    <div class="title">Policy Acknowledgments</div>
+                    <div class="detail">Prepared to track employee confirmations for conduct, safety, onboarding, and legal notices.</div>
+                    <span class="status-chip status-watch">Pending Expansion</span>
                 </div>
-
-                <div class="quick-action">
-                    <div class="quick-action-icon">🎓</div>
-                    <h3 class="quick-action-title">Orientation</h3>
-                    <p class="quick-action-text">
-                        Execute onboarding tasks, acknowledgements, sessions, and equipment assignments.
-                    </p>
-                    <a href="{{ url_for('orientation') }}" class="btn-3d">Open Orientation</a>
+                <div class="compliance-row">
+                    <div class="title">Safety Training</div>
+                    <div class="detail">Designed for training compliance dashboards, overdue renewals, and role-based requirement monitoring.</div>
+                    <span class="status-chip status-good">Structured</span>
                 </div>
-
-                <div class="quick-action">
-                    <div class="quick-action-icon">🛡️</div>
-                    <h3 class="quick-action-title">SG-SST Safety</h3>
-                    <p class="quick-action-text">
-                        Review policies, legal requirements, risk matrix, incidents, audits, and corrective plans.
-                    </p>
-                    <a href="{{ url_for('sgsst') }}" class="btn-3d">Open SG-SST</a>
+                <div class="compliance-row">
+                    <div class="title">Incident Control</div>
+                    <div class="detail">Section reserved for investigation workflows, corrective actions, and closure evidence.</div>
+                    <span class="status-chip status-watch">Needs Full UI</span>
                 </div>
-
-                <div class="quick-action">
-                    <div class="quick-action-icon">📦</div>
-                    <h3 class="quick-action-title">Inventory & Assets</h3>
-                    <p class="quick-action-text">
-                        Control stock, barcodes, asset assignment, and movement records across operations.
-                    </p>
-                    <a href="{{ url_for('inventory') }}" class="btn-3d">Open Inventory</a>
-                </div>
-
-                <div class="quick-action">
-                    <div class="quick-action-icon">💰</div>
-                    <h3 class="quick-action-title">Finance & Accounting</h3>
-                    <p class="quick-action-text">
-                        Control invoicing, payments, expenses, budgets, chart of accounts, and enterprise visibility.
-                    </p>
-                    <a href="{{ url_for('finance') }}" class="btn-3d">Open Finance</a>
-                </div>
-
-                <div class="quick-action">
-                    <div class="quick-action-icon">📈</div>
-                    <h3 class="quick-action-title">Marketing & Growth</h3>
-                    <p class="quick-action-text">
-                        Manage campaigns, leads, activities, growth indicators, and conversion strategy.
-                    </p>
-                    <a href="{{ url_for('marketing') }}" class="btn-3d">Open Marketing</a>
+                <div class="compliance-row">
+                    <div class="title">Audit Readiness</div>
+                    <div class="detail">Prepared for audit schedules, minimum standards scoring, and improvement plan follow-up.</div>
+                    <span class="status-chip status-risk">High Priority</span>
                 </div>
             </div>
-        </div>
-    </section>
+        </article>
 
-</div>
+        <article class="dashboard-card pad col-12">
+            <div class="section-head">
+                <div>
+                    <h3>Executive Work Queue</h3>
+                    <p>
+                        A premium management table designed to summarize priority work items that affect project completion, deployment quality, and business operations.
+                    </p>
+                </div>
+                <span class="eyebrow-badge">Priority Queue</span>
+            </div>
+            <div class="table-shell">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Priority</th>
+                            <th>Area</th>
+                            <th>Action Required</th>
+                            <th>Business Impact</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Critical</td>
+                            <td>CRM Template</td>
+                            <td>Complete the full no-shrink enterprise CRM body with pipeline, project, communications, and profitability layers.</td>
+                            <td>Directly affects revenue visibility and consulting sales execution.</td>
+                            <td><span class="status-chip status-risk">Open</span></td>
+                        </tr>
+                        <tr>
+                            <td>Critical</td>
+                            <td>Finance Template</td>
+                            <td>Restore full accounting depth with stronger ledger, AP, AR, budgeting, reconciliation, and dashboard presentation.</td>
+                            <td>Essential for owner financial control and QuickBooks-level strategic ambition.</td>
+                            <td><span class="status-chip status-risk">Open</span></td>
+                        </tr>
+                        <tr>
+                            <td>High</td>
+                            <td>SG-SST Template</td>
+                            <td>Expand complete occupational safety program sections and restore the intended enterprise-wide compliance structure.</td>
+                            <td>Critical for legal defensibility, risk management, and Colombian compliance value.</td>
+                            <td><span class="status-chip status-watch">In Build</span></td>
+                        </tr>
+                        <tr>
+                            <td>High</td>
+                            <td>HRIS Template</td>
+                            <td>Add complete labor actions, disciplinary actions, forms, point system, employee relations, and formal control records.</td>
+                            <td>Core to HR consulting differentiation and legal case handling support.</td>
+                            <td><span class="status-chip status-watch">In Build</span></td>
+                        </tr>
+                        <tr>
+                            <td>High</td>
+                            <td>ATS + Orientation</td>
+                            <td>Complete recruiter and onboarding user flows, including resume writing, readiness tracking, and handoff to HRIS.</td>
+                            <td>Important for software product strength and consulting package differentiation.</td>
+                            <td><span class="status-chip status-watch">In Build</span></td>
+                        </tr>
+                        <tr>
+                            <td>Medium</td>
+                            <td>Analytics Layer</td>
+                            <td>Wire live metric sources and visualizations after the pages are fully stabilized.</td>
+                            <td>Improves owner insight and XIOMY intelligence quality.</td>
+                            <td><span class="status-chip status-good">Planned</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="owner-office col-12">
+            <h3>XIOMY Executive Office Layer</h3>
+            <p>
+                This dashboard reserves a dedicated executive environment for XIOMY and the premium owner experience you requested. It is structured to become the strategic control room for advanced AI guidance, enterprise memory, multilingual executive support, voice interaction, and future owner-only decision tools across the UrbanHRPartners ecosystem.
+            </p>
+            <div class="owner-office-grid">
+                <div class="owner-office-card">
+                    <span class="label">Owner Identity</span>
+                    <span class="value">Juan Carlos Urbano, PhD(c) Business Psychology, MA-MHRM</span>
+                </div>
+                <div class="owner-office-card">
+                    <span class="label">Strategic Layer</span>
+                    <span class="value">XIOMY Executive Intelligence Environment</span>
+                </div>
+                <div class="owner-office-card">
+                    <span class="label">Platform Mission</span>
+                    <span class="value">Integrated AI-driven business ecosystem</span>
+                </div>
+            </div>
+        </article>
+    </section>
+</section>
 {% endblock %}
