@@ -1,726 +1,195 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}Dashboard | UrbanHRPartners Enterprise Suite{% endblock %}
 {% block page_title %}Executive Dashboard{% endblock %}
-{% block page_subtitle %}Real-time enterprise visibility across CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, and Analytics.{% endblock %}
-
-{% block extra_head %}
-<style>
-    .hero-grid {
-        display: grid;
-        grid-template-columns: 1.35fr 1fr;
-        gap: 22px;
-        margin-bottom: 22px;
-    }
-
-    .hero-panel {
-        background: linear-gradient(135deg, rgba(11, 31, 58, 0.98) 0%, rgba(16, 41, 77, 0.96) 55%, rgba(217, 123, 23, 0.88) 100%);
-        color: #fff;
-        border-radius: 28px;
-        padding: 28px;
-        box-shadow: 0 18px 38px rgba(11, 31, 58, 0.24);
-        border: 1px solid rgba(255,255,255,0.08);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .hero-panel::after {
-        content: "";
-        position: absolute;
-        right: -30px;
-        top: -20px;
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.02) 70%);
-    }
-
-    .hero-title {
-        margin: 0 0 10px;
-        font-size: 2rem;
-        font-weight: 800;
-        line-height: 1.1;
-        color: #fff8e6;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-copy {
-        margin: 0 0 22px;
-        max-width: 720px;
-        color: rgba(255,255,255,0.9);
-        line-height: 1.6;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-badges {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-badge {
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        font-weight: 700;
-        color: #fffdf6;
-        backdrop-filter: blur(6px);
-    }
-
-    .executive-panel {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
-        border-radius: 28px;
-        padding: 24px;
-        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
-        border: 1px solid rgba(11,31,58,0.08);
-    }
-
-    .executive-panel h3,
-    .hero-panel h3 {
-        margin-top: 0;
-    }
-
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-        margin-bottom: 24px;
-    }
-
-    .kpi-card {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
-        border-radius: 24px;
-        padding: 20px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .kpi-card::before {
-        content: "";
-        position: absolute;
-        inset: 0 auto auto 0;
-        width: 100%;
-        height: 6px;
-        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
-    }
-
-    .kpi-label {
-        font-size: 0.82rem;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: #5d6b83;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .kpi-value {
-        font-size: 2rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        margin-bottom: 8px;
-        line-height: 1;
-    }
-
-    .kpi-note {
-        color: #6c7a91;
-        font-size: 0.92rem;
-        line-height: 1.45;
-    }
-
-    .section-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 22px;
-        margin-bottom: 22px;
-    }
-
-    .dashboard-panel {
-        background: rgba(255,255,255,0.97);
-        border-radius: 24px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
-        padding: 22px;
-    }
-
-    .panel-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 14px;
-        margin-bottom: 16px;
-    }
-
-    .panel-head h3 {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1.18rem;
-    }
-
-    .panel-head p {
-        margin: 6px 0 0;
-        color: #607089;
-        line-height: 1.45;
-        font-size: 0.94rem;
-    }
-
-    .panel-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 14px;
-        border-radius: 14px;
-        font-weight: 800;
-        color: #fff;
-        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
-        box-shadow: 0 8px 20px rgba(217,123,23,0.2);
-        white-space: nowrap;
-    }
-
-    .metric-list {
-        display: grid;
-        gap: 12px;
-    }
-
-    .metric-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(243,246,251,0.98) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.06);
-    }
-
-    .metric-item strong {
-        color: #0b1f3a;
-        font-size: 1rem;
-    }
-
-    .metric-item span {
-        color: #64748b;
-        font-size: 0.92rem;
-    }
-
-    .metric-pill {
-        min-width: 64px;
-        text-align: center;
-        padding: 10px 12px;
-        border-radius: 14px;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
-        border: 1px solid rgba(212,175,55,0.28);
-    }
-
-    .table-wrap {
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid rgba(11,31,58,0.07);
-    }
-
-    .dashboard-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 620px;
-        background: #fff;
-    }
-
-    .dashboard-table th,
-    .dashboard-table td {
-        padding: 14px 14px;
-        text-align: left;
-        border-bottom: 1px solid rgba(11,31,58,0.07);
-        vertical-align: top;
-    }
-
-    .dashboard-table th {
-        background: linear-gradient(180deg, #f3f6fb 0%, #e9eef6 100%);
-        color: #0b1f3a;
-        font-size: 0.88rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .dashboard-table td {
-        color: #334155;
-        font-size: 0.95rem;
-    }
-
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 12px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 0.82rem;
-        border: 1px solid rgba(11,31,58,0.08);
-        background: rgba(11,31,58,0.05);
-        color: #0b1f3a;
-    }
-
-    .status-open,
-    .status-active,
-    .status-completed,
-    .status-posted,
-    .status-received {
-        background: rgba(6,118,71,0.12);
-        color: #067647;
-        border-color: rgba(6,118,71,0.18);
-    }
-
-    .status-pending,
-    .status-draft,
-    .status-scheduled {
-        background: rgba(181,71,8,0.12);
-        color: #b54708;
-        border-color: rgba(181,71,8,0.18);
-    }
-
-    .status-closed,
-    .status-inactive {
-        background: rgba(100,116,139,0.12);
-        color: #475569;
-        border-color: rgba(100,116,139,0.18);
-    }
-
-    .empty-state {
-        padding: 22px;
-        border-radius: 20px;
-        text-align: center;
-        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
-        border: 1px dashed rgba(11,31,58,0.12);
-        color: #64748b;
-        font-weight: 600;
-    }
-
-    .mini-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .mini-card {
-        border-radius: 20px;
-        padding: 18px;
-        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.06);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
-    }
-
-    .mini-card h4 {
-        margin: 0 0 10px;
-        color: #0b1f3a;
-        font-size: 1rem;
-    }
-
-    .mini-card .mini-value {
-        font-size: 1.7rem;
-        font-weight: 900;
-        color: #d97b17;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .mini-card p {
-        margin: 0;
-        color: #64748b;
-        line-height: 1.45;
-        font-size: 0.92rem;
-    }
-
-    @media (max-width: 1200px) {
-        .hero-grid,
-        .section-grid,
-        .kpi-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .hero-panel {
-            grid-column: span 2;
-        }
-    }
-
-    @media (max-width: 820px) {
-        .hero-grid,
-        .section-grid,
-        .kpi-grid,
-        .mini-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .hero-panel {
-            grid-column: span 1;
-        }
-
-        .panel-head {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .panel-link {
-            width: 100%;
-        }
-    }
-</style>
-{% endblock %}
-
-{% macro status_chip(value) -%}
-    {% set raw = (value or 'N/A') %}
-    {% set normalized = raw|string|lower|replace(' ', '-') %}
-    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
-{%- endmacro %}
+{% block page_subtitle %}Integrated command center for operations, people, growth, finance, compliance, and XIOMY intelligence{% endblock %}
 
 {% block content %}
-<div class="hero-grid">
-    <section class="hero-panel">
-        <h2 class="hero-title">Enterprise command center for UrbanHRPartners</h2>
-        <p class="hero-copy">
-            This executive dashboard centralizes your commercial pipeline, workforce status, recruiting activity,
-            SG-SST compliance, financial movement, inventory control, and growth performance in one premium control room.
+<div class="page-grid">
+
+    <section class="hero-card">
+        <div>
+            <h1 class="hero-title">UrbanHRPartners Executive Ecosystem</h1>
+            <p class="hero-subtitle">
+                Monitor every critical area of your company from one premium integrated environment.
+                XIOMY is designed to support CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing,
+                Reports, Communication, and executive decision-making in one connected suite.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ url_for('xiomy_dashboard') }}" class="btn btn-3d btn-gold">Open XIOMY Control Center</a>
+                <a href="{{ url_for('reports') }}" class="btn btn-3d btn-silver">Open Master Reports</a>
+                <a href="{{ url_for('crm') }}" class="btn btn-3d btn-navy">Go to CRM</a>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3 class="section-title">Executive Status Overview</h3>
+            <div class="list-card">
+                <div class="list-item">
+                    <strong>System</strong>
+                    <p>Enterprise foundation active and ready for integrated operations.</p>
+                </div>
+                <div class="list-item">
+                    <strong>XIOMY</strong>
+                    <p>Prepared to coordinate analytics, alerts, reporting, and business intelligence.</p>
+                </div>
+                <div class="list-item">
+                    <strong>Priority</strong>
+                    <p>Stabilize modules, confirm routes, and continue enterprise buildout.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="metric-card kpi-navy">
+        <p class="metric-title">CRM Active Clients</p>
+        <h2 class="metric-value">{{ stats.clients if stats is defined and stats.clients is defined else 0 }}</h2>
+        <p class="metric-trend">Relationship and revenue engine</p>
+    </section>
+
+    <section class="metric-card kpi-gold">
+        <p class="metric-title">HRIS Employees</p>
+        <h2 class="metric-value">{{ stats.employees if stats is defined and stats.employees is defined else 0 }}</h2>
+        <p class="metric-trend">People, performance, and talent control</p>
+    </section>
+
+    <section class="metric-card kpi-silver">
+        <p class="metric-title">ATS Candidates</p>
+        <h2 class="metric-value">{{ stats.candidates if stats is defined and stats.candidates is defined else 0 }}</h2>
+        <p class="metric-trend">Recruiting and hiring intelligence</p>
+    </section>
+
+    <section class="metric-card kpi-royal">
+        <p class="metric-title">Revenue Snapshot</p>
+        <h2 class="metric-value">
+            {% if stats is defined and stats.revenue is defined %}
+                ${{ '{:,.2f}'.format(stats.revenue) }}
+            {% else %}
+                $0.00
+            {% endif %}
+        </h2>
+        <p class="metric-trend">Financial visibility and executive insight</p>
+    </section>
+
+    <section class="panel grid-8">
+        <h3 class="section-title">Integrated Operations Center</h3>
+        <p class="section-subtitle">
+            Access each enterprise area through a premium integrated navigation flow.
         </p>
-        <div class="hero-badges">
-            <span class="hero-badge">CRM visibility</span>
-            <span class="hero-badge">HRIS control</span>
-            <span class="hero-badge">ATS pipeline</span>
-            <span class="hero-badge">SG-SST compliance</span>
-            <span class="hero-badge">Finance oversight</span>
-            <span class="hero-badge">Inventory intelligence</span>
-        </div>
-    </section>
 
-    <section class="executive-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Executive finance snapshot</h3>
-                <p>Immediate reading of enterprise money flow and current receivable exposure.</p>
+        <div class="page-grid">
+            <div class="card grid-4">
+                <h4>CRM</h4>
+                <p>Clients, deals, communications, projects, and follow-up strategy.</p>
+                <a href="{{ url_for('crm') }}" class="btn btn-3d btn-gold">Open CRM</a>
             </div>
-            <a class="panel-link" href="{{ url_for('finance') }}">Open Finance</a>
-        </div>
-        <div class="mini-grid">
-            <div class="mini-card">
-                <h4>Total Invoiced</h4>
-                <div class="mini-value">{{ "{:,.2f}".format(finance_stats.invoice_total or 0) }}</div>
-                <p>Recorded invoice volume generated from your commercial and project activity.</p>
-            </div>
-            <div class="mini-card">
-                <h4>Balance Due</h4>
-                <div class="mini-value">{{ "{:,.2f}".format(finance_stats.invoice_balance_due or 0) }}</div>
-                <p>Current outstanding receivable exposure requiring collections follow-up.</p>
-            </div>
-            <div class="mini-card">
-                <h4>Total Bills</h4>
-                <div class="mini-value">{{ "{:,.2f}".format(finance_stats.bill_total or 0) }}</div>
-                <p>Vendor obligations and payable commitments recorded in the finance engine.</p>
-            </div>
-            <div class="mini-card">
-                <h4>Total Payments</h4>
-                <div class="mini-value">{{ "{:,.2f}".format(finance_stats.payments_total or 0) }}</div>
-                <p>Cash movement already posted across incoming and outgoing payment records.</p>
-            </div>
-        </div>
-    </section>
-</div>
 
-<div class="kpi-grid">
-    <article class="kpi-card">
-        <div class="kpi-label">Clients</div>
-        <div class="kpi-value">{{ dashboard_stats.clients_count }}</div>
-        <div class="kpi-note">Active commercial relationships inside the CRM engine.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Leads</div>
-        <div class="kpi-value">{{ dashboard_stats.leads_count }}</div>
-        <div class="kpi-note">Prospects currently available for conversion and follow-up.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Projects</div>
-        <div class="kpi-value">{{ dashboard_stats.projects_count }}</div>
-        <div class="kpi-note">Projects tied to clients, operations, and future revenue.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Employees</div>
-        <div class="kpi-value">{{ dashboard_stats.employees_count }}</div>
-        <div class="kpi-note">Internal workforce currently registered in HRIS.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Job Openings</div>
-        <div class="kpi-value">{{ dashboard_stats.job_openings_count }}</div>
-        <div class="kpi-note">Open requisitions supporting enterprise growth and staffing.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Candidates</div>
-        <div class="kpi-value">{{ dashboard_stats.candidates_count }}</div>
-        <div class="kpi-note">Recruiting pipeline volume tracked inside ATS.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Hazards / Incidents</div>
-        <div class="kpi-value">{{ dashboard_stats.hazards_count }} / {{ dashboard_stats.incidents_count }}</div>
-        <div class="kpi-note">Risk exposure and real event reporting under SG-SST.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="kpi-label">Inventory / Campaigns</div>
-        <div class="kpi-value">{{ dashboard_stats.inventory_items_count }} / {{ dashboard_stats.campaigns_count }}</div>
-        <div class="kpi-note">Operational assets and active growth initiatives in the platform.</div>
-    </article>
-</div>
+            <div class="card grid-4">
+                <h4>HRIS</h4>
+                <p>Employees, discipline, points, performance, recognition, and labor structure.</p>
+                <a href="{{ url_for('hris') }}" class="btn btn-3d btn-silver">Open HRIS</a>
+            </div>
 
-<div class="section-grid">
-    <section class="dashboard-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Operational command metrics</h3>
-                <p>Core performance indicators from the enterprise modules already connected to the suite.</p>
+            <div class="card grid-4">
+                <h4>ATS</h4>
+                <p>Applicants, scoring, structured recruiting, and hiring recommendations.</p>
+                <a href="{{ url_for('ats') }}" class="btn btn-3d btn-navy">Open ATS</a>
             </div>
-            <a class="panel-link" href="{{ url_for('reports_analytics') }}">Open Analytics</a>
-        </div>
-        <div class="metric-list">
-            <div class="metric-item">
-                <div>
-                    <strong>Commercial engine</strong>
-                    <span>Clients + leads + projects currently tracked</span>
-                </div>
-                <div class="metric-pill">{{ dashboard_stats.clients_count + dashboard_stats.leads_count + dashboard_stats.projects_count }}</div>
+
+            <div class="card grid-4">
+                <h4>SG-SST</h4>
+                <p>Safety, risk controls, incidents, compliance, and prevention tracking.</p>
+                <a href="{{ url_for('sgsst') }}" class="btn btn-3d btn-gold">Open SG-SST</a>
             </div>
-            <div class="metric-item">
-                <div>
-                    <strong>People & talent engine</strong>
-                    <span>Employees + job openings + candidates</span>
-                </div>
-                <div class="metric-pill">{{ dashboard_stats.employees_count + dashboard_stats.job_openings_count + dashboard_stats.candidates_count }}</div>
+
+            <div class="card grid-4">
+                <h4>Finance</h4>
+                <p>Transactions, accounting flow, visibility, planning, and financial oversight.</p>
+                <a href="{{ url_for('finance') }}" class="btn btn-3d btn-silver">Open Finance</a>
             </div>
-            <div class="metric-item">
-                <div>
-                    <strong>Safety exposure</strong>
-                    <span>Total hazards and incidents under control review</span>
-                </div>
-                <div class="metric-pill">{{ dashboard_stats.hazards_count + dashboard_stats.incidents_count }}</div>
-            </div>
-            <div class="metric-item">
-                <div>
-                    <strong>Asset & growth engine</strong>
-                    <span>Inventory items + campaigns + invoices + bills</span>
-                </div>
-                <div class="metric-pill">{{ dashboard_stats.inventory_items_count + dashboard_stats.campaigns_count + dashboard_stats.invoices_count + dashboard_stats.bills_count }}</div>
+
+            <div class="card grid-4">
+                <h4>Inventory</h4>
+                <p>Assets, stock, tracking, assignments, and operational control.</p>
+                <a href="{{ url_for('inventory') }}" class="btn btn-3d btn-navy">Open Inventory</a>
             </div>
         </div>
     </section>
 
-    <section class="dashboard-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Executive quick actions</h3>
-                <p>Direct access to the most important enterprise control surfaces.</p>
+    <section class="panel grid-4">
+        <h3 class="section-title">Executive Priorities</h3>
+        <div class="list-card">
+            <div class="list-item">
+                <span class="badge badge-warning">Priority</span>
+                <p>Complete premium UI continuity across all module pages.</p>
             </div>
-            <a class="panel-link" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
-        </div>
-        <div class="metric-list">
-            <a class="metric-item" href="{{ url_for('crm') }}">
-                <div>
-                    <strong>Go to CRM</strong>
-                    <span>Manage clients, leads, opportunities, projects, and communications.</span>
-                </div>
-                <div class="metric-pill">CRM</div>
-            </a>
-            <a class="metric-item" href="{{ url_for('hris') }}">
-                <div>
-                    <strong>Go to HRIS</strong>
-                    <span>Review employees, leave, labor relations, and disciplinary records.</span>
-                </div>
-                <div class="metric-pill">HRIS</div>
-            </a>
-            <a class="metric-item" href="{{ url_for('sgsst') }}">
-                <div>
-                    <strong>Go to SG-SST</strong>
-                    <span>Control hazards, incidents, inspections, audits, and compliance actions.</span>
-                </div>
-                <div class="metric-pill">SG</div>
-            </a>
-            <a class="metric-item" href="{{ url_for('inventory') }}">
-                <div>
-                    <strong>Go to Inventory</strong>
-                    <span>Track items, assignments, movements, scanning, and maintenance activity.</span>
-                </div>
-                <div class="metric-pill">INV</div>
-            </a>
+            <div class="list-item">
+                <span class="badge badge-success">Active</span>
+                <p>Continue interconnecting agents, routes, templates, and models.</p>
+            </div>
+            <div class="list-item">
+                <span class="badge badge-danger">Watch</span>
+                <p>Validate every page, endpoint, and workflow before launch.</p>
+            </div>
         </div>
     </section>
-</div>
 
-<div class="section-grid">
-    <section class="dashboard-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Recent clients</h3>
-                <p>Newest commercial accounts captured in the CRM module.</p>
-            </div>
-            <a class="panel-link" href="{{ url_for('crm') }}">View CRM</a>
-        </div>
-        {% if recent_clients %}
+    <section class="table-card grid-12">
+        <h3 class="section-title">Premium Module Map</h3>
+        <p class="section-subtitle">
+            This visual structure represents the interconnected enterprise suite.
+        </p>
         <div class="table-wrap">
-            <table class="dashboard-table">
+            <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Client</th>
-                        <th>Industry</th>
-                        <th>Country</th>
+                        <th>Module</th>
+                        <th>Purpose</th>
+                        <th>Primary Intelligence</th>
                         <th>Status</th>
-                        <th>Created</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for client in recent_clients %}
                     <tr>
-                        <td>
-                            <strong>{{ client.name }}</strong><br />
-                            <span>{{ client.client_code or 'No code' }}</span>
-                        </td>
-                        <td>{{ client.industry or 'Not defined' }}</td>
-                        <td>{{ client.country or 'Not defined' }}</td>
-                        <td>{{ status_chip(client.status) }}</td>
-                        <td>{{ client.created_at.strftime('%Y-%m-%d') if client.created_at else 'N/A' }}</td>
+                        <td>CRM</td>
+                        <td>Clients, communications, revenue relationships</td>
+                        <td>CRM Super Agent</td>
+                        <td><span class="badge badge-warning">In Build</span></td>
                     </tr>
-                    {% endfor %}
+                    <tr>
+                        <td>HRIS</td>
+                        <td>Employees, performance, discipline, rewards</td>
+                        <td>HRIS Super Agent</td>
+                        <td><span class="badge badge-warning">In Build</span></td>
+                    </tr>
+                    <tr>
+                        <td>ATS</td>
+                        <td>Recruiting, candidate scoring, hiring flow</td>
+                        <td>ATS Super Agent</td>
+                        <td><span class="badge badge-warning">In Build</span></td>
+                    </tr>
+                    <tr>
+                        <td>SG-SST</td>
+                        <td>Safety, compliance, incident control</td>
+                        <td>Safety Super Agent</td>
+                        <td><span class="badge badge-warning">In Build</span></td>
+                    </tr>
+                    <tr>
+                        <td>Finance</td>
+                        <td>Transactions, profitability, executive reporting</td>
+                        <td>CFO Super Agent</td>
+                        <td><span class="badge badge-warning">In Build</span></td>
+                    </tr>
+                    <tr>
+                        <td>XIOMY</td>
+                        <td>Executive orchestration, control, insight, automation</td>
+                        <td>Executive Engine</td>
+                        <td><span class="badge badge-success">Foundation Ready</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <div class="empty-state">No client records available yet. Start by creating your first client inside CRM.</div>
-        {% endif %}
     </section>
 
-    <section class="dashboard-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Recent employees</h3>
-                <p>Latest workforce records created in the HRIS module.</p>
-            </div>
-            <a class="panel-link" href="{{ url_for('hris') }}">View HRIS</a>
-        </div>
-        {% if recent_employees %}
-        <div class="table-wrap">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Status</th>
-                        <th>Hire Date</th>
-                        <th>Email</th>
-                        <th>Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for employee in recent_employees %}
-                    <tr>
-                        <td>
-                            <strong>{{ employee.full_name }}</strong><br />
-                            <span>{{ employee.employee_code or 'No code' }}</span>
-                        </td>
-                        <td>{{ status_chip(employee.employment_status) }}</td>
-                        <td>{{ employee.hire_date.strftime('%Y-%m-%d') if employee.hire_date else 'N/A' }}</td>
-                        <td>{{ employee.email or 'N/A' }}</td>
-                        <td>{{ employee.created_at.strftime('%Y-%m-%d') if employee.created_at else 'N/A' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="empty-state">No employee records available yet. Add employees in HRIS to populate the workforce view.</div>
-        {% endif %}
-    </section>
-</div>
-
-<div class="section-grid">
-    <section class="dashboard-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Recent candidates</h3>
-                <p>Latest recruiting activity currently progressing through ATS.</p>
-            </div>
-            <a class="panel-link" href="{{ url_for('ats') }}">View ATS</a>
-        </div>
-        {% if recent_candidates %}
-        <div class="table-wrap">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Candidate</th>
-                        <th>Stage</th>
-                        <th>Status</th>
-                        <th>Source</th>
-                        <th>Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for candidate in recent_candidates %}
-                    <tr>
-                        <td>
-                            <strong>{{ candidate.full_name }}</strong><br />
-                            <span>{{ candidate.candidate_code or 'No code' }}</span>
-                        </td>
-                        <td>{{ status_chip(candidate.stage) }}</td>
-                        <td>{{ status_chip(candidate.status) }}</td>
-                        <td>{{ candidate.source or 'N/A' }}</td>
-                        <td>{{ candidate.created_at.strftime('%Y-%m-%d') if candidate.created_at else 'N/A' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="empty-state">No candidate records available yet. Add candidates in ATS to activate recruiting visibility.</div>
-        {% endif %}
-    </section>
-
-    <section class="dashboard-panel">
-        <div class="panel-head">
-            <div>
-                <h3>Recent incidents</h3>
-                <p>Newest SG-SST event reporting and safety response visibility.</p>
-            </div>
-            <a class="panel-link" href="{{ url_for('sgsst') }}">View SG-SST</a>
-        </div>
-        {% if recent_incidents %}
-        <div class="table-wrap">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Incident</th>
-                        <th>Type</th>
-                        <th>Severity</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for incident in recent_incidents %}
-                    <tr>
-                        <td>
-                            <strong>{{ incident.incident_code or 'No code' }}</strong><br />
-                            <span>{{ incident.location or 'No location' }}</span>
-                        </td>
-                        <td>{{ incident.incident_type or 'N/A' }}</td>
-                        <td>{{ status_chip(incident.severity or 'N/A') }}</td>
-                        <td>{{ status_chip(incident.status) }}</td>
-                        <td>{{ incident.incident_date.strftime('%Y-%m-%d') if incident.incident_date else 'N/A' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="empty-state">No incident records available yet. SG-SST events will appear here as soon as they are reported.</div>
-        {% endif %}
-    </section>
 </div>
 {% endblock %}
-```

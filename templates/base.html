@@ -1,457 +1,91 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
-
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/crm.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/finance.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/xiomy.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}" />
-
-    <style>
-        :root {
-            --navy: #0b1f3a;
-            --navy-2: #10294d;
-            --gold: #d4af37;
-            --gold-soft: #f0d67a;
-            --orange: #d97b17;
-            --silver: #c0c6cf;
-            --silver-dark: #8e98a8;
-            --white: #ffffff;
-            --ink: #132238;
-            --bg-soft: #eef3f8;
-            --card-bg: rgba(255, 255, 255, 0.96);
-            --shadow-soft: 0 12px 30px rgba(11, 31, 58, 0.16);
-            --shadow-strong: 0 16px 38px rgba(11, 31, 58, 0.24);
-            --border-soft: rgba(11, 31, 58, 0.08);
-            --danger: #b42318;
-            --success: #067647;
-            --warning: #b54708;
-            --info: #175cd3;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(180deg, #e8edf5 0%, #f7f9fc 100%);
-            color: var(--ink);
-            min-height: 100%;
-        }
-
-        body {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .app-shell {
-            display: grid;
-            grid-template-columns: 290px 1fr;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: linear-gradient(180deg, var(--navy) 0%, #08172d 100%);
-            color: var(--white);
-            padding: 22px 18px 24px;
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 10px 0 25px rgba(0, 0, 0, 0.14);
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .brand-wrap {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 10px 10px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 16px;
-        }
-
-        .brand-logo {
-            width: 66px;
-            height: 66px;
-            border-radius: 18px;
-            object-fit: cover;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-        }
-
-        .brand-title {
-            margin: 0;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--gold-soft);
-            line-height: 1.2;
-        }
-
-        .brand-subtitle {
-            margin: 4px 0 0;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.82);
-            line-height: 1.35;
-        }
-
-        .sidebar-section-label {
-            font-size: 0.74rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.62);
-            padding: 10px 10px 8px;
-        }
-
-        .nav-grid {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 14px 16px;
-            border-radius: 16px;
-            background: linear-gradient(180deg, rgba(212, 175, 55, 0.24) 0%, rgba(255, 255, 255, 0.06) 100%);
-            border: 1px solid rgba(212, 175, 55, 0.24);
-            color: var(--white);
-            font-weight: 700;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 8px 20px rgba(0, 0, 0, 0.18);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .nav-link:hover {
-            transform: translateY(-2px);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 14px 24px rgba(0, 0, 0, 0.22);
-            border-color: rgba(240, 214, 122, 0.55);
-        }
-
-        .nav-link.active {
-            background: linear-gradient(180deg, rgba(212, 175, 55, 0.5) 0%, rgba(217, 123, 23, 0.42) 100%);
-            border-color: rgba(240, 214, 122, 0.88);
-            color: #fff9e8;
-        }
-
-        .nav-link small {
-            color: rgba(255, 255, 255, 0.72);
-            font-weight: 600;
-        }
-
-        .content-area {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            padding: 20px 28px;
-            background: rgba(255, 255, 255, 0.72);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-soft);
-            position: sticky;
-            top: 0;
-            z-index: 20;
-        }
-
-        .topbar-title-wrap h1 {
-            margin: 0;
-            font-size: 1.65rem;
-            color: var(--navy);
-            font-weight: 800;
-            line-height: 1.2;
-        }
-
-        .topbar-title-wrap p {
-            margin: 6px 0 0;
-            color: #516079;
-            font-size: 0.95rem;
-        }
-
-        .topbar-tools {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .global-search {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--white);
-            border: 1px solid var(--border-soft);
-            border-radius: 16px;
-            padding: 8px 10px;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .global-search input {
-            border: none;
-            outline: none;
-            min-width: 220px;
-            font-size: 0.95rem;
-            color: var(--ink);
-            background: transparent;
-        }
-
-        .topbar-btn,
-        .search-btn {
-            border: none;
-            cursor: pointer;
-            border-radius: 14px;
-            padding: 10px 14px;
-            font-weight: 700;
-            color: var(--white);
-            background: linear-gradient(180deg, var(--gold) 0%, var(--orange) 100%);
-            box-shadow: 0 8px 20px rgba(217, 123, 23, 0.24);
-        }
-
-        .topbar-btn.secondary {
-            background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%);
-            box-shadow: 0 8px 20px rgba(11, 31, 58, 0.22);
-        }
-
-        .page-body {
-            padding: 24px 28px 32px;
-        }
-
-        .page-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-soft);
-            border-radius: 24px;
-            box-shadow: var(--shadow-soft);
-            padding: 22px;
-            margin-bottom: 22px;
-        }
-
-        .page-card h2,
-        .page-card h3 {
-            margin-top: 0;
-            color: var(--navy);
-        }
-
-        .flash-wrapper {
-            margin-bottom: 18px;
-        }
-
-        .flash-message {
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            font-weight: 600;
-            border: 1px solid transparent;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .flash-success {
-            background: rgba(6, 118, 71, 0.1);
-            color: var(--success);
-            border-color: rgba(6, 118, 71, 0.2);
-        }
-
-        .flash-danger,
-        .flash-error {
-            background: rgba(180, 35, 24, 0.1);
-            color: var(--danger);
-            border-color: rgba(180, 35, 24, 0.2);
-        }
-
-        .flash-warning {
-            background: rgba(181, 71, 8, 0.12);
-            color: var(--warning);
-            border-color: rgba(181, 71, 8, 0.2);
-        }
-
-        .flash-info {
-            background: rgba(23, 92, 211, 0.1);
-            color: var(--info);
-            border-color: rgba(23, 92, 211, 0.2);
-        }
-
-        .footer-note {
-            text-align: center;
-            color: #68758d;
-            font-size: 0.9rem;
-            padding: 10px 0 0;
-        }
-
-        @media (max-width: 1180px) {
-            .app-shell {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: relative;
-                height: auto;
-                overflow: visible;
-            }
-        }
-
-        @media (max-width: 760px) {
-            .topbar {
-                padding: 18px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .page-body {
-                padding: 18px;
-            }
-
-            .global-search input {
-                min-width: 0;
-                width: 100%;
-            }
-        }
-    </style>
-
-    {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/xiomy.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/analytics.js') }}"></script>
 </head>
 <body>
-    {% set endpoint = request.endpoint or '' %}
-
     <div class="app-shell">
         <aside class="sidebar">
-            <div class="brand-wrap">
-                <img
-                    src="{{ url_for('static', filename='img/logo.jpg') }}"
-                    alt="UrbanHRPartners Logo"
-                    class="brand-logo"
-                    onerror="this.style.display='none'"
-                />
-                <div>
-                    <h2 class="brand-title">UrbanHRPartners</h2>
-                    <p class="brand-subtitle">Enterprise Suite<br />CRM · HRIS · ATS · SG-SST · Finance</p>
+            <div class="brand-panel">
+                <div class="brand-logo-wrap">
+                    <img
+                        src="{{ url_for('static', filename='img/logo.png') }}"
+                        alt="UrbanHRPartners Logo"
+                        class="brand-logo"
+                        onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
+                    >
+                    <div id="logo-fallback" class="logo-fallback" style="display:none;">
+                        UHP
+                    </div>
+                </div>
+                <div class="brand-text">
+                    <h1>UrbanHRPartners</h1>
+                    <p>Enterprise Suite + XIOMY</p>
                 </div>
             </div>
 
-            <div class="sidebar-section-label">Executive</div>
-            <nav class="nav-grid">
-                <a class="nav-link {% if endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
-                    <span>Dashboard</span><small>Overview</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'xiomy_page' %}active{% endif %}" href="{{ url_for('xiomy_page') }}">
-                    <span>XIOMY</span><small>AI Office</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'reports_analytics' %}active{% endif %}" href="{{ url_for('reports_analytics') }}">
-                    <span>Reports & Analytics</span><small>KPIs</small>
-                </a>
+            <nav class="sidebar-nav">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a class="nav-link" href="{{ url_for('crm') }}">CRM</a>
+                <a class="nav-link" href="{{ url_for('hris') }}">HRIS</a>
+                <a class="nav-link" href="{{ url_for('ats') }}">ATS</a>
+                <a class="nav-link" href="{{ url_for('orientation') }}">Orientation</a>
+                <a class="nav-link" href="{{ url_for('sgsst') }}">SG-SST</a>
+                <a class="nav-link" href="{{ url_for('finance') }}">Finance</a>
+                <a class="nav-link" href="{{ url_for('inventory') }}">Inventory</a>
+                <a class="nav-link" href="{{ url_for('marketing') }}">Marketing</a>
+                <a class="nav-link" href="{{ url_for('reports') }}">Reports</a>
+                <a class="nav-link" href="{{ url_for('chat_page') }}">Communication</a>
+                <a class="nav-link" href="{{ url_for('xiomy_dashboard') }}">XIOMY</a>
             </nav>
 
-            <div class="sidebar-section-label">Operations</div>
-            <nav class="nav-grid">
-                <a class="nav-link {% if endpoint == 'crm' %}active{% endif %}" href="{{ url_for('crm') }}">
-                    <span>CRM</span><small>Clients</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'hris' %}active{% endif %}" href="{{ url_for('hris') }}">
-                    <span>HRIS</span><small>People</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'ats' %}active{% endif %}" href="{{ url_for('ats') }}">
-                    <span>ATS</span><small>Recruiting</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'orientation' %}active{% endif %}" href="{{ url_for('orientation') }}">
-                    <span>Orientation</span><small>Onboarding</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'sgsst' %}active{% endif %}" href="{{ url_for('sgsst') }}">
-                    <span>SG-SST</span><small>Safety</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'finance' %}active{% endif %}" href="{{ url_for('finance') }}">
-                    <span>Finance</span><small>Accounting</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'inventory' or endpoint == 'inventory_scan' %}active{% endif %}" href="{{ url_for('inventory') }}">
-                    <span>Inventory</span><small>Assets</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'marketing' %}active{% endif %}" href="{{ url_for('marketing') }}">
-                    <span>Marketing</span><small>Growth</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'calendar_page' %}active{% endif %}" href="{{ url_for('calendar_page') }}">
-                    <span>Calendar</span><small>Schedule</small>
-                </a>
-            </nav>
-
-            <div class="sidebar-section-label">System</div>
-            <nav class="nav-grid">
-                <a class="nav-link {% if endpoint == 'settings' %}active{% endif %}" href="{{ url_for('settings') }}">
-                    <span>Settings</span><small>Configuration</small>
-                </a>
-                <a class="nav-link {% if endpoint == 'login' %}active{% endif %}" href="{{ url_for('login') }}">
-                    <span>Login</span><small>Access</small>
-                </a>
-            </nav>
+            <div class="sidebar-footer">
+                <div class="status-card">
+                    <span class="status-dot"></span>
+                    <div>
+                        <strong>System Status</strong>
+                        <p>Connected & Ready</p>
+                    </div>
+                </div>
+            </div>
         </aside>
 
-        <div class="content-area">
+        <main class="main-panel">
             <header class="topbar">
-                <div class="topbar-title-wrap">
-                    <h1>{% block page_title %}UrbanHRPartners Enterprise Suite{% endblock %}</h1>
-                    <p>{% block page_subtitle %}Integrated enterprise ecosystem for consulting, HR, finance, compliance, and growth.{% endblock %}</p>
+                <div class="topbar-left">
+                    <h2>{% block page_title %}UrbanHRPartners Enterprise Suite{% endblock %}</h2>
+                    <p>{% block page_subtitle %}Premium integrated business ecosystem{% endblock %}</p>
                 </div>
 
-                <div class="topbar-tools">
-                    <form class="global-search" method="get" action="{{ url_for('search_results') }}">
-                        <input type="text" name="q" placeholder="Search clients, employees, candidates, projects..." value="{{ request.args.get('q', '') }}" />
-                        <button class="search-btn" type="submit">Search</button>
-                    </form>
-                    <a class="topbar-btn secondary" href="{{ url_for('dashboard') }}">Executive View</a>
-                    <a class="topbar-btn" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
+                <div class="topbar-right">
+                    <button class="btn btn-3d btn-gold" type="button">Executive Mode</button>
+                    <button class="btn btn-3d btn-silver" type="button">XIOMY Live</button>
                 </div>
             </header>
 
-            <main class="page-body">
-                <div class="flash-wrapper">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="flash-message flash-{{ category }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                </div>
+            <section class="flash-wrapper">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </section>
 
+            <section class="content-area">
                 {% block content %}{% endblock %}
-
-                <div class="footer-note">
-                    UrbanHRPartners Enterprise Suite · Premium integrated ecosystem
-                </div>
-            </main>
-        </div>
+            </section>
+        </main>
     </div>
-
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/crm.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/industry_loader.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/finance.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/xiomy.js') }}"></script>
-    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
-```
