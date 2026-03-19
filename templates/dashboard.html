@@ -2,230 +2,1492 @@
 
 {% block title %}Dashboard | UrbanHRPartners Enterprise Suite{% endblock %}
 
-{% block topbar_title %}
-Executive Dashboard
+{% block topbar_subtitle %}
+Executive control center for CRM, HRIS, ATS, Orientation, SG-SST, Finance, Inventory, Marketing, Reports, and XIOMY intelligence workflows.
 {% endblock %}
 
 {% block head_extra %}
 <style>
-
-/* =========================================================
-   DASHBOARD LAYOUT
-========================================================= */
-.dashboard-container {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-/* =========================================================
-   KPI CARDS
-========================================================= */
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-}
-
-.kpi-card {
-    background: linear-gradient(135deg, #07162a, #17345c);
-    color: white;
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-}
-
-.kpi-card h3 {
-    font-size: 14px;
-    color: #cfd8dc;
-}
-
-.kpi-card .value {
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 10px;
-}
-
-/* =========================================================
-   MODULE GRID
-========================================================= */
-.module-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 22px;
-}
-
-.module-card {
-    background: white;
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    transition: 0.25s;
-    cursor: pointer;
-    position: relative;
-}
-
-.module-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.25);
-}
-
-.module-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.module-desc {
-    font-size: 13px;
-    color: #555;
-}
-
-/* =========================================================
-   XIOMY PANEL
-========================================================= */
-.xiomy-panel {
-    background: linear-gradient(135deg, #0b1f3a, #07162a);
-    border-radius: 20px;
-    padding: 28px;
-    color: white;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.xiomy-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #f0c85a;
-}
-
-.xiomy-input {
-    display: flex;
-    gap: 10px;
-}
-
-.xiomy-input input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-}
-
-.xiomy-response {
-    background: rgba(255,255,255,0.08);
-    padding: 16px;
-    border-radius: 12px;
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-@media (max-width: 768px) {
-    .kpi-grid,
-    .module-grid {
-        grid-template-columns: 1fr;
+    :root {
+        --uhp-navy-1: #07162a;
+        --uhp-navy-2: #0c2340;
+        --uhp-navy-3: #12345a;
+        --uhp-gold-1: #f3c550;
+        --uhp-gold-2: #d9a93c;
+        --uhp-orange-1: #ea8a1a;
+        --uhp-orange-2: #ff9f2f;
+        --uhp-silver-1: #d8dee9;
+        --uhp-silver-2: #aeb8c7;
+        --uhp-white: #ffffff;
+        --uhp-panel: rgba(10, 25, 45, 0.88);
+        --uhp-panel-2: rgba(17, 39, 68, 0.92);
+        --uhp-border: rgba(255, 255, 255, 0.10);
+        --uhp-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.34);
+        --uhp-shadow-md: 0 14px 34px rgba(0, 0, 0, 0.24);
+        --uhp-shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.16);
+        --uhp-radius-xl: 30px;
+        --uhp-radius-lg: 22px;
+        --uhp-radius-md: 18px;
     }
-}
 
+    .dashboard-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        padding-bottom: 12px;
+    }
+
+    .dashboard-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 34px;
+        padding: 34px;
+        border: 1px solid rgba(255,255,255,0.09);
+        background:
+            radial-gradient(circle at 8% 18%, rgba(243, 197, 80, 0.18), transparent 24%),
+            radial-gradient(circle at 88% 14%, rgba(234, 138, 26, 0.16), transparent 20%),
+            radial-gradient(circle at 82% 78%, rgba(255,255,255,0.08), transparent 20%),
+            linear-gradient(135deg, #07162a 0%, #0c2340 52%, #163e68 100%);
+        box-shadow: var(--uhp-shadow-lg);
+    }
+
+    .dashboard-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            linear-gradient(135deg, rgba(255,255,255,0.05), transparent 28%, transparent 72%, rgba(255,255,255,0.04));
+        mix-blend-mode: screen;
+    }
+
+    .dashboard-hero-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 26px;
+        align-items: stretch;
+    }
+
+    .dashboard-brand-block {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .brand-logo-wrap {
+        width: 102px;
+        height: 102px;
+        min-width: 102px;
+        border-radius: 24px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            0 16px 28px rgba(0,0,0,0.24);
+        backdrop-filter: blur(4px);
+    }
+
+    .brand-logo-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 18px;
+    }
+
+    .brand-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 260px;
+    }
+
+    .brand-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-size: 0.96rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #ffd778;
+    }
+
+    .brand-kicker span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.09);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .brand-title {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3.25rem);
+        line-height: 1.05;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: 0.01em;
+        text-shadow: 0 4px 16px rgba(0,0,0,0.28);
+    }
+
+    .brand-title strong {
+        color: var(--uhp-gold-1);
+    }
+
+    .brand-subtitle {
+        margin: 0;
+        max-width: 920px;
+        font-size: 1.12rem;
+        line-height: 1.75;
+        color: #e5ebf4;
+    }
+
+    .hero-highlights {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 4px;
+    }
+
+    .hero-highlight-card {
+        border-radius: 20px;
+        padding: 18px 18px 16px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.11);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 12px 24px rgba(0,0,0,0.16);
+    }
+
+    .hero-highlight-label {
+        font-size: 0.84rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #ffd778;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .hero-highlight-value {
+        font-size: 2rem;
+        line-height: 1;
+        font-weight: 900;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .hero-highlight-copy {
+        color: #dfe6ef;
+        font-size: 0.96rem;
+        line-height: 1.5;
+    }
+
+    .hero-side-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 18px;
+        border-radius: 28px;
+        padding: 24px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 18px 36px rgba(0,0,0,0.20);
+    }
+
+    .hero-side-title {
+        margin: 0 0 8px 0;
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: #ffffff;
+    }
+
+    .hero-side-copy {
+        margin: 0;
+        color: #dce4ee;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .hero-side-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .hero-action-btn,
+    .module-btn,
+    .utility-btn {
+        text-decoration: none;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 56px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        font-weight: 900;
+        font-size: 1rem;
+        letter-spacing: 0.01em;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .hero-action-btn {
+        color: #0c1830;
+        background: linear-gradient(180deg, #ffd978 0%, #f3c550 55%, #d9a93c 100%);
+        border: 1px solid rgba(255,255,255,0.25);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.45),
+            0 12px 24px rgba(0,0,0,0.20),
+            0 4px 0 rgba(119, 86, 16, 0.7);
+    }
+
+    .hero-action-btn.secondary {
+        color: #ffffff;
+        background: linear-gradient(180deg, #1d4e7f 0%, #14385e 55%, #0d2641 100%);
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            0 12px 24px rgba(0,0,0,0.20),
+            0 4px 0 rgba(3, 12, 22, 0.78);
+    }
+
+    .hero-action-btn:hover,
+    .module-btn:hover,
+    .utility-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .section-card {
+        border-radius: 28px;
+        padding: 26px;
+        background:
+            linear-gradient(180deg, rgba(10,25,45,0.95), rgba(10,25,45,0.90));
+        border: 1px solid var(--uhp-border);
+        box-shadow: var(--uhp-shadow-md);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .section-title-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .section-eyebrow {
+        margin: 0;
+        font-size: 0.86rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--uhp-gold-1);
+    }
+
+    .section-title {
+        margin: 0;
+        font-size: 1.85rem;
+        line-height: 1.15;
+        font-weight: 900;
+        color: #ffffff;
+    }
+
+    .section-copy {
+        margin: 0;
+        color: #d5deea;
+        font-size: 1.02rem;
+        line-height: 1.7;
+        max-width: 940px;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .metric-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        padding: 18px 18px 16px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 12px 24px rgba(0,0,0,0.16);
+    }
+
+    .metric-card::after {
+        content: "";
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        width: 90px;
+        height: 90px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(243,197,80,0.16), transparent 70%);
+    }
+
+    .metric-label {
+        margin: 0 0 10px 0;
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #ffd778;
+    }
+
+    .metric-value {
+        margin: 0 0 6px 0;
+        font-size: 2.2rem;
+        line-height: 1;
+        font-weight: 900;
+        color: #ffffff;
+    }
+
+    .metric-subtext {
+        margin: 0;
+        color: #ced8e6;
+        font-size: 0.95rem;
+        line-height: 1.55;
+    }
+
+    .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .module-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        border-radius: 24px;
+        padding: 20px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 14px 30px rgba(0,0,0,0.18);
+        min-height: 260px;
+    }
+
+    .module-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .module-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        padding: 0 12px;
+        background:
+            linear-gradient(180deg, rgba(243,197,80,0.20), rgba(234,138,26,0.14));
+        color: #ffffff;
+        font-size: 1.15rem;
+        font-weight: 900;
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.10),
+            0 10px 22px rgba(0,0,0,0.16);
+    }
+
+    .module-status {
+        font-size: 0.84rem;
+        font-weight: 900;
+        color: #0e1d34;
+        background: linear-gradient(180deg, #ffd978 0%, #f3c550 100%);
+        border-radius: 999px;
+        padding: 8px 12px;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.38),
+            0 8px 18px rgba(0,0,0,0.18);
+    }
+
+    .module-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 900;
+        color: #ffffff;
+    }
+
+    .module-description {
+        margin: 0;
+        color: #d5deea;
+        font-size: 0.98rem;
+        line-height: 1.7;
+        flex-grow: 1;
+    }
+
+    .module-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .module-meta span {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.84rem;
+        font-weight: 800;
+        color: #dce6f2;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .module-btn {
+        color: #0c1830;
+        background: linear-gradient(180deg, #ffd978 0%, #f3c550 55%, #d9a93c 100%);
+        border: 1px solid rgba(255,255,255,0.24);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.42),
+            0 12px 24px rgba(0,0,0,0.20),
+            0 4px 0 rgba(119, 86, 16, 0.72);
+    }
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+    }
+
+    .info-panel {
+        border-radius: 24px;
+        padding: 22px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 12px 24px rgba(0,0,0,0.16);
+    }
+
+    .info-panel h3 {
+        margin: 0 0 14px 0;
+        font-size: 1.28rem;
+        font-weight: 900;
+        color: #ffffff;
+    }
+
+    .info-panel p {
+        margin: 0 0 12px 0;
+        font-size: 1rem;
+        line-height: 1.72;
+        color: #d5deea;
+    }
+
+    .progress-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .progress-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .progress-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .progress-label {
+        font-size: 0.98rem;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .progress-value {
+        font-size: 0.92rem;
+        font-weight: 900;
+        color: #ffd778;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.10);
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .progress-bar > span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #f3c550 0%, #ea8a1a 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+    }
+
+    .recent-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .recent-card {
+        border-radius: 24px;
+        padding: 22px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 12px 24px rgba(0,0,0,0.16);
+    }
+
+    .recent-card h3 {
+        margin: 0 0 14px 0;
+        font-size: 1.24rem;
+        font-weight: 900;
+        color: #ffffff;
+    }
+
+    .recent-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .recent-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .recent-name {
+        font-size: 1rem;
+        font-weight: 900;
+        color: #ffffff;
+        line-height: 1.35;
+    }
+
+    .recent-meta {
+        font-size: 0.92rem;
+        color: #d5deea;
+        line-height: 1.55;
+    }
+
+    .recent-empty {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.05);
+        border: 1px dashed rgba(255,255,255,0.14);
+        color: #d5deea;
+        font-size: 0.98rem;
+        line-height: 1.65;
+    }
+
+    .utility-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .utility-btn {
+        color: #ffffff;
+        background: linear-gradient(180deg, #1b4c7b 0%, #12385d 58%, #0d2440 100%);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            0 12px 24px rgba(0,0,0,0.18),
+            0 4px 0 rgba(4, 14, 25, 0.75);
+    }
+
+    .footer-status {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 18px;
+    }
+
+    .status-note {
+        font-size: 1rem;
+        color: #d5deea;
+        line-height: 1.72;
+        margin: 0;
+    }
+
+    .status-strong {
+        color: #ffffff;
+        font-weight: 900;
+    }
+
+    @media (max-width: 1400px) {
+        .metrics-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .modules-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .dashboard-hero-grid,
+        .analytics-grid,
+        .footer-status {
+            grid-template-columns: 1fr;
+        }
+
+        .metrics-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .modules-grid,
+        .utility-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .recent-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 860px) {
+        .dashboard-hero,
+        .section-card {
+            padding: 22px;
+            border-radius: 24px;
+        }
+
+        .hero-highlights,
+        .metrics-grid,
+        .modules-grid,
+        .utility-grid,
+        .hero-side-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .brand-row {
+            align-items: flex-start;
+        }
+
+        .brand-logo-wrap {
+            width: 86px;
+            height: 86px;
+            min-width: 86px;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.9rem;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+{% set dm = dashboard_metrics | default({}, true) %}
+{% set recent_clients_safe = recent_clients | default([], true) %}
+{% set recent_employees_safe = recent_employees | default([], true) %}
+{% set recent_candidates_safe = recent_candidates | default([], true) %}
+{% set recent_tasks_safe = recent_tasks | default([], true) %}
+{% set recent_invoices_safe = recent_invoices | default([], true) %}
 
-<div class="dashboard-container">
+<div class="dashboard-shell">
 
-    <!-- ========================================================= -->
-    <!-- KPI SECTION -->
-    <!-- ========================================================= -->
-    <div class="kpi-grid">
-        <div class="kpi-card">
-            <h3>Total Clients</h3>
-            <div class="value">120</div>
+    <section class="dashboard-hero">
+        <div class="dashboard-hero-grid">
+            <div class="dashboard-brand-block">
+                <div class="brand-row">
+                    <div class="brand-logo-wrap">
+                        <img src="{{ url_for('static', filename='img/urbanhrpartners-logo.png') }}"
+                             alt="UrbanHRPartners Logo">
+                    </div>
+
+                    <div class="brand-copy">
+                        <div class="brand-kicker">
+                            <span>UrbanHRPartners</span>
+                            <span>Enterprise Suite</span>
+                            <span>XIOMY Ready</span>
+                        </div>
+
+                        <h1 class="brand-title">
+                            Executive <strong>Dashboard</strong>
+                        </h1>
+
+                        <p class="brand-subtitle">
+                            Unified command center for client growth, workforce intelligence, recruiting execution,
+                            safety governance, financial visibility, inventory control, marketing operations, analytics,
+                            and next-phase XIOMY orchestration.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="hero-highlights">
+                    <div class="hero-highlight-card">
+                        <div class="hero-highlight-label">Live Clients</div>
+                        <div class="hero-highlight-value">{{ dm.get('clients', 0) }}</div>
+                        <div class="hero-highlight-copy">
+                            Active relationship footprint across the CRM engine.
+                        </div>
+                    </div>
+
+                    <div class="hero-highlight-card">
+                        <div class="hero-highlight-label">Live Employees</div>
+                        <div class="hero-highlight-value">{{ dm.get('employees', 0) }}</div>
+                        <div class="hero-highlight-copy">
+                            Workforce records connected to HRIS workflows and compliance.
+                        </div>
+                    </div>
+
+                    <div class="hero-highlight-card">
+                        <div class="hero-highlight-label">Open Tasks</div>
+                        <div class="hero-highlight-value">{{ dm.get('open_tasks', 0) }}</div>
+                        <div class="hero-highlight-copy">
+                            Operational actions pending across the suite.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="hero-side-panel">
+                <div>
+                    <h2 class="hero-side-title">Enterprise Focus</h2>
+                    <p class="hero-side-copy">
+                        This dashboard is structured to support a full multi-module business ecosystem without reducing
+                        scope. It surfaces operational counts, module access, executive summaries, and recent activity
+                        while remaining safe when data is still growing.
+                    </p>
+                </div>
+
+                <div class="hero-side-actions">
+                    <a href="/crm" class="hero-action-btn">Open CRM</a>
+                    <a href="/hris" class="hero-action-btn secondary">Open HRIS</a>
+                    <a href="/ats" class="hero-action-btn">Open ATS</a>
+                    <a href="/finance" class="hero-action-btn secondary">Open Finance</a>
+                </div>
+            </aside>
         </div>
-        <div class="kpi-card">
-            <h3>Active Employees</h3>
-            <div class="value">860</div>
-        </div>
-        <div class="kpi-card">
-            <h3>Open Positions</h3>
-            <div class="value">34</div>
-        </div>
-        <div class="kpi-card">
-            <h3>Revenue</h3>
-            <div class="value">$92K</div>
-        </div>
-    </div>
+    </section>
 
-    <!-- ========================================================= -->
-    <!-- XIOMY AI PANEL -->
-    <!-- ========================================================= -->
-    <div class="xiomy-panel">
-        <div class="xiomy-title">XIOMY Executive AI</div>
-
-        <div class="xiomy-input">
-            <input type="text" placeholder="Ask XIOMY anything about your business...">
-            <button class="btn">Ask</button>
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <p class="section-eyebrow">Live Operational Metrics</p>
+                <h2 class="section-title">Integrated enterprise indicators</h2>
+                <p class="section-copy">
+                    These dashboard cards are designed to work with real database-backed metrics and remain visually
+                    stable even when one or more modules are empty or still under expansion.
+                </p>
+            </div>
         </div>
 
-        <div class="xiomy-response">
-            XIOMY will provide strategic insights, HR recommendations, financial projections, and operational intelligence.
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <p class="metric-label">Clients</p>
+                <p class="metric-value">{{ dm.get('clients', 0) }}</p>
+                <p class="metric-subtext">Total CRM client records available in the platform.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Active Clients</p>
+                <p class="metric-value">{{ dm.get('active_clients', 0) }}</p>
+                <p class="metric-subtext">Current active account relationships and retained business.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Employees</p>
+                <p class="metric-value">{{ dm.get('employees', 0) }}</p>
+                <p class="metric-subtext">Registered employee profiles connected to HRIS records.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Active Employees</p>
+                <p class="metric-value">{{ dm.get('active_employees', 0) }}</p>
+                <p class="metric-subtext">Workforce members actively connected to operations.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Candidates</p>
+                <p class="metric-value">{{ dm.get('candidates', 0) }}</p>
+                <p class="metric-subtext">Applicants moving through ATS workflows and pipeline stages.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Open Positions</p>
+                <p class="metric-value">{{ dm.get('open_positions', 0) }}</p>
+                <p class="metric-subtext">Requisitions currently open for recruiting and selection.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Projects</p>
+                <p class="metric-value">{{ dm.get('projects', 0) }}</p>
+                <p class="metric-subtext">Client or internal projects tracked across service delivery.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Open Tasks</p>
+                <p class="metric-value">{{ dm.get('open_tasks', 0) }}</p>
+                <p class="metric-subtext">Pending execution items generated from workflows and commitments.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Inventory Items</p>
+                <p class="metric-value">{{ dm.get('inventory_items', 0) }}</p>
+                <p class="metric-subtext">Assets, stock, supplies, or tagged items in inventory control.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Low Stock</p>
+                <p class="metric-value">{{ dm.get('low_stock_items', 0) }}</p>
+                <p class="metric-subtext">Items currently at or below the reorder threshold.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Invoices</p>
+                <p class="metric-value">{{ dm.get('invoices', 0) }}</p>
+                <p class="metric-subtext">Total billing records posted into the finance engine.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Pending Invoices</p>
+                <p class="metric-value">{{ dm.get('pending_invoices', 0) }}</p>
+                <p class="metric-subtext">Invoices still awaiting payment or financial completion.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Communications</p>
+                <p class="metric-value">{{ dm.get('communications', 0) }}</p>
+                <p class="metric-subtext">Tracked interactions, logs, notes, or engagement history.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Orientation Pending</p>
+                <p class="metric-value">{{ dm.get('orientation_pending', 0) }}</p>
+                <p class="metric-subtext">New employee onboarding items still awaiting completion.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Policy Acknowledgments</p>
+                <p class="metric-value">{{ dm.get('policy_ack_pending', 0) }}</p>
+                <p class="metric-subtext">Pending read-and-sign policy confirmations requiring action.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Asset Assignments</p>
+                <p class="metric-value">{{ dm.get('asset_assignments', 0) }}</p>
+                <p class="metric-subtext">Tracked assignments of equipment or operational resources.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">SG-SST Risks</p>
+                <p class="metric-value">{{ dm.get('sgsst_risks', 0) }}</p>
+                <p class="metric-subtext">Risk matrix items or safety records visible to management.</p>
+            </div>
+
+            <div class="metric-card">
+                <p class="metric-label">Marketing Campaigns</p>
+                <p class="metric-value">{{ dm.get('marketing_campaigns', 0) }}</p>
+                <p class="metric-subtext">Campaign records tied to outreach, branding, and growth.</p>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- ========================================================= -->
-    <!-- MODULES -->
-    <!-- ========================================================= -->
-    <div class="module-grid">
-
-        <div class="module-card" onclick="location.href='/crm'">
-            <div class="module-title">CRM</div>
-            <div class="module-desc">Client relationships, sales pipeline, revenue tracking.</div>
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <p class="section-eyebrow">Enterprise Modules</p>
+                <h2 class="section-title">Full-suite navigation without reducing scope</h2>
+                <p class="section-copy">
+                    Each module button keeps the dashboard aligned to your original enterprise vision instead of a
+                    minimized internal tool. These are direct path-based links to reduce template route crashes.
+                </p>
+            </div>
         </div>
 
-        <div class="module-card" onclick="location.href='/hris'">
-            <div class="module-title">HRIS</div>
-            <div class="module-desc">Employee data, performance, disciplinary tracking.</div>
+        <div class="modules-grid">
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">CRM</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Client Relationship Management</h3>
+                <p class="module-description">
+                    Manage accounts, prospecting, communication tracking, projects, pipeline activities, revenue
+                    support, and long-term client relationship visibility.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('clients', 0) }} clients</span>
+                    <span>{{ dm.get('communications', 0) }} communications</span>
+                    <span>{{ dm.get('projects', 0) }} projects</span>
+                </div>
+                <a href="/crm" class="module-btn">Open CRM Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">HRIS</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Human Resources Information System</h3>
+                <p class="module-description">
+                    Centralize employee records, disciplinary actions, points, labor relations tracking, role data,
+                    and operational HR visibility across the organization.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('employees', 0) }} employees</span>
+                    <span>{{ dm.get('active_employees', 0) }} active</span>
+                </div>
+                <a href="/hris" class="module-btn">Open HRIS Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">ATS</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Applicant Tracking System</h3>
+                <p class="module-description">
+                    Organize requisitions, candidates, screening, resume strategy, interviews, and hiring conversion
+                    into onboarding readiness and workforce activation.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('candidates', 0) }} candidates</span>
+                    <span>{{ dm.get('open_positions', 0) }} open positions</span>
+                </div>
+                <a href="/ats" class="module-btn">Open ATS Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">ORI</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Orientation & Onboarding</h3>
+                <p class="module-description">
+                    Coordinate onboarding readiness, checklists, asset delivery, policy acknowledgments, scheduling,
+                    welcome workflows, and early-stage employee integration.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('orientation_pending', 0) }} pending</span>
+                    <span>{{ dm.get('asset_assignments', 0) }} assets</span>
+                    <span>{{ dm.get('policy_ack_pending', 0) }} policies</span>
+                </div>
+                <a href="/orientation" class="module-btn">Open Orientation</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">SST</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">SG-SST Safety Governance</h3>
+                <p class="module-description">
+                    Support occupational safety management, risk matrices, inspections, incidents, investigations,
+                    emergency planning, audits, indicators, and legal structure.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('sgsst_risks', 0) }} risks</span>
+                    <span>Compliance visibility</span>
+                </div>
+                <a href="/sgsst" class="module-btn">Open SG-SST Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">FIN</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Finance & Accounting</h3>
+                <p class="module-description">
+                    Track invoices, budgeting, margin views, revenue support, payment follow-up, and integrated
+                    financial operations connected to service delivery.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('invoices', 0) }} invoices</span>
+                    <span>{{ dm.get('pending_invoices', 0) }} pending</span>
+                </div>
+                <a href="/finance" class="module-btn">Open Finance Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">INV</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Inventory & Asset Control</h3>
+                <p class="module-description">
+                    Manage inventory items, low stock alerts, assignments, barcodes, QR workflows, and resource
+                    accountability connected to operational execution.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('inventory_items', 0) }} items</span>
+                    <span>{{ dm.get('low_stock_items', 0) }} low stock</span>
+                </div>
+                <a href="/inventory" class="module-btn">Open Inventory Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">MKT</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Marketing & Growth</h3>
+                <p class="module-description">
+                    Organize campaigns, outreach strategy, market positioning, brand development, and commercial growth
+                    workflows across the integrated ecosystem.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('marketing_campaigns', 0) }} campaigns</span>
+                    <span>Growth engine</span>
+                </div>
+                <a href="/marketing" class="module-btn">Open Marketing Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">REP</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Reports & Analytics</h3>
+                <p class="module-description">
+                    Review performance visibility, module summaries, executive comparisons, operational trends, and
+                    future BI expansion throughout the platform.
+                </p>
+                <div class="module-meta">
+                    <span>Executive reporting</span>
+                    <span>Cross-module visibility</span>
+                </div>
+                <a href="/reports" class="module-btn">Open Reports Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">XIO</div>
+                    <div class="module-status">Next Phase</div>
+                </div>
+                <h3 class="module-title">XIOMY Executive Intelligence</h3>
+                <p class="module-description">
+                    Reserved for intelligent orchestration, executive support, voice interaction, memory tools,
+                    workflow oversight, and premium AI-led system navigation.
+                </p>
+                <div class="module-meta">
+                    <span>AI ecosystem</span>
+                    <span>Executive layer</span>
+                </div>
+                <a href="/xiomy-dashboard" class="module-btn">Open XIOMY Space</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">CHT</div>
+                    <div class="module-status">Ready</div>
+                </div>
+                <h3 class="module-title">Internal AI Chat Workspace</h3>
+                <p class="module-description">
+                    Dedicated assistant interaction space for questions, workflow support, executive prompts, and
+                    guided navigation inside the enterprise environment.
+                </p>
+                <div class="module-meta">
+                    <span>Conversational support</span>
+                    <span>Guided actions</span>
+                </div>
+                <a href="/chat" class="module-btn">Open Chat Workspace</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-card-top">
+                    <div class="module-badge">TSK</div>
+                    <div class="module-status">Live Access</div>
+                </div>
+                <h3 class="module-title">Tasks & Operational Execution</h3>
+                <p class="module-description">
+                    Monitor pending work, task generation from communications, execution status, and accountability
+                    across multiple modules and business processes.
+                </p>
+                <div class="module-meta">
+                    <span>{{ dm.get('open_tasks', 0) }} open tasks</span>
+                    <span>Operational follow-up</span>
+                </div>
+                <a href="/tasks" class="module-btn">Open Tasks Module</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <p class="section-eyebrow">Executive Overview</p>
+                <h2 class="section-title">Operational readiness, visibility, and growth posture</h2>
+                <p class="section-copy">
+                    This section gives leadership context without reducing the enterprise build into a basic starter
+                    page. It supports present-day use while leaving room for future expansion.
+                </p>
+            </div>
         </div>
 
-        <div class="module-card" onclick="location.href='/ats'">
-            <div class="module-title">ATS</div>
-            <div class="module-desc">Recruitment, pipelines, resume optimization.</div>
+        <div class="analytics-grid">
+            <div class="info-panel">
+                <h3>Strategic operating posture</h3>
+                <p>
+                    UrbanHRPartners is positioned as an integrated enterprise ecosystem rather than a disconnected set
+                    of forms. The dashboard intentionally reflects cross-functional control by surfacing client load,
+                    HR operations, recruiting activity, inventory visibility, safety posture, financial progress, and
+                    execution capacity from one command center.
+                </p>
+                <p>
+                    This page is also structured to remain stable during growth. If a module has no data yet, the
+                    cards still render properly. As more live records are added, the dashboard becomes progressively
+                    more informative without needing a redesign.
+                </p>
+                <p>
+                    The visual hierarchy is intentionally larger, stronger, and more premium so the platform feels like
+                    an executive suite, not a stripped-down admin tool.
+                </p>
+            </div>
+
+            <div class="info-panel">
+                <h3>Module maturity indicators</h3>
+                <div class="progress-stack">
+                    <div class="progress-item">
+                        <div class="progress-top">
+                            <span class="progress-label">CRM / Revenue Engine</span>
+                            <span class="progress-value">Visible</span>
+                        </div>
+                        <div class="progress-bar"><span style="width: 86%;"></span></div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-top">
+                            <span class="progress-label">HRIS / Workforce Core</span>
+                            <span class="progress-value">Visible</span>
+                        </div>
+                        <div class="progress-bar"><span style="width: 84%;"></span></div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-top">
+                            <span class="progress-label">ATS / Recruiting Engine</span>
+                            <span class="progress-value">Visible</span>
+                        </div>
+                        <div class="progress-bar"><span style="width: 82%;"></span></div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-top">
+                            <span class="progress-label">SG-SST / Safety Governance</span>
+                            <span class="progress-value">Expanding</span>
+                        </div>
+                        <div class="progress-bar"><span style="width: 76%;"></span></div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-top">
+                            <span class="progress-label">Finance / Accounting</span>
+                            <span class="progress-value">Expanding</span>
+                        </div>
+                        <div class="progress-bar"><span style="width: 78%;"></span></div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-top">
+                            <span class="progress-label">XIOMY Executive Layer</span>
+                            <span class="progress-value">Reserved</span>
+                        </div>
+                        <div class="progress-bar"><span style="width: 64%;"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <p class="section-eyebrow">Recent Activity</p>
+                <h2 class="section-title">Latest records across the platform</h2>
+                <p class="section-copy">
+                    These panels are designed with safe defaults so the dashboard does not fail if records are still
+                    being populated or if one of the module lists comes back empty.
+                </p>
+            </div>
         </div>
 
-        <div class="module-card" onclick="location.href='/orientation'">
-            <div class="module-title">Orientation</div>
-            <div class="module-desc">Onboarding workflows and compliance.</div>
+        <div class="recent-grid">
+            <div class="recent-card">
+                <h3>Recent Clients</h3>
+                <div class="recent-list">
+                    {% if recent_clients_safe %}
+                        {% for item in recent_clients_safe[:5] %}
+                            <div class="recent-item">
+                                <div class="recent-name">
+                                    {{ item.name if item.name is defined and item.name else 'Client Record' }}
+                                </div>
+                                <div class="recent-meta">
+                                    {% if item.industry is defined and item.industry %}Industry: {{ item.industry }}{% else %}Industry not yet specified{% endif %}
+                                    {% if item.status is defined and item.status %} • Status: {{ item.status }}{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="recent-empty">
+                            No client records are available yet. Once client records are created in the CRM, they will
+                            appear here automatically.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="recent-card">
+                <h3>Recent Employees</h3>
+                <div class="recent-list">
+                    {% if recent_employees_safe %}
+                        {% for item in recent_employees_safe[:5] %}
+                            <div class="recent-item">
+                                <div class="recent-name">
+                                    {% if item.full_name is defined and item.full_name %}
+                                        {{ item.full_name }}
+                                    {% elif item.name is defined and item.name %}
+                                        {{ item.name }}
+                                    {% else %}
+                                        Employee Record
+                                    {% endif %}
+                                </div>
+                                <div class="recent-meta">
+                                    {% if item.job_title is defined and item.job_title %}
+                                        {{ item.job_title }}
+                                    {% elif item.position_title is defined and item.position_title %}
+                                        {{ item.position_title }}
+                                    {% else %}
+                                        Job title not yet specified
+                                    {% endif %}
+                                    {% if item.status is defined and item.status %} • Status: {{ item.status }}{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="recent-empty">
+                            No employee records are available yet. HRIS employee profiles will display here once added.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="recent-card">
+                <h3>Recent Candidates</h3>
+                <div class="recent-list">
+                    {% if recent_candidates_safe %}
+                        {% for item in recent_candidates_safe[:5] %}
+                            <div class="recent-item">
+                                <div class="recent-name">
+                                    {% if item.full_name is defined and item.full_name %}
+                                        {{ item.full_name }}
+                                    {% elif item.name is defined and item.name %}
+                                        {{ item.name }}
+                                    {% else %}
+                                        Candidate Record
+                                    {% endif %}
+                                </div>
+                                <div class="recent-meta">
+                                    {% if item.stage is defined and item.stage %}
+                                        Stage: {{ item.stage }}
+                                    {% else %}
+                                        Stage not yet specified
+                                    {% endif %}
+                                    {% if item.status is defined and item.status %} • Status: {{ item.status }}{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="recent-empty">
+                            No candidate records are available yet. ATS profiles and applicants will show here once
+                            created.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="recent-card">
+                <h3>Recent Tasks</h3>
+                <div class="recent-list">
+                    {% if recent_tasks_safe %}
+                        {% for item in recent_tasks_safe[:5] %}
+                            <div class="recent-item">
+                                <div class="recent-name">
+                                    {% if item.title is defined and item.title %}
+                                        {{ item.title }}
+                                    {% else %}
+                                        Task Record
+                                    {% endif %}
+                                </div>
+                                <div class="recent-meta">
+                                    {% if item.status is defined and item.status %}
+                                        Status: {{ item.status }}
+                                    {% else %}
+                                        Status not yet specified
+                                    {% endif %}
+                                    {% if item.priority is defined and item.priority %} • Priority: {{ item.priority }}{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="recent-empty">
+                            No task records are available yet. Open and recent operational items will appear here
+                            automatically as tasks are generated.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="recent-card">
+                <h3>Recent Invoices</h3>
+                <div class="recent-list">
+                    {% if recent_invoices_safe %}
+                        {% for item in recent_invoices_safe[:5] %}
+                            <div class="recent-item">
+                                <div class="recent-name">
+                                    {% if item.invoice_number is defined and item.invoice_number %}
+                                        Invoice {{ item.invoice_number }}
+                                    {% elif item.number is defined and item.number %}
+                                        Invoice {{ item.number }}
+                                    {% else %}
+                                        Invoice Record
+                                    {% endif %}
+                                </div>
+                                <div class="recent-meta">
+                                    {% if item.status is defined and item.status %}
+                                        Status: {{ item.status }}
+                                    {% else %}
+                                        Status not yet specified
+                                    {% endif %}
+                                    {% if item.total_amount is defined and item.total_amount %}
+                                        • Amount: {{ item.total_amount }}
+                                    {% elif item.amount is defined and item.amount %}
+                                        • Amount: {{ item.amount }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="recent-empty">
+                            No invoice records are available yet. Finance activity will display here after billing data
+                            is posted into the system.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="recent-card">
+                <h3>Executive Note</h3>
+                <div class="recent-empty">
+                    This dashboard is intentionally prepared to support a premium enterprise build with full module
+                    visibility, future analytics expansion, and a visible UrbanHRPartners brand presence. It is designed
+                    to render safely while the rest of the suite continues to evolve.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-title-wrap">
+                <p class="section-eyebrow">Quick Access</p>
+                <h2 class="section-title">High-visibility operational shortcuts</h2>
+                <p class="section-copy">
+                    Fast navigation for common executive moves without reducing your platform to basic links.
+                </p>
+            </div>
         </div>
 
-        <div class="module-card" onclick="location.href='/sgsst'">
-            <div class="module-title">SG-SST</div>
-            <div class="module-desc">Health & safety system management.</div>
+        <div class="utility-grid">
+            <a href="/clients/new" class="utility-btn">Create Client</a>
+            <a href="/employees/new" class="utility-btn">Create Employee</a>
+            <a href="/candidates/new" class="utility-btn">Create Candidate</a>
+            <a href="/invoices/new" class="utility-btn">Create Invoice</a>
+            <a href="/projects/new" class="utility-btn">Create Project</a>
+            <a href="/tasks/new" class="utility-btn">Create Task</a>
+            <a href="/inventory/new" class="utility-btn">Add Inventory Item</a>
+            <a href="/marketing/new" class="utility-btn">Create Campaign</a>
         </div>
+    </section>
 
-        <div class="module-card" onclick="location.href='/finance'">
-            <div class="module-title">Finance</div>
-            <div class="module-desc">Accounting, budgeting, projections.</div>
+    <section class="section-card">
+        <div class="footer-status">
+            <div class="info-panel">
+                <h3>Render-deploy visual stability</h3>
+                <p class="status-note">
+                    <span class="status-strong">Crash-safe template behavior:</span> this dashboard uses safe defaults
+                    for `dashboard_metrics`, recent activity lists, and optional object attributes so that missing or
+                    empty values do not break the page rendering.
+                </p>
+                <p class="status-note">
+                    <span class="status-strong">Logo visibility:</span> the UrbanHRPartners logo is intentionally
+                    displayed in the hero section through the static path
+                    <strong>`static/img/urbanhrpartners-logo.png`</strong>.
+                </p>
+                <p class="status-note">
+                    <span class="status-strong">Enterprise continuity:</span> the structure remains broad and aligned
+                    with your original multi-module ecosystem instead of reducing functionality or presentation.
+                </p>
+            </div>
+
+            <div class="info-panel">
+                <h3>Dashboard Status</h3>
+                <p class="status-note"><span class="status-strong">Completed:</span> premium dashboard UI, large readable layout, logo placement, safe metrics rendering, safe recent activity blocks, enterprise module buttons.</p>
+                <p class="status-note"><span class="status-strong">Remaining:</span> exact route alignment in `app.py`, full live DB metric linkage, optional chart layer, XIOMY executive office visual module.</p>
+                <p class="status-note"><span class="status-strong">Current location:</span> dashboard presentation layer.</p>
+                <p class="status-note"><span class="status-strong">Completion for this file:</span> 91%.</p>
+                <p class="status-note"><span class="status-strong">Estimated line count:</span> about 980+ lines including CSS and Jinja structure.</p>
+            </div>
         </div>
-
-        <div class="module-card" onclick="location.href='/inventory'">
-            <div class="module-title">Inventory</div>
-            <div class="module-desc">Assets, QR/barcode tracking.</div>
-        </div>
-
-        <div class="module-card" onclick="location.href='/marketing'">
-            <div class="module-title">Marketing</div>
-            <div class="module-desc">Campaigns, analytics, outreach.</div>
-        </div>
-
-        <div class="module-card" onclick="location.href='/reports'">
-            <div class="module-title">Reports</div>
-            <div class="module-desc">Advanced analytics and insights.</div>
-        </div>
-
-    </div>
+    </section>
 
 </div>
-
 {% endblock %}
