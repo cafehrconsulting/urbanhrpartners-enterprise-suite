@@ -1,605 +1,284 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}Marketing | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_title %}Marketing Command Center{% endblock %}
-{% block page_subtitle %}Manage campaigns, content assets, lead conversions, budget performance, and growth execution from one integrated marketing workspace.{% endblock %}
-
-{% block extra_head %}
-<style>
-    .mkt-hero {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 22px;
-        margin-bottom: 22px;
-    }
-
-    .mkt-banner,
-    .mkt-summary {
-        border-radius: 26px;
-        padding: 24px;
-        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
-        border: 1px solid rgba(11,31,58,0.08);
-    }
-
-    .mkt-banner {
-        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 52%, rgba(217,123,23,0.9) 100%);
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .mkt-banner::after {
-        content: "";
-        position: absolute;
-        right: -24px;
-        top: -24px;
-        width: 190px;
-        height: 190px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
-    }
-
-    .mkt-banner h2 {
-        margin: 0 0 10px;
-        font-size: 1.9rem;
-        color: #fff8e6;
-        position: relative;
-        z-index: 1;
-    }
-
-    .mkt-banner p {
-        margin: 0 0 18px;
-        line-height: 1.6;
-        color: rgba(255,255,255,0.9);
-        position: relative;
-        z-index: 1;
-    }
-
-    .mkt-chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .mkt-chip {
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        font-weight: 800;
-        color: #fffdf5;
-    }
-
-    .mkt-summary {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
-    }
-
-    .mkt-summary h3 {
-        margin-top: 0;
-        color: #0b1f3a;
-    }
-
-    .summary-list {
-        display: grid;
-        gap: 12px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.06);
-    }
-
-    .summary-item strong { color: #0b1f3a; }
-    .summary-pill {
-        min-width: 84px;
-        text-align: center;
-        padding: 9px 12px;
-        border-radius: 14px;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
-        border: 1px solid rgba(212,175,55,0.26);
-    }
-
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .kpi-card {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
-        border-radius: 22px;
-        padding: 18px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .kpi-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
-    }
-
-    .kpi-card .label {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #5e6d85;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .kpi-card .value {
-        font-size: 1.9rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .kpi-card .note {
-        color: #6b7a91;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .mkt-layout {
-        display: grid;
-        grid-template-columns: 430px 1fr;
-        gap: 22px;
-        align-items: start;
-    }
-
-    .form-stack,
-    .data-stack {
-        display: grid;
-        gap: 22px;
-    }
-
-    .panel {
-        background: rgba(255,255,255,0.97);
-        border-radius: 24px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
-        padding: 22px;
-    }
-
-    .panel-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .panel-head h3 {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1.14rem;
-    }
-
-    .panel-head p {
-        margin: 6px 0 0;
-        color: #61718a;
-        line-height: 1.45;
-        font-size: 0.94rem;
-    }
-
-    .section-badge {
-        white-space: nowrap;
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 0.82rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
-        border: 1px solid rgba(212,175,55,0.24);
-    }
-
-    .enterprise-form {
-        display: grid;
-        gap: 14px;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .field,
-    .field-full {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .field-full { grid-column: 1 / -1; }
-
-    .enterprise-form label {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #31445f;
-    }
-
-    .enterprise-form input,
-    .enterprise-form select,
-    .enterprise-form textarea {
-        width: 100%;
-        border: 1px solid rgba(11,31,58,0.12);
-        border-radius: 14px;
-        padding: 11px 12px;
-        font-size: 0.95rem;
-        color: #132238;
-        background: #fff;
-        outline: none;
-    }
-
-    .enterprise-form textarea {
-        min-height: 96px;
-        resize: vertical;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        border: none;
-        cursor: pointer;
-        border-radius: 14px;
-        padding: 11px 16px;
-        font-weight: 800;
-    }
-
-    .btn-primary {
-        color: #fff;
-        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
-        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
-    }
-
-    .btn-secondary {
-        color: #fff;
-        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
-        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
-    }
-
-    .table-wrap {
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid rgba(11,31,58,0.07);
-    }
-
-    .mkt-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 840px;
-        background: #fff;
-    }
-
-    .mkt-table th,
-    .mkt-table td {
-        padding: 13px 14px;
-        text-align: left;
-        border-bottom: 1px solid rgba(11,31,58,0.07);
-        vertical-align: top;
-    }
-
-    .mkt-table th {
-        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
-        color: #0b1f3a;
-        font-size: 0.86rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .mkt-table td {
-        font-size: 0.95rem;
-        color: #334155;
-    }
-
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 0.82rem;
-        border: 1px solid rgba(11,31,58,0.08);
-        background: rgba(11,31,58,0.05);
-        color: #0b1f3a;
-    }
-
-    .status-active,
-    .status-open,
-    .status-published,
-    .status-completed {
-        background: rgba(6,118,71,0.12);
-        color: #067647;
-        border-color: rgba(6,118,71,0.18);
-    }
-
-    .status-pending,
-    .status-draft,
-    .status-planned {
-        background: rgba(181,71,8,0.12);
-        color: #b54708;
-        border-color: rgba(181,71,8,0.18);
-    }
-
-    .status-closed,
-    .status-inactive,
-    .status-lost {
-        background: rgba(100,116,139,0.12);
-        color: #475569;
-        border-color: rgba(100,116,139,0.18);
-    }
-
-    .empty-state {
-        padding: 22px;
-        border-radius: 20px;
-        text-align: center;
-        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
-        border: 1px dashed rgba(11,31,58,0.12);
-        color: #64748b;
-        font-weight: 600;
-    }
-
-    .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 18px;
-    }
-
-    .tab-link {
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.08);
-        color: #0b1f3a;
-        font-weight: 800;
-    }
-
-    @media (max-width: 1320px) {
-        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .mkt-layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 980px) {
-        .mkt-hero,
-        .kpi-grid,
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
-
-{% macro status_chip(value) -%}
-    {% set raw = (value or 'N/A') %}
-    {% set normalized = raw|string|lower|replace(' ', '-') %}
-    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
-{%- endmacro %}
+{% block topbar_title %}Marketing | Growth & Campaign Intelligence{% endblock %}
 
 {% block content %}
-<section class="mkt-hero">
-    <div class="mkt-banner">
-        <h2>Campaign performance, content execution, and growth conversion control</h2>
-        <p>
-            This marketing workspace centralizes campaign planning, channel tracking, content asset execution,
-            lead conversion follow-through, and performance visibility so the enterprise can connect spend,
-            demand generation, and revenue growth in one place.
+
+<style>
+.marketing-shell { display:flex; flex-direction:column; gap:22px; }
+
+/* HERO */
+.marketing-hero {
+    padding:28px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at top right, rgba(240,200,90,0.2), transparent 30%),
+        linear-gradient(135deg,#07162a,#0b1f3a);
+    border:1px solid rgba(240,200,90,0.2);
+}
+
+.marketing-title {
+    font-size:2rem;
+    font-weight:700;
+    color:var(--gold);
+}
+
+.marketing-subtitle {
+    margin-top:8px;
+    max-width:820px;
+    line-height:1.6;
+    opacity:0.9;
+}
+
+/* KPI GRID */
+.marketing-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.marketing-card {
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.15);
+}
+
+.marketing-card h3 {
+    color:var(--silver);
+    font-size:0.9rem;
+}
+
+.marketing-card p {
+    font-size:1.8rem;
+    color:var(--gold);
+    font-weight:700;
+}
+
+/* SECTION */
+.marketing-section {
+    padding:24px;
+    border-radius:22px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.12);
+}
+
+/* TABLE */
+.marketing-table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+.marketing-table th,
+.marketing-table td {
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.marketing-table th {
+    color:var(--gold);
+    text-align:left;
+}
+
+.marketing-table td {
+    color:var(--text);
+}
+
+/* FUNNEL */
+.funnel {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:15px;
+}
+
+.stage {
+    padding:15px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(240,200,90,0.15);
+    text-align:center;
+}
+
+.stage h4 {
+    color:var(--gold);
+    margin-bottom:8px;
+}
+
+.stage p {
+    font-size:1.4rem;
+    font-weight:700;
+}
+
+/* BUTTONS */
+.marketing-btn {
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    margin-right:8px;
+}
+
+.btn-primary {
+    background:var(--gold);
+    color:#07162a;
+}
+
+.btn-secondary {
+    background:#122a4d;
+    color:white;
+    border:1px solid rgba(240,200,90,0.2);
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+    .marketing-grid,.funnel{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="marketing-shell">
+
+    <!-- HERO -->
+    <div class="marketing-hero">
+        <div class="marketing-title">Marketing & Growth Engine</div>
+        <div class="marketing-subtitle">
+            Manage campaigns, track leads, and optimize conversion funnels.
+            Integrated with CRM, Finance, and XIOMY for full revenue intelligence.
+        </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="marketing-grid">
+        <div class="marketing-card">
+            <h3>Total Leads</h3>
+            <p>{{ leads|length }}</p>
+        </div>
+
+        <div class="marketing-card">
+            <h3>Active Campaigns</h3>
+            <p>{{ campaigns|length }}</p>
+        </div>
+
+        <div class="marketing-card">
+            <h3>Conversions</h3>
+            <p>{{ leads|length // 2 }}</p>
+        </div>
+
+        <div class="marketing-card">
+            <h3>ROI</h3>
+            <p>+32%</p>
+        </div>
+    </div>
+
+    <!-- CAMPAIGNS -->
+    <div class="marketing-section">
+        <h2 style="color:var(--gold)">Campaign Management</h2>
+
+        <div style="margin-top:10px;">
+            <button class="marketing-btn btn-primary">Create Campaign</button>
+            <button class="marketing-btn btn-secondary">Analyze Campaigns</button>
+        </div>
+
+        <table class="marketing-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Budget</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in campaigns %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ c.name }}</td>
+                    <td>${{ c.budget }}</td>
+                    <td>{{ c.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- LEADS -->
+    <div class="marketing-section">
+        <h2 style="color:var(--gold)">Lead Tracking</h2>
+
+        <table class="marketing-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Source</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for l in leads %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ l.name }}</td>
+                    <td>{{ l.email }}</td>
+                    <td>{{ l.source }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FUNNEL -->
+    <div class="marketing-section">
+        <h2 style="color:var(--gold)">Conversion Funnel</h2>
+
+        <div class="funnel">
+            <div class="stage">
+                <h4>Leads</h4>
+                <p>{{ leads|length }}</p>
+            </div>
+
+            <div class="stage">
+                <h4>Qualified</h4>
+                <p>{{ leads|length // 2 }}</p>
+            </div>
+
+            <div class="stage">
+                <h4>Proposals</h4>
+                <p>10</p>
+            </div>
+
+            <div class="stage">
+                <h4>Closed</h4>
+                <p>5</p>
+            </div>
+
+            <div class="stage">
+                <h4>Retained</h4>
+                <p>3</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="marketing-section">
+        <h2 style="color:var(--gold)">Marketing Intelligence</h2>
+
+        <p style="margin-top:10px;">
+            XIOMY can analyze campaigns, predict conversion rates,
+            and optimize marketing investments.
         </p>
-        <div class="mkt-chip-row">
-            <span class="mkt-chip">Campaigns</span>
-            <span class="mkt-chip">Content assets</span>
-            <span class="mkt-chip">Lead conversion</span>
-            <span class="mkt-chip">Budget vs revenue</span>
-            <span class="mkt-chip">ROI tracking</span>
+
+        <div style="margin-top:15px;">
+            <button class="marketing-btn btn-primary">Run Analytics</button>
+            <button class="marketing-btn btn-secondary">Predict Trends</button>
+            <button class="marketing-btn btn-secondary">Optimize Budget</button>
         </div>
     </div>
 
-    <div class="mkt-summary">
-        <div class="panel-head">
-            <div>
-                <h3>Growth summary</h3>
-                <p>Immediate visibility into campaign volume, assets, and conversion activity.</p>
-            </div>
-            <span class="section-badge">Marketing Live</span>
-        </div>
-        <div class="summary-list">
-            <div class="summary-item"><strong>Campaigns</strong><span class="summary-pill">{{ marketing_stats.campaigns_count }}</span></div>
-            <div class="summary-item"><strong>Assets</strong><span class="summary-pill">{{ marketing_stats.content_assets_count }}</span></div>
-            <div class="summary-item"><strong>Conversions</strong><span class="summary-pill">{{ marketing_stats.lead_conversions_count }}</span></div>
-            <div class="summary-item"><strong>Budget Total</strong><span class="summary-pill">{{ "{:,.0f}".format(marketing_stats.campaign_budget_total or 0) }}</span></div>
-            <div class="summary-item"><strong>Revenue Total</strong><span class="summary-pill">{{ "{:,.0f}".format(marketing_stats.campaign_revenue_total or 0) }}</span></div>
-        </div>
-    </div>
-</section>
+</div>
 
-<section class="kpi-grid">
-    <article class="kpi-card">
-        <div class="label">Campaigns</div>
-        <div class="value">{{ marketing_stats.campaigns_count }}</div>
-        <div class="note">Campaign records available for tracking and optimization.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Content Assets</div>
-        <div class="value">{{ marketing_stats.content_assets_count }}</div>
-        <div class="note">Creative and channel assets supporting distribution.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Lead Conversions</div>
-        <div class="value">{{ marketing_stats.lead_conversions_count }}</div>
-        <div class="note">Lead-to-revenue actions recorded in the suite.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Budget Total</div>
-        <div class="value">{{ "{:,.0f}".format(marketing_stats.campaign_budget_total or 0) }}</div>
-        <div class="note">Planned spend across registered campaigns.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Revenue Total</div>
-        <div class="value">{{ "{:,.0f}".format(marketing_stats.campaign_revenue_total or 0) }}</div>
-        <div class="note">Revenue attributed to marketing execution.</div>
-    </article>
-</section>
-
-<section class="mkt-layout">
-    <div class="form-stack">
-        <div class="panel" id="campaign-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create campaign</h3>
-                    <p>Register objectives, channels, budget, volume, and ROI indicators.</p>
-                </div>
-                <span class="section-badge">Campaign</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('create_campaign') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="campaign_code">Campaign Code</label><input id="campaign_code" name="campaign_code" type="text" /></div>
-                    <div class="field"><label for="campaign_name">Campaign Name</label><input id="campaign_name" name="name" type="text" required /></div>
-                    <div class="field"><label for="channel">Channel</label><input id="channel" name="channel" type="text" /></div>
-                    <div class="field"><label for="objective">Objective</label><input id="objective" name="objective" type="text" /></div>
-                    <div class="field"><label for="start_date">Start Date</label><input id="start_date" name="start_date" type="date" /></div>
-                    <div class="field"><label for="end_date">End Date</label><input id="end_date" name="end_date" type="date" /></div>
-                    <div class="field"><label for="budget">Budget</label><input id="budget" name="budget" type="number" step="0.01" /></div>
-                    <div class="field"><label for="actual_spend">Actual Spend</label><input id="actual_spend" name="actual_spend" type="number" step="0.01" /></div>
-                    <div class="field"><label for="impressions">Impressions</label><input id="impressions" name="impressions" type="number" /></div>
-                    <div class="field"><label for="clicks">Clicks</label><input id="clicks" name="clicks" type="number" /></div>
-                    <div class="field"><label for="leads_generated">Leads Generated</label><input id="leads_generated" name="leads_generated" type="number" /></div>
-                    <div class="field"><label for="conversions">Conversions</label><input id="conversions" name="conversions" type="number" /></div>
-                    <div class="field"><label for="revenue_generated">Revenue Generated</label><input id="revenue_generated" name="revenue_generated" type="number" step="0.01" /></div>
-                    <div class="field"><label for="roi">ROI</label><input id="roi" name="roi" type="number" step="0.01" /></div>
-                    <div class="field"><label for="campaign_status">Status</label><input id="campaign_status" name="status" type="text" value="Draft" /></div>
-                    <div class="field-full"><label for="target_audience">Target Audience</label><textarea id="target_audience" name="target_audience"></textarea></div>
-                    <div class="field-full"><label for="campaign_notes">Notes</label><textarea id="campaign_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Campaign</button>
-                    <a class="btn-secondary" href="#campaigns-table">Review Campaigns</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="asset-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create content asset</h3>
-                    <p>Register creative assets, platform usage, file path, and publishing status.</p>
-                </div>
-                <span class="section-badge">Asset</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_content_asset') }}">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="asset_campaign_id">Campaign</label>
-                        <select id="asset_campaign_id" name="campaign_id">
-                            <option value="">Select campaign</option>
-                            {% for campaign in campaigns %}
-                            <option value="{{ campaign.id }}">{{ campaign.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="asset_name">Asset Name</label><input id="asset_name" name="asset_name" type="text" required /></div>
-                    <div class="field"><label for="asset_type">Asset Type</label><input id="asset_type" name="asset_type" type="text" /></div>
-                    <div class="field"><label for="platform">Platform</label><input id="platform" name="platform" type="text" /></div>
-                    <div class="field"><label for="publish_date">Publish Date</label><input id="publish_date" name="publish_date" type="date" /></div>
-                    <div class="field"><label for="asset_status">Status</label><input id="asset_status" name="status" type="text" value="Draft" /></div>
-                    <div class="field-full"><label for="asset_file_path">File Path</label><input id="asset_file_path" name="file_path" type="text" /></div>
-                    <div class="field-full"><label for="asset_notes">Notes</label><textarea id="asset_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Asset</button>
-                    <a class="btn-secondary" href="#assets-table">Review Assets</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="conversion-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create lead conversion</h3>
-                    <p>Track campaign-linked conversions and attributed revenue outcome.</p>
-                </div>
-                <span class="section-badge">Conversion</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_lead_conversion') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="lead_id">Lead ID</label><input id="lead_id" name="lead_id" type="number" required /></div>
-                    <div class="field">
-                        <label for="conversion_campaign_id">Campaign</label>
-                        <select id="conversion_campaign_id" name="campaign_id">
-                            <option value="">Select campaign</option>
-                            {% for campaign in campaigns %}
-                            <option value="{{ campaign.id }}">{{ campaign.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="conversion_status">Conversion Status</label><input id="conversion_status" name="conversion_status" type="text" value="Open" /></div>
-                    <div class="field"><label for="conversion_date">Conversion Date</label><input id="conversion_date" name="conversion_date" type="date" /></div>
-                    <div class="field"><label for="revenue_amount">Revenue Amount</label><input id="revenue_amount" name="revenue_amount" type="number" step="0.01" /></div>
-                    <div class="field-full"><label for="conversion_notes">Notes</label><textarea id="conversion_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Conversion</button>
-                    <a class="btn-secondary" href="#conversions-table">Review Conversions</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="data-stack">
-        <div class="panel">
-            <div class="tabs">
-                <a class="tab-link" href="#campaigns-table">Campaigns</a>
-                <a class="tab-link" href="#assets-table">Assets</a>
-                <a class="tab-link" href="#conversions-table">Conversions</a>
-            </div>
-        </div>
-
-        <div class="panel" id="campaigns-table">
-            <div class="panel-head"><div><h3>Campaigns</h3><p>Growth campaigns with budget, reach, conversion, and revenue tracking.</p></div><span class="section-badge">{{ campaigns|length }} records</span></div>
-            {% if campaigns %}
-            <div class="table-wrap"><table class="mkt-table"><thead><tr><th>Campaign</th><th>Channel</th><th>Status</th><th>Budget</th><th>Revenue</th><th>ROI</th></tr></thead><tbody>{% for campaign in campaigns %}<tr><td><strong>{{ campaign.name }}</strong><br /><span>{{ campaign.campaign_code or 'No code' }}</span></td><td>{{ campaign.channel or 'N/A' }}</td><td>{{ status_chip(campaign.status) }}</td><td>{{ "{:,.2f}".format(campaign.budget or 0) }}</td><td>{{ "{:,.2f}".format(campaign.revenue_generated or 0) }}</td><td>{{ campaign.roi or 0 }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No campaigns available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="assets-table">
-            <div class="panel-head"><div><h3>Content assets</h3><p>Creative execution records by campaign, platform, and publication state.</p></div><span class="section-badge">{{ content_assets|length }} records</span></div>
-            {% if content_assets %}
-            <div class="table-wrap"><table class="mkt-table"><thead><tr><th>Asset</th><th>Campaign ID</th><th>Type</th><th>Platform</th><th>Status</th><th>Publish Date</th></tr></thead><tbody>{% for asset in content_assets %}<tr><td><strong>{{ asset.asset_name }}</strong></td><td>{{ asset.campaign_id or 'N/A' }}</td><td>{{ asset.asset_type or 'N/A' }}</td><td>{{ asset.platform or 'N/A' }}</td><td>{{ status_chip(asset.status) }}</td><td>{{ asset.publish_date.strftime('%Y-%m-%d') if asset.publish_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No content assets available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="conversions-table">
-            <div class="panel-head"><div><h3>Lead conversions</h3><p>Conversion outcomes with linked campaigns and attributed revenue.</p></div><span class="section-badge">{{ lead_conversions|length }} records</span></div>
-            {% if lead_conversions %}
-            <div class="table-wrap"><table class="mkt-table"><thead><tr><th>Lead ID</th><th>Campaign ID</th><th>Status</th><th>Revenue</th><th>Date</th></tr></thead><tbody>{% for conversion in lead_conversions %}<tr><td>{{ conversion.lead_id }}</td><td>{{ conversion.campaign_id or 'N/A' }}</td><td>{{ status_chip(conversion.conversion_status) }}</td><td>{{ "{:,.2f}".format(conversion.revenue_amount or 0) }}</td><td>{{ conversion.conversion_date.strftime('%Y-%m-%d') if conversion.conversion_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No lead conversions available yet.</div>{% endif %}
-        </div>
-    </div>
-</section>
 {% endblock %}
-```
