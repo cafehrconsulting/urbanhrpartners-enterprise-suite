@@ -1,12 +1,23 @@
 /* ============================
+<<<<<<< HEAD
    FONT BOOST (SAFE ENHANCEMENT)
    ============================ */
 
 /* GLOBAL BOOST */
+=======
+   GLOBAL SCALE FIX (CRITICAL)
+   ============================ */
+
+html {
+    font-size: 18px !important; /* base scale */
+}
+
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
 body {
     font-size: 18px !important;
 }
 
+<<<<<<< HEAD
 /* SIDEBAR */
 .nav-link {
     font-size: 18px !important;
@@ -24,12 +35,66 @@ body {
 /* HERO */
 .hero-title {
     font-size: 40px !important;
+=======
+/* ============================
+   LAYOUT EXPANSION
+   ============================ */
+
+.main-panel {
+    padding: 32px !important;
+}
+
+.content-area {
+    gap: 28px !important;
+}
+
+.page-grid {
+    gap: 28px !important;
+}
+
+/* ============================
+   SIDEBAR IMPROVEMENT
+   ============================ */
+
+.sidebar {
+    width: 320px !important;
+}
+
+.nav-link {
+    font-size: 19px !important;
+    padding: 16px 18px !important;
+}
+
+/* ============================
+   TOPBAR SCALING
+   ============================ */
+
+.topbar {
+    padding: 26px 30px !important;
+}
+
+.topbar-left h2 {
+    font-size: 34px !important;
+}
+
+.topbar-left p {
+    font-size: 19px !important;
+}
+
+/* ============================
+   HERO SECTION
+   ============================ */
+
+.hero-title {
+    font-size: 44px !important;
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
 }
 
 .hero-subtitle {
     font-size: 20px !important;
 }
 
+<<<<<<< HEAD
 /* METRICS */
 .metric-value {
     font-size: 3rem !important;
@@ -45,16 +110,68 @@ body {
 }
 
 /* FORMS */
+=======
+/* ============================
+   CARDS (BIGGER + CLEANER)
+   ============================ */
+
+.card,
+.panel,
+.metric-card {
+    padding: 28px !important;
+    border-radius: 20px !important;
+}
+
+/* ============================
+   METRICS (VERY IMPORTANT)
+   ============================ */
+
+.metric-value {
+    font-size: 3.2rem !important;
+}
+
+.metric-title {
+    font-size: 19px !important;
+}
+
+.metric-trend {
+    font-size: 18px !important;
+}
+
+/* ============================
+   BUTTONS (EXECUTIVE SIZE)
+   ============================ */
+
+.btn {
+    font-size: 18px !important;
+    padding: 16px 26px !important;
+}
+
+/* ============================
+   FORMS
+   ============================ */
+
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
 input,
 textarea,
 select {
     font-size: 18px !important;
+<<<<<<< HEAD
 }
+=======
+    padding: 16px !important;
+}
+
+/* ============================
+   TABLES
+   ============================ */
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
 
 /* TABLES */
 .data-table th,
 .data-table td {
     font-size: 18px !important;
+<<<<<<< HEAD
 }
 
 /* CHAT */
@@ -62,3 +179,39 @@ select {
 .list-item {
     font-size: 18px !important;
 }
+=======
+    padding: 16px !important;
+}
+
+/* ============================
+   CHAT
+   ============================ */
+
+#chat-box {
+    font-size: 18px !important;
+}
+
+.list-item {
+    padding: 18px !important;
+}
+
+/* ============================
+   GRID EXPANSION
+   ============================ */
+
+.grid-4 {
+    grid-column: span 4 !important;
+}
+
+.grid-6 {
+    grid-column: span 6 !important;
+}
+
+.grid-8 {
+    grid-column: span 8 !important;
+}
+
+.grid-12 {
+    grid-column: span 12 !important;
+}
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406

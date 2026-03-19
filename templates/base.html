@@ -1,6 +1,10 @@
+{% set app_name = app_name if app_name is defined else "UrbanHRPartners Enterprise Suite" %}
+{% set system_name = system_name if system_name is defined else "UrbanHRPartners Enterprise Suite" %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
@@ -87,5 +91,247 @@
             </section>
         </main>
     </div>
+=======
+    <!-- ========================================================= -->
+    <!-- META / SYSTEM -->
+    <!-- ========================================================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ app_name }}{% endblock %}</title>
+
+    <meta name="description" content="UrbanHRPartners Enterprise Suite - CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, Reports, XIOMY AI.">
+    <meta name="theme-color" content="#07162a">
+
+    <!-- ========================================================= -->
+    <!-- FONTS -->
+    <!-- ========================================================= -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ========================================================= -->
+    <!-- GLOBAL STYLES -->
+    <!-- ========================================================= -->
+    <style>
+
+    /* =========================================================
+       ROOT THEME
+    ========================================================= */
+    :root {
+        --navy-900: #07162a;
+        --navy-800: #0b1f3a;
+        --navy-700: #17345c;
+
+        --gold: #f0c85a;
+        --orange: #e8891a;
+        --silver: #cfd8dc;
+
+        --bg-light: #f5f7fa;
+        --card-bg: #ffffff;
+
+        --radius-lg: 18px;
+        --radius-md: 12px;
+
+        --shadow-soft: 0 10px 25px rgba(0,0,0,0.15);
+        --shadow-strong: 0 18px 40px rgba(0,0,0,0.25);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background: var(--bg-light);
+        color: #1a1a1a;
+        display: flex;
+    }
+
+    /* =========================================================
+       SIDEBAR
+    ========================================================= */
+    .sidebar {
+        width: 260px;
+        height: 100vh;
+        position: fixed;
+        background: linear-gradient(180deg, var(--navy-900), var(--navy-800));
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: var(--shadow-strong);
+    }
+
+    .sidebar h2 {
+        color: var(--gold);
+        margin-bottom: 30px;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .nav-link {
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        border-radius: var(--radius-md);
+        color: white;
+        text-decoration: none;
+        display: block;
+        transition: 0.2s;
+    }
+
+    .nav-link:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* =========================================================
+       MAIN CONTENT
+    ========================================================= */
+    .main {
+        margin-left: 260px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* =========================================================
+       TOPBAR
+    ========================================================= */
+    .topbar {
+        background: white;
+        padding: 16px 24px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .topbar-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    /* =========================================================
+       HERO LOGO
+    ========================================================= */
+    .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+
+    .hero img {
+        height: 15vh;
+        max-height: 160px;
+        object-fit: contain;
+    }
+
+    /* =========================================================
+       CONTENT AREA
+    ========================================================= */
+    .content {
+        padding: 24px;
+    }
+
+    /* =========================================================
+       CARDS
+    ========================================================= */
+    .card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 20px;
+    }
+
+    /* =========================================================
+       BUTTONS (3D)
+    ========================================================= */
+    .btn {
+        background: linear-gradient(135deg, var(--gold), var(--orange));
+        color: #000;
+        padding: 12px 18px;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        box-shadow: var(--shadow-soft);
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-strong);
+    }
+
+    /* =========================================================
+       GRID
+    ========================================================= */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 768px) {
+        .sidebar {
+            display: none;
+        }
+        .main {
+            margin-left: 0;
+        }
+    }
+
+    </style>
+
+    {% block head_extra %}{% endblock %}
+</head>
+
+<body>
+
+<!-- ========================================================= -->
+<!-- SIDEBAR -->
+<!-- ========================================================= -->
+<div class="sidebar">
+    <h2>UrbanHRPartners</h2>
+
+    <a href="/" class="nav-link">Dashboard</a>
+    <a href="/crm" class="nav-link">CRM</a>
+    <a href="/hris" class="nav-link">HRIS</a>
+    <a href="/ats" class="nav-link">ATS</a>
+    <a href="/orientation" class="nav-link">Orientation</a>
+    <a href="/sgsst" class="nav-link">SG-SST</a>
+    <a href="/finance" class="nav-link">Finance</a>
+    <a href="/inventory" class="nav-link">Inventory</a>
+    <a href="/marketing" class="nav-link">Marketing</a>
+    <a href="/reports" class="nav-link">Reports</a>
+</div>
+
+<!-- ========================================================= -->
+<!-- MAIN -->
+<!-- ========================================================= -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</div>
+        <div>User</div>
+    </div>
+
+    <!-- HERO LOGO -->
+    <div class="hero">
+        <img src="{{ url_for('static', filename='logo.png') }}">
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
 </body>
 </html>

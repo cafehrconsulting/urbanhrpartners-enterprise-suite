@@ -1293,4 +1293,7 @@ def seed_basic_positions():
         if not exists:
             db.session.add(Position(title=title))
     db.session.commit()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406

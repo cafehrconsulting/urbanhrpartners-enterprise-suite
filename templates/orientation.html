@@ -1,897 +1,1280 @@
 {% extends "base.html" %}
 
 {% block title %}Orientation | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_heading %}Orientation Command Center{% endblock %}
+
+{% block topbar_subtitle %}
+Enterprise onboarding, activation, policy acknowledgement, asset provisioning, and readiness control across ATS, HRIS, Inventory, and SG-SST workflows.
+{% endblock %}
+
+{% block head_extra %}
+<style>
+    .orientation-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .orientation-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 28px;
+        color: #ffffff;
+        background:
+            radial-gradient(circle at right top, rgba(240, 200, 90, 0.25), transparent 26%),
+            radial-gradient(circle at left bottom, rgba(232, 137, 26, 0.14), transparent 28%),
+            linear-gradient(135deg, #07162a 0%, #0b1f3a 55%, #17345c 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 18px 40px rgba(11, 31, 58, 0.24);
+    }
+
+    .orientation-hero::before {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+        top: -80px;
+        right: -80px;
+    }
+
+    .orientation-hero-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .orientation-hero-title {
+        margin: 0 0 10px 0;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1.12;
+    }
+
+    .orientation-hero-text {
+        margin: 0;
+        max-width: 920px;
+        color: #dce7f4;
+        line-height: 1.72;
+        font-size: 1rem;
+    }
+
+    .orientation-hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+
+    .orientation-highlight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .orientation-highlight-card {
+        padding: 18px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .orientation-highlight-label {
+        color: #d8e4f2;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+    }
+
+    .orientation-highlight-value {
+        color: #f6d87b;
+        font-size: 1.7rem;
+        font-weight: 900;
+        line-height: 1.05;
+        margin-bottom: 8px;
+    }
+
+    .orientation-highlight-sub {
+        color: #d9e5f4;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+    .orientation-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+    }
+
+    .orientation-stat-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+        padding: 20px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid #dce5ef;
+        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
+        min-height: 132px;
+    }
+
+    .orientation-stat-card::after {
+        content: "";
+        position: absolute;
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        background: rgba(11,31,58,0.05);
+        top: -24px;
+        right: -24px;
+    }
+
+    .orientation-stat-top {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        gap: 12px;
+    }
+
+    .orientation-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+        color: #0b1f3a;
+        font-size: 1.06rem;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .orientation-stat-label {
+        position: relative;
+        z-index: 1;
+        color: #59697c;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 10px;
+    }
+
+    .orientation-stat-value {
+        position: relative;
+        z-index: 1;
+        color: #0b1f3a;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .orientation-stat-note {
+        position: relative;
+        z-index: 1;
+        color: #6b7280;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+    .orientation-card {
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
+        border-radius: 24px;
+        border: 1px solid #dce5ef;
+        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
+        overflow: hidden;
+    }
+
+    .orientation-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 22px 22px 16px;
+        border-bottom: 1px solid #ebf0f6;
+        flex-wrap: wrap;
+    }
+
+    .orientation-card-title-wrap h2,
+    .orientation-card-title-wrap h3 {
+        margin: 0 0 6px 0;
+        color: #0b1f3a;
+        line-height: 1.2;
+    }
+
+    .orientation-card-title-wrap p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 0.92rem;
+        max-width: 940px;
+    }
+
+    .orientation-card-body {
+        padding: 22px;
+    }
+
+    .orientation-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .orientation-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .orientation-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .orientation-form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .orientation-field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .orientation-field-full {
+        grid-column: 1 / -1;
+    }
+
+    .orientation-field label {
+        color: #0b1f3a;
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .orientation-field input,
+    .orientation-field select,
+    .orientation-field textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid #cfd9e5;
+        background: #ffffff;
+        color: #1f2937;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .orientation-field input:focus,
+    .orientation-field select:focus,
+    .orientation-field textarea:focus {
+        border-color: #d4af37;
+        box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+    }
+
+    .orientation-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .orientation-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid #dde7f2;
+        background: #ffffff;
+    }
+
+    .orientation-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    .orientation-table thead {
+        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
+    }
+
+    .orientation-table th,
+    .orientation-table td {
+        padding: 14px 14px;
+        border-bottom: 1px solid #e7edf5;
+        text-align: left;
+        vertical-align: top;
+        font-size: 0.93rem;
+    }
+
+    .orientation-table th {
+        color: #0b1f3a;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 900;
+    }
+
+    .orientation-table tbody tr:hover td {
+        background: #fbfdff;
+    }
+
+    .orientation-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .orientation-list-item {
+        border-radius: 18px;
+        border: 1px solid #e5ebf2;
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        box-shadow: 0 8px 18px rgba(11, 31, 58, 0.05);
+        padding: 16px;
+    }
+
+    .orientation-list-item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .orientation-list-title {
+        margin: 0;
+        color: #0b1f3a;
+        font-size: 1rem;
+        font-weight: 900;
+        line-height: 1.3;
+    }
+
+    .orientation-list-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: #6b7280;
+        font-size: 0.84rem;
+        line-height: 1.45;
+    }
+
+    .orientation-list-text {
+        margin: 0;
+        color: #5f6d7e;
+        line-height: 1.65;
+        font-size: 0.92rem;
+    }
+
+    .mini-panel {
+        border-radius: 18px;
+        padding: 18px;
+        background: linear-gradient(180deg, #fbfdff 0%, #f1f6fb 100%);
+        border: 1px solid #dde7f2;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .mini-panel h4 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: #0b1f3a;
+    }
+
+    .mini-panel p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef4fb;
+        color: #0b1f3a;
+        border: 1px solid #d8e4f2;
+        font-size: 0.78rem;
+        font-weight: 800;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .tag.gold {
+        background: #fff6df;
+        color: #8f6500;
+        border-color: #f0d18c;
+    }
+
+    .tag.orange {
+        background: #fff2e5;
+        color: #b05e00;
+        border-color: #f1c48d;
+    }
+
+    .tag.green {
+        background: #eefcf5;
+        color: #14673c;
+        border-color: #b9ebca;
+    }
+
+    .tag.red {
+        background: #fff0f0;
+        color: #8d1f1f;
+        border-color: #f2c0c0;
+    }
+
+    .tag.blue {
+        background: #eef6ff;
+        color: #1b4f8c;
+        border-color: #bfd8f6;
+    }
+
+    .tab-note {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+    .empty-orientation {
+        text-align: center;
+        padding: 40px 20px;
+        border-radius: 20px;
+        border: 1px dashed #cfd8e3;
+        background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
+    }
+
+    .empty-orientation h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #0b1f3a;
+    }
+
+    .empty-orientation p {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.65;
+    }
+
+    @media (max-width: 1450px) {
+        .orientation-stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .orientation-grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 1180px) {
+        .orientation-hero-grid,
+        .orientation-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .orientation-highlight-grid,
+        .orientation-stats-grid,
+        .orientation-form-grid,
+        .orientation-form-grid-3 {
+            grid-template-columns: 1fr;
+        }
+
+        .orientation-hero-title {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="page-grid">
+<div class="orientation-shell">
 
-    <!-- =====================================================
-         SAFE RENDER VARIABLES
-         Keeps the page stable if app.py sends different names
-         or if some collections are empty.
-    ====================================================== -->
-    {% set safe_orientation_stats = orientation_stats if orientation_stats is defined and orientation_stats else {} %}
-    {% set safe_checklists = orientation_checklists if orientation_checklists is defined and orientation_checklists else (checklist_items if checklist_items is defined and checklist_items else []) %}
-    {% set safe_acknowledgements = policy_acknowledgements if policy_acknowledgements is defined and policy_acknowledgements else (acknowledgements if acknowledgements is defined and acknowledgements else []) %}
-    {% set safe_asset_assignments = asset_assignments if asset_assignments is defined and asset_assignments else [] %}
-    {% set safe_orientation_sessions = orientation_sessions if orientation_sessions is defined and orientation_sessions else [] %}
-    {% set safe_candidates = candidates if candidates is defined and candidates else [] %}
-    {% set safe_employees = employees if employees is defined and employees else [] %}
-    {% set safe_inventory_items = inventory_items if inventory_items is defined and inventory_items else [] %}
-
-    <!-- =====================================================
-         ORIENTATION HERO
-    ====================================================== -->
-    <section class="hero-panel">
-        <div class="hero-left">
-            <span class="hero-badge">New Hire Orientation &amp; Activation</span>
-            <h1 class="hero-title">Orientation Command Center</h1>
-            <p class="hero-text">
-                Premium onboarding environment for checklist control, policy acknowledgements,
-                equipment readiness, first-day compliance coordination, and candidate-to-employee
-                activation across ATS, HRIS, Inventory, and SG-SST.
-            </p>
-
-            <div class="hero-actions">
-                <a class="btn btn-primary btn-lg" href="#checklist-center">Create Checklist Item</a>
-                <a class="btn btn-secondary btn-lg" href="#acknowledgement-center">Policy Acknowledgements</a>
-                <a class="btn btn-ghost btn-lg" href="#asset-center">Asset Readiness</a>
-            </div>
-
-            <div class="mt-4">
-                <div class="tabs-bar">
-                    <button class="tab-button active" type="button">Overview</button>
-                    <button class="tab-button" type="button">Checklist</button>
-                    <button class="tab-button" type="button">Policies</button>
-                    <button class="tab-button" type="button">Assets</button>
-                    <button class="tab-button" type="button">Readiness</button>
-                    <button class="tab-button" type="button">Analytics</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero-right">
-            <div class="hero-status-card">
-                <h3 class="section-title">Orientation Executive Snapshot</h3>
-                <p class="section-subtitle">
-                    Organized new-hire readiness visibility before activation into the workforce.
+    <section class="orientation-hero">
+        <div class="orientation-hero-grid">
+            <div>
+                <h1 class="orientation-hero-title">Orientation & Activation Command Center</h1>
+                <p class="orientation-hero-text">
+                    This module manages the transition from candidate hiring to employee readiness.
+                    It coordinates orientation scheduling, onboarding task control, policy acknowledgements,
+                    system access readiness, asset provisioning, and activation support across the enterprise suite.
+                    It is designed to stay connected to ATS, HRIS, Inventory, and SG-SST workflows without breaking deployment.
                 </p>
 
-                <ul class="status-list mt-3">
-                    <li><strong>Onboarding Control:</strong> structured first-day readiness workflow</li>
-                    <li><strong>Compliance Linkage:</strong> policy, safety, and documentation alignment</li>
-                    <li><strong>Operational Bridge:</strong> ATS to Orientation to HRIS activation path</li>
-                    <li><strong>Strategic Direction:</strong> future XIOMY onboarding risk and completion alerts</li>
-                </ul>
+                <div class="orientation-hero-actions">
+                    <a href="#session-create" class="btn-3d">Create Session</a>
+                    <a href="#checklist-create" class="btn-ghost">Create Checklist</a>
+                    <a href="#policy-create" class="btn-ghost">Policy Acknowledgement</a>
+                </div>
+            </div>
 
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('ats') }}">ATS</a>
-                    <a class="btn btn-secondary" href="{{ url_for('inventory') }}">Inventory</a>
+            <div class="orientation-highlight-grid">
+                <div class="orientation-highlight-card">
+                    <div class="orientation-highlight-label">Sessions</div>
+                    <div class="orientation-highlight-value">{{ orientation_stats.sessions if orientation_stats and orientation_stats.sessions is not none else 0 }}</div>
+                    <div class="orientation-highlight-sub">Formal onboarding and induction sessions available in the schedule.</div>
+                </div>
+
+                <div class="orientation-highlight-card">
+                    <div class="orientation-highlight-label">Checklist Items</div>
+                    <div class="orientation-highlight-value">{{ orientation_stats.checklists if orientation_stats and orientation_stats.checklists is not none else 0 }}</div>
+                    <div class="orientation-highlight-sub">Operational onboarding steps created for new hires and role readiness.</div>
+                </div>
+
+                <div class="orientation-highlight-card">
+                    <div class="orientation-highlight-label">Completed</div>
+                    <div class="orientation-highlight-value">{{ orientation_stats.completed_checklists if orientation_stats and orientation_stats.completed_checklists is not none else 0 }}</div>
+                    <div class="orientation-highlight-sub">Checklist actions already completed inside the activation workflow.</div>
+                </div>
+
+                <div class="orientation-highlight-card">
+                    <div class="orientation-highlight-label">Asset Assignments</div>
+                    <div class="orientation-highlight-value">{{ orientation_stats.asset_assignments if orientation_stats and orientation_stats.asset_assignments is not none else 0 }}</div>
+                    <div class="orientation-highlight-sub">Provisioned operational assets connected to employee onboarding and control.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         SUMMARY CARDS
-    ====================================================== -->
-    <section class="summary-grid">
-        <div class="summary-card">
-            <h3>Candidates in Orientation</h3>
-            <p>
-                {% if safe_orientation_stats.candidates_in_orientation is defined %}
-                    {{ safe_orientation_stats.candidates_in_orientation }}
-                {% else %}
-                    {{ safe_candidates|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Active onboarding population</span>
+    <section class="orientation-stats-grid">
+        <div class="orientation-stat-card">
+            <div class="orientation-stat-top">
+                <div class="orientation-stat-icon">🗓️</div>
+                <span class="tag">Sessions</span>
+            </div>
+            <div class="orientation-stat-label">Orientation Sessions</div>
+            <div class="orientation-stat-value">{{ orientation_stats.sessions if orientation_stats and orientation_stats.sessions is not none else 0 }}</div>
+            <div class="orientation-stat-note">Planned sessions for welcome, policy review, compliance, and onboarding.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Checklist Items</h3>
-            <p>
-                {% if safe_orientation_stats.checklists is defined %}
-                    {{ safe_orientation_stats.checklists }}
-                {% elif safe_orientation_stats.checklist_items is defined %}
-                    {{ safe_orientation_stats.checklist_items }}
-                {% else %}
-                    {{ safe_checklists|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Readiness tasks under control</span>
+        <div class="orientation-stat-card">
+            <div class="orientation-stat-top">
+                <div class="orientation-stat-icon">📋</div>
+                <span class="tag gold">Tasks</span>
+            </div>
+            <div class="orientation-stat-label">Checklist Items</div>
+            <div class="orientation-stat-value">{{ orientation_stats.checklists if orientation_stats and orientation_stats.checklists is not none else 0 }}</div>
+            <div class="orientation-stat-note">Tracked onboarding steps across HR, IT, payroll, policy, and safety readiness.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Policy Acknowledgements</h3>
-            <p>
-                {% if safe_orientation_stats.acknowledgements is defined %}
-                    {{ safe_orientation_stats.acknowledgements }}
-                {% else %}
-                    {{ safe_acknowledgements|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Formal onboarding confirmations</span>
+        <div class="orientation-stat-card">
+            <div class="orientation-stat-top">
+                <div class="orientation-stat-icon">✅</div>
+                <span class="tag green">Completed</span>
+            </div>
+            <div class="orientation-stat-label">Completed Steps</div>
+            <div class="orientation-stat-value">{{ orientation_stats.completed_checklists if orientation_stats and orientation_stats.completed_checklists is not none else 0 }}</div>
+            <div class="orientation-stat-note">Checklist items fully completed and recorded in the onboarding sequence.</div>
         </div>
 
-        <div class="summary-card">
-            <h3>Assets Assigned</h3>
-            <p>
-                {% if safe_orientation_stats.assets_assigned is defined %}
-                    {{ safe_orientation_stats.assets_assigned }}
-                {% elif safe_orientation_stats.assets_pending is defined %}
-                    {{ safe_orientation_stats.assets_pending }}
-                {% else %}
-                    {{ safe_asset_assignments|length }}
-                {% endif %}
-            </p>
-            <span class="summary-note">Equipment and setup readiness visibility</span>
+        <div class="orientation-stat-card">
+            <div class="orientation-stat-top">
+                <div class="orientation-stat-icon">📄</div>
+                <span class="tag blue">Policies</span>
+            </div>
+            <div class="orientation-stat-label">Acknowledgements</div>
+            <div class="orientation-stat-value">{{ orientation_stats.acknowledgements if orientation_stats and orientation_stats.acknowledgements is not none else 0 }}</div>
+            <div class="orientation-stat-note">Documented acknowledgements of policies, rules, and organizational obligations.</div>
+        </div>
+
+        <div class="orientation-stat-card">
+            <div class="orientation-stat-top">
+                <div class="orientation-stat-icon">💻</div>
+                <span class="tag orange">Assets</span>
+            </div>
+            <div class="orientation-stat-label">Assigned Assets</div>
+            <div class="orientation-stat-value">{{ orientation_stats.asset_assignments if orientation_stats and orientation_stats.asset_assignments is not none else 0 }}</div>
+            <div class="orientation-stat-note">Equipment, devices, and operational resources assigned during onboarding.</div>
         </div>
     </section>
 
-    <!-- =====================================================
-         EXECUTIVE PURPOSE + LEADERSHIP PRIORITIES
-    ====================================================== -->
-    <section class="two-column-grid">
-        <div class="panel-card">
-            <h3>Orientation Executive Purpose</h3>
-            <p class="section-subtitle">
-                This module operates as the activation bridge between recruiting and workforce entry.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Candidate-to-Employee Transition</div>
-                    <div class="activity-item-meta">
-                        Ensure selected candidates move from ATS into a structured onboarding path
-                        without losing documentation, status, or readiness context.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Policy &amp; Compliance Readiness</div>
-                    <div class="activity-item-meta">
-                        Track acknowledgements, safety-related steps, and first-day procedural
-                        obligations before employee activation.
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Operational Activation</div>
-                    <div class="activity-item-meta">
-                        Coordinate equipment, task completion, and orientation workflow to support
-                        smoother entry into HRIS and daily operations.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <h3>Onboarding Leadership Priorities</h3>
-            <p class="section-subtitle">
-                Controls that should remain visible to leadership and XIOMY.
-            </p>
-
-            <ul class="clean-list mt-4">
-                <li>Do not activate new hires with incomplete documentation or unresolved policy gaps.</li>
-                <li>Keep checklist completion visible and actionable before day one.</li>
-                <li>Ensure assets and equipment are ready before orientation closure.</li>
-                <li>Bridge orientation results to HRIS activation and SG-SST readiness.</li>
-                <li>Prepare this workflow for future XIOMY onboarding insights and alerts.</li>
-            </ul>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="#readiness-panels">Readiness Insights</a>
-                <a class="btn btn-secondary" href="#asset-center">Asset Coordination</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         CHECKLIST CENTER + POLICY ACKNOWLEDGEMENT CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="checklist-center">
-            <div class="module-header">
-                <h1>Orientation Checklist Center</h1>
+    <section class="orientation-card">
+        <div class="orientation-card-header">
+            <div class="orientation-card-title-wrap">
+                <h2>Orientation Workflow Overview</h2>
                 <p>
-                    Create and manage structured onboarding tasks required before workforce activation.
+                    The onboarding engine is designed to control activation readiness in structured stages.
+                    A typical enterprise sequence uses hiring conversion from ATS, employee creation in HRIS,
+                    orientation scheduling, policy acknowledgement, payroll readiness, SG-SST induction, system access,
+                    and equipment assignment before the employee is considered fully operational.
                 </p>
             </div>
+        </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Checklist Entry</button>
-                <button class="tab-button" type="button">Priority</button>
-                <button class="tab-button" type="button">Completion Flow</button>
+        <div class="orientation-card-body">
+            <div class="orientation-grid-3">
+                <div class="mini-panel">
+                    <h4>1. Hiring Conversion</h4>
+                    <p>
+                        Candidate application is converted into an employee record through the ATS hiring flow.
+                        That employee then becomes eligible for the orientation checklist sequence.
+                    </p>
+                </div>
+
+                <div class="mini-panel">
+                    <h4>2. Orientation Scheduling</h4>
+                    <p>
+                        New hires are assigned to sessions and administrative onboarding events for welcome,
+                        compliance, role readiness, and company policy introduction.
+                    </p>
+                </div>
+
+                <div class="mini-panel">
+                    <h4>3. Readiness Completion</h4>
+                    <p>
+                        Checklist items track setup steps such as payroll enrollment, policy acceptance,
+                        safety briefing, systems access, and department-specific activation actions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="orientation-grid-2">
+        <div class="orientation-card" id="session-create">
+            <div class="orientation-card-header">
+                <div class="orientation-card-title-wrap">
+                    <h2>Create Orientation Session</h2>
+                    <p>
+                        Schedule official onboarding sessions for welcome, role briefing, payroll explanation,
+                        policy review, team introduction, and compliance support.
+                    </p>
+                </div>
             </div>
 
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_orientation_checklist') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="orientation_candidate_id">Candidate</label>
-                            <select id="orientation_candidate_id" name="candidate_id">
-                                <option value="">Select candidate</option>
-                                {% for candidate in safe_candidates %}
-                                    <option value="{{ candidate.id }}">
-                                        {% if candidate.full_name is defined and candidate.full_name %}
-                                            {{ candidate.full_name }}
-                                        {% elif candidate.first_name is defined or candidate.last_name is defined %}
-                                            {{ (candidate.first_name if candidate.first_name is defined else '') ~ ' ' ~ (candidate.last_name if candidate.last_name is defined else '') }}
-                                        {% else %}
-                                            Candidate #{{ candidate.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
+            <div class="orientation-card-body">
+                <form method="POST" action="{{ url_for('create_orientation_session') }}">
+                    <div class="orientation-form-grid">
+                        <div class="orientation-field">
+                            <label for="session_title">Session Title *</label>
+                            <input type="text" id="session_title" name="title" placeholder="New Employee Welcome Session" required>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="session_date">Session Date</label>
+                            <input type="date" id="session_date" name="session_date">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="start_time">Start Time</label>
+                            <input type="datetime-local" id="start_time" name="start_time">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="end_time">End Time</label>
+                            <input type="datetime-local" id="end_time" name="end_time">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="facilitator_user_id">Facilitator</label>
+                            <select id="facilitator_user_id" name="facilitator_user_id">
+                                <option value="">Select facilitator</option>
+                                {% if users %}
+                                    {% for user in users %}
+                                        <option value="{{ user.id }}">{{ user.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="orientation_employee_id">Employee</label>
-                            <select id="orientation_employee_id" name="employee_id">
-                                <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                        <div class="orientation-field">
+                            <label for="session_location">Location</label>
+                            <input type="text" id="session_location" name="location" placeholder="Conference Room / Virtual Link / Office">
                         </div>
 
-                        <div>
-                            <label for="orientation_employee_name">Candidate / Employee Name</label>
-                            <input type="text" id="orientation_employee_name" name="employee_name" placeholder="Candidate or new hire name">
-                        </div>
-
-                        <div>
-                            <label for="orientation_task_title">Checklist Task</label>
-                            <input type="text" id="orientation_task_title" name="title" placeholder="Task title" required>
-                        </div>
-
-                        <div>
-                            <label for="orientation_category">Category</label>
-                            <select id="orientation_category" name="category">
-                                <option value="Documentation">Documentation</option>
-                                <option value="Policy">Policy</option>
-                                <option value="Training">Training</option>
-                                <option value="Safety">Safety</option>
-                                <option value="Equipment">Equipment</option>
-                                <option value="System Access">System Access</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="orientation_due_date">Due Date</label>
-                            <input type="date" id="orientation_due_date" name="due_date">
-                        </div>
-
-                        <div>
-                            <label for="orientation_priority">Priority</label>
-                            <select id="orientation_priority" name="priority">
-                                <option value="Normal">Normal</option>
-                                <option value="High">High</option>
-                                <option value="Critical">Critical</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="orientation_status">Status</label>
-                            <select id="orientation_status" name="status">
-                                <option value="Pending">Pending</option>
-                                <option value="In Progress">In Progress</option>
+                        <div class="orientation-field">
+                            <label for="session_status">Status</label>
+                            <select id="session_status" name="status">
+                                <option value="Scheduled">Scheduled</option>
                                 <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Open">Open</option>
                             </select>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label>&nbsp;</label>
+                            <div class="tab-note">
+                                Use this for official welcome sessions, induction blocks, onboarding workshops,
+                                compliance briefings, and cross-functional introduction events.
+                            </div>
+                        </div>
+
+                        <div class="orientation-field orientation-field-full">
+                            <label for="session_description">Description</label>
+                            <textarea id="session_description" name="description" placeholder="Agenda, session goal, induction topics, attendees, expectations, and practical preparation notes."></textarea>
                         </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="orientation_description">Task Notes</label>
-                        <textarea id="orientation_description" name="description" placeholder="Describe what is required, who is responsible, and any onboarding condition related to this item."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Checklist Item</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Orientation Session</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="panel-card" id="acknowledgement-center">
-            <div class="module-header">
-                <h1>Policy Acknowledgement Center</h1>
-                <p>
-                    Record and track policy review confirmations as part of formal onboarding.
-                </p>
+        <div class="orientation-card" id="checklist-create">
+            <div class="orientation-card-header">
+                <div class="orientation-card-title-wrap">
+                    <h2>Create Orientation Checklist Item</h2>
+                    <p>
+                        Build onboarding actions tied to an employee, application, session, and responsible user.
+                        This is the task control layer for enterprise onboarding completion.
+                    </p>
+                </div>
             </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Acknowledgement Entry</button>
-                <button class="tab-button" type="button">Policy Type</button>
-                <button class="tab-button" type="button">Completion Status</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_policy_acknowledgement') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="ack_employee_id">Employee</label>
-                            <select id="ack_employee_id" name="employee_id">
+            <div class="orientation-card-body">
+                <form method="POST" action="{{ url_for('create_orientation_checklist') }}">
+                    <div class="orientation-form-grid">
+                        <div class="orientation-field">
+                            <label for="checklist_employee_id">Employee *</label>
+                            <select id="checklist_employee_id" name="employee_id" required>
                                 <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
+                                {% if employees %}
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="ack_policy_name">Policy Name</label>
-                            <input type="text" id="ack_policy_name" name="policy_name" placeholder="Policy or handbook section" required>
+                        <div class="orientation-field">
+                            <label for="application_id">Application ID</label>
+                            <input type="number" id="application_id" name="application_id" placeholder="Optional ATS application id">
                         </div>
 
-                        <div>
-                            <label for="ack_policy_type">Policy Type</label>
-                            <select id="ack_policy_type" name="policy_type">
-                                <option value="General Employment">General Employment</option>
-                                <option value="Code of Conduct">Code of Conduct</option>
+                        <div class="orientation-field">
+                            <label for="orientation_session_id">Session</label>
+                            <select id="orientation_session_id" name="orientation_session_id">
+                                <option value="">Optional session</option>
+                                {% if sessions %}
+                                    {% for session_item in sessions %}
+                                        <option value="{{ session_item.id }}">{{ session_item.title }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="assigned_to_user_id">Assigned To</label>
+                            <select id="assigned_to_user_id" name="assigned_to_user_id">
+                                <option value="">Select responsible user</option>
+                                {% if users %}
+                                    {% for user in users %}
+                                        <option value="{{ user.id }}">{{ user.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="task_name">Task Name *</label>
+                            <input type="text" id="task_name" name="task_name" placeholder="Payroll Setup / ID Badge / Safety Briefing" required>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="task_category">Task Category</label>
+                            <select id="task_category" name="task_category">
+                                <option value="HR">HR</option>
+                                <option value="IT">IT</option>
+                                <option value="Payroll">Payroll</option>
+                                <option value="Policy">Policy</option>
                                 <option value="Safety">Safety</option>
-                                <option value="IT / Access">IT / Access</option>
-                                <option value="Confidentiality">Confidentiality</option>
-                                <option value="SG-SST">SG-SST</option>
+                                <option value="Operations">Operations</option>
+                                <option value="Administration">Administration</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label for="ack_status">Status</label>
-                            <select id="ack_status" name="status">
+                        <div class="orientation-field">
+                            <label for="completed">Completed</label>
+                            <select id="completed" name="completed">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="completed_date">Completed Date</label>
+                            <input type="date" id="completed_date" name="completed_date">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="checklist_status">Status</label>
+                            <select id="checklist_status" name="status">
                                 <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Blocked">Blocked</option>
+                            </select>
+                        </div>
+
+                        <div class="orientation-field orientation-field-full">
+                            <label for="checklist_notes">Notes</label>
+                            <textarea id="checklist_notes" name="notes" placeholder="Activation dependencies, setup details, blockers, instructions, audit notes, or onboarding observations."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Checklist Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="orientation-grid-2">
+        <div class="orientation-card" id="policy-create">
+            <div class="orientation-card-header">
+                <div class="orientation-card-title-wrap">
+                    <h2>Create Policy Acknowledgement</h2>
+                    <p>
+                        Register employee acknowledgement of corporate policies, conduct standards,
+                        role obligations, operational rules, and onboarding compliance documents.
+                    </p>
+                </div>
+            </div>
+
+            <div class="orientation-card-body">
+                <form method="POST" action="{{ url_for('create_policy_acknowledgement') }}">
+                    <div class="orientation-form-grid">
+                        <div class="orientation-field">
+                            <label for="policy_employee_id">Employee *</label>
+                            <select id="policy_employee_id" name="employee_id" required>
+                                <option value="">Select employee</option>
+                                {% if employees %}
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="policy_name">Policy Name *</label>
+                            <input type="text" id="policy_name" name="policy_name" placeholder="Code of Conduct / Attendance Policy / Data Security Policy" required>
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="policy_version">Policy Version</label>
+                            <input type="text" id="policy_version" name="policy_version" value="1.0" placeholder="1.0">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="acknowledgement_date">Acknowledgement Date</label>
+                            <input type="date" id="acknowledgement_date" name="acknowledgement_date">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="document_url">Document URL</label>
+                            <input type="text" id="document_url" name="document_url" placeholder="https://document-link">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="digital_signature_name">Digital Signature Name</label>
+                            <input type="text" id="digital_signature_name" name="digital_signature_name" placeholder="Employee full legal name">
+                        </div>
+
+                        <div class="orientation-field">
+                            <label for="policy_status">Status</label>
+                            <select id="policy_status" name="status">
                                 <option value="Acknowledged">Acknowledged</option>
+                                <option value="Pending">Pending</option>
                                 <option value="Rejected">Rejected</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label for="ack_date">Acknowledgement Date</label>
-                            <input type="date" id="ack_date" name="acknowledged_date">
+                        <div class="orientation-field">
+                            <label>&nbsp;</label>
+                            <div class="tab-note">
+                                This record supports compliance traceability and onboarding evidence capture.
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="ack_version">Policy Version</label>
-                            <input type="text" id="ack_version" name="version" placeholder="Version or revision number">
+                        <div class="orientation-field orientation-field-full">
+                            <label for="acknowledgement_text">Acknowledgement Text</label>
+                            <textarea id="acknowledgement_text" name="acknowledgement_text" placeholder="Employee acknowledgement text, acceptance statement, or confirmation content."></textarea>
                         </div>
                     </div>
 
-                    <div class="mt-3 form-checkbox-row">
-                        <label class="checkbox-inline" for="ack_acknowledged">
-                            <input type="checkbox" id="ack_acknowledged" name="acknowledged">
-                            Mark as acknowledged
-                        </label>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="ack_notes">Notes</label>
-                        <textarea id="ack_notes" name="notes" placeholder="Document any onboarding note, exception, or acknowledgement context."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Acknowledgement Record</button>
-                        <button class="btn btn-ghost" type="reset">Reset</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Policy Acknowledgement</button>
                     </div>
                 </form>
             </div>
         </div>
-    </section>
 
-    <!-- =====================================================
-         ASSET CENTER + ORIENTATION READINESS CENTER
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="panel-card" id="asset-center">
-            <div class="module-header">
-                <h1>Asset Assignment Bridge</h1>
-                <p>
-                    Coordinate onboarding-related equipment and operational readiness before activation.
-                </p>
+        <div class="orientation-card" id="asset-create">
+            <div class="orientation-card-header">
+                <div class="orientation-card-title-wrap">
+                    <h2>Create Asset Assignment</h2>
+                    <p>
+                        Assign company assets to new employees and connect the assignment to inventory movement
+                        control during onboarding and operational activation.
+                    </p>
+                </div>
             </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Asset Entry</button>
-                <button class="tab-button" type="button">Equipment Type</button>
-                <button class="tab-button" type="button">Delivery Status</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <form method="POST" action="{{ url_for('create_asset_assignment') }}" class="crm-form">
-                    <div class="form-grid two-col">
-                        <div>
-                            <label for="asset_employee_id">Employee</label>
-                            <select id="asset_employee_id" name="employee_id">
+            <div class="orientation-card-body">
+                <form method="POST" action="{{ url_for('create_asset_assignment') }}">
+                    <div class="orientation-form-grid">
+                        <div class="orientation-field">
+                            <label for="asset_employee_id">Employee *</label>
+                            <select id="asset_employee_id" name="employee_id" required>
                                 <option value="">Select employee</option>
-                                {% for employee in safe_employees %}
-                                    <option value="{{ employee.id }}">
-                                        {% if employee.full_name is defined and employee.full_name %}
-                                            {{ employee.full_name }}
-                                        {% elif employee.first_name is defined or employee.last_name is defined %}
-                                            {{ (employee.first_name if employee.first_name is defined else '') ~ ' ' ~ (employee.last_name if employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ employee.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
+                                {% if employees %}
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="asset_inventory_item_id">Inventory Item</label>
-                            <select id="asset_inventory_item_id" name="inventory_item_id">
-                                <option value="">Select inventory item</option>
-                                {% for item in safe_inventory_items %}
-                                    <option value="{{ item.id }}">
-                                        {% if item.name is defined and item.name %}
-                                            {{ item.name }}
-                                        {% else %}
-                                            Item #{{ item.id }}
-                                        {% endif %}
-                                    </option>
-                                {% endfor %}
+                        <div class="orientation-field">
+                            <label for="item_id">Inventory Item *</label>
+                            <select id="item_id" name="item_id" required>
+                                <option value="">Select item</option>
+                                {% if items %}
+                                    {% for item in items %}
+                                        <option value="{{ item.id }}">
+                                            {{ item.name }}{% if item.serial_number %} — {{ item.serial_number }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
                             </select>
                         </div>
 
-                        <div>
-                            <label for="asset_name">Asset / Equipment</label>
-                            <input type="text" id="asset_name" name="asset_name" placeholder="Laptop, badge, PPE kit, phone, etc." required>
+                        <div class="orientation-field">
+                            <label for="assigned_date">Assigned Date</label>
+                            <input type="date" id="assigned_date" name="assigned_date">
                         </div>
 
-                        <div>
-                            <label for="asset_category">Category</label>
-                            <select id="asset_category" name="category">
-                                <option value="Laptop">Laptop</option>
-                                <option value="Phone">Phone</option>
-                                <option value="PPE">PPE</option>
-                                <option value="Uniform">Uniform</option>
-                                <option value="Access Credentials">Access Credentials</option>
-                                <option value="Other">Other</option>
-                            </select>
+                        <div class="orientation-field">
+                            <label for="expected_return_date">Expected Return Date</label>
+                            <input type="date" id="expected_return_date" name="expected_return_date">
                         </div>
 
-                        <div>
+                        <div class="orientation-field">
+                            <label for="actual_return_date">Actual Return Date</label>
+                            <input type="date" id="actual_return_date" name="actual_return_date">
+                        </div>
+
+                        <div class="orientation-field">
                             <label for="asset_status">Status</label>
                             <select id="asset_status" name="status">
-                                <option value="Pending">Pending</option>
-                                <option value="Prepared">Prepared</option>
                                 <option value="Assigned">Assigned</option>
-                                <option value="Delivered">Delivered</option>
+                                <option value="Returned">Returned</option>
+                                <option value="Pending Return">Pending Return</option>
+                                <option value="Damaged">Damaged</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label for="asset_assignment_date">Assignment Date</label>
-                            <input type="date" id="asset_assignment_date" name="assignment_date">
+                        <div class="orientation-field">
+                            <label for="condition_on_issue">Condition on Issue</label>
+                            <input type="text" id="condition_on_issue" name="condition_on_issue" placeholder="New / Good / Fair">
                         </div>
 
-                        <div>
-                            <label for="asset_return_due_date">Return Due Date</label>
-                            <input type="date" id="asset_return_due_date" name="return_due_date">
+                        <div class="orientation-field">
+                            <label for="condition_on_return">Condition on Return</label>
+                            <input type="text" id="condition_on_return" name="condition_on_return" placeholder="Good / Fair / Damaged">
                         </div>
 
-                        <div>
-                            <label for="asset_serial">Serial / Reference</label>
-                            <input type="text" id="asset_serial" name="serial_number" placeholder="Serial, code, or internal reference">
+                        <div class="orientation-field orientation-field-full">
+                            <label for="asset_notes">Notes</label>
+                            <textarea id="asset_notes" name="notes" placeholder="Provisioning notes, serial assignment details, onboarding kit context, return obligations, or internal control comments."></textarea>
                         </div>
                     </div>
 
-                    <div class="mt-3">
-                        <label for="asset_notes">Assignment Notes</label>
-                        <textarea id="asset_notes" name="notes" placeholder="Describe any preparation issue, inventory dependency, or onboarding equipment note."></textarea>
-                    </div>
-
-                    <div class="form-actions mt-4">
-                        <button class="btn btn-primary btn-lg" type="submit">Create Asset Assignment</button>
-                        <button class="btn btn-secondary" type="reset">Clear Form</button>
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Asset Assignment</button>
                     </div>
                 </form>
             </div>
         </div>
+    </section>
 
-        <div class="panel-card" id="readiness-center">
-            <div class="module-header">
-                <h1>Orientation Session &amp; Readiness Center</h1>
+    <section class="orientation-card">
+        <div class="orientation-card-header">
+            <div class="orientation-card-title-wrap">
+                <h2>Orientation Sessions Table</h2>
                 <p>
-                    Control the final onboarding state before handoff into workforce operations.
+                    Full session visibility with facilitator, date, timing, and current scheduling state.
                 </p>
             </div>
+        </div>
 
-            <div class="tabs-bar mt-4">
-                <button class="tab-button active" type="button">Readiness Gate</button>
-                <button class="tab-button" type="button">Final Activation</button>
-                <button class="tab-button" type="button">Orientation Flow</button>
-            </div>
-
-            <div class="tab-content-panel mt-4">
-                <div class="activity-feed">
-                    <div class="activity-item">
-                        <div class="activity-item-title">Final Activation Gate</div>
-                        <div class="activity-item-meta">
-                            Before moving into HRIS and full operations, confirm checklist completion,
-                            policy acknowledgement, equipment readiness, and SG-SST onboarding alignment.
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-item-title">Checklist Completion Discipline</div>
-                        <div class="activity-item-meta">
-                            Avoid activating new hires while tasks remain pending or while critical
-                            onboarding requirements are not completed.
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-item-title">Operational Readiness Visibility</div>
-                        <div class="activity-item-meta">
-                            Orientation should provide leadership with a clear view of who is truly ready
-                            for activation and where additional steps are still required.
-                        </div>
-                    </div>
+        <div class="orientation-card-body">
+            {% if sessions %}
+                <div class="orientation-table-wrap">
+                    <table class="orientation-table">
+                        <thead>
+                            <tr>
+                                <th>Session</th>
+                                <th>Date</th>
+                                <th>Time Window</th>
+                                <th>Facilitator</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session_item in sessions %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ session_item.title or "Untitled Session" }}</strong>
+                                    </td>
+                                    <td>
+                                        {{ session_item.session_date.strftime("%Y-%m-%d") if session_item.session_date else "Not set" }}
+                                    </td>
+                                    <td>
+                                        {% if session_item.start_time %}
+                                            {{ session_item.start_time.strftime("%Y-%m-%d %H:%M") }}
+                                        {% else %}
+                                            Start not set
+                                        {% endif %}
+                                        <br>
+                                        <span class="tab-note">
+                                            {% if session_item.end_time %}
+                                                {{ session_item.end_time.strftime("%Y-%m-%d %H:%M") }}
+                                            {% else %}
+                                                End not set
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ session_item.facilitator.full_name if session_item.facilitator else "Not assigned" }}</td>
+                                    <td>{{ session_item.location or "Not set" }}</td>
+                                    <td>{{ session_item.status or "Scheduled" }}</td>
+                                    <td>{{ session_item.description or "No description provided." }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-
-                <div class="action-row mt-4">
-                    <a class="btn btn-primary" href="{{ url_for('hris') }}">Open HRIS</a>
-                    <a class="btn btn-secondary" href="{{ url_for('sgsst') }}">Open SG-SST</a>
+            {% else %}
+                <div class="empty-orientation">
+                    <h3>No sessions created yet</h3>
+                    <p>
+                        Create orientation sessions to structure welcome events, induction schedules,
+                        policy briefings, and activation milestones.
+                    </p>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </section>
 
-    <!-- =====================================================
-         CHECKLIST TABLE
-    ====================================================== -->
-    <section class="table-shell">
-        <div class="table-toolbar">
-            <div>
-                <h3 class="section-title">Orientation Checklist Table</h3>
-                <p class="section-subtitle">Central visibility of onboarding tasks and completion progress.</p>
+    <section class="orientation-grid-2">
+        <div class="orientation-card">
+            <div class="orientation-card-header">
+                <div class="orientation-card-title-wrap">
+                    <h2>Orientation Checklist Control</h2>
+                    <p>
+                        Review onboarding tasks and complete checklist items directly from the table.
+                    </p>
+                </div>
             </div>
 
-            <div class="action-row">
-                <a class="btn btn-primary btn-sm" href="#checklist-center">New Checklist Item</a>
-                <a class="btn btn-secondary btn-sm" href="#readiness-center">Session Readiness</a>
-            </div>
-        </div>
+            <div class="orientation-card-body">
+                {% if checklists %}
+                    <div class="orientation-list">
+                        {% for checklist in checklists %}
+                            <div class="orientation-list-item">
+                                <div class="orientation-list-item-top">
+                                    <div>
+                                        <h3 class="orientation-list-title">{{ checklist.task_name or "Orientation Task" }}</h3>
+                                        <div class="orientation-list-meta">
+                                            <span>{{ checklist.employee.full_name if checklist.employee else "Employee not found" }}</span>
+                                            <span>{{ checklist.task_category or "Category not set" }}</span>
+                                            {% if checklist.orientation_session %}
+                                                <span>{{ checklist.orientation_session.title }}</span>
+                                            {% endif %}
+                                            {% if checklist.assigned_to %}
+                                                <span>Assigned to {{ checklist.assigned_to.full_name }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
 
-        <div class="data-table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Candidate / Employee</th>
-                        <th>Task</th>
-                        <th>Category</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Due Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if safe_checklists %}
-                        {% for item in safe_checklists %}
-                        <tr>
-                            <td>
-                                {% if item.employee_name is defined and item.employee_name %}
-                                    {{ item.employee_name }}
-                                {% elif item.candidate_name is defined and item.candidate_name %}
-                                    {{ item.candidate_name }}
+                                    <div class="tag-row">
+                                        {% if checklist.completed %}
+                                            <span class="tag green">Completed</span>
+                                        {% else %}
+                                            <span class="tag orange">{{ checklist.status or "Pending" }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <p class="orientation-list-text">
+                                    {{ checklist.notes or "No notes recorded for this onboarding step." }}
+                                </p>
+
+                                {% if not checklist.completed %}
+                                    <form method="POST" action="{{ url_for('complete_orientation_checklist', checklist_id=checklist.id) }}" style="margin-top:12px;">
+                                        <button type="submit" class="btn-3d">Mark Completed</button>
+                                    </form>
                                 {% else %}
-                                    N/A
+                                    <div class="btn-row" style="margin-top: 12px;">
+                                        <span class="tag green">
+                                            Completed{% if checklist.completed_date %} on {{ checklist.completed_date.strftime("%Y-%m-%d") }}{% endif %}
+                                        </span>
+                                    </div>
                                 {% endif %}
-                            </td>
-                            <td>{{ item.title if item.title is defined and item.title else 'N/A' }}</td>
-                            <td>{{ item.category if item.category is defined and item.category else 'N/A' }}</td>
-                            <td>
-                                {% set item_priority = item.priority if item.priority is defined and item.priority else 'Normal' %}
-                                {% if item_priority in ['Critical', 'High'] %}
-                                    <span class="badge badge-danger">{{ item_priority }}</span>
-                                {% elif item_priority in ['Normal'] %}
-                                    <span class="badge badge-info">{{ item_priority }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ item_priority }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% set item_status = item.status if item.status is defined and item.status else 'N/A' %}
-                                {% if item_status in ['Completed'] %}
-                                    <span class="badge badge-success">{{ item_status }}</span>
-                                {% elif item_status in ['In Progress'] %}
-                                    <span class="badge badge-warning">{{ item_status }}</span>
-                                {% elif item_status in ['Pending'] %}
-                                    <span class="badge badge-danger">{{ item_status }}</span>
-                                {% else %}
-                                    <span class="badge badge-neutral">{{ item_status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ item.due_date if item.due_date is defined and item.due_date else 'N/A' }}</td>
-                        </tr>
+                            </div>
                         {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6">No orientation checklist items available.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- =====================================================
-         ACKNOWLEDGEMENTS TABLE + ASSET TABLE
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Policy Acknowledgements</h3>
-                    <p class="section-subtitle">Formal onboarding policy confirmations and completion visibility.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#acknowledgement-center">New Acknowledgement</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Policy</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_acknowledgements %}
-                            {% for ack in safe_acknowledgements %}
-                            <tr>
-                                <td>
-                                    {% if ack.employee is defined and ack.employee %}
-                                        {% if ack.employee.full_name is defined and ack.employee.full_name %}
-                                            {{ ack.employee.full_name }}
-                                        {% elif ack.employee.first_name is defined or ack.employee.last_name is defined %}
-                                            {{ (ack.employee.first_name if ack.employee.first_name is defined else '') ~ ' ' ~ (ack.employee.last_name if ack.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ ack.employee_id if ack.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif ack.candidate_name is defined and ack.candidate_name %}
-                                        {{ ack.candidate_name }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>{{ ack.policy_name if ack.policy_name is defined and ack.policy_name else 'N/A' }}</td>
-                                <td>{{ ack.policy_type if ack.policy_type is defined and ack.policy_type else 'N/A' }}</td>
-                                <td>
-                                    {% if ack.acknowledged is defined %}
-                                        {% if ack.acknowledged %}
-                                            <span class="badge badge-success">Acknowledged</span>
-                                        {% else %}
-                                            <span class="badge badge-warning">Pending</span>
-                                        {% endif %}
-                                    {% else %}
-                                        {% set ack_status = ack.status if ack.status is defined and ack.status else 'N/A' %}
-                                        {% if ack_status in ['Acknowledged'] %}
-                                            <span class="badge badge-success">{{ ack_status }}</span>
-                                        {% elif ack_status in ['Pending'] %}
-                                            <span class="badge badge-warning">{{ ack_status }}</span>
-                                        {% elif ack_status in ['Rejected'] %}
-                                            <span class="badge badge-danger">{{ ack_status }}</span>
-                                        {% else %}
-                                            <span class="badge badge-neutral">{{ ack_status }}</span>
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No policy acknowledgements available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+                    </div>
+                {% else %}
+                    <div class="empty-orientation">
+                        <h3>No checklist items yet</h3>
+                        <p>
+                            Create checklist items for payroll setup, system access, policy review,
+                            team introduction, and safety activation.
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Asset Assignment Readiness</h3>
-                    <p class="section-subtitle">Equipment and operational setup visibility before activation.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-secondary btn-sm" href="#asset-center">New Asset Record</a>
+        <div class="orientation-card">
+            <div class="orientation-card-header">
+                <div class="orientation-card-title-wrap">
+                    <h2>Policy Acknowledgement Records</h2>
+                    <p>
+                        Review which onboarding policies and organizational documents have already been acknowledged.
+                    </p>
                 </div>
             </div>
 
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Employee</th>
-                            <th>Asset</th>
-                            <th>Inventory Link</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_asset_assignments %}
-                            {% for asset in safe_asset_assignments %}
-                            <tr>
-                                <td>
-                                    {% if asset.employee is defined and asset.employee %}
-                                        {% if asset.employee.full_name is defined and asset.employee.full_name %}
-                                            {{ asset.employee.full_name }}
-                                        {% elif asset.employee.first_name is defined or asset.employee.last_name is defined %}
-                                            {{ (asset.employee.first_name if asset.employee.first_name is defined else '') ~ ' ' ~ (asset.employee.last_name if asset.employee.last_name is defined else '') }}
-                                        {% else %}
-                                            Employee #{{ asset.employee_id if asset.employee_id is defined else 'N/A' }}
-                                        {% endif %}
-                                    {% elif asset.candidate_name is defined and asset.candidate_name %}
-                                        {{ asset.candidate_name }}
-                                    {% else %}
-                                        N/A
+            <div class="orientation-card-body">
+                {% if policy_acknowledgements %}
+                    <div class="orientation-list">
+                        {% for policy in policy_acknowledgements %}
+                            <div class="orientation-list-item">
+                                <div class="orientation-list-item-top">
+                                    <div>
+                                        <h3 class="orientation-list-title">{{ policy.policy_name or "Policy Record" }}</h3>
+                                        <div class="orientation-list-meta">
+                                            <span>{{ policy.employee.full_name if policy.employee else "Employee not found" }}</span>
+                                            <span>Version {{ policy.policy_version or "1.0" }}</span>
+                                            {% if policy.acknowledgement_date %}
+                                                <span>{{ policy.acknowledgement_date.strftime("%Y-%m-%d") }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="tag-row">
+                                        <span class="tag blue">{{ policy.status or "Acknowledged" }}</span>
+                                    </div>
+                                </div>
+
+                                <p class="orientation-list-text">
+                                    {{ policy.acknowledgement_text or "No acknowledgement text recorded." }}
+                                    {% if policy.digital_signature_name %}
+                                        <br><strong>Signature:</strong> {{ policy.digital_signature_name }}
                                     {% endif %}
-                                </td>
-                                <td>{{ asset.asset_name if asset.asset_name is defined and asset.asset_name else 'N/A' }}</td>
-                                <td>
-                                    {% if asset.inventory_item_id is defined and asset.inventory_item_id %}
-                                        Inventory #{{ asset.inventory_item_id }}
-                                    {% elif asset.category is defined and asset.category %}
-                                        {{ asset.category }}
-                                    {% else %}
-                                        N/A
+                                    {% if policy.document_url %}
+                                        <br><strong>Document:</strong> {{ policy.document_url }}
                                     {% endif %}
-                                </td>
-                                <td>
-                                    {% set asset_status = asset.status if asset.status is defined and asset.status else 'N/A' %}
-                                    {% if asset_status in ['Delivered', 'Assigned'] %}
-                                        <span class="badge badge-success">{{ asset_status }}</span>
-                                    {% elif asset_status in ['Prepared'] %}
-                                        <span class="badge badge-info">{{ asset_status }}</span>
-                                    {% elif asset_status in ['Pending'] %}
-                                        <span class="badge badge-warning">{{ asset_status }}</span>
-                                    {% else %}
-                                        <span class="badge badge-neutral">{{ asset_status }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No asset assignments available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-orientation">
+                        <h3>No policy acknowledgements yet</h3>
+                        <p>
+                            Policy acknowledgement records will appear here as part of onboarding compliance.
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </section>
 
-    <!-- =====================================================
-         READINESS PANELS
-    ====================================================== -->
-    <section class="two-column-grid">
-
-        <div class="table-shell">
-            <div class="table-toolbar">
-                <div>
-                    <h3 class="section-title">Orientation Readiness Visibility</h3>
-                    <p class="section-subtitle">Current bridge records and onboarding completion visibility.</p>
-                </div>
-                <div class="action-row">
-                    <a class="btn btn-primary btn-sm" href="#readiness-center">Review Readiness</a>
-                </div>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Record Type</th>
-                            <th>Name / Item</th>
-                            <th>Status</th>
-                            <th>Reference</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if safe_checklists %}
-                            {% for item in safe_checklists[:5] %}
-                            <tr>
-                                <td>Checklist</td>
-                                <td>{{ item.title if item.title is defined and item.title else 'N/A' }}</td>
-                                <td>{{ item.status if item.status is defined and item.status else 'Pending' }}</td>
-                                <td>{{ item.due_date if item.due_date is defined and item.due_date else 'No due date' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if safe_acknowledgements %}
-                            {% for ack in safe_acknowledgements[:5] %}
-                            <tr>
-                                <td>Acknowledgement</td>
-                                <td>{{ ack.policy_name if ack.policy_name is defined and ack.policy_name else 'N/A' }}</td>
-                                <td>
-                                    {% if ack.acknowledged is defined %}
-                                        {{ 'Acknowledged' if ack.acknowledged else 'Pending' }}
-                                    {% else %}
-                                        {{ ack.status if ack.status is defined and ack.status else 'Pending' }}
-                                    {% endif %}
-                                </td>
-                                <td>{{ ack.acknowledged_date if ack.acknowledged_date is defined and ack.acknowledged_date else 'No date' }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if not safe_checklists and not safe_acknowledgements %}
-                            <tr>
-                                <td colspan="4">No readiness records available.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+    <section class="orientation-card">
+        <div class="orientation-card-header">
+            <div class="orientation-card-title-wrap">
+                <h2>Asset Assignment Table</h2>
+                <p>
+                    Review operational provisioning and assigned equipment used for readiness and internal control.
+                </p>
             </div>
         </div>
 
-        <div class="panel-card" id="readiness-panels">
-            <h3>Orientation Readiness Direction</h3>
-            <p class="section-subtitle">
-                Executive onboarding interpretation and future XIOMY activation intelligence foundation.
-            </p>
-
-            <div class="activity-feed mt-4">
-                <div class="activity-item">
-                    <div class="activity-item-title">Completion Risk Visibility</div>
-                    <div class="activity-item-meta">
-                        Orientation will support future detection of missing checklist items,
-                        unresolved policy acknowledgements, and equipment delays.
-                    </div>
+        <div class="orientation-card-body">
+            {% if asset_assignments %}
+                <div class="orientation-table-wrap">
+                    <table class="orientation-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Item</th>
+                                <th>Assigned Date</th>
+                                <th>Expected Return</th>
+                                <th>Actual Return</th>
+                                <th>Issue Condition</th>
+                                <th>Return Condition</th>
+                                <th>Status / Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asset in asset_assignments %}
+                                <tr>
+                                    <td>{{ asset.employee.full_name if asset.employee else "Employee not found" }}</td>
+                                    <td>
+                                        {{ asset.item.name if asset.item else "Item not found" }}
+                                        {% if asset.item and asset.item.serial_number %}
+                                            <br><span class="tab-note">{{ asset.item.serial_number }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ asset.assigned_date.strftime("%Y-%m-%d") if asset.assigned_date else "Not set" }}
+                                    </td>
+                                    <td>
+                                        {{ asset.expected_return_date.strftime("%Y-%m-%d") if asset.expected_return_date else "Not set" }}
+                                    </td>
+                                    <td>
+                                        {{ asset.actual_return_date.strftime("%Y-%m-%d") if asset.actual_return_date else "Not returned" }}
+                                    </td>
+                                    <td>{{ asset.condition_on_issue or "Not recorded" }}</td>
+                                    <td>{{ asset.condition_on_return or "Not recorded" }}</td>
+                                    <td>
+                                        {{ asset.status or "Assigned" }}
+                                        {% if asset.notes %}
+                                            <br><span class="tab-note">{{ asset.notes }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">Activation Gate Control</div>
-                    <div class="activity-item-meta">
-                        Orientation readiness outcomes create the basis for stronger control
-                        over who is truly ready to move into HRIS and operations.
-                    </div>
+            {% else %}
+                <div class="empty-orientation">
+                    <h3>No asset assignments yet</h3>
+                    <p>
+                        Assign equipment such as laptops, badges, tools, phones, or onboarding kits
+                        and they will appear here with provisioning traceability.
+                    </p>
                 </div>
-
-                <div class="activity-item">
-                    <div class="activity-item-title">XIOMY Onboarding Intelligence</div>
-                    <div class="activity-item-meta">
-                        XIOMY will later summarize onboarding delays, missing steps,
-                        first-day risk patterns, and activation readiness for owner-level review.
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-row mt-4">
-                <a class="btn btn-primary" href="{{ url_for('reports_analytics') }}">View Reports</a>
-                <a class="btn btn-secondary" href="{{ url_for('xiomy_page') }}">Open XIOMY</a>
-            </div>
+            {% endif %}
         </div>
     </section>
 
