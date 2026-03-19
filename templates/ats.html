@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}HRIS | UrbanHRPartners Enterprise Suite{% endblock %}
+{% block title %}ATS | UrbanHRPartners Enterprise Suite{% endblock %}
 
 {% block topbar_subtitle %}
-Human Resources Information System for workforce structure, employee records, payroll, disciplinary actions, labor actions, and enterprise people operations.
+Applicant Tracking System for requisitions, candidate pipelines, resume strategy, interviews, hiring conversion, and onboarding readiness.
 {% endblock %}
 
 {% block head_extra %}
 <style>
-    .hris-shell {
+    .ats-shell {
         display: flex;
         flex-direction: column;
         gap: 24px;
     }
 
-    .hris-hero {
+    .ats-hero {
         position: relative;
         overflow: hidden;
         border-radius: 28px;
@@ -28,7 +28,7 @@ Human Resources Information System for workforce structure, employee records, pa
         box-shadow: 0 18px 40px rgba(11, 31, 58, 0.24);
     }
 
-    .hris-hero::before {
+    .ats-hero::before {
         content: "";
         position: absolute;
         width: 220px;
@@ -39,7 +39,7 @@ Human Resources Information System for workforce structure, employee records, pa
         right: -80px;
     }
 
-    .hris-hero-grid {
+    .ats-hero-grid {
         position: relative;
         z-index: 1;
         display: grid;
@@ -48,14 +48,14 @@ Human Resources Information System for workforce structure, employee records, pa
         align-items: stretch;
     }
 
-    .hris-hero-title {
+    .ats-hero-title {
         margin: 0 0 10px 0;
         font-size: 2rem;
         font-weight: 900;
         line-height: 1.12;
     }
 
-    .hris-hero-text {
+    .ats-hero-text {
         margin: 0;
         max-width: 920px;
         color: #dce7f4;
@@ -63,20 +63,20 @@ Human Resources Information System for workforce structure, employee records, pa
         font-size: 1rem;
     }
 
-    .hris-hero-actions {
+    .ats-hero-actions {
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
         margin-top: 18px;
     }
 
-    .hris-highlight-grid {
+    .ats-highlight-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 14px;
     }
 
-    .hris-highlight-card {
+    .ats-highlight-card {
         padding: 18px;
         border-radius: 20px;
         background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
@@ -84,7 +84,7 @@ Human Resources Information System for workforce structure, employee records, pa
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
-    .hris-highlight-label {
+    .ats-highlight-label {
         color: #d8e4f2;
         font-size: 0.84rem;
         font-weight: 800;
@@ -93,7 +93,7 @@ Human Resources Information System for workforce structure, employee records, pa
         margin-bottom: 10px;
     }
 
-    .hris-highlight-value {
+    .ats-highlight-value {
         color: #f6d87b;
         font-size: 1.7rem;
         font-weight: 900;
@@ -101,19 +101,19 @@ Human Resources Information System for workforce structure, employee records, pa
         margin-bottom: 8px;
     }
 
-    .hris-highlight-sub {
+    .ats-highlight-sub {
         color: #d9e5f4;
         font-size: 0.84rem;
         line-height: 1.5;
     }
 
-    .hris-stats-grid {
+    .ats-stats-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 18px;
     }
 
-    .hris-stat-card {
+    .ats-stat-card {
         position: relative;
         overflow: hidden;
         border-radius: 22px;
@@ -124,7 +124,7 @@ Human Resources Information System for workforce structure, employee records, pa
         min-height: 132px;
     }
 
-    .hris-stat-card::after {
+    .ats-stat-card::after {
         content: "";
         position: absolute;
         width: 82px;
@@ -135,7 +135,7 @@ Human Resources Information System for workforce structure, employee records, pa
         right: -24px;
     }
 
-    .hris-stat-top {
+    .ats-stat-top {
         position: relative;
         z-index: 1;
         display: flex;
@@ -145,7 +145,7 @@ Human Resources Information System for workforce structure, employee records, pa
         gap: 12px;
     }
 
-    .hris-stat-icon {
+    .ats-stat-icon {
         width: 42px;
         height: 42px;
         border-radius: 14px;
@@ -158,7 +158,7 @@ Human Resources Information System for workforce structure, employee records, pa
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    .hris-stat-label {
+    .ats-stat-label {
         position: relative;
         z-index: 1;
         color: #59697c;
@@ -169,7 +169,7 @@ Human Resources Information System for workforce structure, employee records, pa
         margin-bottom: 10px;
     }
 
-    .hris-stat-value {
+    .ats-stat-value {
         position: relative;
         z-index: 1;
         color: #0b1f3a;
@@ -179,7 +179,7 @@ Human Resources Information System for workforce structure, employee records, pa
         margin-bottom: 8px;
     }
 
-    .hris-stat-note {
+    .ats-stat-note {
         position: relative;
         z-index: 1;
         color: #6b7280;
@@ -187,7 +187,7 @@ Human Resources Information System for workforce structure, employee records, pa
         line-height: 1.5;
     }
 
-    .hris-card {
+    .ats-card {
         background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
         border-radius: 24px;
         border: 1px solid #dce5ef;
@@ -195,7 +195,7 @@ Human Resources Information System for workforce structure, employee records, pa
         overflow: hidden;
     }
 
-    .hris-card-header {
+    .ats-card-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -205,14 +205,14 @@ Human Resources Information System for workforce structure, employee records, pa
         flex-wrap: wrap;
     }
 
-    .hris-card-title-wrap h2,
-    .hris-card-title-wrap h3 {
+    .ats-card-title-wrap h2,
+    .ats-card-title-wrap h3 {
         margin: 0 0 6px 0;
         color: #0b1f3a;
         line-height: 1.2;
     }
 
-    .hris-card-title-wrap p {
+    .ats-card-title-wrap p {
         margin: 0;
         color: #6b7280;
         line-height: 1.6;
@@ -220,75 +220,53 @@ Human Resources Information System for workforce structure, employee records, pa
         max-width: 940px;
     }
 
-    .hris-card-body {
+    .ats-card-body {
         padding: 22px;
     }
 
-    .hris-grid-2 {
+    .ats-grid-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 22px;
     }
 
-    .hris-grid-3 {
+    .ats-grid-3 {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 22px;
     }
 
-    .form-panel {
-        border-radius: 20px;
-        padding: 18px;
-        background: linear-gradient(180deg, #fbfdff 0%, #f1f6fb 100%);
-        border: 1px solid #dde7f2;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
-    }
-
-    .form-panel h3 {
-        margin-top: 0;
-        color: #0b1f3a;
-        margin-bottom: 8px;
-    }
-
-    .form-panel p {
-        margin-top: 0;
-        color: #6b7280;
-        line-height: 1.6;
-        font-size: 0.9rem;
-        margin-bottom: 16px;
-    }
-
-    .hris-form-grid {
+    .ats-form-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
 
-    .hris-form-grid-3 {
+    .ats-form-grid-3 {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
     }
 
-    .hris-field {
+    .ats-field {
         display: flex;
         flex-direction: column;
         gap: 8px;
     }
 
-    .hris-field-full {
+    .ats-field-full {
         grid-column: 1 / -1;
     }
 
-    .hris-field label {
+    .ats-field label {
         color: #0b1f3a;
         font-size: 0.88rem;
         font-weight: 800;
     }
 
-    .hris-field input,
-    .hris-field select,
-    .hris-field textarea {
+    .ats-field input,
+    .ats-field select,
+    .ats-field textarea {
         width: 100%;
         padding: 12px 14px;
         border-radius: 14px;
@@ -300,19 +278,19 @@ Human Resources Information System for workforce structure, employee records, pa
         transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
-    .hris-field input:focus,
-    .hris-field select:focus,
-    .hris-field textarea:focus {
+    .ats-field input:focus,
+    .ats-field select:focus,
+    .ats-field textarea:focus {
         border-color: #d4af37;
         box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
     }
 
-    .hris-field textarea {
+    .ats-field textarea {
         min-height: 120px;
         resize: vertical;
     }
 
-    .hris-table-wrap {
+    .ats-table-wrap {
         width: 100%;
         overflow-x: auto;
         border-radius: 18px;
@@ -320,18 +298,18 @@ Human Resources Information System for workforce structure, employee records, pa
         background: #ffffff;
     }
 
-    .hris-table {
+    .ats-table {
         width: 100%;
         border-collapse: collapse;
         min-width: 980px;
     }
 
-    .hris-table thead {
+    .ats-table thead {
         background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
     }
 
-    .hris-table th,
-    .hris-table td {
+    .ats-table th,
+    .ats-table td {
         padding: 14px 14px;
         border-bottom: 1px solid #e7edf5;
         text-align: left;
@@ -339,7 +317,7 @@ Human Resources Information System for workforce structure, employee records, pa
         font-size: 0.93rem;
     }
 
-    .hris-table th {
+    .ats-table th {
         color: #0b1f3a;
         font-size: 0.82rem;
         text-transform: uppercase;
@@ -347,17 +325,17 @@ Human Resources Information System for workforce structure, employee records, pa
         font-weight: 900;
     }
 
-    .hris-table tbody tr:hover td {
+    .ats-table tbody tr:hover td {
         background: #fbfdff;
     }
 
-    .hris-list {
+    .ats-list {
         display: flex;
         flex-direction: column;
         gap: 14px;
     }
 
-    .hris-list-item {
+    .ats-list-item {
         border-radius: 18px;
         border: 1px solid #e5ebf2;
         background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
@@ -365,7 +343,7 @@ Human Resources Information System for workforce structure, employee records, pa
         padding: 16px;
     }
 
-    .hris-list-item-top {
+    .ats-list-item-top {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -374,7 +352,7 @@ Human Resources Information System for workforce structure, employee records, pa
         margin-bottom: 10px;
     }
 
-    .hris-list-title {
+    .ats-list-title {
         margin: 0;
         color: #0b1f3a;
         font-size: 1rem;
@@ -382,7 +360,7 @@ Human Resources Information System for workforce structure, employee records, pa
         line-height: 1.3;
     }
 
-    .hris-list-meta {
+    .ats-list-meta {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
@@ -391,7 +369,7 @@ Human Resources Information System for workforce structure, employee records, pa
         line-height: 1.45;
     }
 
-    .hris-list-text {
+    .ats-list-text {
         margin: 0;
         color: #5f6d7e;
         line-height: 1.65;
@@ -449,7 +427,7 @@ Human Resources Information System for workforce structure, employee records, pa
         line-height: 1.65;
     }
 
-    .empty-hris {
+    .empty-ats {
         text-align: center;
         padding: 40px 20px;
         border-radius: 20px;
@@ -457,44 +435,52 @@ Human Resources Information System for workforce structure, employee records, pa
         background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
     }
 
-    .empty-hris h3 {
+    .empty-ats h3 {
         margin-top: 0;
         margin-bottom: 10px;
         color: #0b1f3a;
     }
 
-    .empty-hris p {
+    .empty-ats p {
         margin: 0;
         color: #6b7280;
         line-height: 1.65;
     }
 
+    .hire-form-inline {
+        margin-top: 12px;
+    }
+
+    .hire-form-inline button {
+        width: 100%;
+    }
+
     @media (max-width: 1450px) {
-        .hris-stats-grid {
+        .ats-stats-grid {
             grid-template-columns: repeat(3, 1fr);
         }
 
-        .hris-grid-3 {
+        .ats-grid-3 {
             grid-template-columns: 1fr;
         }
     }
 
     @media (max-width: 1180px) {
-        .hris-hero-grid,
-        .hris-grid-2 {
+        .ats-hero-grid,
+        .ats-grid-2 {
             grid-template-columns: 1fr;
         }
     }
 
     @media (max-width: 900px) {
-        .hris-highlight-grid,
-        .hris-stats-grid,
-        .hris-form-grid,
-        .hris-form-grid-3 {
+        .ats-highlight-grid,
+        .ats-stats-grid,
+        .ats-form-grid,
+        .ats-form-grid-3 {
             grid-template-columns: 1fr;
         }
 
-        .hris-hero-title {
+        .ats-hero-title {
             font-size: 1.6rem;
         }
     }
@@ -502,203 +488,134 @@ Human Resources Information System for workforce structure, employee records, pa
 {% endblock %}
 
 {% block content %}
-<div class="hris-shell">
+<div class="ats-shell">
 
-    <section class="hris-hero">
-        <div class="hris-hero-grid">
+    <section class="ats-hero">
+        <div class="ats-hero-grid">
             <div>
-                <h1 class="hris-hero-title">HRIS Workforce Command Center</h1>
-                <p class="hris-hero-text">
-                    This module centralizes people operations across workforce structure, employee
-                    master profiles, compensation records, disciplinary actions, labor relations,
-                    and payroll administration. It is aligned to your integrated enterprise suite
-                    and built to render safely in deployment.
+                <h1 class="ats-hero-title">ATS Recruitment Command Center</h1>
+                <p class="ats-hero-text">
+                    This module centralizes requisitions, candidate records, application tracking,
+                    interview scheduling, resume optimization, and hiring conversion into the HRIS
+                    and Orientation workflow. It is aligned with your enterprise routes and designed
+                    to render safely for deployment.
                 </p>
 
-                <div class="hris-hero-actions">
-                    <a href="#employee-create" class="btn-3d">Create Employee</a>
-                    <a href="#disciplinary-create" class="btn-ghost">Disciplinary Action</a>
-                    <a href="#payroll-create" class="btn-ghost">Create Payroll</a>
+                <div class="ats-hero-actions">
+                    <a href="#job-posting-create" class="btn-3d">Create Job Posting</a>
+                    <a href="#candidate-create" class="btn-ghost">Create Candidate</a>
+                    <a href="#application-create" class="btn-ghost">Create Application</a>
                 </div>
             </div>
 
-            <div class="hris-highlight-grid">
-                <div class="hris-highlight-card">
-                    <div class="hris-highlight-label">Employees</div>
-                    <div class="hris-highlight-value">{{ hris_stats.employees if hris_stats and hris_stats.employees is not none else 0 }}</div>
-                    <div class="hris-highlight-sub">Core workforce records currently stored in the employee master system.</div>
+            <div class="ats-highlight-grid">
+                <div class="ats-highlight-card">
+                    <div class="ats-highlight-label">Job Postings</div>
+                    <div class="ats-highlight-value">{{ ats_stats.job_postings if ats_stats and ats_stats.job_postings is not none else 0 }}</div>
+                    <div class="ats-highlight-sub">Open and historical requisitions available for recruitment pipelines.</div>
                 </div>
 
-                <div class="hris-highlight-card">
-                    <div class="hris-highlight-label">Departments</div>
-                    <div class="hris-highlight-value">{{ hris_stats.departments if hris_stats and hris_stats.departments is not none else 0 }}</div>
-                    <div class="hris-highlight-sub">Organizational structure units available for assignment and reporting.</div>
+                <div class="ats-highlight-card">
+                    <div class="ats-highlight-label">Candidates</div>
+                    <div class="ats-highlight-value">{{ ats_stats.candidates if ats_stats and ats_stats.candidates is not none else 0 }}</div>
+                    <div class="ats-highlight-sub">Recruitment prospects, talent records, and source channels currently stored.</div>
                 </div>
 
-                <div class="hris-highlight-card">
-                    <div class="hris-highlight-label">Positions</div>
-                    <div class="hris-highlight-value">{{ hris_stats.positions if hris_stats and hris_stats.positions is not none else 0 }}</div>
-                    <div class="hris-highlight-sub">Role definitions, compensation bands, and employment architecture records.</div>
+                <div class="ats-highlight-card">
+                    <div class="ats-highlight-label">Applications</div>
+                    <div class="ats-highlight-value">{{ ats_stats.applications if ats_stats and ats_stats.applications is not none else 0 }}</div>
+                    <div class="ats-highlight-sub">Active and historical candidate application records in the hiring pipeline.</div>
                 </div>
 
-                <div class="hris-highlight-card">
-                    <div class="hris-highlight-label">Labor & Discipline</div>
-                    <div class="hris-highlight-value">
-                        {{ (hris_stats.disciplinary_records if hris_stats and hris_stats.disciplinary_records is not none else 0) + (hris_stats.labor_actions if hris_stats and hris_stats.labor_actions is not none else 0) }}
-                    </div>
-                    <div class="hris-highlight-sub">Formal workforce relations records, employee actions, and case visibility.</div>
+                <div class="ats-highlight-card">
+                    <div class="ats-highlight-label">Hired</div>
+                    <div class="ats-highlight-value">{{ ats_stats.hired if ats_stats and ats_stats.hired is not none else 0 }}</div>
+                    <div class="ats-highlight-sub">Applications already converted into employees and onboarding flow.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="hris-stats-grid">
-        <div class="hris-stat-card">
-            <div class="hris-stat-top">
-                <div class="hris-stat-icon">👥</div>
-                <span class="tag">Employees</span>
+    <section class="ats-stats-grid">
+        <div class="ats-stat-card">
+            <div class="ats-stat-top">
+                <div class="ats-stat-icon">📢</div>
+                <span class="tag">Requisitions</span>
             </div>
-            <div class="hris-stat-label">Employee Profiles</div>
-            <div class="hris-stat-value">{{ hris_stats.employees if hris_stats and hris_stats.employees is not none else 0 }}</div>
-            <div class="hris-stat-note">Workforce records currently active inside the HRIS core.</div>
+            <div class="ats-stat-label">Job Postings</div>
+            <div class="ats-stat-value">{{ ats_stats.job_postings if ats_stats and ats_stats.job_postings is not none else 0 }}</div>
+            <div class="ats-stat-note">Recruitment openings currently structured for hiring operations.</div>
         </div>
 
-        <div class="hris-stat-card">
-            <div class="hris-stat-top">
-                <div class="hris-stat-icon">🏢</div>
-                <span class="tag gold">Structure</span>
+        <div class="ats-stat-card">
+            <div class="ats-stat-top">
+                <div class="ats-stat-icon">🧑‍💼</div>
+                <span class="tag gold">Talent</span>
             </div>
-            <div class="hris-stat-label">Departments</div>
-            <div class="hris-stat-value">{{ hris_stats.departments if hris_stats and hris_stats.departments is not none else 0 }}</div>
-            <div class="hris-stat-note">Enterprise organizational units used for reporting and role allocation.</div>
+            <div class="ats-stat-label">Candidates</div>
+            <div class="ats-stat-value">{{ ats_stats.candidates if ats_stats and ats_stats.candidates is not none else 0 }}</div>
+            <div class="ats-stat-note">Prospects and applicant records currently available in the talent database.</div>
         </div>
 
-        <div class="hris-stat-card">
-            <div class="hris-stat-top">
-                <div class="hris-stat-icon">🧭</div>
-                <span class="tag orange">Roles</span>
+        <div class="ats-stat-card">
+            <div class="ats-stat-top">
+                <div class="ats-stat-icon">📄</div>
+                <span class="tag orange">Pipeline</span>
             </div>
-            <div class="hris-stat-label">Positions</div>
-            <div class="hris-stat-value">{{ hris_stats.positions if hris_stats and hris_stats.positions is not none else 0 }}</div>
-            <div class="hris-stat-note">Role architecture with salary band, type, and risk visibility.</div>
+            <div class="ats-stat-label">Applications</div>
+            <div class="ats-stat-value">{{ ats_stats.applications if ats_stats and ats_stats.applications is not none else 0 }}</div>
+            <div class="ats-stat-note">Candidate applications mapped to requisitions and stage progression.</div>
         </div>
 
-        <div class="hris-stat-card">
-            <div class="hris-stat-top">
-                <div class="hris-stat-icon">⚖️</div>
-                <span class="tag red">Formal</span>
+        <div class="ats-stat-card">
+            <div class="ats-stat-top">
+                <div class="ats-stat-icon">🎤</div>
+                <span class="tag">Interviews</span>
             </div>
-            <div class="hris-stat-label">Disciplinary Records</div>
-            <div class="hris-stat-value">{{ hris_stats.disciplinary_records if hris_stats and hris_stats.disciplinary_records is not none else 0 }}</div>
-            <div class="hris-stat-note">Formal discipline actions entered against employee records.</div>
+            <div class="ats-stat-label">Interviews</div>
+            <div class="ats-stat-value">{{ ats_stats.interviews if ats_stats and ats_stats.interviews is not none else 0 }}</div>
+            <div class="ats-stat-note">Scheduled and historical interview events for selection activity.</div>
         </div>
 
-        <div class="hris-stat-card">
-            <div class="hris-stat-top">
-                <div class="hris-stat-icon">📑</div>
-                <span class="tag">Labor</span>
+        <div class="ats-stat-card">
+            <div class="ats-stat-top">
+                <div class="ats-stat-icon">✅</div>
+                <span class="tag green">Conversion</span>
             </div>
-            <div class="hris-stat-label">Labor Actions</div>
-            <div class="hris-stat-value">{{ hris_stats.labor_actions if hris_stats and hris_stats.labor_actions is not none else 0 }}</div>
-            <div class="hris-stat-note">Case records tied to labor relations, investigations, or legal frameworks.</div>
-        </div>
-
-        <div class="hris-stat-card">
-            <div class="hris-stat-top">
-                <div class="hris-stat-icon">💵</div>
-                <span class="tag green">Payroll</span>
-            </div>
-            <div class="hris-stat-label">Payroll Records</div>
-            <div class="hris-stat-value">{{ hris_stats.payroll_records if hris_stats and hris_stats.payroll_records is not none else 0 }}</div>
-            <div class="hris-stat-note">Compensation cycle entries already stored in payroll administration.</div>
+            <div class="ats-stat-label">Hired</div>
+            <div class="ats-stat-value">{{ ats_stats.hired if ats_stats and ats_stats.hired is not none else 0 }}</div>
+            <div class="ats-stat-note">Applications already promoted to employee and onboarding workflow.</div>
         </div>
     </section>
 
-    <section class="hris-grid-2">
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Create Department</h2>
+    <section class="ats-grid-2">
+        <div class="ats-card" id="job-posting-create">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Create Job Posting</h2>
                     <p>
-                        Build the organizational structure that supports assignment, reporting,
-                        HR analytics, and enterprise role architecture.
+                        Define requisitions by department, position, compensation range, location,
+                        and recruitment requirements for the pipeline.
                     </p>
                 </div>
             </div>
 
-            <div class="hris-card-body">
-                <form method="POST" action="{{ url_for('create_department') }}">
-                    <div class="hris-form-grid">
-                        <div class="hris-field">
-                            <label for="department_name">Department Name *</label>
-                            <input type="text" id="department_name" name="name" placeholder="Human Resources" required>
+            <div class="ats-card-body">
+                <form method="POST" action="{{ url_for('create_job_posting') }}">
+                    <div class="ats-form-grid">
+                        <div class="ats-field">
+                            <label for="requisition_code">Requisition Code</label>
+                            <input type="text" id="requisition_code" name="requisition_code" placeholder="REQ-001">
                         </div>
 
-                        <div class="hris-field">
-                            <label for="department_code">Department Code</label>
-                            <input type="text" id="department_code" name="code" placeholder="HR-001">
+                        <div class="ats-field">
+                            <label for="job_title">Title *</label>
+                            <input type="text" id="job_title" name="title" placeholder="HR Business Partner" required>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="manager_employee_id">Manager Employee</label>
-                            <select id="manager_employee_id" name="manager_employee_id">
-                                <option value="">Optional manager</option>
-                                {% if employees %}
-                                    {% for employee in employees %}
-                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="department_status">Status</label>
-                            <select id="department_status" name="status">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Planning">Planning</option>
-                            </select>
-                        </div>
-
-                        <div class="hris-field hris-field-full">
-                            <label for="department_description">Description</label>
-                            <textarea id="department_description" name="description" placeholder="Purpose, scope, responsibilities, and reporting structure for this department."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Department</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Create Position</h2>
-                    <p>
-                        Define jobs, compensation bands, employment type, and risk alignment for the enterprise workforce.
-                    </p>
-                </div>
-            </div>
-
-            <div class="hris-card-body">
-                <form method="POST" action="{{ url_for('create_position') }}">
-                    <div class="hris-form-grid">
-                        <div class="hris-field">
-                            <label for="position_title">Title *</label>
-                            <input type="text" id="position_title" name="title" placeholder="HR Manager" required>
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="job_code">Job Code</label>
-                            <input type="text" id="job_code" name="job_code" placeholder="POS-001">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="position_department_id">Department</label>
-                            <select id="position_department_id" name="department_id">
+                        <div class="ats-field">
+                            <label for="department_id">Department</label>
+                            <select id="department_id" name="department_id">
                                 <option value="">Optional department</option>
                                 {% if departments %}
                                     {% for department in departments %}
@@ -708,9 +625,21 @@ Human Resources Information System for workforce structure, employee records, pa
                             </select>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="employment_type">Employment Type</label>
-                            <select id="employment_type" name="employment_type">
+                        <div class="ats-field">
+                            <label for="position_id">Position</label>
+                            <select id="position_id" name="position_id">
+                                <option value="">Optional position</option>
+                                {% if positions %}
+                                    {% for position in positions %}
+                                        <option value="{{ position.id }}">{{ position.title }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="posting_employment_type">Employment Type</label>
+                            <select id="posting_employment_type" name="employment_type">
                                 <option value="Full-Time">Full-Time</option>
                                 <option value="Part-Time">Part-Time</option>
                                 <option value="Contract">Contract</option>
@@ -719,795 +648,683 @@ Human Resources Information System for workforce structure, employee records, pa
                             </select>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="salary_band_min">Salary Band Min</label>
-                            <input type="number" step="0.01" id="salary_band_min" name="salary_band_min" placeholder="0.00">
+                        <div class="ats-field">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" placeholder="Ibagué / Remote / Hybrid">
                         </div>
 
-                        <div class="hris-field">
-                            <label for="salary_band_max">Salary Band Max</label>
-                            <input type="number" step="0.01" id="salary_band_max" name="salary_band_max" placeholder="0.00">
+                        <div class="ats-field">
+                            <label for="compensation_min">Compensation Min</label>
+                            <input type="number" step="0.01" id="compensation_min" name="compensation_min" placeholder="0.00">
                         </div>
 
-                        <div class="hris-field">
-                            <label for="exempt_status">Exempt Status</label>
-                            <select id="exempt_status" name="exempt_status">
-                                <option value="Non-Exempt">Non-Exempt</option>
-                                <option value="Exempt">Exempt</option>
+                        <div class="ats-field">
+                            <label for="compensation_max">Compensation Max</label>
+                            <input type="number" step="0.01" id="compensation_max" name="compensation_max" placeholder="0.00">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="opening_date">Opening Date</label>
+                            <input type="date" id="opening_date" name="opening_date">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="closing_date">Closing Date</label>
+                            <input type="date" id="closing_date" name="closing_date">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="vacancies">Vacancies</label>
+                            <input type="number" id="vacancies" name="vacancies" placeholder="1" value="1">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="posting_status">Status</label>
+                            <select id="posting_status" name="status">
+                                <option value="Active">Active</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Closed">Closed</option>
+                                <option value="Paused">Paused</option>
                             </select>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="risk_level">Risk Level</label>
-                            <select id="risk_level" name="risk_level">
-                                <option value="Low">Low</option>
-                                <option value="Medium" selected>Medium</option>
-                                <option value="High">High</option>
-                                <option value="Critical">Critical</option>
-                            </select>
+                        <div class="ats-field ats-field-full">
+                            <label for="job_description">Description</label>
+                            <textarea id="job_description" name="description" placeholder="Role summary, responsibilities, impact, business context, and team expectations."></textarea>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="position_status">Status</label>
-                            <select id="position_status" name="status">
+                        <div class="ats-field ats-field-full">
+                            <label for="requirements">Requirements</label>
+                            <textarea id="requirements" name="requirements" placeholder="Required skills, certifications, qualifications, industry experience, language, and legal requirements."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Job Posting</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="ats-card" id="candidate-create">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Create Candidate</h2>
+                    <p>
+                        Add a candidate profile with source, experience, location, desired salary,
+                        resume text, and ATS readiness context.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ats-card-body">
+                <form method="POST" action="{{ url_for('create_candidate') }}">
+                    <div class="ats-form-grid">
+                        <div class="ats-field">
+                            <label for="candidate_code">Candidate Code</label>
+                            <input type="text" id="candidate_code" name="candidate_code" placeholder="CAN-001">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_first_name">First Name *</label>
+                            <input type="text" id="candidate_first_name" name="first_name" placeholder="Stephanie" required>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_last_name">Last Name *</label>
+                            <input type="text" id="candidate_last_name" name="last_name" placeholder="Urbano" required>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_email">Email *</label>
+                            <input type="email" id="candidate_email" name="email" placeholder="candidate@email.com" required>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_phone">Phone</label>
+                            <input type="text" id="candidate_phone" name="phone" placeholder="+57 300 000 0000">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_city">City</label>
+                            <input type="text" id="candidate_city" name="city" placeholder="Ibagué">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_country">Country</label>
+                            <input type="text" id="candidate_country" name="country" placeholder="Colombia">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="linkedin_url">LinkedIn URL</label>
+                            <input type="text" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/example">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="portfolio_url">Portfolio URL</label>
+                            <input type="text" id="portfolio_url" name="portfolio_url" placeholder="https://portfolio-link">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_source">Source</label>
+                            <input type="text" id="candidate_source" name="source" placeholder="Referral / LinkedIn / Website / Event">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="years_of_experience">Years of Experience</label>
+                            <input type="number" step="0.01" id="years_of_experience" name="years_of_experience" placeholder="0.00">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="current_employer">Current Employer</label>
+                            <input type="text" id="current_employer" name="current_employer" placeholder="Current company">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="desired_salary">Desired Salary</label>
+                            <input type="number" step="0.01" id="desired_salary" name="desired_salary" placeholder="0.00">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="resume_file_url">Resume File URL</label>
+                            <input type="text" id="resume_file_url" name="resume_file_url" placeholder="https://resume-link">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="ats_score">ATS Score</label>
+                            <input type="number" step="0.01" id="ats_score" name="ats_score" placeholder="0.00">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="candidate_status">Status</label>
+                            <select id="candidate_status" name="status">
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
-                                <option value="Draft">Draft</option>
+                                <option value="Archived">Archived</option>
                             </select>
                         </div>
 
-                        <div class="hris-field hris-field-full">
-                            <label for="position_description">Description</label>
-                            <textarea id="position_description" name="description" placeholder="Core duties, scope, compliance responsibilities, SOP context, and performance expectations."></textarea>
+                        <div class="ats-field ats-field-full">
+                            <label for="parsed_resume_text">Parsed Resume Text</label>
+                            <textarea id="parsed_resume_text" name="parsed_resume_text" placeholder="Structured resume extraction, skills summary, experience highlights, keywords, and profile notes."></textarea>
+                        </div>
+
+                        <div class="ats-field ats-field-full">
+                            <label for="candidate_notes">Notes</label>
+                            <textarea id="candidate_notes" name="notes" placeholder="Recruiter observations, strengths, concerns, fit indicators, or sourcing intelligence."></textarea>
                         </div>
                     </div>
 
                     <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Position</button>
+                        <button type="submit" class="btn-3d">Create Candidate</button>
                     </div>
                 </form>
             </div>
         </div>
     </section>
 
-    <section class="hris-card" id="employee-create">
-        <div class="hris-card-header">
-            <div class="hris-card-title-wrap">
-                <h2>Create Employee Profile</h2>
-                <p>
-                    Build complete employee master records with organizational placement, employment details,
-                    emergency data, salary, supervision, and contact structure.
-                </p>
-            </div>
-        </div>
-
-        <div class="hris-card-body">
-            <form method="POST" action="{{ url_for('create_employee') }}">
-                <div class="hris-form-grid-3">
-                    <div class="hris-field">
-                        <label for="employee_number">Employee Number</label>
-                        <input type="text" id="employee_number" name="employee_number" placeholder="EMP-001">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="first_name">First Name *</label>
-                        <input type="text" id="first_name" name="first_name" placeholder="Juan" required>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="last_name">Last Name *</label>
-                        <input type="text" id="last_name" name="last_name" placeholder="Urbano" required>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="work_email">Work Email</label>
-                        <input type="email" id="work_email" name="email" placeholder="employee@company.com">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="personal_email">Personal Email</label>
-                        <input type="email" id="personal_email" name="personal_email" placeholder="person@email.com">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="employee_phone">Phone</label>
-                        <input type="text" id="employee_phone" name="phone" placeholder="+57 300 000 0000">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="emergency_contact_name">Emergency Contact Name</label>
-                        <input type="text" id="emergency_contact_name" name="emergency_contact_name" placeholder="Emergency contact full name">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="emergency_contact_phone">Emergency Contact Phone</label>
-                        <input type="text" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="+57 300 000 0000">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="national_id">National ID</label>
-                        <input type="text" id="national_id" name="national_id" placeholder="CC / SSN / ID number">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="tax_id">Tax ID</label>
-                        <input type="text" id="tax_id" name="tax_id" placeholder="Tax identification">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="date_of_birth">Date of Birth</label>
-                        <input type="date" id="date_of_birth" name="date_of_birth">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="hire_date">Hire Date</label>
-                        <input type="date" id="hire_date" name="hire_date">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="termination_date">Termination Date</label>
-                        <input type="date" id="termination_date" name="termination_date">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="employee_employment_type">Employment Type</label>
-                        <select id="employee_employment_type" name="employment_type">
-                            <option value="Full-Time">Full-Time</option>
-                            <option value="Part-Time">Part-Time</option>
-                            <option value="Contract">Contract</option>
-                            <option value="Temporary">Temporary</option>
-                            <option value="Intern">Intern</option>
-                        </select>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="work_location">Work Location</label>
-                        <input type="text" id="work_location" name="work_location" placeholder="Remote / Office / Hybrid / Site">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="country">Country</label>
-                        <input type="text" id="country" name="country" placeholder="Colombia" value="Colombia">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="city">City</label>
-                        <input type="text" id="city" name="city" placeholder="Ibagué">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="address">Address</label>
-                        <input type="text" id="address" name="address" placeholder="Residential address">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="salary">Salary</label>
-                        <input type="number" step="0.01" id="salary" name="salary" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="salary_frequency">Salary Frequency</label>
-                        <select id="salary_frequency" name="salary_frequency">
-                            <option value="Monthly">Monthly</option>
-                            <option value="Biweekly">Biweekly</option>
-                            <option value="Weekly">Weekly</option>
-                            <option value="Hourly">Hourly</option>
-                        </select>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="supervisor_id">Supervisor</label>
-                        <select id="supervisor_id" name="supervisor_id">
-                            <option value="">Optional supervisor</option>
-                            {% if employees %}
-                                {% for employee in employees %}
-                                    <option value="{{ employee.id }}">{{ employee.full_name }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="department_id">Department</label>
-                        <select id="department_id" name="department_id">
-                            <option value="">Optional department</option>
-                            {% if departments %}
-                                {% for department in departments %}
-                                    <option value="{{ department.id }}">{{ department.name }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="position_id">Position</label>
-                        <select id="position_id" name="position_id">
-                            <option value="">Optional position</option>
-                            {% if positions %}
-                                {% for position in positions %}
-                                    <option value="{{ position.id }}">{{ position.title }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="profile_photo_url">Profile Photo URL</label>
-                        <input type="text" id="profile_photo_url" name="profile_photo_url" placeholder="https://photo-link">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="employee_status">Status</label>
-                        <select id="employee_status" name="status">
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                            <option value="On Leave">On Leave</option>
-                            <option value="Probation">Probation</option>
-                            <option value="Terminated">Terminated</option>
-                        </select>
-                    </div>
-
-                    <div class="hris-field hris-field-full">
-                        <label for="employee_notes">Notes</label>
-                        <textarea id="employee_notes" name="notes" placeholder="Employee summary, onboarding notes, legal context, risk factors, performance notes, or strategic HR comments."></textarea>
-                    </div>
-                </div>
-
-                <div class="btn-row" style="margin-top: 18px;">
-                    <button type="submit" class="btn-3d">Create Employee</button>
-                    <button type="reset" class="btn-ghost">Reset Form</button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section class="hris-grid-2">
-        <div class="hris-card" id="disciplinary-create">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Create Disciplinary Record</h2>
+    <section class="ats-grid-2">
+        <div class="ats-card" id="application-create">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Create Candidate Application</h2>
                     <p>
-                        Formal corrective action entry for employee conduct, performance, policy, or workplace violations.
+                        Connect a candidate to a requisition, define stage, screening score,
+                        recruiter notes, and disposition context.
                     </p>
                 </div>
             </div>
 
-            <div class="hris-card-body">
-                <form method="POST" action="{{ url_for('create_disciplinary_record') }}">
-                    <div class="hris-form-grid">
-                        <div class="hris-field">
-                            <label for="disciplinary_employee_id">Employee *</label>
-                            <select id="disciplinary_employee_id" name="employee_id" required>
-                                <option value="">Select employee</option>
-                                {% if employees %}
-                                    {% for employee in employees %}
-                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+            <div class="ats-card-body">
+                <form method="POST" action="{{ url_for('create_candidate_application') }}">
+                    <div class="ats-form-grid">
+                        <div class="ats-field">
+                            <label for="application_candidate_id">Candidate *</label>
+                            <select id="application_candidate_id" name="candidate_id" required>
+                                <option value="">Select candidate</option>
+                                {% if candidates %}
+                                    {% for candidate in candidates %}
+                                        <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="record_type">Record Type *</label>
-                            <select id="record_type" name="record_type" required>
-                                <option value="">Select type</option>
-                                <option value="Verbal">Verbal</option>
-                                <option value="Written">Written</option>
-                                <option value="Suspension">Suspension</option>
-                                <option value="Final">Final</option>
-                                <option value="Performance Warning">Performance Warning</option>
-                            </select>
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="violation_type">Violation Type</label>
-                            <input type="text" id="violation_type" name="violation_type" placeholder="Attendance / Misconduct / Performance / Policy">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="incident_date">Incident Date</label>
-                            <input type="date" id="incident_date" name="incident_date">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="action_date">Action Date</label>
-                            <input type="date" id="action_date" name="action_date">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="follow_up_date">Follow-Up Date</label>
-                            <input type="date" id="follow_up_date" name="follow_up_date">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="legal_reference">Legal Reference</label>
-                            <input type="text" id="legal_reference" name="legal_reference" placeholder="FLRA / CST / Internal Policy">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="disciplinary_status">Status</label>
-                            <select id="disciplinary_status" name="status">
-                                <option value="Open">Open</option>
-                                <option value="Resolved">Resolved</option>
-                                <option value="Under Review">Under Review</option>
-                                <option value="Closed">Closed</option>
-                            </select>
-                        </div>
-
-                        <div class="hris-field hris-field-full">
-                            <label for="summary">Summary *</label>
-                            <textarea id="summary" name="summary" placeholder="Describe the incident, factual context, circumstances, witnesses, and primary issue." required></textarea>
-                        </div>
-
-                        <div class="hris-field hris-field-full">
-                            <label for="corrective_action">Corrective Action</label>
-                            <textarea id="corrective_action" name="corrective_action" placeholder="Required corrective behavior, training, timeline, coaching, or formal consequence."></textarea>
-                        </div>
-
-                        <div class="hris-field hris-field-full">
-                            <label for="employee_response">Employee Response</label>
-                            <textarea id="employee_response" name="employee_response" placeholder="Employee statement, response, or documented acknowledgment."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Disciplinary Record</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Create Labor Action Record</h2>
-                    <p>
-                        Formal workforce case record for investigations, grievances, complaints, ULP matters, or legal/labor actions.
-                    </p>
-                </div>
-            </div>
-
-            <div class="hris-card-body">
-                <form method="POST" action="{{ url_for('create_labor_action_record') }}">
-                    <div class="hris-form-grid">
-                        <div class="hris-field">
-                            <label for="labor_employee_id">Employee *</label>
-                            <select id="labor_employee_id" name="employee_id" required>
-                                <option value="">Select employee</option>
-                                {% if employees %}
-                                    {% for employee in employees %}
-                                        <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+                        <div class="ats-field">
+                            <label for="job_posting_id">Job Posting *</label>
+                            <select id="job_posting_id" name="job_posting_id" required>
+                                <option value="">Select job posting</option>
+                                {% if job_postings %}
+                                    {% for posting in job_postings %}
+                                        <option value="{{ posting.id }}">{{ posting.title }}</option>
                                     {% endfor %}
                                 {% endif %}
                             </select>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="action_type">Action Type *</label>
-                            <select id="action_type" name="action_type" required>
-                                <option value="">Select action</option>
-                                <option value="grievance">Grievance</option>
-                                <option value="complaint">Complaint</option>
-                                <option value="ULP">ULP</option>
-                                <option value="investigation">Investigation</option>
-                                <option value="appeal">Appeal</option>
-                                <option value="disciplinary review">Disciplinary Review</option>
+                        <div class="ats-field">
+                            <label for="application_stage">Stage</label>
+                            <select id="application_stage" name="stage">
+                                <option value="Applied">Applied</option>
+                                <option value="Screening">Screening</option>
+                                <option value="Interview">Interview</option>
+                                <option value="Offer">Offer</option>
+                                <option value="Hired">Hired</option>
+                                <option value="Rejected">Rejected</option>
                             </select>
                         </div>
 
-                        <div class="hris-field">
-                            <label for="jurisdiction">Jurisdiction</label>
-                            <input type="text" id="jurisdiction" name="jurisdiction" placeholder="Colombia / USA" value="Colombia">
+                        <div class="ats-field">
+                            <label for="application_date">Application Date</label>
+                            <input type="date" id="application_date" name="application_date">
                         </div>
 
-                        <div class="hris-field">
-                            <label for="legal_framework">Legal Framework</label>
-                            <input type="text" id="legal_framework" name="legal_framework" placeholder="FLRA / CST / internal policy">
+                        <div class="ats-field">
+                            <label for="screening_score">Screening Score</label>
+                            <input type="number" step="0.01" id="screening_score" name="screening_score" placeholder="0.00">
                         </div>
 
-                        <div class="hris-field">
-                            <label for="case_number">Case Number</label>
-                            <input type="text" id="case_number" name="case_number" placeholder="CASE-001">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="filing_date">Filing Date</label>
-                            <input type="date" id="filing_date" name="filing_date">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="resolution_date">Resolution Date</label>
-                            <input type="date" id="resolution_date" name="resolution_date">
-                        </div>
-
-                        <div class="hris-field">
-                            <label for="labor_status">Status</label>
-                            <select id="labor_status" name="status">
+                        <div class="ats-field">
+                            <label for="application_status">Status</label>
+                            <select id="application_status" name="status">
                                 <option value="Open">Open</option>
                                 <option value="Pending">Pending</option>
-                                <option value="Resolved">Resolved</option>
                                 <option value="Closed">Closed</option>
                             </select>
                         </div>
 
-                        <div class="hris-field hris-field-full">
-                            <label for="labor_summary">Summary *</label>
-                            <textarea id="labor_summary" name="summary" placeholder="Describe the case, complaint, issue, action requested, and organizational context." required></textarea>
+                        <div class="ats-field ats-field-full">
+                            <label for="recruiter_notes">Recruiter Notes</label>
+                            <textarea id="recruiter_notes" name="recruiter_notes" placeholder="Initial screening notes, recruiter rationale, strengths, concerns, and next-step recommendation."></textarea>
                         </div>
 
-                        <div class="hris-field hris-field-full">
-                            <label for="outcome">Outcome</label>
-                            <textarea id="outcome" name="outcome" placeholder="Document the result, decision, or formal disposition if available."></textarea>
-                        </div>
-
-                        <div class="hris-field hris-field-full">
-                            <label for="next_steps">Next Steps</label>
-                            <textarea id="next_steps" name="next_steps" placeholder="Required follow-up, hearing, mediation, legal review, or management action."></textarea>
+                        <div class="ats-field ats-field-full">
+                            <label for="disposition_reason">Disposition Reason</label>
+                            <textarea id="disposition_reason" name="disposition_reason" placeholder="Reason for rejection, hold, or decision context if applicable."></textarea>
                         </div>
                     </div>
 
                     <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Labor Action</button>
+                        <button type="submit" class="btn-3d">Create Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="ats-card">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Create Interview</h2>
+                    <p>
+                        Schedule interview events with interview type, candidate linkage, time, location, and score/feedback.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ats-card-body">
+                <form method="POST" action="{{ url_for('create_interview') }}">
+                    <div class="ats-form-grid">
+                        <div class="ats-field">
+                            <label for="interview_candidate_id">Candidate *</label>
+                            <select id="interview_candidate_id" name="candidate_id" required>
+                                <option value="">Select candidate</option>
+                                {% if candidates %}
+                                    {% for candidate in candidates %}
+                                        <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="application_id">Application</label>
+                            <select id="application_id" name="application_id">
+                                <option value="">Optional application</option>
+                                {% if applications %}
+                                    {% for application in applications %}
+                                        <option value="{{ application.id }}">
+                                            {{ application.candidate.full_name if application.candidate else "Candidate" }} — {{ application.job_posting.title if application.job_posting else "Posting" }}
+                                        </option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="interview_type">Interview Type</label>
+                            <select id="interview_type" name="interview_type">
+                                <option value="Phone Screen">Phone Screen</option>
+                                <option value="Virtual Interview">Virtual Interview</option>
+                                <option value="In-Person Interview">In-Person Interview</option>
+                                <option value="Panel Interview">Panel Interview</option>
+                                <option value="Final Interview">Final Interview</option>
+                            </select>
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="scheduled_at">Scheduled At</label>
+                            <input type="datetime-local" id="scheduled_at" name="scheduled_at">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="interview_location">Location</label>
+                            <input type="text" id="interview_location" name="location" placeholder="Google Meet / Office / Phone">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="interview_score">Score</label>
+                            <input type="number" step="0.01" id="interview_score" name="score" placeholder="0.00">
+                        </div>
+
+                        <div class="ats-field">
+                            <label for="interview_status">Status</label>
+                            <select id="interview_status" name="status">
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+
+                        <div class="ats-field ats-field-full">
+                            <label for="feedback">Feedback</label>
+                            <textarea id="feedback" name="feedback" placeholder="Selection committee notes, competency results, hiring manager feedback, and next-step recommendation."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="btn-row" style="margin-top: 18px;">
+                        <button type="submit" class="btn-3d">Create Interview</button>
                     </div>
                 </form>
             </div>
         </div>
     </section>
 
-    <section class="hris-card" id="payroll-create">
-        <div class="hris-card-header">
-            <div class="hris-card-title-wrap">
-                <h2>Create Payroll Record</h2>
+    <section class="ats-card">
+        <div class="ats-card-header">
+            <div class="ats-card-title-wrap">
+                <h2>Create Resume Profile</h2>
                 <p>
-                    Enter pay cycle compensation values with salary, bonuses, deductions, taxes, and net pay calculation support.
+                    Build ATS-optimized resume versions with target role, summary, skills, education,
+                    certifications, and multilingual version naming.
                 </p>
             </div>
         </div>
 
-        <div class="hris-card-body">
-            <form method="POST" action="{{ url_for('create_payroll_record') }}">
-                <div class="hris-form-grid-3">
-                    <div class="hris-field">
-                        <label for="payroll_employee_id">Employee *</label>
-                        <select id="payroll_employee_id" name="employee_id" required>
-                            <option value="">Select employee</option>
-                            {% if employees %}
-                                {% for employee in employees %}
-                                    <option value="{{ employee.id }}">{{ employee.full_name }}</option>
+        <div class="ats-card-body">
+            <form method="POST" action="{{ url_for('create_resume_profile') }}">
+                <div class="ats-form-grid-3">
+                    <div class="ats-field">
+                        <label for="resume_candidate_id">Candidate *</label>
+                        <select id="resume_candidate_id" name="candidate_id" required>
+                            <option value="">Select candidate</option>
+                            {% if candidates %}
+                                {% for candidate in candidates %}
+                                    <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>
                     </div>
 
-                    <div class="hris-field">
-                        <label for="pay_period_start">Pay Period Start *</label>
-                        <input type="date" id="pay_period_start" name="pay_period_start" required>
+                    <div class="ats-field">
+                        <label for="target_role">Target Role</label>
+                        <input type="text" id="target_role" name="target_role" placeholder="HR Generalist / Economist / Program Specialist">
                     </div>
 
-                    <div class="hris-field">
-                        <label for="pay_period_end">Pay Period End *</label>
-                        <input type="date" id="pay_period_end" name="pay_period_end" required>
+                    <div class="ats-field">
+                        <label for="version_name">Version Name</label>
+                        <input type="text" id="version_name" name="version_name" value="Default" placeholder="Federal Resume / Colombia ATS / Executive Version">
                     </div>
 
-                    <div class="hris-field">
-                        <label for="base_salary">Base Salary</label>
-                        <input type="number" step="0.01" id="base_salary" name="base_salary" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="overtime_pay">Overtime Pay</label>
-                        <input type="number" step="0.01" id="overtime_pay" name="overtime_pay" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="bonuses">Bonuses</label>
-                        <input type="number" step="0.01" id="bonuses" name="bonuses" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="deductions">Deductions</label>
-                        <input type="number" step="0.01" id="deductions" name="deductions" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="taxes">Taxes</label>
-                        <input type="number" step="0.01" id="taxes" name="taxes" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="benefits_cost">Benefits Cost</label>
-                        <input type="number" step="0.01" id="benefits_cost" name="benefits_cost" placeholder="0.00">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="payment_date">Payment Date</label>
-                        <input type="date" id="payment_date" name="payment_date">
-                    </div>
-
-                    <div class="hris-field">
-                        <label for="payment_method">Payment Method</label>
-                        <select id="payment_method" name="payment_method">
-                            <option value="Bank Transfer">Bank Transfer</option>
-                            <option value="Cash">Cash</option>
-                            <option value="Check">Check</option>
-                            <option value="Digital Wallet">Digital Wallet</option>
+                    <div class="ats-field">
+                        <label for="resume_language">Language</label>
+                        <select id="resume_language" name="language">
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="Portuguese">Portuguese</option>
                         </select>
                     </div>
 
-                    <div class="hris-field hris-field-full">
-                        <label for="payroll_notes">Notes</label>
-                        <textarea id="payroll_notes" name="notes" placeholder="Compensation remarks, adjustments, special cycle comments, or legal payroll notes."></textarea>
+                    <div class="ats-field">
+                        <label for="ats_optimized">ATS Optimized</label>
+                        <select id="ats_optimized" name="ats_optimized">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="ats-field">
+                        <label>&nbsp;</label>
+                        <div class="tab-note">
+                            This form is aligned to the backend resume profile model and supports multiple versions.
+                        </div>
+                    </div>
+
+                    <div class="ats-field ats-field-full">
+                        <label for="professional_summary">Professional Summary</label>
+                        <textarea id="professional_summary" name="professional_summary" placeholder="Targeted professional summary tailored to the role and optimized for ATS relevance."></textarea>
+                    </div>
+
+                    <div class="ats-field ats-field-full">
+                        <label for="skills">Skills</label>
+                        <textarea id="skills" name="skills" placeholder="Keywords, systems, competencies, certifications, technical expertise, and functional strengths."></textarea>
+                    </div>
+
+                    <div class="ats-field ats-field-full">
+                        <label for="experience_text">Experience Text</label>
+                        <textarea id="experience_text" name="experience_text" placeholder="Structured experience content optimized for the role and ATS relevance."></textarea>
+                    </div>
+
+                    <div class="ats-field ats-field-full">
+                        <label for="education_text">Education Text</label>
+                        <textarea id="education_text" name="education_text" placeholder="Degrees, universities, diplomas, training, and academic credentials."></textarea>
+                    </div>
+
+                    <div class="ats-field ats-field-full">
+                        <label for="certifications_text">Certifications Text</label>
+                        <textarea id="certifications_text" name="certifications_text" placeholder="Certifications, diplomados, licenses, and special training."></textarea>
                     </div>
                 </div>
 
                 <div class="btn-row" style="margin-top: 18px;">
-                    <button type="submit" class="btn-3d">Create Payroll Record</button>
+                    <button type="submit" class="btn-3d">Create Resume Profile</button>
                 </div>
             </form>
         </div>
     </section>
 
-    <section class="hris-grid-2">
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Employee Directory</h2>
+    <section class="ats-grid-2">
+        <div class="ats-card">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Job Postings Table</h2>
                     <p>
-                        Workforce table view including organization placement, employment type, location, and status visibility.
+                        Recruitment openings with compensation range, location, organizational mapping, and requisition status.
                     </p>
                 </div>
             </div>
 
-            <div class="hris-card-body">
-                {% if employees %}
-                    <div class="hris-table-wrap">
-                        <table class="hris-table">
+            <div class="ats-card-body">
+                {% if job_postings %}
+                    <div class="ats-table-wrap">
+                        <table class="ats-table">
                             <thead>
                                 <tr>
-                                    <th>Employee</th>
-                                    <th>Email / Phone</th>
+                                    <th>Posting</th>
                                     <th>Department</th>
                                     <th>Position</th>
-                                    <th>Type</th>
-                                    <th>Salary</th>
+                                    <th>Location</th>
+                                    <th>Compensation</th>
+                                    <th>Vacancies</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for employee in employees %}
+                                {% for posting in job_postings %}
                                     <tr>
                                         <td>
-                                            <strong>{{ employee.full_name or "Unnamed Employee" }}</strong>
-                                            {% if employee.employee_number %}
-                                                <br><span class="tab-note">{{ employee.employee_number }}</span>
+                                            <strong>{{ posting.title or "Untitled Posting" }}</strong>
+                                            {% if posting.requisition_code %}
+                                                <br><span class="tab-note">{{ posting.requisition_code }}</span>
                                             {% endif %}
-                                            {% if employee.hire_date %}
-                                                <br><span class="tab-note">Hire: {{ employee.hire_date.strftime("%Y-%m-%d") }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {{ employee.email or "No email" }}
-                                            {% if employee.phone %}
-                                                <br><span class="tab-note">{{ employee.phone }}</span>
+                                            {% if posting.opening_date %}
+                                                <br><span class="tab-note">Open: {{ posting.opening_date.strftime("%Y-%m-%d") }}</span>
                                             {% endif %}
                                         </td>
-                                        <td>{{ employee.department.name if employee.department else "Not assigned" }}</td>
-                                        <td>{{ employee.position.title if employee.position else "Not assigned" }}</td>
-                                        <td>{{ employee.employment_type or "Not set" }}</td>
-                                        <td>{{ "{:,.2f}".format(employee.salary or 0) }}</td>
-                                        <td>{{ employee.status or "Active" }}</td>
+                                        <td>{{ posting.department.name if posting.department else "Not assigned" }}</td>
+                                        <td>{{ posting.position.title if posting.position else "Not assigned" }}</td>
+                                        <td>{{ posting.location or "Not set" }}</td>
+                                        <td>{{ "{:,.2f}".format(posting.compensation_min or 0) }} - {{ "{:,.2f}".format(posting.compensation_max or 0) }}</td>
+                                        <td>{{ posting.vacancies or 0 }}</td>
+                                        <td>{{ posting.status or "Active" }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 {% else %}
-                    <div class="empty-hris">
-                        <h3>No employee records yet</h3>
+                    <div class="empty-ats">
+                        <h3>No job postings yet</h3>
                         <p>
-                            The HRIS backend is ready. Create the first employee profile and it will appear here automatically.
+                            Create your first requisition above and it will appear here automatically.
                         </p>
                     </div>
                 {% endif %}
             </div>
         </div>
 
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Departments & Positions</h2>
+        <div class="ats-card">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Candidates Overview</h2>
                     <p>
-                        Current enterprise structure for organizational design, reporting, and workforce planning.
+                        Talent pool visibility with experience, employer, source, and ATS score context.
                     </p>
                 </div>
             </div>
 
-            <div class="hris-card-body">
-                <div class="hris-grid-2">
-                    <div>
-                        {% if departments %}
-                            <div class="hris-list">
-                                {% for department in departments %}
-                                    <div class="hris-list-item">
-                                        <div class="hris-list-item-top">
-                                            <div>
-                                                <h3 class="hris-list-title">{{ department.name }}</h3>
-                                                <div class="hris-list-meta">
-                                                    {% if department.code %}
-                                                        <span>{{ department.code }}</span>
-                                                    {% endif %}
-                                                    {% if department.manager_employee_id %}
-                                                        <span>Manager assigned</span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="tag-row">
-                                                <span class="tag">{{ department.status or "Active" }}</span>
-                                            </div>
+            <div class="ats-card-body">
+                {% if candidates %}
+                    <div class="ats-list">
+                        {% for candidate in candidates %}
+                            <div class="ats-list-item">
+                                <div class="ats-list-item-top">
+                                    <div>
+                                        <h3 class="ats-list-title">{{ candidate.full_name or "Unnamed Candidate" }}</h3>
+                                        <div class="ats-list-meta">
+                                            <span>{{ candidate.email or "No email" }}</span>
+                                            {% if candidate.source %}
+                                                <span>{{ candidate.source }}</span>
+                                            {% endif %}
+                                            <span>{{ candidate.years_of_experience or 0 }} yrs</span>
                                         </div>
-                                        <p class="hris-list-text">{{ department.description or "No department description available." }}</p>
                                     </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="empty-hris">
-                                <h3>No departments yet</h3>
-                                <p>Create departments to organize workforce structure and reporting lines.</p>
-                            </div>
-                        {% endif %}
-                    </div>
 
-                    <div>
-                        {% if positions %}
-                            <div class="hris-list">
-                                {% for position in positions %}
-                                    <div class="hris-list-item">
-                                        <div class="hris-list-item-top">
-                                            <div>
-                                                <h3 class="hris-list-title">{{ position.title }}</h3>
-                                                <div class="hris-list-meta">
-                                                    {% if position.department %}
-                                                        <span>{{ position.department.name }}</span>
-                                                    {% endif %}
-                                                    <span>{{ position.employment_type or "Type not set" }}</span>
-                                                    <span>Risk: {{ position.risk_level or "Medium" }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="tag-row">
-                                                <span class="tag gold">{{ position.status or "Active" }}</span>
-                                            </div>
-                                        </div>
-                                        <p class="hris-list-text">
-                                            Band: {{ "{:,.2f}".format(position.salary_band_min or 0) }} - {{ "{:,.2f}".format(position.salary_band_max or 0) }}
-                                        </p>
+                                    <div class="tag-row">
+                                        <span class="tag gold">ATS {{ "{:,.0f}".format(candidate.ats_score or 0) }}</span>
+                                        <span class="tag">{{ candidate.status or "Active" }}</span>
                                     </div>
-                                {% endfor %}
+                                </div>
+
+                                <p class="ats-list-text">
+                                    {{ candidate.current_employer or "Current employer not registered." }}
+                                    {% if candidate.city or candidate.country %}
+                                        <br>{{ candidate.city or "City not set" }}, {{ candidate.country or "Country not set" }}
+                                    {% endif %}
+                                    {% if candidate.desired_salary %}
+                                        <br>Desired Salary: {{ "{:,.2f}".format(candidate.desired_salary or 0) }}
+                                    {% endif %}
+                                </p>
                             </div>
-                        {% else %}
-                            <div class="empty-hris">
-                                <h3>No positions yet</h3>
-                                <p>Create positions to define role structure, compensation, and workforce design.</p>
-                            </div>
-                        {% endif %}
+                        {% endfor %}
                     </div>
-                </div>
+                {% else %}
+                    <div class="empty-ats">
+                        <h3>No candidates yet</h3>
+                        <p>
+                            Candidate profiles will appear here once the talent pipeline begins.
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </section>
 
-    <section class="hris-grid-2">
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Recent Disciplinary Records</h2>
+    <section class="ats-grid-2">
+        <div class="ats-card">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Applications & Hiring Conversion</h2>
                     <p>
-                        Formal employee action visibility aligned with policy, corrective measures, and follow-up management.
+                        Review application stages and convert selected applications into employees through the hiring route.
                     </p>
                 </div>
             </div>
 
-            <div class="hris-card-body">
-                {% if disciplinary_records %}
-                    <div class="hris-list">
-                        {% for record in disciplinary_records %}
-                            <div class="hris-list-item">
-                                <div class="hris-list-item-top">
+            <div class="ats-card-body">
+                {% if applications %}
+                    <div class="ats-list">
+                        {% for application in applications %}
+                            <div class="ats-list-item">
+                                <div class="ats-list-item-top">
                                     <div>
-                                        <h3 class="hris-list-title">
-                                            {{ record.employee.full_name if record.employee else "Employee not found" }}
+                                        <h3 class="ats-list-title">
+                                            {{ application.candidate.full_name if application.candidate else "Candidate not found" }}
                                         </h3>
-                                        <div class="hris-list-meta">
-                                            <span>{{ record.record_type or "Record" }}</span>
-                                            {% if record.violation_type %}
-                                                <span>{{ record.violation_type }}</span>
-                                            {% endif %}
-                                            {% if record.action_date %}
-                                                <span>{{ record.action_date.strftime("%Y-%m-%d") }}</span>
+                                        <div class="ats-list-meta">
+                                            <span>{{ application.job_posting.title if application.job_posting else "Posting not found" }}</span>
+                                            <span>Stage: {{ application.stage or "Applied" }}</span>
+                                            {% if application.application_date %}
+                                                <span>{{ application.application_date.strftime("%Y-%m-%d") }}</span>
                                             {% endif %}
                                         </div>
                                     </div>
 
                                     <div class="tag-row">
-                                        <span class="tag red">{{ record.status or "Open" }}</span>
-                                        {% if record.legal_reference %}
-                                            <span class="tag gold">{{ record.legal_reference }}</span>
-                                        {% endif %}
+                                        <span class="tag orange">{{ application.status or "Open" }}</span>
+                                        <span class="tag gold">Score {{ "{:,.0f}".format(application.screening_score or 0) }}</span>
                                     </div>
                                 </div>
 
-                                <p class="hris-list-text">
-                                    {{ record.summary or "No summary available." }}
-                                    {% if record.corrective_action %}
-                                        <br><strong>Corrective Action:</strong> {{ record.corrective_action }}
+                                <p class="ats-list-text">
+                                    {{ application.recruiter_notes or "No recruiter notes available." }}
+                                    {% if application.disposition_reason %}
+                                        <br><strong>Disposition:</strong> {{ application.disposition_reason }}
                                     {% endif %}
                                 </p>
+
+                                {% if not application.hired_employee_id %}
+                                    <form method="POST" action="{{ url_for('hire_candidate_application', application_id=application.id) }}" class="hire-form-inline">
+                                        <button type="submit" class="btn-3d">Hire & Convert to Employee</button>
+                                    </form>
+                                {% else %}
+                                    <div class="btn-row" style="margin-top: 12px;">
+                                        <span class="tag green">Already Hired</span>
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="empty-hris">
-                        <h3>No disciplinary records yet</h3>
+                    <div class="empty-ats">
+                        <h3>No applications yet</h3>
                         <p>
-                            Formal corrective action entries will appear here as they are created.
+                            Applications connected to candidates and job postings will appear here with hiring conversion controls.
                         </p>
                     </div>
                 {% endif %}
             </div>
         </div>
 
-        <div class="hris-card">
-            <div class="hris-card-header">
-                <div class="hris-card-title-wrap">
-                    <h2>Recent Labor Action Records</h2>
+        <div class="ats-card">
+            <div class="ats-card-header">
+                <div class="ats-card-title-wrap">
+                    <h2>Interview Schedule</h2>
                     <p>
-                        Labor relations, grievance, investigation, and legal framework case visibility from the HRIS module.
+                        Interview history and upcoming selection events with score and feedback visibility.
                     </p>
                 </div>
             </div>
 
-            <div class="hris-card-body">
-                {% if labor_action_records %}
-                    <div class="hris-list">
-                        {% for record in labor_action_records %}
-                            <div class="hris-list-item">
-                                <div class="hris-list-item-top">
+            <div class="ats-card-body">
+                {% if interviews %}
+                    <div class="ats-list">
+                        {% for interview in interviews %}
+                            <div class="ats-list-item">
+                                <div class="ats-list-item-top">
                                     <div>
-                                        <h3 class="hris-list-title">
-                                            {{ record.employee.full_name if record.employee else "Employee not found" }}
+                                        <h3 class="ats-list-title">
+                                            {{ interview.candidate.full_name if interview.candidate else "Candidate not found" }}
                                         </h3>
-                                        <div class="hris-list-meta">
-                                            <span>{{ record.action_type or "Action" }}</span>
-                                            {% if record.jurisdiction %}
-                                                <span>{{ record.jurisdiction }}</span>
+                                        <div class="ats-list-meta">
+                                            <span>{{ interview.interview_type or "Interview" }}</span>
+                                            {% if interview.scheduled_at %}
+                                                <span>{{ interview.scheduled_at.strftime("%Y-%m-%d %H:%M") }}</span>
                                             {% endif %}
-                                            {% if record.case_number %}
-                                                <span>{{ record.case_number }}</span>
+                                            {% if interview.location %}
+                                                <span>{{ interview.location }}</span>
                                             {% endif %}
                                         </div>
                                     </div>
 
                                     <div class="tag-row">
-                                        <span class="tag orange">{{ record.status or "Open" }}</span>
-                                        {% if record.legal_framework %}
-                                            <span class="tag">{{ record.legal_framework }}</span>
-                                        {% endif %}
+                                        <span class="tag">{{ interview.status or "Scheduled" }}</span>
+                                        <span class="tag gold">Score {{ "{:,.0f}".format(interview.score or 0) }}</span>
                                     </div>
                                 </div>
 
-                                <p class="hris-list-text">
-                                    {{ record.summary or "No summary available." }}
-                                    {% if record.outcome %}
-                                        <br><strong>Outcome:</strong> {{ record.outcome }}
-                                    {% endif %}
+                                <p class="ats-list-text">
+                                    {{ interview.feedback or "No interview feedback available yet." }}
                                 </p>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="empty-hris">
-                        <h3>No labor action records yet</h3>
+                    <div class="empty-ats">
+                        <h3>No interviews yet</h3>
                         <p>
-                            Formal labor cases and investigation records will appear here once entered into the system.
+                            Scheduled interviews will appear here once entered into the ATS workflow.
                         </p>
                     </div>
                 {% endif %}
