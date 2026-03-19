@@ -1,11 +1,4 @@
-Flask
-Flask-SQLAlchemy
+flask
+flask-sqlalchemy
 gunicorn
 psycopg2-binary
-pandas
-twilio
-<<<<<<< HEAD
-nylas
-=======
-nylas
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
