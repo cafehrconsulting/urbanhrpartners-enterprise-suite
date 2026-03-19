@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ app_name }}{% endblock %}</title>
 
-    <meta name="description" content="UrbanHRPartners Enterprise Suite master interface for CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, Reports, and XIOMY AI.">
+    <meta name="description" content="UrbanHRPartners Enterprise Suite master interface for CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, Reports, Tasks, Calendar, Orientation, and XIOMY AI.">
     <meta name="theme-color" content="#0b1f3a">
 
     <style>
@@ -391,7 +391,7 @@
             position: sticky;
             top: 0;
             z-index: 900;
-            height: var(--topbar-height);
+            min-height: var(--topbar-height);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -453,6 +453,7 @@
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
 
         .topbar-chip {
@@ -915,8 +916,6 @@
 
         @media (max-width: 720px) {
             .topbar {
-                height: auto;
-                min-height: var(--topbar-height);
                 align-items: flex-start;
                 flex-direction: column;
             }
@@ -928,7 +927,6 @@
 
             .topbar-right {
                 justify-content: flex-start;
-                flex-wrap: wrap;
             }
 
             .topbar-title {
@@ -1018,7 +1016,7 @@
                             <div class="nav-chevron">›</div>
                         </a>
 
-                        <a href="{{ url_for('orientation_dashboard') if false else '#' }}" class="nav-link {% if '/orientation' in request_path %}is-active{% endif %}">
+                        <a href="{{ url_for('orientation_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('orientation_dashboard')) %}is-active{% endif %}">
                             <div class="nav-icon">◍</div>
                             <div class="nav-copy">
                                 <span class="nav-label">Orientation</span>
@@ -1082,7 +1080,7 @@
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">Operations</div>
                     <div class="nav-stack">
-                        <a href="{{ url_for('tasks_dashboard') if false else '#' }}" class="nav-link {% if '/tasks' in request_path %}is-active{% endif %}">
+                        <a href="{{ url_for('tasks_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('tasks_dashboard')) %}is-active{% endif %}">
                             <div class="nav-icon">☑</div>
                             <div class="nav-copy">
                                 <span class="nav-label">Tasks</span>
@@ -1091,7 +1089,7 @@
                             <div class="nav-chevron">›</div>
                         </a>
 
-                        <a href="{{ url_for('calendar_dashboard') if false else '#' }}" class="nav-link {% if '/calendar' in request_path %}is-active{% endif %}">
+                        <a href="{{ url_for('calendar_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('calendar_dashboard')) %}is-active{% endif %}">
                             <div class="nav-icon">☷</div>
                             <div class="nav-copy">
                                 <span class="nav-label">Calendar</span>
