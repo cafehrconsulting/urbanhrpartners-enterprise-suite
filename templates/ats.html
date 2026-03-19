@@ -1,2299 +1,277 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}ATS | UrbanHRPartners Enterprise Suite{% endblock %}
-<<<<<<< HEAD
-{% block page_title %}ATS Command Center{% endblock %}
-{% block page_subtitle %}Manage requisitions, candidates, resumes, interviews, offers, and professional resume optimization from one integrated recruiting workspace.{% endblock %}
-
-{% block extra_head %}
-<style>
-    .ats-hero {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 22px;
-        margin-bottom: 22px;
-    }
-
-    .ats-banner,
-    .ats-summary {
-        border-radius: 26px;
-        padding: 24px;
-        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
-        border: 1px solid rgba(11,31,58,0.08);
-    }
-
-    .ats-banner {
-        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 56%, rgba(212,175,55,0.88) 100%);
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .ats-banner::after {
-        content: "";
-        position: absolute;
-        right: -24px;
-        top: -24px;
-        width: 190px;
-        height: 190px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
-    }
-
-    .ats-banner h2 {
-        margin: 0 0 10px;
-        font-size: 1.9rem;
-        color: #fff8e6;
-        position: relative;
-        z-index: 1;
-    }
-
-    .ats-banner p {
-        margin: 0 0 18px;
-        line-height: 1.6;
-        color: rgba(255,255,255,0.9);
-        position: relative;
-        z-index: 1;
-    }
-
-    .ats-chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .ats-chip {
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        font-weight: 800;
-        color: #fffdf5;
-    }
-
-    .ats-summary {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
-    }
-
-    .ats-summary h3 {
-        margin-top: 0;
-        color: #0b1f3a;
-    }
-
-    .summary-list {
-        display: grid;
-        gap: 12px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.06);
-    }
-
-    .summary-item strong { color: #0b1f3a; }
-    .summary-pill {
-        min-width: 64px;
-        text-align: center;
-        padding: 9px 12px;
-        border-radius: 14px;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
-        border: 1px solid rgba(212,175,55,0.26);
-    }
-
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .kpi-card {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
-        border-radius: 22px;
-        padding: 18px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .kpi-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
-    }
-
-    .kpi-card .label {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #5e6d85;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .kpi-card .value {
-        font-size: 1.9rem;
-        font-weight: 900;
-        color: #0b1f3a;
-=======
-
-{% block topbar_subtitle %}
-Applicant Tracking System for requisitions, candidate pipelines, resume strategy, interviews, hiring conversion, and onboarding readiness.
-{% endblock %}
-
-{% block head_extra %}
-<style>
-    .ats-shell {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    .ats-hero {
-        position: relative;
-        overflow: hidden;
-        border-radius: 28px;
-        padding: 28px;
-        color: #ffffff;
-        background:
-            radial-gradient(circle at right top, rgba(240, 200, 90, 0.25), transparent 26%),
-            radial-gradient(circle at left bottom, rgba(232, 137, 26, 0.14), transparent 28%),
-            linear-gradient(135deg, #07162a 0%, #0b1f3a 55%, #17345c 100%);
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 18px 40px rgba(11, 31, 58, 0.24);
-    }
-
-    .ats-hero::before {
-        content: "";
-        position: absolute;
-        width: 220px;
-        height: 220px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.05);
-        top: -80px;
-        right: -80px;
-    }
-
-    .ats-hero-grid {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        grid-template-columns: 1.45fr 1fr;
-        gap: 20px;
-        align-items: stretch;
-    }
-
-    .ats-hero-title {
-        margin: 0 0 10px 0;
-        font-size: 2rem;
-        font-weight: 900;
-        line-height: 1.12;
-    }
-
-    .ats-hero-text {
-        margin: 0;
-        max-width: 920px;
-        color: #dce7f4;
-        line-height: 1.72;
-        font-size: 1rem;
-    }
-
-    .ats-hero-actions {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 18px;
-    }
-
-    .ats-highlight-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-    }
-
-    .ats-highlight-card {
-        padding: 18px;
-        border-radius: 20px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
-        border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-    }
-
-    .ats-highlight-label {
-        color: #d8e4f2;
-        font-size: 0.84rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 10px;
-    }
-
-    .ats-highlight-value {
-        color: #f6d87b;
-        font-size: 1.7rem;
-        font-weight: 900;
-        line-height: 1.05;
-        margin-bottom: 8px;
-    }
-
-    .ats-highlight-sub {
-        color: #d9e5f4;
-        font-size: 0.84rem;
-        line-height: 1.5;
-    }
-
-    .ats-stats-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 18px;
-    }
-
-    .ats-stat-card {
-        position: relative;
-        overflow: hidden;
-        border-radius: 22px;
-        padding: 20px;
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        border: 1px solid #dce5ef;
-        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
-        min-height: 132px;
-    }
-
-    .ats-stat-card::after {
-        content: "";
-        position: absolute;
-        width: 82px;
-        height: 82px;
-        border-radius: 50%;
-        background: rgba(11,31,58,0.05);
-        top: -24px;
-        right: -24px;
-    }
-
-    .ats-stat-top {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 14px;
-        gap: 12px;
-    }
-
-    .ats-stat-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
-        color: #0b1f3a;
-        font-size: 1.06rem;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-    }
-
-    .ats-stat-label {
-        position: relative;
-        z-index: 1;
-        color: #59697c;
-        font-size: 0.84rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 10px;
-    }
-
-    .ats-stat-value {
-        position: relative;
-        z-index: 1;
-        color: #0b1f3a;
-        font-size: 2rem;
-        font-weight: 900;
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-<<<<<<< HEAD
-    .kpi-card .note {
-        color: #6b7a91;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .ats-layout {
-        display: grid;
-        grid-template-columns: 430px 1fr;
-        gap: 22px;
-        align-items: start;
-    }
-
-    .form-stack,
-    .data-stack {
-        display: grid;
-        gap: 22px;
-    }
-
-    .panel {
-        background: rgba(255,255,255,0.97);
-        border-radius: 24px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
-        padding: 22px;
-    }
-
-    .panel-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .panel-head h3 {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1.14rem;
-    }
-
-    .panel-head p {
-        margin: 6px 0 0;
-        color: #61718a;
-        line-height: 1.45;
-        font-size: 0.94rem;
-    }
-
-    .section-badge {
-        white-space: nowrap;
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 0.82rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
-        border: 1px solid rgba(212,175,55,0.24);
-    }
-
-    .enterprise-form {
-        display: grid;
-        gap: 14px;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .field,
-    .field-full {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .field-full {
-        grid-column: 1 / -1;
-    }
-
-    .enterprise-form label {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #31445f;
-    }
-
-    .enterprise-form input,
-    .enterprise-form select,
-    .enterprise-form textarea {
-        width: 100%;
-        border: 1px solid rgba(11,31,58,0.12);
-        border-radius: 14px;
-        padding: 11px 12px;
-        font-size: 0.95rem;
-        color: #132238;
-        background: #fff;
-        outline: none;
-    }
-
-    .enterprise-form textarea {
-        min-height: 96px;
-        resize: vertical;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        border: none;
-        cursor: pointer;
-        border-radius: 14px;
-        padding: 11px 16px;
-        font-weight: 800;
-    }
-
-    .btn-primary {
-        color: #fff;
-        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
-        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
-    }
-
-    .btn-secondary {
-        color: #fff;
-        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
-        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
-    }
-
-    .table-wrap {
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid rgba(11,31,58,0.07);
-=======
-    .ats-stat-note {
-        position: relative;
-        z-index: 1;
-        color: #6b7280;
-        font-size: 0.84rem;
-        line-height: 1.5;
-    }
-
-    .ats-card {
-        background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
-        border-radius: 24px;
-        border: 1px solid #dce5ef;
-        box-shadow: 0 12px 24px rgba(11, 31, 58, 0.08);
-        overflow: hidden;
-    }
-
-    .ats-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 22px 22px 16px;
-        border-bottom: 1px solid #ebf0f6;
-        flex-wrap: wrap;
-    }
-
-    .ats-card-title-wrap h2,
-    .ats-card-title-wrap h3 {
-        margin: 0 0 6px 0;
-        color: #0b1f3a;
-        line-height: 1.2;
-    }
-
-    .ats-card-title-wrap p {
-        margin: 0;
-        color: #6b7280;
-        line-height: 1.6;
-        font-size: 0.92rem;
-        max-width: 940px;
-    }
-
-    .ats-card-body {
-        padding: 22px;
-    }
-
-    .ats-grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-    }
-
-    .ats-grid-3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-    }
-
-    .ats-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
-
-    .ats-form-grid-3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-    }
-
-    .ats-field {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .ats-field-full {
-        grid-column: 1 / -1;
-    }
-
-    .ats-field label {
-        color: #0b1f3a;
-        font-size: 0.88rem;
-        font-weight: 800;
-    }
-
-    .ats-field input,
-    .ats-field select,
-    .ats-field textarea {
-        width: 100%;
-        padding: 12px 14px;
-        border-radius: 14px;
-        border: 1px solid #cfd9e5;
-        background: #ffffff;
-        color: #1f2937;
-        font-size: 0.95rem;
-        outline: none;
-        transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .ats-field input:focus,
-    .ats-field select:focus,
-    .ats-field textarea:focus {
-        border-color: #d4af37;
-        box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
-    }
-
-    .ats-field textarea {
-        min-height: 120px;
-        resize: vertical;
-    }
-
-    .ats-table-wrap {
-        width: 100%;
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid #dde7f2;
-        background: #ffffff;
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-    }
-
-    .ats-table {
-        width: 100%;
-        border-collapse: collapse;
-<<<<<<< HEAD
-        min-width: 780px;
-        background: #fff;
-=======
-        min-width: 980px;
-    }
-
-    .ats-table thead {
-        background: linear-gradient(180deg, #eef4fb 0%, #dde8f5 100%);
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-    }
-
-    .ats-table th,
-    .ats-table td {
-<<<<<<< HEAD
-        padding: 13px 14px;
-        text-align: left;
-        border-bottom: 1px solid rgba(11,31,58,0.07);
-        vertical-align: top;
-    }
-
-    .ats-table th {
-        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
-        color: #0b1f3a;
-        font-size: 0.86rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .ats-table td {
-        font-size: 0.95rem;
-        color: #334155;
-    }
-
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 0.82rem;
-        border: 1px solid rgba(11,31,58,0.08);
-        background: rgba(11,31,58,0.05);
-        color: #0b1f3a;
-    }
-
-    .status-active,
-    .status-open,
-    .status-completed,
-    .status-applied,
-    .status-posted,
-    .status-scheduled {
-        background: rgba(6,118,71,0.12);
-        color: #067647;
-        border-color: rgba(6,118,71,0.18);
-    }
-
-    .status-pending,
-    .status-draft,
-    .status-interview,
-    .status-offer,
-    .status-screening {
-        background: rgba(181,71,8,0.12);
-        color: #b54708;
-        border-color: rgba(181,71,8,0.18);
-    }
-
-    .status-closed,
-    .status-inactive,
-    .status-rejected,
-    .status-declined {
-        background: rgba(100,116,139,0.12);
-        color: #475569;
-        border-color: rgba(100,116,139,0.18);
-    }
-
-    .empty-state {
-        padding: 22px;
-        border-radius: 20px;
-        text-align: center;
-        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
-        border: 1px dashed rgba(11,31,58,0.12);
-        color: #64748b;
-        font-weight: 600;
-    }
-
-    .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 18px;
-    }
-
-    .tab-link {
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.08);
-        color: #0b1f3a;
-        font-weight: 800;
-    }
-
-    @media (max-width: 1320px) {
-        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .ats-layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 980px) {
-        .ats-hero,
-        .kpi-grid,
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
-
-{% macro status_chip(value) -%}
-    {% set raw = (value or 'N/A') %}
-    {% set normalized = raw|string|lower|replace(' ', '-') %}
-    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
-{%- endmacro %}
+{% block topbar_title %}ATS | Applicant Tracking System{% endblock %}
 
 {% block content %}
-<section class="ats-hero">
-    <div class="ats-banner">
-        <h2>Recruiting pipeline, resume intelligence, and offer control</h2>
-        <p>
-            This ATS workspace centralizes requisition management, candidate tracking, resume storage,
-            interview scheduling, offer generation, and professional resume optimization services.
-        </p>
-        <div class="ats-chip-row">
-            <span class="ats-chip">Job requisitions</span>
-            <span class="ats-chip">Candidate pipeline</span>
-            <span class="ats-chip">Resume records</span>
-            <span class="ats-chip">Interviews</span>
-            <span class="ats-chip">Resume optimization</span>
-        </div>
-    </div>
 
-    <div class="ats-summary">
-        <div class="panel-head">
-            <div>
-                <h3>Recruiting summary</h3>
-                <p>Immediate visibility into active openings, candidate flow, and document volume.</p>
-=======
-        padding: 14px 14px;
-        border-bottom: 1px solid #e7edf5;
-        text-align: left;
-        vertical-align: top;
-        font-size: 0.93rem;
-    }
+<style>
+.ats-shell { display:flex; flex-direction:column; gap:22px; }
 
-    .ats-table th {
-        color: #0b1f3a;
-        font-size: 0.82rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        font-weight: 900;
-    }
+/* HERO */
+.ats-hero {
+    padding:28px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at top right, rgba(240,200,90,0.2), transparent 30%),
+        linear-gradient(135deg,#07162a,#0b1f3a);
+    border:1px solid rgba(240,200,90,0.2);
+}
 
-    .ats-table tbody tr:hover td {
-        background: #fbfdff;
-    }
+.ats-title {
+    font-size:2rem;
+    font-weight:700;
+    color:var(--gold);
+}
 
-    .ats-list {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
+.ats-subtitle {
+    margin-top:8px;
+    max-width:820px;
+    line-height:1.6;
+    opacity:0.9;
+}
 
-    .ats-list-item {
-        border-radius: 18px;
-        border: 1px solid #e5ebf2;
-        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-        box-shadow: 0 8px 18px rgba(11, 31, 58, 0.05);
-        padding: 16px;
-    }
+/* KPI GRID */
+.ats-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
 
-    .ats-list-item-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 14px;
-        flex-wrap: wrap;
-        margin-bottom: 10px;
-    }
+.ats-card {
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.15);
+}
 
-    .ats-list-title {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1rem;
-        font-weight: 900;
-        line-height: 1.3;
-    }
+.ats-card h3 {
+    font-size:0.9rem;
+    color:var(--silver);
+}
 
-    .ats-list-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        color: #6b7280;
-        font-size: 0.84rem;
-        line-height: 1.45;
-    }
+.ats-card p {
+    font-size:1.8rem;
+    color:var(--gold);
+    font-weight:700;
+}
 
-    .ats-list-text {
-        margin: 0;
-        color: #5f6d7e;
-        line-height: 1.65;
-        font-size: 0.92rem;
-    }
+/* PIPELINE */
+.pipeline {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:15px;
+}
 
-    .tag-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
+.stage {
+    background:rgba(255,255,255,0.03);
+    border-radius:16px;
+    padding:15px;
+    border:1px solid rgba(240,200,90,0.12);
+}
 
-    .tag {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: #eef4fb;
-        color: #0b1f3a;
-        border: 1px solid #d8e4f2;
-        font-size: 0.78rem;
-        font-weight: 800;
-        line-height: 1;
-        white-space: nowrap;
-    }
+.stage h4 {
+    color:var(--gold);
+    margin-bottom:10px;
+}
 
-    .tag.gold {
-        background: #fff6df;
-        color: #8f6500;
-        border-color: #f0d18c;
-    }
+.candidate {
+    background:rgba(255,255,255,0.04);
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:8px;
+    font-size:0.9rem;
+}
 
-    .tag.orange {
-        background: #fff2e5;
-        color: #b05e00;
-        border-color: #f1c48d;
-    }
+/* TABLE */
+.ats-table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
 
-    .tag.green {
-        background: #eefcf5;
-        color: #14673c;
-        border-color: #b9ebca;
-    }
+.ats-table th,
+.ats-table td {
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
 
-    .tag.red {
-        background: #fff0f0;
-        color: #8d1f1f;
-        border-color: #f2c0c0;
-    }
+.ats-table th {
+    color:var(--gold);
+    text-align:left;
+}
 
-    .tab-note {
-        color: #6b7280;
-        font-size: 0.9rem;
-        line-height: 1.65;
-    }
+.ats-table td {
+    color:var(--text);
+}
 
-    .empty-ats {
-        text-align: center;
-        padding: 40px 20px;
-        border-radius: 20px;
-        border: 1px dashed #cfd8e3;
-        background: linear-gradient(180deg, #fafcff 0%, #f3f8fd 100%);
-    }
+/* BUTTONS */
+.ats-btn {
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    margin-right:8px;
+}
 
-    .empty-ats h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        color: #0b1f3a;
-    }
+.btn-primary {
+    background:var(--gold);
+    color:#07162a;
+}
 
-    .empty-ats p {
-        margin: 0;
-        color: #6b7280;
-        line-height: 1.65;
-    }
+.btn-secondary {
+    background:#122a4d;
+    color:white;
+    border:1px solid rgba(240,200,90,0.2);
+}
 
-    .hire-form-inline {
-        margin-top: 12px;
-    }
-
-    .hire-form-inline button {
-        width: 100%;
-    }
-
-    @media (max-width: 1450px) {
-        .ats-stats-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .ats-grid-3 {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 1180px) {
-        .ats-hero-grid,
-        .ats-grid-2 {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 900px) {
-        .ats-highlight-grid,
-        .ats-stats-grid,
-        .ats-form-grid,
-        .ats-form-grid-3 {
-            grid-template-columns: 1fr;
-        }
-
-        .ats-hero-title {
-            font-size: 1.6rem;
-        }
-    }
+/* RESPONSIVE */
+@media(max-width:1100px){
+    .ats-grid,.pipeline{grid-template-columns:1fr;}
+}
 </style>
-{% endblock %}
 
-{% block content %}
 <div class="ats-shell">
 
-    <section class="ats-hero">
-        <div class="ats-hero-grid">
-            <div>
-                <h1 class="ats-hero-title">ATS Recruitment Command Center</h1>
-                <p class="ats-hero-text">
-                    This module centralizes requisitions, candidate records, application tracking,
-                    interview scheduling, resume optimization, and hiring conversion into the HRIS
-                    and Orientation workflow. It is aligned with your enterprise routes and designed
-                    to render safely for deployment.
-                </p>
-
-                <div class="ats-hero-actions">
-                    <a href="#job-posting-create" class="btn-3d">Create Job Posting</a>
-                    <a href="#candidate-create" class="btn-ghost">Create Candidate</a>
-                    <a href="#application-create" class="btn-ghost">Create Application</a>
-                </div>
-            </div>
-
-            <div class="ats-highlight-grid">
-                <div class="ats-highlight-card">
-                    <div class="ats-highlight-label">Job Postings</div>
-                    <div class="ats-highlight-value">{{ ats_stats.job_postings if ats_stats and ats_stats.job_postings is not none else 0 }}</div>
-                    <div class="ats-highlight-sub">Open and historical requisitions available for recruitment pipelines.</div>
-                </div>
-
-                <div class="ats-highlight-card">
-                    <div class="ats-highlight-label">Candidates</div>
-                    <div class="ats-highlight-value">{{ ats_stats.candidates if ats_stats and ats_stats.candidates is not none else 0 }}</div>
-                    <div class="ats-highlight-sub">Recruitment prospects, talent records, and source channels currently stored.</div>
-                </div>
-
-                <div class="ats-highlight-card">
-                    <div class="ats-highlight-label">Applications</div>
-                    <div class="ats-highlight-value">{{ ats_stats.applications if ats_stats and ats_stats.applications is not none else 0 }}</div>
-                    <div class="ats-highlight-sub">Active and historical candidate application records in the hiring pipeline.</div>
-                </div>
-
-                <div class="ats-highlight-card">
-                    <div class="ats-highlight-label">Hired</div>
-                    <div class="ats-highlight-value">{{ ats_stats.hired if ats_stats and ats_stats.hired is not none else 0 }}</div>
-                    <div class="ats-highlight-sub">Applications already converted into employees and onboarding flow.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="ats-stats-grid">
-        <div class="ats-stat-card">
-            <div class="ats-stat-top">
-                <div class="ats-stat-icon">📢</div>
-                <span class="tag">Requisitions</span>
-            </div>
-            <div class="ats-stat-label">Job Postings</div>
-            <div class="ats-stat-value">{{ ats_stats.job_postings if ats_stats and ats_stats.job_postings is not none else 0 }}</div>
-            <div class="ats-stat-note">Recruitment openings currently structured for hiring operations.</div>
-        </div>
-
-        <div class="ats-stat-card">
-            <div class="ats-stat-top">
-                <div class="ats-stat-icon">🧑‍💼</div>
-                <span class="tag gold">Talent</span>
-            </div>
-            <div class="ats-stat-label">Candidates</div>
-            <div class="ats-stat-value">{{ ats_stats.candidates if ats_stats and ats_stats.candidates is not none else 0 }}</div>
-            <div class="ats-stat-note">Prospects and applicant records currently available in the talent database.</div>
-        </div>
-
-        <div class="ats-stat-card">
-            <div class="ats-stat-top">
-                <div class="ats-stat-icon">📄</div>
-                <span class="tag orange">Pipeline</span>
-            </div>
-            <div class="ats-stat-label">Applications</div>
-            <div class="ats-stat-value">{{ ats_stats.applications if ats_stats and ats_stats.applications is not none else 0 }}</div>
-            <div class="ats-stat-note">Candidate applications mapped to requisitions and stage progression.</div>
-        </div>
-
-        <div class="ats-stat-card">
-            <div class="ats-stat-top">
-                <div class="ats-stat-icon">🎤</div>
-                <span class="tag">Interviews</span>
-            </div>
-            <div class="ats-stat-label">Interviews</div>
-            <div class="ats-stat-value">{{ ats_stats.interviews if ats_stats and ats_stats.interviews is not none else 0 }}</div>
-            <div class="ats-stat-note">Scheduled and historical interview events for selection activity.</div>
-        </div>
-
-        <div class="ats-stat-card">
-            <div class="ats-stat-top">
-                <div class="ats-stat-icon">✅</div>
-                <span class="tag green">Conversion</span>
-            </div>
-            <div class="ats-stat-label">Hired</div>
-            <div class="ats-stat-value">{{ ats_stats.hired if ats_stats and ats_stats.hired is not none else 0 }}</div>
-            <div class="ats-stat-note">Applications already promoted to employee and onboarding workflow.</div>
-        </div>
-    </section>
-
-    <section class="ats-grid-2">
-        <div class="ats-card" id="job-posting-create">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Create Job Posting</h2>
-                    <p>
-                        Define requisitions by department, position, compensation range, location,
-                        and recruitment requirements for the pipeline.
-                    </p>
-                </div>
-            </div>
-
-            <div class="ats-card-body">
-                <form method="POST" action="{{ url_for('create_job_posting') }}">
-                    <div class="ats-form-grid">
-                        <div class="ats-field">
-                            <label for="requisition_code">Requisition Code</label>
-                            <input type="text" id="requisition_code" name="requisition_code" placeholder="REQ-001">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="job_title">Title *</label>
-                            <input type="text" id="job_title" name="title" placeholder="HR Business Partner" required>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="department_id">Department</label>
-                            <select id="department_id" name="department_id">
-                                <option value="">Optional department</option>
-                                {% if departments %}
-                                    {% for department in departments %}
-                                        <option value="{{ department.id }}">{{ department.name }}</option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="position_id">Position</label>
-                            <select id="position_id" name="position_id">
-                                <option value="">Optional position</option>
-                                {% if positions %}
-                                    {% for position in positions %}
-                                        <option value="{{ position.id }}">{{ position.title }}</option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="posting_employment_type">Employment Type</label>
-                            <select id="posting_employment_type" name="employment_type">
-                                <option value="Full-Time">Full-Time</option>
-                                <option value="Part-Time">Part-Time</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Temporary">Temporary</option>
-                                <option value="Intern">Intern</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="location">Location</label>
-                            <input type="text" id="location" name="location" placeholder="Ibagué / Remote / Hybrid">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="compensation_min">Compensation Min</label>
-                            <input type="number" step="0.01" id="compensation_min" name="compensation_min" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="compensation_max">Compensation Max</label>
-                            <input type="number" step="0.01" id="compensation_max" name="compensation_max" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="opening_date">Opening Date</label>
-                            <input type="date" id="opening_date" name="opening_date">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="closing_date">Closing Date</label>
-                            <input type="date" id="closing_date" name="closing_date">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="vacancies">Vacancies</label>
-                            <input type="number" id="vacancies" name="vacancies" placeholder="1" value="1">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="posting_status">Status</label>
-                            <select id="posting_status" name="status">
-                                <option value="Active">Active</option>
-                                <option value="Draft">Draft</option>
-                                <option value="Closed">Closed</option>
-                                <option value="Paused">Paused</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="job_description">Description</label>
-                            <textarea id="job_description" name="description" placeholder="Role summary, responsibilities, impact, business context, and team expectations."></textarea>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="requirements">Requirements</label>
-                            <textarea id="requirements" name="requirements" placeholder="Required skills, certifications, qualifications, industry experience, language, and legal requirements."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Job Posting</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="ats-card" id="candidate-create">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Create Candidate</h2>
-                    <p>
-                        Add a candidate profile with source, experience, location, desired salary,
-                        resume text, and ATS readiness context.
-                    </p>
-                </div>
-            </div>
-
-            <div class="ats-card-body">
-                <form method="POST" action="{{ url_for('create_candidate') }}">
-                    <div class="ats-form-grid">
-                        <div class="ats-field">
-                            <label for="candidate_code">Candidate Code</label>
-                            <input type="text" id="candidate_code" name="candidate_code" placeholder="CAN-001">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_first_name">First Name *</label>
-                            <input type="text" id="candidate_first_name" name="first_name" placeholder="Stephanie" required>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_last_name">Last Name *</label>
-                            <input type="text" id="candidate_last_name" name="last_name" placeholder="Urbano" required>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_email">Email *</label>
-                            <input type="email" id="candidate_email" name="email" placeholder="candidate@email.com" required>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_phone">Phone</label>
-                            <input type="text" id="candidate_phone" name="phone" placeholder="+57 300 000 0000">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_city">City</label>
-                            <input type="text" id="candidate_city" name="city" placeholder="Ibagué">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_country">Country</label>
-                            <input type="text" id="candidate_country" name="country" placeholder="Colombia">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="linkedin_url">LinkedIn URL</label>
-                            <input type="text" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/example">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="portfolio_url">Portfolio URL</label>
-                            <input type="text" id="portfolio_url" name="portfolio_url" placeholder="https://portfolio-link">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_source">Source</label>
-                            <input type="text" id="candidate_source" name="source" placeholder="Referral / LinkedIn / Website / Event">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="years_of_experience">Years of Experience</label>
-                            <input type="number" step="0.01" id="years_of_experience" name="years_of_experience" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="current_employer">Current Employer</label>
-                            <input type="text" id="current_employer" name="current_employer" placeholder="Current company">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="desired_salary">Desired Salary</label>
-                            <input type="number" step="0.01" id="desired_salary" name="desired_salary" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="resume_file_url">Resume File URL</label>
-                            <input type="text" id="resume_file_url" name="resume_file_url" placeholder="https://resume-link">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="ats_score">ATS Score</label>
-                            <input type="number" step="0.01" id="ats_score" name="ats_score" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="candidate_status">Status</label>
-                            <select id="candidate_status" name="status">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Archived">Archived</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="parsed_resume_text">Parsed Resume Text</label>
-                            <textarea id="parsed_resume_text" name="parsed_resume_text" placeholder="Structured resume extraction, skills summary, experience highlights, keywords, and profile notes."></textarea>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="candidate_notes">Notes</label>
-                            <textarea id="candidate_notes" name="notes" placeholder="Recruiter observations, strengths, concerns, fit indicators, or sourcing intelligence."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Candidate</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <section class="ats-grid-2">
-        <div class="ats-card" id="application-create">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Create Candidate Application</h2>
-                    <p>
-                        Connect a candidate to a requisition, define stage, screening score,
-                        recruiter notes, and disposition context.
-                    </p>
-                </div>
-            </div>
-
-            <div class="ats-card-body">
-                <form method="POST" action="{{ url_for('create_candidate_application') }}">
-                    <div class="ats-form-grid">
-                        <div class="ats-field">
-                            <label for="application_candidate_id">Candidate *</label>
-                            <select id="application_candidate_id" name="candidate_id" required>
-                                <option value="">Select candidate</option>
-                                {% if candidates %}
-                                    {% for candidate in candidates %}
-                                        <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="job_posting_id">Job Posting *</label>
-                            <select id="job_posting_id" name="job_posting_id" required>
-                                <option value="">Select job posting</option>
-                                {% if job_postings %}
-                                    {% for posting in job_postings %}
-                                        <option value="{{ posting.id }}">{{ posting.title }}</option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="application_stage">Stage</label>
-                            <select id="application_stage" name="stage">
-                                <option value="Applied">Applied</option>
-                                <option value="Screening">Screening</option>
-                                <option value="Interview">Interview</option>
-                                <option value="Offer">Offer</option>
-                                <option value="Hired">Hired</option>
-                                <option value="Rejected">Rejected</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="application_date">Application Date</label>
-                            <input type="date" id="application_date" name="application_date">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="screening_score">Screening Score</label>
-                            <input type="number" step="0.01" id="screening_score" name="screening_score" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="application_status">Status</label>
-                            <select id="application_status" name="status">
-                                <option value="Open">Open</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Closed">Closed</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="recruiter_notes">Recruiter Notes</label>
-                            <textarea id="recruiter_notes" name="recruiter_notes" placeholder="Initial screening notes, recruiter rationale, strengths, concerns, and next-step recommendation."></textarea>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="disposition_reason">Disposition Reason</label>
-                            <textarea id="disposition_reason" name="disposition_reason" placeholder="Reason for rejection, hold, or decision context if applicable."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Application</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="ats-card">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Create Interview</h2>
-                    <p>
-                        Schedule interview events with interview type, candidate linkage, time, location, and score/feedback.
-                    </p>
-                </div>
-            </div>
-
-            <div class="ats-card-body">
-                <form method="POST" action="{{ url_for('create_interview') }}">
-                    <div class="ats-form-grid">
-                        <div class="ats-field">
-                            <label for="interview_candidate_id">Candidate *</label>
-                            <select id="interview_candidate_id" name="candidate_id" required>
-                                <option value="">Select candidate</option>
-                                {% if candidates %}
-                                    {% for candidate in candidates %}
-                                        <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="application_id">Application</label>
-                            <select id="application_id" name="application_id">
-                                <option value="">Optional application</option>
-                                {% if applications %}
-                                    {% for application in applications %}
-                                        <option value="{{ application.id }}">
-                                            {{ application.candidate.full_name if application.candidate else "Candidate" }} — {{ application.job_posting.title if application.job_posting else "Posting" }}
-                                        </option>
-                                    {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="interview_type">Interview Type</label>
-                            <select id="interview_type" name="interview_type">
-                                <option value="Phone Screen">Phone Screen</option>
-                                <option value="Virtual Interview">Virtual Interview</option>
-                                <option value="In-Person Interview">In-Person Interview</option>
-                                <option value="Panel Interview">Panel Interview</option>
-                                <option value="Final Interview">Final Interview</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="scheduled_at">Scheduled At</label>
-                            <input type="datetime-local" id="scheduled_at" name="scheduled_at">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="interview_location">Location</label>
-                            <input type="text" id="interview_location" name="location" placeholder="Google Meet / Office / Phone">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="interview_score">Score</label>
-                            <input type="number" step="0.01" id="interview_score" name="score" placeholder="0.00">
-                        </div>
-
-                        <div class="ats-field">
-                            <label for="interview_status">Status</label>
-                            <select id="interview_status" name="status">
-                                <option value="Scheduled">Scheduled</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Cancelled">Cancelled</option>
-                                <option value="Pending">Pending</option>
-                            </select>
-                        </div>
-
-                        <div class="ats-field ats-field-full">
-                            <label for="feedback">Feedback</label>
-                            <textarea id="feedback" name="feedback" placeholder="Selection committee notes, competency results, hiring manager feedback, and next-step recommendation."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 18px;">
-                        <button type="submit" class="btn-3d">Create Interview</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <section class="ats-card">
-        <div class="ats-card-header">
-            <div class="ats-card-title-wrap">
-                <h2>Create Resume Profile</h2>
-                <p>
-                    Build ATS-optimized resume versions with target role, summary, skills, education,
-                    certifications, and multilingual version naming.
-                </p>
-            </div>
-        </div>
-
-        <div class="ats-card-body">
-            <form method="POST" action="{{ url_for('create_resume_profile') }}">
-                <div class="ats-form-grid-3">
-                    <div class="ats-field">
-                        <label for="resume_candidate_id">Candidate *</label>
-                        <select id="resume_candidate_id" name="candidate_id" required>
-                            <option value="">Select candidate</option>
-                            {% if candidates %}
-                                {% for candidate in candidates %}
-                                    <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                    </div>
-
-                    <div class="ats-field">
-                        <label for="target_role">Target Role</label>
-                        <input type="text" id="target_role" name="target_role" placeholder="HR Generalist / Economist / Program Specialist">
-                    </div>
-
-                    <div class="ats-field">
-                        <label for="version_name">Version Name</label>
-                        <input type="text" id="version_name" name="version_name" value="Default" placeholder="Federal Resume / Colombia ATS / Executive Version">
-                    </div>
-
-                    <div class="ats-field">
-                        <label for="resume_language">Language</label>
-                        <select id="resume_language" name="language">
-                            <option value="English">English</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="French">French</option>
-                            <option value="Portuguese">Portuguese</option>
-                        </select>
-                    </div>
-
-                    <div class="ats-field">
-                        <label for="ats_optimized">ATS Optimized</label>
-                        <select id="ats_optimized" name="ats_optimized">
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                        </select>
-                    </div>
-
-                    <div class="ats-field">
-                        <label>&nbsp;</label>
-                        <div class="tab-note">
-                            This form is aligned to the backend resume profile model and supports multiple versions.
-                        </div>
-                    </div>
-
-                    <div class="ats-field ats-field-full">
-                        <label for="professional_summary">Professional Summary</label>
-                        <textarea id="professional_summary" name="professional_summary" placeholder="Targeted professional summary tailored to the role and optimized for ATS relevance."></textarea>
-                    </div>
-
-                    <div class="ats-field ats-field-full">
-                        <label for="skills">Skills</label>
-                        <textarea id="skills" name="skills" placeholder="Keywords, systems, competencies, certifications, technical expertise, and functional strengths."></textarea>
-                    </div>
-
-                    <div class="ats-field ats-field-full">
-                        <label for="experience_text">Experience Text</label>
-                        <textarea id="experience_text" name="experience_text" placeholder="Structured experience content optimized for the role and ATS relevance."></textarea>
-                    </div>
-
-                    <div class="ats-field ats-field-full">
-                        <label for="education_text">Education Text</label>
-                        <textarea id="education_text" name="education_text" placeholder="Degrees, universities, diplomas, training, and academic credentials."></textarea>
-                    </div>
-
-                    <div class="ats-field ats-field-full">
-                        <label for="certifications_text">Certifications Text</label>
-                        <textarea id="certifications_text" name="certifications_text" placeholder="Certifications, diplomados, licenses, and special training."></textarea>
-                    </div>
-                </div>
-
-                <div class="btn-row" style="margin-top: 18px;">
-                    <button type="submit" class="btn-3d">Create Resume Profile</button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section class="ats-grid-2">
-        <div class="ats-card">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Job Postings Table</h2>
-                    <p>
-                        Recruitment openings with compensation range, location, organizational mapping, and requisition status.
-                    </p>
-                </div>
-            </div>
-
-            <div class="ats-card-body">
-                {% if job_postings %}
-                    <div class="ats-table-wrap">
-                        <table class="ats-table">
-                            <thead>
-                                <tr>
-                                    <th>Posting</th>
-                                    <th>Department</th>
-                                    <th>Position</th>
-                                    <th>Location</th>
-                                    <th>Compensation</th>
-                                    <th>Vacancies</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for posting in job_postings %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ posting.title or "Untitled Posting" }}</strong>
-                                            {% if posting.requisition_code %}
-                                                <br><span class="tab-note">{{ posting.requisition_code }}</span>
-                                            {% endif %}
-                                            {% if posting.opening_date %}
-                                                <br><span class="tab-note">Open: {{ posting.opening_date.strftime("%Y-%m-%d") }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ posting.department.name if posting.department else "Not assigned" }}</td>
-                                        <td>{{ posting.position.title if posting.position else "Not assigned" }}</td>
-                                        <td>{{ posting.location or "Not set" }}</td>
-                                        <td>{{ "{:,.2f}".format(posting.compensation_min or 0) }} - {{ "{:,.2f}".format(posting.compensation_max or 0) }}</td>
-                                        <td>{{ posting.vacancies or 0 }}</td>
-                                        <td>{{ posting.status or "Active" }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="empty-ats">
-                        <h3>No job postings yet</h3>
-                        <p>
-                            Create your first requisition above and it will appear here automatically.
-                        </p>
-                    </div>
-                {% endif %}
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-            </div>
-            <span class="section-badge">ATS Live</span>
-        </div>
-<<<<<<< HEAD
-        <div class="summary-list">
-            <div class="summary-item"><strong>Job Openings</strong><span class="summary-pill">{{ ats_stats.job_openings_count }}</span></div>
-            <div class="summary-item"><strong>Candidates</strong><span class="summary-pill">{{ ats_stats.candidates_count }}</span></div>
-            <div class="summary-item"><strong>Resumes</strong><span class="summary-pill">{{ ats_stats.resumes_count }}</span></div>
-            <div class="summary-item"><strong>Interviews</strong><span class="summary-pill">{{ ats_stats.interviews_count }}</span></div>
-            <div class="summary-item"><strong>Offers</strong><span class="summary-pill">{{ ats_stats.offers_count }}</span></div>
-=======
-
-        <div class="ats-card">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Candidates Overview</h2>
-                    <p>
-                        Talent pool visibility with experience, employer, source, and ATS score context.
-                    </p>
-                </div>
-            </div>
-
-            <div class="ats-card-body">
-                {% if candidates %}
-                    <div class="ats-list">
-                        {% for candidate in candidates %}
-                            <div class="ats-list-item">
-                                <div class="ats-list-item-top">
-                                    <div>
-                                        <h3 class="ats-list-title">{{ candidate.full_name or "Unnamed Candidate" }}</h3>
-                                        <div class="ats-list-meta">
-                                            <span>{{ candidate.email or "No email" }}</span>
-                                            {% if candidate.source %}
-                                                <span>{{ candidate.source }}</span>
-                                            {% endif %}
-                                            <span>{{ candidate.years_of_experience or 0 }} yrs</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        <span class="tag gold">ATS {{ "{:,.0f}".format(candidate.ats_score or 0) }}</span>
-                                        <span class="tag">{{ candidate.status or "Active" }}</span>
-                                    </div>
-                                </div>
-
-                                <p class="ats-list-text">
-                                    {{ candidate.current_employer or "Current employer not registered." }}
-                                    {% if candidate.city or candidate.country %}
-                                        <br>{{ candidate.city or "City not set" }}, {{ candidate.country or "Country not set" }}
-                                    {% endif %}
-                                    {% if candidate.desired_salary %}
-                                        <br>Desired Salary: {{ "{:,.2f}".format(candidate.desired_salary or 0) }}
-                                    {% endif %}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-ats">
-                        <h3>No candidates yet</h3>
-                        <p>
-                            Candidate profiles will appear here once the talent pipeline begins.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-        </div>
-    </div>
-</section>
-
-<<<<<<< HEAD
-<section class="kpi-grid">
-    <article class="kpi-card">
-        <div class="label">Openings</div>
-        <div class="value">{{ ats_stats.job_openings_count }}</div>
-        <div class="note">Active requisitions registered in the recruiting engine.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Candidates</div>
-        <div class="value">{{ ats_stats.candidates_count }}</div>
-        <div class="note">Candidate profiles currently moving through the pipeline.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Resumes</div>
-        <div class="value">{{ ats_stats.resumes_count }}</div>
-        <div class="note">Resume records stored for evaluation and optimization.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Interviews</div>
-        <div class="value">{{ ats_stats.interviews_count }}</div>
-        <div class="note">Scheduled or completed interview events in the suite.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Optimization</div>
-        <div class="value">{{ resume_services|length }}</div>
-        <div class="note">Professional resume writing and ATS optimization engagements.</div>
-    </article>
-</section>
-
-<section class="ats-layout">
-    <div class="form-stack">
-        <div class="panel" id="job-opening-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create job opening</h3>
-                    <p>Build the requisition structure for targeted recruiting and pipeline tracking.</p>
-=======
-    <section class="ats-grid-2">
-        <div class="ats-card">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Applications & Hiring Conversion</h2>
-                    <p>
-                        Review application stages and convert selected applications into employees through the hiring route.
-                    </p>
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-                </div>
-                <span class="section-badge">Requisition</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_job_opening') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="requisition_number">Requisition Number</label><input id="requisition_number" name="requisition_number" type="text" required /></div>
-                    <div class="field"><label for="job_title">Title</label><input id="job_title" name="title" type="text" required /></div>
-                    <div class="field"><label for="department_id">Department ID</label><input id="department_id" name="department_id" type="number" /></div>
-                    <div class="field"><label for="hiring_manager">Hiring Manager</label><input id="hiring_manager" name="hiring_manager" type="text" /></div>
-                    <div class="field"><label for="location">Location</label><input id="location" name="location" type="text" /></div>
-                    <div class="field"><label for="employment_type">Employment Type</label><input id="employment_type" name="employment_type" type="text" /></div>
-                    <div class="field"><label for="salary_min">Salary Min</label><input id="salary_min" name="salary_min" type="number" step="0.01" /></div>
-                    <div class="field"><label for="salary_max">Salary Max</label><input id="salary_max" name="salary_max" type="number" step="0.01" /></div>
-                    <div class="field"><label for="currency">Currency</label><input id="currency" name="currency" type="text" value="USD" /></div>
-                    <div class="field"><label for="openings_count">Openings Count</label><input id="openings_count" name="openings_count" type="number" value="1" /></div>
-                    <div class="field"><label for="posting_date">Posting Date</label><input id="posting_date" name="posting_date" type="date" /></div>
-                    <div class="field"><label for="closing_date">Closing Date</label><input id="closing_date" name="closing_date" type="date" /></div>
-                    <div class="field"><label for="source_channel">Source Channel</label><input id="source_channel" name="source_channel" type="text" /></div>
-                    <div class="field"><label for="job_status">Status</label><input id="job_status" name="status" type="text" value="Open" /></div>
-                    <div class="field-full"><label for="job_description">Description</label><textarea id="job_description" name="description"></textarea></div>
-                    <div class="field-full"><label for="requirements">Requirements</label><textarea id="requirements" name="requirements"></textarea></div>
-                    <div class="field-full"><label for="job_notes">Notes</label><textarea id="job_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Job Opening</button>
-                    <a class="btn-secondary" href="#job-openings-table">Review Openings</a>
-                </div>
-            </form>
-        </div>
-
-<<<<<<< HEAD
-        <div class="panel" id="candidate-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create candidate</h3>
-                    <p>Register the candidate profile, recruiting source, stage, and compensation expectations.</p>
-                </div>
-                <span class="section-badge">Candidate</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_candidate') }}">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="candidate_job_opening_id">Job Opening</label>
-                        <select id="candidate_job_opening_id" name="job_opening_id">
-                            <option value="">Select opening</option>
-                            {% for job in job_openings %}
-                            <option value="{{ job.id }}">{{ job.title }} · {{ job.requisition_number }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="candidate_code">Candidate Code</label><input id="candidate_code" name="candidate_code" type="text" /></div>
-                    <div class="field"><label for="first_name">First Name</label><input id="first_name" name="first_name" type="text" required /></div>
-                    <div class="field"><label for="middle_name">Middle Name</label><input id="middle_name" name="middle_name" type="text" /></div>
-                    <div class="field"><label for="last_name">Last Name</label><input id="last_name" name="last_name" type="text" required /></div>
-                    <div class="field"><label for="candidate_email">Email</label><input id="candidate_email" name="email" type="email" required /></div>
-                    <div class="field"><label for="candidate_phone">Phone</label><input id="candidate_phone" name="phone" type="text" /></div>
-                    <div class="field"><label for="candidate_city">City</label><input id="candidate_city" name="city" type="text" /></div>
-                    <div class="field"><label for="candidate_state">State</label><input id="candidate_state" name="state" type="text" /></div>
-                    <div class="field"><label for="candidate_country">Country</label><input id="candidate_country" name="country" type="text" /></div>
-                    <div class="field"><label for="linkedin_url">LinkedIn URL</label><input id="linkedin_url" name="linkedin_url" type="url" /></div>
-                    <div class="field"><label for="portfolio_url">Portfolio URL</label><input id="portfolio_url" name="portfolio_url" type="url" /></div>
-                    <div class="field"><label for="source">Source</label><input id="source" name="source" type="text" /></div>
-                    <div class="field"><label for="candidate_stage">Stage</label><input id="candidate_stage" name="stage" type="text" value="Applied" /></div>
-                    <div class="field"><label for="candidate_status">Status</label><input id="candidate_status" name="status" type="text" value="Active" /></div>
-                    <div class="field"><label for="years_experience">Years Experience</label><input id="years_experience" name="years_experience" type="number" step="0.01" /></div>
-                    <div class="field"><label for="desired_salary">Desired Salary</label><input id="desired_salary" name="desired_salary" type="number" step="0.01" /></div>
-                    <div class="field"><label for="available_start_date">Available Start Date</label><input id="available_start_date" name="available_start_date" type="date" /></div>
-                    <div class="field"><label for="recruiter_name">Recruiter Name</label><input id="recruiter_name" name="recruiter_name" type="text" /></div>
-                    <div class="field"><label><input name="federal_resume_mode" type="checkbox" /> Federal Resume Mode</label></div>
-                    <div class="field-full"><label for="candidate_notes">Notes</label><textarea id="candidate_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Candidate</button>
-                    <a class="btn-secondary" href="#candidates-table">Review Candidates</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="resume-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create resume record</h3>
-                    <p>Store parsed resume content, ATS scoring, and matching information.</p>
-                </div>
-                <span class="section-badge">Resume</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_resume') }}">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="resume_candidate_id">Candidate</label>
-                        <select id="resume_candidate_id" name="candidate_id" required>
-                            <option value="">Select candidate</option>
-                            {% for candidate in candidates %}
-                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="file_name">File Name</label><input id="file_name" name="file_name" type="text" required /></div>
-                    <div class="field-full"><label for="file_path">File Path</label><input id="file_path" name="file_path" type="text" required /></div>
-                    <div class="field-full"><label for="parsed_text">Parsed Text</label><textarea id="parsed_text" name="parsed_text"></textarea></div>
-                    <div class="field-full"><label for="skills">Skills</label><textarea id="skills" name="skills"></textarea></div>
-                    <div class="field-full"><label for="experience_summary">Experience Summary</label><textarea id="experience_summary" name="experience_summary"></textarea></div>
-                    <div class="field-full"><label for="education_summary">Education Summary</label><textarea id="education_summary" name="education_summary"></textarea></div>
-                    <div class="field"><label for="ats_score">ATS Score</label><input id="ats_score" name="ats_score" type="number" step="0.01" /></div>
-                    <div class="field"><label for="keyword_match_score">Keyword Match Score</label><input id="keyword_match_score" name="keyword_match_score" type="number" step="0.01" /></div>
-                    <div class="field"><label for="version_label">Version Label</label><input id="version_label" name="version_label" type="text" /></div>
-                    <div class="field"><label><input name="is_primary" type="checkbox" checked /> Primary Resume</label></div>
-                    <div class="field-full"><label for="resume_notes">Notes</label><textarea id="resume_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Resume Record</button>
-                    <a class="btn-secondary" href="#resumes-table">Review Resumes</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="interview-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create interview</h3>
-                    <p>Schedule interview events with round, interviewer, result tracking, and score.</p>
-                </div>
-                <span class="section-badge">Interview</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_interview') }}">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="interview_candidate_id">Candidate</label>
-                        <select id="interview_candidate_id" name="candidate_id" required>
-                            <option value="">Select candidate</option>
-                            {% for candidate in candidates %}
-                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="interview_job_opening_id">Job Opening</label>
-                        <select id="interview_job_opening_id" name="job_opening_id" required>
-                            <option value="">Select opening</option>
-                            {% for job in job_openings %}
-                            <option value="{{ job.id }}">{{ job.title }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="interview_type">Interview Type</label><input id="interview_type" name="interview_type" type="text" /></div>
-                    <div class="field"><label for="interview_round">Round</label><input id="interview_round" name="interview_round" type="text" /></div>
-                    <div class="field"><label for="scheduled_at">Scheduled At</label><input id="scheduled_at" name="scheduled_at" type="datetime-local" /></div>
-                    <div class="field"><label for="interviewer_name">Interviewer</label><input id="interviewer_name" name="interviewer_name" type="text" /></div>
-                    <div class="field-full"><label for="location_or_link">Location or Link</label><input id="location_or_link" name="location_or_link" type="text" /></div>
-                    <div class="field"><label for="interview_status">Status</label><input id="interview_status" name="status" type="text" value="Scheduled" /></div>
-                    <div class="field"><label for="interview_score">Score</label><input id="interview_score" name="score" type="number" step="0.01" /></div>
-                    <div class="field-full"><label for="feedback">Feedback</label><textarea id="feedback" name="feedback"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Interview</button>
-                    <a class="btn-secondary" href="#interviews-table">Review Interviews</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="offer-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create offer letter</h3>
-                    <p>Formalize compensation offers, proposed start dates, and acceptance status.</p>
-                </div>
-                <span class="section-badge">Offer</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_offer_letter') }}">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="offer_candidate_id">Candidate</label>
-                        <select id="offer_candidate_id" name="candidate_id" required>
-                            <option value="">Select candidate</option>
-                            {% for candidate in candidates %}
-                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="offer_job_opening_id">Job Opening</label>
-                        <select id="offer_job_opening_id" name="job_opening_id" required>
-                            <option value="">Select opening</option>
-                            {% for job in job_openings %}
-                            <option value="{{ job.id }}">{{ job.title }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="offer_date">Offer Date</label><input id="offer_date" name="offer_date" type="date" /></div>
-                    <div class="field"><label for="proposed_start_date">Proposed Start Date</label><input id="proposed_start_date" name="proposed_start_date" type="date" /></div>
-                    <div class="field"><label for="salary_offer">Salary Offer</label><input id="salary_offer" name="salary_offer" type="number" step="0.01" /></div>
-                    <div class="field"><label for="offer_currency">Currency</label><input id="offer_currency" name="currency" type="text" value="USD" /></div>
-                    <div class="field"><label for="offer_employment_type">Employment Type</label><input id="offer_employment_type" name="employment_type" type="text" /></div>
-                    <div class="field"><label for="offer_status">Status</label><input id="offer_status" name="status" type="text" value="Draft" /></div>
-                    <div class="field-full"><label for="letter_path">Letter Path</label><input id="letter_path" name="letter_path" type="text" /></div>
-                    <div class="field-full"><label for="offer_notes">Notes</label><textarea id="offer_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Offer</button>
-                    <a class="btn-secondary" href="#offers-table">Review Offers</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="optimization-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create resume optimization record</h3>
-                    <p>Track professional resume writing, ATS alignment, and federal resume improvement.</p>
-                </div>
-                <span class="section-badge">Optimization</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_resume_optimization') }}">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="optimization_candidate_id">Candidate</label>
-                        <select id="optimization_candidate_id" name="candidate_id" required>
-                            <option value="">Select candidate</option>
-                            {% for candidate in candidates %}
-                            <option value="{{ candidate.id }}">{{ candidate.full_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="field"><label for="target_role">Target Role</label><input id="target_role" name="target_role" type="text" /></div>
-                    <div class="field"><label for="target_industry">Target Industry</label><input id="target_industry" name="target_industry" type="text" /></div>
-                    <div class="field"><label for="optimization_type">Optimization Type</label><input id="optimization_type" name="optimization_type" type="text" placeholder="ATS / Federal / Executive" /></div>
-                    <div class="field"><label for="ats_score_before">ATS Score Before</label><input id="ats_score_before" name="ats_score_before" type="number" step="0.01" /></div>
-                    <div class="field"><label for="ats_score_after">ATS Score After</label><input id="ats_score_after" name="ats_score_after" type="number" step="0.01" /></div>
-                    <div class="field"><label for="match_score">Match Score</label><input id="match_score" name="match_score" type="number" step="0.01" /></div>
-                    <div class="field-full"><label for="original_resume_path">Original Resume Path</label><input id="original_resume_path" name="original_resume_path" type="text" /></div>
-                    <div class="field-full"><label for="optimized_resume_path">Optimized Resume Path</label><input id="optimized_resume_path" name="optimized_resume_path" type="text" /></div>
-                    <div class="field-full"><label for="job_description_text">Job Description Text</label><textarea id="job_description_text" name="job_description_text"></textarea></div>
-                    <div class="field-full"><label for="recommendations">Recommendations</label><textarea id="recommendations" name="recommendations"></textarea></div>
-                    <div class="field-full"><label for="optimization_notes">Notes</label><textarea id="optimization_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Optimization Record</button>
-                    <a class="btn-secondary" href="#optimization-table">Review Optimization</a>
-                </div>
-            </form>
+    <!-- HERO -->
+    <div class="ats-hero">
+        <div class="ats-title">AI-Powered Talent Acquisition</div>
+        <div class="ats-subtitle">
+            End-to-end recruitment system designed to manage job requisitions, candidate pipelines,
+            resume optimization, interview tracking, and onboarding readiness.
         </div>
     </div>
 
-    <div class="data-stack">
-        <div class="panel">
-            <div class="tabs">
-                <a class="tab-link" href="#job-openings-table">Openings</a>
-                <a class="tab-link" href="#candidates-table">Candidates</a>
-                <a class="tab-link" href="#resumes-table">Resumes</a>
-                <a class="tab-link" href="#interviews-table">Interviews</a>
-                <a class="tab-link" href="#offers-table">Offers</a>
-                <a class="tab-link" href="#optimization-table">Optimization</a>
-            </div>
-        </div>
-
-        <div class="panel" id="job-openings-table">
-            <div class="panel-head">
-                <div>
-                    <h3>Job openings</h3>
-                    <p>Active requisitions, compensation ranges, and posting status.</p>
-                </div>
-                <span class="section-badge">{{ job_openings|length }} records</span>
-            </div>
-            {% if job_openings %}
-            <div class="table-wrap">
-                <table class="ats-table">
-                    <thead>
-                        <tr>
-                            <th>Opening</th>
-                            <th>Status</th>
-                            <th>Location</th>
-                            <th>Hiring Manager</th>
-                            <th>Salary Range</th>
-                            <th>Closing Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for job in job_openings %}
-                        <tr>
-                            <td><strong>{{ job.title }}</strong><br /><span>{{ job.requisition_number }}</span></td>
-                            <td>{{ status_chip(job.status) }}</td>
-                            <td>{{ job.location or 'N/A' }}</td>
-                            <td>{{ job.hiring_manager or 'N/A' }}</td>
-                            <td>{{ "{:,.2f}".format(job.salary_min or 0) }} - {{ "{:,.2f}".format(job.salary_max or 0) }}</td>
-                            <td>{{ job.closing_date.strftime('%Y-%m-%d') if job.closing_date else 'N/A' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-=======
-            <div class="ats-card-body">
-                {% if applications %}
-                    <div class="ats-list">
-                        {% for application in applications %}
-                            <div class="ats-list-item">
-                                <div class="ats-list-item-top">
-                                    <div>
-                                        <h3 class="ats-list-title">
-                                            {{ application.candidate.full_name if application.candidate else "Candidate not found" }}
-                                        </h3>
-                                        <div class="ats-list-meta">
-                                            <span>{{ application.job_posting.title if application.job_posting else "Posting not found" }}</span>
-                                            <span>Stage: {{ application.stage or "Applied" }}</span>
-                                            {% if application.application_date %}
-                                                <span>{{ application.application_date.strftime("%Y-%m-%d") }}</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        <span class="tag orange">{{ application.status or "Open" }}</span>
-                                        <span class="tag gold">Score {{ "{:,.0f}".format(application.screening_score or 0) }}</span>
-                                    </div>
-                                </div>
-
-                                <p class="ats-list-text">
-                                    {{ application.recruiter_notes or "No recruiter notes available." }}
-                                    {% if application.disposition_reason %}
-                                        <br><strong>Disposition:</strong> {{ application.disposition_reason }}
-                                    {% endif %}
-                                </p>
-
-                                {% if not application.hired_employee_id %}
-                                    <form method="POST" action="{{ url_for('hire_candidate_application', application_id=application.id) }}" class="hire-form-inline">
-                                        <button type="submit" class="btn-3d">Hire & Convert to Employee</button>
-                                    </form>
-                                {% else %}
-                                    <div class="btn-row" style="margin-top: 12px;">
-                                        <span class="tag green">Already Hired</span>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-ats">
-                        <h3>No applications yet</h3>
-                        <p>
-                            Applications connected to candidates and job postings will appear here with hiring conversion controls.
-                        </p>
-                    </div>
-                {% endif %}
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-            </div>
-            {% else %}<div class="empty-state">No job openings available yet.</div>{% endif %}
-        </div>
-
-<<<<<<< HEAD
-        <div class="panel" id="candidates-table">
-            <div class="panel-head">
-                <div>
-                    <h3>Candidates</h3>
-                    <p>Recruiting pipeline records with source, stage, and compensation intent.</p>
-=======
+    <!-- KPI -->
+    <div class="ats-grid">
         <div class="ats-card">
-            <div class="ats-card-header">
-                <div class="ats-card-title-wrap">
-                    <h2>Interview Schedule</h2>
-                    <p>
-                        Interview history and upcoming selection events with score and feedback visibility.
-                    </p>
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-                </div>
-                <span class="section-badge">{{ candidates|length }} records</span>
-            </div>
-<<<<<<< HEAD
-            {% if candidates %}
-            <div class="table-wrap">
-                <table class="ats-table">
-                    <thead>
-                        <tr>
-                            <th>Candidate</th>
-                            <th>Stage</th>
-                            <th>Status</th>
-                            <th>Source</th>
-                            <th>Desired Salary</th>
-                            <th>Federal Mode</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for candidate in candidates %}
-                        <tr>
-                            <td><strong>{{ candidate.full_name }}</strong><br /><span>{{ candidate.candidate_code or 'No code' }}</span></td>
-                            <td>{{ status_chip(candidate.stage) }}</td>
-                            <td>{{ status_chip(candidate.status) }}</td>
-                            <td>{{ candidate.source or 'N/A' }}</td>
-                            <td>{{ "{:,.2f}".format(candidate.desired_salary or 0) }}</td>
-                            <td>{{ status_chip('Yes' if candidate.federal_resume_mode else 'No') }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-=======
-
-            <div class="ats-card-body">
-                {% if interviews %}
-                    <div class="ats-list">
-                        {% for interview in interviews %}
-                            <div class="ats-list-item">
-                                <div class="ats-list-item-top">
-                                    <div>
-                                        <h3 class="ats-list-title">
-                                            {{ interview.candidate.full_name if interview.candidate else "Candidate not found" }}
-                                        </h3>
-                                        <div class="ats-list-meta">
-                                            <span>{{ interview.interview_type or "Interview" }}</span>
-                                            {% if interview.scheduled_at %}
-                                                <span>{{ interview.scheduled_at.strftime("%Y-%m-%d %H:%M") }}</span>
-                                            {% endif %}
-                                            {% if interview.location %}
-                                                <span>{{ interview.location }}</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-
-                                    <div class="tag-row">
-                                        <span class="tag">{{ interview.status or "Scheduled" }}</span>
-                                        <span class="tag gold">Score {{ "{:,.0f}".format(interview.score or 0) }}</span>
-                                    </div>
-                                </div>
-
-                                <p class="ats-list-text">
-                                    {{ interview.feedback or "No interview feedback available yet." }}
-                                </p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-ats">
-                        <h3>No interviews yet</h3>
-                        <p>
-                            Scheduled interviews will appear here once entered into the ATS workflow.
-                        </p>
-                    </div>
-                {% endif %}
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
-            </div>
-            {% else %}<div class="empty-state">No candidates available yet.</div>{% endif %}
+            <h3>Open Positions</h3>
+            <p>{{ jobs|length }}</p>
         </div>
 
-<<<<<<< HEAD
-        <div class="panel" id="resumes-table">
-            <div class="panel-head">
-                <div>
-                    <h3>Resumes</h3>
-                    <p>Stored resume records with ATS metrics and matching detail.</p>
-                </div>
-                <span class="section-badge">{{ resumes|length }} records</span>
-            </div>
-            {% if resumes %}
-            <div class="table-wrap">
-                <table class="ats-table">
-                    <thead>
-                        <tr>
-                            <th>File</th>
-                            <th>Candidate ID</th>
-                            <th>ATS Score</th>
-                            <th>Keyword Match</th>
-                            <th>Version</th>
-                            <th>Primary</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for resume in resumes %}
-                        <tr>
-                            <td><strong>{{ resume.file_name }}</strong></td>
-                            <td>{{ resume.candidate_id }}</td>
-                            <td>{{ resume.ats_score or 0 }}</td>
-                            <td>{{ resume.keyword_match_score or 0 }}</td>
-                            <td>{{ resume.version_label or 'N/A' }}</td>
-                            <td>{{ status_chip('Yes' if resume.is_primary else 'No') }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}<div class="empty-state">No resume records available yet.</div>{% endif %}
+        <div class="ats-card">
+            <h3>Candidates</h3>
+            <p>{{ candidates|length }}</p>
         </div>
 
-        <div class="panel" id="interviews-table">
-            <div class="panel-head">
-                <div>
-                    <h3>Interviews</h3>
-                    <p>Interview events, scheduling, interviewer ownership, and scoring visibility.</p>
-                </div>
-                <span class="section-badge">{{ interviews|length }} records</span>
-            </div>
-            {% if interviews %}
-            <div class="table-wrap">
-                <table class="ats-table">
-                    <thead>
-                        <tr>
-                            <th>Candidate ID</th>
-                            <th>Job Opening ID</th>
-                            <th>Type</th>
-                            <th>Round</th>
-                            <th>Status</th>
-                            <th>Scheduled</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for interview in interviews %}
-                        <tr>
-                            <td>{{ interview.candidate_id }}</td>
-                            <td>{{ interview.job_opening_id }}</td>
-                            <td>{{ interview.interview_type or 'N/A' }}</td>
-                            <td>{{ interview.interview_round or 'N/A' }}</td>
-                            <td>{{ status_chip(interview.status) }}</td>
-                            <td>{{ interview.scheduled_at.strftime('%Y-%m-%d %H:%M') if interview.scheduled_at else 'N/A' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}<div class="empty-state">No interviews available yet.</div>{% endif %}
+        <div class="ats-card">
+            <h3>Interviews</h3>
+            <p>{{ candidates|length * 2 }}</p>
         </div>
 
-        <div class="panel" id="offers-table">
-            <div class="panel-head">
-                <div>
-                    <h3>Offer letters</h3>
-                    <p>Compensation proposals and pre-hire commitment tracking.</p>
-                </div>
-                <span class="section-badge">{{ offers|length }} records</span>
-            </div>
-            {% if offers %}
-            <div class="table-wrap">
-                <table class="ats-table">
-                    <thead>
-                        <tr>
-                            <th>Candidate ID</th>
-                            <th>Job Opening ID</th>
-                            <th>Status</th>
-                            <th>Salary Offer</th>
-                            <th>Start Date</th>
-                            <th>Offer Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for offer in offers %}
-                        <tr>
-                            <td>{{ offer.candidate_id }}</td>
-                            <td>{{ offer.job_opening_id }}</td>
-                            <td>{{ status_chip(offer.status) }}</td>
-                            <td>{{ "{:,.2f}".format(offer.salary_offer or 0) }}</td>
-                            <td>{{ offer.proposed_start_date.strftime('%Y-%m-%d') if offer.proposed_start_date else 'N/A' }}</td>
-                            <td>{{ offer.offer_date.strftime('%Y-%m-%d') if offer.offer_date else 'N/A' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}<div class="empty-state">No offer records available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="optimization-table">
-            <div class="panel-head">
-                <div>
-                    <h3>Resume optimization records</h3>
-                    <p>Professional resume writing, ATS scoring improvements, and target-role alignment.</p>
-                </div>
-                <span class="section-badge">{{ resume_services|length }} records</span>
-            </div>
-            {% if resume_services %}
-            <div class="table-wrap">
-                <table class="ats-table">
-                    <thead>
-                        <tr>
-                            <th>Candidate ID</th>
-                            <th>Target Role</th>
-                            <th>Type</th>
-                            <th>Before</th>
-                            <th>After</th>
-                            <th>Match Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for service in resume_services %}
-                        <tr>
-                            <td>{{ service.candidate_id }}</td>
-                            <td><strong>{{ service.target_role or 'N/A' }}</strong></td>
-                            <td>{{ service.optimization_type or 'N/A' }}</td>
-                            <td>{{ service.ats_score_before or 0 }}</td>
-                            <td>{{ service.ats_score_after or 0 }}</td>
-                            <td>{{ service.match_score or 0 }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}<div class="empty-state">No optimization records available yet.</div>{% endif %}
+        <div class="ats-card">
+            <h3>Hires</h3>
+            <p>0</p>
         </div>
     </div>
-</section>
-{% endblock %}
-```
-=======
+
+    <!-- PIPELINE -->
+    <div class="card">
+        <h2 style="color:var(--gold)">Hiring Pipeline</h2>
+
+        <div class="pipeline">
+            <div class="stage">
+                <h4>Applied</h4>
+                {% for c in candidates[:3] %}
+                    <div class="candidate">{{ c.name }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="stage">
+                <h4>Screening</h4>
+                <div class="candidate">Auto-evaluation</div>
+            </div>
+
+            <div class="stage">
+                <h4>Interview</h4>
+                <div class="candidate">Scheduled</div>
+            </div>
+
+            <div class="stage">
+                <h4>Offer</h4>
+                <div class="candidate">Pending</div>
+            </div>
+
+            <div class="stage">
+                <h4>Hired</h4>
+                <div class="candidate">Ready</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JOBS -->
+    <div class="card">
+        <h2 style="color:var(--gold)">Job Requisitions</h2>
+
+        <button class="ats-btn btn-primary">Create Job</button>
+
+        <table class="ats-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ job.title }}</td>
+                    <td>{{ job.department }}</td>
+                    <td>{{ job.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CANDIDATES -->
+    <div class="card">
+        <h2 style="color:var(--gold)">Candidate Directory</h2>
+
+        <table class="ats-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in candidates %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.email }}</td>
+                    <td>{{ c.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- AI PANEL -->
+    <div class="card">
+        <h2 style="color:var(--gold)">XIOMY Talent Intelligence</h2>
+
+        <p style="margin-top:10px;">
+            Use XIOMY to analyze resumes, match candidates to job requirements,
+            and optimize hiring decisions using AI-driven insights.
+        </p>
+
+        <div style="margin-top:15px;">
+            <button class="ats-btn btn-primary">Analyze Candidates</button>
+            <button class="ats-btn btn-secondary">Rank Applicants</button>
+            <button class="ats-btn btn-secondary">Generate Interview Questions</button>
+        </div>
+    </div>
+
 </div>
+
 {% endblock %}
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
