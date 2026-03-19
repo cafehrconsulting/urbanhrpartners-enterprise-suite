@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | UrbanHRPartners Enterprise Suite{% endblock %}
-
-{% block topbar_title %}Executive Dashboard{% endblock %}
+{% block title %}{{ app_name or "UrbanHRPartners Enterprise Suite" }} | Executive Dashboard{% endblock %}
 
 {% block topbar_subtitle %}
-Full enterprise command center for UrbanHRPartners and XIOMY, with cross-module oversight for CRM, HRIS, ATS, Orientation, SG-SST, Inventory, Finance, Marketing, Reports, and Analytics.
+Enterprise Command Center · CRM · HRIS · ATS · SG-SST · Finance · Inventory · Marketing · Reports · XIOMY AI
 {% endblock %}
 
 {% block head_extra %}
@@ -13,1160 +11,1565 @@ Full enterprise command center for UrbanHRPartners and XIOMY, with cross-module 
     .dashboard-shell {
         display: flex;
         flex-direction: column;
-        gap: 22px;
+        gap: 24px;
+        width: 100%;
     }
 
-    .executive-hero {
+    .dashboard-hero {
         position: relative;
         overflow: hidden;
-        border-radius: 34px;
-        padding: 32px;
-        background:
-            radial-gradient(circle at right top, rgba(245, 215, 127, 0.18), transparent 24%),
-            radial-gradient(circle at left bottom, rgba(240, 147, 43, 0.12), transparent 22%),
-            linear-gradient(135deg, rgba(6,16,30,0.98) 0%, rgba(9,26,47,0.98) 42%, rgba(16,48,90,0.95) 100%);
-        border: 1px solid rgba(245, 215, 127, 0.18);
-        box-shadow: 0 28px 55px rgba(2, 10, 21, 0.34);
+        border-radius: 30px;
+        padding: 30px;
         color: #ffffff;
+        background:
+            radial-gradient(circle at right top, rgba(240, 200, 90, 0.28), transparent 26%),
+            radial-gradient(circle at left bottom, rgba(232, 137, 26, 0.18), transparent 28%),
+            linear-gradient(135deg, #07162a 0%, #0b1f3a 50%, #17345c 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow:
+            0 24px 60px rgba(0, 0, 0, 0.45),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.03);
     }
 
-    .executive-hero::before {
+    .dashboard-hero::after {
         content: "";
         position: absolute;
-        inset: auto auto -80px -80px;
-        width: 260px;
-        height: 260px;
-        border-radius: 999px;
-        background: radial-gradient(circle, rgba(230,173,28,0.16), transparent 70%);
+        inset: 0;
+        background:
+            linear-gradient(120deg, rgba(255,255,255,0.05), transparent 35%, transparent 65%, rgba(255,255,255,0.03));
         pointer-events: none;
     }
 
-    .executive-hero::after {
-        content: "";
-        position: absolute;
-        top: -70px;
-        right: -50px;
-        width: 240px;
-        height: 240px;
-        border-radius: 999px;
-        background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 72%);
-        pointer-events: none;
-    }
-
-    .executive-grid {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.95fr);
-        gap: 24px;
-        align-items: stretch;
-    }
-
-    .executive-copy h3 {
-        margin: 0 0 12px;
-        font-size: clamp(1.9rem, 2.8vw, 3rem);
-        letter-spacing: -0.04em;
-        line-height: 1.06;
-    }
-
-    .executive-copy p {
-        margin: 0;
-        max-width: 920px;
-        font-size: 1rem;
-        line-height: 1.8;
-        color: rgba(242, 246, 251, 0.84);
-    }
-
-    .hero-status-row {
-        margin-top: 22px;
+    .hero-header {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .hero-status-pill {
-        min-width: 132px;
-        padding: 12px 14px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.05));
-        border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: 0 14px 24px rgba(0,0,0,0.18);
-    }
-
-    .hero-status-pill .eyebrow {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: rgba(242,246,251,0.64);
-        font-weight: 800;
-    }
-
-    .hero-status-pill .value {
-        display: block;
-        font-size: 1.16rem;
-        color: #f5d77f;
-        font-weight: 800;
-    }
-
-    .executive-side-card {
-        border-radius: 28px;
-        padding: 22px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
-        border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 18px 30px rgba(0,0,0,0.18);
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-    }
-
-    .executive-side-card h4 {
-        margin: 0;
-        color: #f5d77f;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-    }
-
-    .executive-side-card p {
-        margin: 0;
-        color: rgba(242,246,251,0.80);
-        line-height: 1.7;
-        font-size: 0.92rem;
-    }
-
-    .executive-side-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .executive-kpi {
-        border-radius: 20px;
-        padding: 14px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-        border: 1px solid rgba(255,255,255,0.10);
-    }
-
-    .executive-kpi .label {
-        display: block;
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.10em;
-        color: rgba(242,246,251,0.62);
-        margin-bottom: 6px;
-        font-weight: 800;
-    }
-
-    .executive-kpi .value {
-        display: block;
-        font-size: 1.16rem;
-        font-weight: 800;
-        color: #ffffff;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-        gap: 20px;
-    }
-
-    .dashboard-card {
-        border-radius: 28px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,248,252,0.98));
-        border: 1px solid rgba(198,210,224,0.34);
-        box-shadow: 0 18px 40px rgba(3, 12, 26, 0.16);
-        color: #10223c;
-        overflow: hidden;
-    }
-
-    .dashboard-card.pad {
-        padding: 22px;
-    }
-
-    .col-12 { grid-column: span 12; }
-    .col-8 { grid-column: span 8; }
-    .col-7 { grid-column: span 7; }
-    .col-6 { grid-column: span 6; }
-    .col-5 { grid-column: span 5; }
-    .col-4 { grid-column: span 4; }
-    .col-3 { grid-column: span 3; }
-
-    .section-head {
-        display: flex;
-        align-items: flex-start;
         justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 18px;
+        gap: 20px;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
     }
 
-    .section-head h3,
-    .section-head h4 {
+    .hero-title-group h1 {
+        margin: 0 0 10px 0;
+        font-size: clamp(2rem, 3vw, 2.7rem);
+        font-weight: 800;
+        letter-spacing: 0.02em;
+    }
+
+    .hero-title-group p {
         margin: 0;
-        color: #07162a;
-        font-size: 1.08rem;
-        letter-spacing: -0.02em;
-    }
-
-    .section-head p {
-        margin: 7px 0 0;
-        color: #56687f;
+        max-width: 920px;
+        color: rgba(255,255,255,0.86);
         line-height: 1.65;
-        font-size: 0.92rem;
+        font-size: 0.98rem;
     }
 
-    .eyebrow-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 32px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        background: rgba(16,48,90,0.08);
-        color: #10305a;
-        border: 1px solid rgba(16,48,90,0.10);
+    .hero-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        width: 100%;
+        margin-top: 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-meta-card {
+        border-radius: 18px;
+        padding: 16px 18px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.09);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 12px 28px rgba(0,0,0,0.24);
+        backdrop-filter: blur(4px);
+    }
+
+    .hero-meta-label {
         font-size: 0.76rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        font-weight: 800;
-        white-space: nowrap;
+        color: #f0c85a;
+        margin-bottom: 6px;
+        font-weight: 700;
     }
 
-    .overview-kpi-grid {
+    .hero-meta-value {
+        font-size: 1.06rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .dashboard-grid-6 {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .dashboard-grid-4 {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 18px;
     }
 
-    .overview-kpi-card {
-        position: relative;
-        overflow: hidden;
-        min-height: 180px;
+    .dashboard-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .dashboard-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .kpi-card,
+    .panel-card,
+    .module-card,
+    .stat-card,
+    .feed-card {
+        border-radius: 24px;
         padding: 22px;
-        border-radius: 26px;
-        background: linear-gradient(180deg, #ffffff, #f4f8fc);
-        border: 1px solid rgba(198,210,224,0.44);
-        box-shadow: 0 18px 34px rgba(6,16,30,0.10);
+        background:
+            linear-gradient(145deg, rgba(15, 32, 58, 0.98), rgba(7, 22, 42, 0.98));
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow:
+            0 16px 34px rgba(0,0,0,0.34),
+            inset 0 1px 0 rgba(255,255,255,0.04),
+            inset 0 -1px 0 rgba(255,255,255,0.02);
+    }
+
+    .kpi-card {
+        min-height: 150px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 16px;
+        position: relative;
+        overflow: hidden;
     }
 
-    .overview-kpi-card::after {
+    .kpi-card::before {
         content: "";
         position: absolute;
         top: -30px;
-        right: -24px;
-        width: 120px;
-        height: 120px;
-        border-radius: 999px;
-        background: radial-gradient(circle, rgba(230,173,28,0.14) 0%, transparent 70%);
+        right: -20px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(240, 200, 90, 0.18), transparent 70%);
         pointer-events: none;
     }
 
-    .overview-kpi-card .icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 18px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(180deg, rgba(16,48,90,0.12), rgba(16,48,90,0.05));
-        border: 1px solid rgba(16,48,90,0.10);
-        color: #10305a;
-        font-size: 1.1rem;
-        font-weight: 800;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.80);
-    }
-
-    .overview-kpi-card .label {
-        display: block;
-        font-size: 0.74rem;
+    .kpi-label {
+        color: #f0c85a;
+        font-size: 0.8rem;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #71839b;
-        font-weight: 800;
+        letter-spacing: 0.08em;
+        font-weight: 700;
         margin-bottom: 8px;
     }
 
-    .overview-kpi-card .value {
-        display: block;
-        font-size: clamp(1.7rem, 2.2vw, 2.4rem);
+    .kpi-value {
+        font-size: clamp(1.8rem, 2.8vw, 2.4rem);
         font-weight: 800;
-        line-height: 1;
-        color: #07162a;
-        letter-spacing: -0.05em;
+        color: #ffffff;
+        line-height: 1.05;
+        margin-bottom: 8px;
     }
 
-    .overview-kpi-card .foot {
-        color: #56687f;
-        line-height: 1.65;
-        font-size: 0.9rem;
+    .kpi-subtext {
+        color: rgba(255,255,255,0.72);
+        font-size: 0.88rem;
+        line-height: 1.45;
     }
 
-    .module-score-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .module-score-card {
-        border-radius: 24px;
-        padding: 18px;
-        background: linear-gradient(180deg, #ffffff, #f7faff);
-        border: 1px solid rgba(198,210,224,0.44);
-        box-shadow: 0 14px 24px rgba(6,16,30,0.08);
+    .section-header {
         display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .module-score-head {
-        display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 12px;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
     }
 
-    .module-score-title {
+    .section-title {
+        margin: 0;
+        font-size: 1.05rem;
         font-weight: 800;
-        color: #07162a;
+        color: #f0c85a;
+        letter-spacing: 0.02em;
     }
 
-    .module-score-percent {
-        font-weight: 800;
-        color: #10305a;
+    .section-subtitle {
+        color: rgba(255,255,255,0.68);
+        font-size: 0.84rem;
+        margin: 4px 0 0 0;
+        line-height: 1.5;
     }
 
-    .progress-track {
-        height: 12px;
+    .pill-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
         border-radius: 999px;
-        background: linear-gradient(180deg, rgba(198,210,224,0.54), rgba(219,228,239,0.86));
-        overflow: hidden;
-        box-shadow: inset 0 1px 3px rgba(7,22,42,0.12);
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: linear-gradient(145deg, rgba(240, 200, 90, 0.18), rgba(232, 137, 26, 0.18));
+        border: 1px solid rgba(240, 200, 90, 0.28);
+        box-shadow:
+            0 8px 20px rgba(0,0,0,0.22),
+            inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
-    .progress-fill {
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, #f5d77f 0%, #e6ad1c 42%, #dd7a11 100%);
-        box-shadow: 0 8px 14px rgba(230,173,28,0.24);
+    .pulse-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #f0c85a;
+        box-shadow: 0 0 12px rgba(240, 200, 90, 0.8);
     }
 
-    .module-score-card p {
-        margin: 0;
-        color: #56687f;
-        line-height: 1.65;
-        font-size: 0.9rem;
-    }
-
-    .ops-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .ops-card {
-        border-radius: 24px;
+    .chart-placeholder {
+        min-height: 280px;
+        border-radius: 20px;
+        border: 1px dashed rgba(240, 200, 90, 0.30);
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+            radial-gradient(circle at top right, rgba(240, 200, 90, 0.12), transparent 30%);
         padding: 18px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,250,253,0.98));
-        border: 1px solid rgba(198,210,224,0.44);
-        box-shadow: 0 14px 24px rgba(6,16,30,0.08);
-    }
-
-    .ops-card h4 {
-        margin: 0 0 10px;
-        font-size: 0.98rem;
-        color: #07162a;
-    }
-
-    .ops-card p {
-        margin: 0;
-        color: #56687f;
-        line-height: 1.65;
-        font-size: 0.9rem;
-    }
-
-    .quick-actions-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .quick-action {
         position: relative;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        min-height: 170px;
-        padding: 20px;
-        border-radius: 24px;
-        background: linear-gradient(180deg, #ffffff, #f5f9fc);
-        border: 1px solid rgba(198,210,224,0.42);
-        box-shadow: 0 16px 28px rgba(6,16,30,0.08);
-        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
 
-    .quick-action:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 22px 34px rgba(6,16,30,0.12);
-        border-color: rgba(230,173,28,0.34);
+    .chart-placeholder.small {
+        min-height: 220px;
     }
 
-    .quick-action::after {
+    .chart-placeholder::before,
+    .chart-placeholder::after {
         content: "";
         position: absolute;
-        width: 110px;
-        height: 110px;
-        top: -24px;
-        right: -18px;
-        border-radius: 999px;
-        background: radial-gradient(circle, rgba(230,173,28,0.12) 0%, transparent 72%);
+        left: 18px;
+        right: 18px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .chart-placeholder::before {
+        top: 35%;
+    }
+
+    .chart-placeholder::after {
+        top: 68%;
+    }
+
+    .chart-grid-lines {
+        position: absolute;
+        inset: 18px;
+        background-image:
+            linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 42px 42px;
+        border-radius: 16px;
         pointer-events: none;
     }
 
-    .quick-action .icon {
+    .chart-note {
+        position: relative;
+        z-index: 1;
+        color: rgba(255,255,255,0.8);
+        line-height: 1.65;
+        font-size: 0.92rem;
+        max-width: 760px;
+    }
+
+    .spark-row {
+        display: flex;
+        align-items: end;
+        gap: 8px;
+        height: 120px;
+        margin-top: 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .spark-bar {
+        flex: 1;
+        border-radius: 12px 12px 6px 6px;
+        background: linear-gradient(180deg, rgba(240, 200, 90, 0.92), rgba(232, 137, 26, 0.65));
+        box-shadow: 0 12px 24px rgba(232, 137, 26, 0.18);
+        min-width: 18px;
+    }
+
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .module-card {
+        padding: 0;
+        overflow: hidden;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .module-card:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 22px 42px rgba(0,0,0,0.42),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .module-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        padding: 22px;
+        height: 100%;
+        background:
+            linear-gradient(155deg, rgba(11,31,58,0.99), rgba(7,22,42,0.99));
+    }
+
+    .module-icon {
         width: 52px;
         height: 52px;
-        border-radius: 18px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(180deg, rgba(16,48,90,0.12), rgba(16,48,90,0.05));
-        border: 1px solid rgba(16,48,90,0.10);
-        color: #10305a;
-        font-size: 1rem;
-        font-weight: 800;
-    }
-
-    .quick-action h4 {
-        margin: 0;
-        color: #07162a;
-        font-size: 1rem;
-    }
-
-    .quick-action p {
-        margin: 0;
-        color: #56687f;
-        line-height: 1.65;
-        font-size: 0.9rem;
-    }
-
-    .quick-action .cta {
-        margin-top: auto;
+        border-radius: 16px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 42px;
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, #f5d77f, #e6ad1c);
-        color: #10223c;
-        font-size: 0.86rem;
+        font-size: 1.25rem;
+        margin-bottom: 14px;
+        background: linear-gradient(145deg, rgba(240, 200, 90, 0.18), rgba(232, 137, 26, 0.18));
+        border: 1px solid rgba(240, 200, 90, 0.28);
+        box-shadow:
+            0 10px 24px rgba(0,0,0,0.26),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .module-title {
+        margin: 0 0 8px 0;
+        font-size: 1rem;
         font-weight: 800;
-        box-shadow: 0 14px 22px rgba(230,173,28,0.24), inset 0 1px 0 rgba(255,255,255,0.34);
-        width: fit-content;
+        color: #f0c85a;
     }
 
-    .intel-list {
-        display: grid;
-        gap: 14px;
-    }
-
-    .intel-item {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 14px;
-        align-items: start;
-        border-radius: 20px;
-        padding: 16px;
-        background: linear-gradient(180deg, #ffffff, #f7faff);
-        border: 1px solid rgba(198,210,224,0.38);
-        box-shadow: 0 12px 20px rgba(6,16,30,0.06);
-    }
-
-    .intel-bullet {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(180deg, rgba(230,173,28,0.18), rgba(221,122,17,0.10));
-        border: 1px solid rgba(230,173,28,0.20);
-        color: #9f6300;
-        font-weight: 800;
-    }
-
-    .intel-item h4 {
-        margin: 0 0 6px;
-        color: #07162a;
-        font-size: 0.98rem;
-    }
-
-    .intel-item p {
-        margin: 0;
-        color: #56687f;
-        line-height: 1.65;
+    .module-desc {
+        margin: 0 0 14px 0;
+        color: rgba(255,255,255,0.76);
         font-size: 0.9rem;
+        line-height: 1.55;
     }
 
-    .compliance-matrix {
-        display: grid;
+    .module-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255,255,255,0.65);
+        font-size: 0.78rem;
+    }
+
+    .list-stack {
+        display: flex;
+        flex-direction: column;
         gap: 12px;
     }
 
-    .compliance-row {
-        display: grid;
-        grid-template-columns: minmax(160px, 0.95fr) minmax(0, 1.6fr) auto;
-        gap: 14px;
-        align-items: center;
-        border-radius: 18px;
+    .list-item {
+        border-radius: 16px;
         padding: 14px 16px;
-        background: linear-gradient(180deg, #ffffff, #f8fbff);
-        border: 1px solid rgba(198,210,224,0.40);
-        box-shadow: 0 10px 18px rgba(6,16,30,0.06);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.05);
     }
 
-    .compliance-row .title {
-        font-weight: 800;
-        color: #07162a;
+    .list-item-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 6px;
     }
 
-    .compliance-row .detail {
-        color: #56687f;
-        line-height: 1.6;
-        font-size: 0.9rem;
+    .list-item-title {
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 0.95rem;
     }
 
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 34px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.04em;
+    .list-item-badge {
         white-space: nowrap;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(240, 200, 90, 0.12);
+        color: #f0c85a;
+        border: 1px solid rgba(240, 200, 90, 0.24);
     }
 
-    .status-good {
-        background: rgba(29,155,95,0.12);
-        color: #127747;
-        border: 1px solid rgba(29,155,95,0.18);
+    .list-item-text {
+        color: rgba(255,255,255,0.72);
+        font-size: 0.87rem;
+        line-height: 1.55;
     }
 
-    .status-watch {
-        background: rgba(211,148,22,0.14);
-        color: #9c6600;
-        border: 1px solid rgba(211,148,22,0.20);
+    .metric-mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
     }
 
-    .status-risk {
-        background: rgba(214,69,69,0.12);
-        color: #b63636;
-        border: 1px solid rgba(214,69,69,0.18);
+    .mini-metric {
+        border-radius: 18px;
+        padding: 16px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .mini-metric-label {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.78rem;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .mini-metric-value {
+        color: #ffffff;
+        font-size: 1.15rem;
+        font-weight: 800;
     }
 
     .table-shell {
         width: 100%;
         overflow-x: auto;
-        border-radius: 22px;
-        border: 1px solid rgba(198,210,224,0.48);
-        background: linear-gradient(180deg, #ffffff, #f8fbff);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.06);
     }
 
-    .dashboard-table {
+    .enterprise-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 860px;
+        min-width: 760px;
+        background: rgba(255,255,255,0.02);
     }
 
-    .dashboard-table thead th {
+    .enterprise-table th,
+    .enterprise-table td {
         padding: 14px 16px;
-        background: linear-gradient(180deg, #0c2340, #102949);
-        color: #ffffff;
         text-align: left;
-        text-transform: uppercase;
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
-        font-weight: 800;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        font-size: 0.9rem;
     }
 
-    .dashboard-table tbody td {
-        padding: 14px 16px;
-        border-bottom: 1px solid rgba(219,228,239,0.86);
-        color: #10223c;
-        vertical-align: top;
+    .enterprise-table th {
+        color: #f0c85a;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        background: rgba(255,255,255,0.03);
+    }
+
+    .enterprise-table td {
+        color: rgba(255,255,255,0.84);
+    }
+
+    .priority-high,
+    .status-danger {
+        color: #ffb26b;
+        font-weight: 700;
+    }
+
+    .status-ok {
+        color: #e9d98b;
+        font-weight: 700;
+    }
+
+    .status-soft {
+        color: rgba(255,255,255,0.76);
+        font-weight: 700;
+    }
+
+    .tasks-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+    }
+
+    .calendar-board {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+
+    .calendar-day {
+        min-height: 110px;
+        border-radius: 16px;
+        padding: 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .calendar-day.is-highlight {
+        background: linear-gradient(155deg, rgba(240, 200, 90, 0.14), rgba(232, 137, 26, 0.12));
+        border: 1px solid rgba(240, 200, 90, 0.24);
+    }
+
+    .calendar-day-name {
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #f0c85a;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    .calendar-day-number {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .calendar-event {
+        font-size: 0.76rem;
+        color: rgba(255,255,255,0.78);
+        line-height: 1.45;
+        margin-bottom: 6px;
+        padding: 6px 8px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .feed-item {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .feed-item:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .feed-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-top: 6px;
+        flex-shrink: 0;
+        background: linear-gradient(180deg, #f0c85a, #e8891a);
+        box-shadow: 0 0 12px rgba(240, 200, 90, 0.55);
+    }
+
+    .feed-content {
+        flex: 1;
+    }
+
+    .feed-title {
+        color: #ffffff;
+        font-weight: 700;
+        margin-bottom: 4px;
         font-size: 0.92rem;
     }
 
-    .dashboard-table tbody tr:nth-child(even) td {
-        background: rgba(248,250,252,0.70);
+    .feed-text {
+        color: rgba(255,255,255,0.72);
+        font-size: 0.86rem;
+        line-height: 1.55;
     }
 
-    .dashboard-table tbody tr:hover td {
-        background: rgba(242,193,74,0.07);
+    .feed-time {
+        color: rgba(255,255,255,0.55);
+        font-size: 0.76rem;
+        margin-top: 4px;
     }
 
-    .owner-office {
-        position: relative;
-        overflow: hidden;
-        border-radius: 30px;
-        padding: 24px;
-        background:
-            radial-gradient(circle at top right, rgba(245,215,127,0.16), transparent 26%),
-            linear-gradient(135deg, rgba(7,22,42,0.98) 0%, rgba(10,29,53,0.98) 52%, rgba(12,35,64,0.96) 100%);
-        border: 1px solid rgba(245,215,127,0.18);
-        box-shadow: 0 22px 42px rgba(2, 10, 21, 0.26);
-        color: #ffffff;
-    }
-
-    .owner-office::after {
-        content: "";
-        position: absolute;
-        inset: auto -40px -40px auto;
-        width: 180px;
-        height: 180px;
-        border-radius: 999px;
-        background: radial-gradient(circle, rgba(230,173,28,0.14), transparent 72%);
-        pointer-events: none;
-    }
-
-    .owner-office h3 {
-        margin: 0 0 10px;
-        font-size: 1.2rem;
-        color: #f5d77f;
-    }
-
-    .owner-office p {
-        margin: 0;
-        color: rgba(242,246,251,0.80);
-        line-height: 1.75;
-        font-size: 0.94rem;
-    }
-
-    .owner-office-grid {
-        margin-top: 20px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .owner-office-card {
+    .insight-banner {
         border-radius: 20px;
-        padding: 16px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-        border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-    }
-
-    .owner-office-card .label {
-        display: block;
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.10em;
-        color: rgba(242,246,251,0.62);
-        margin-bottom: 6px;
-        font-weight: 800;
-    }
-
-    .owner-office-card .value {
-        display: block;
+        padding: 18px 20px;
+        background:
+            linear-gradient(145deg, rgba(240,200,90,0.12), rgba(232,137,26,0.10)),
+            linear-gradient(145deg, rgba(11,31,58,0.96), rgba(7,22,42,0.96));
+        border: 1px solid rgba(240, 200, 90, 0.22);
         color: #ffffff;
-        font-size: 1rem;
-        font-weight: 800;
+        box-shadow:
+            0 14px 26px rgba(0,0,0,0.28),
+            inset 0 1px 0 rgba(255,255,255,0.04);
     }
 
-    @media (max-width: 1480px) {
-        .overview-kpi-grid {
+    .insight-banner strong {
+        color: #f0c85a;
+    }
+
+    .footer-note {
+        color: rgba(255,255,255,0.58);
+        font-size: 0.8rem;
+        text-align: right;
+        padding-top: 4px;
+    }
+
+    @media (max-width: 1500px) {
+        .dashboard-grid-6 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .module-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .dashboard-grid-4,
+        .dashboard-grid-3,
+        .dashboard-grid-2,
+        .tasks-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .module-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .quick-actions-grid,
-        .ops-grid {
+        .metric-mini-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .dashboard-grid-6 {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-    }
 
-    @media (max-width: 1280px) {
-        .executive-grid {
+        .module-grid {
             grid-template-columns: 1fr;
         }
 
-        .col-8,
-        .col-7,
-        .col-6,
-        .col-5,
-        .col-4,
-        .col-3 {
-            grid-column: span 12;
-        }
-    }
-
-    @media (max-width: 980px) {
-        .overview-kpi-grid,
-        .module-score-grid,
-        .quick-actions-grid,
-        .ops-grid,
-        .owner-office-grid,
-        .executive-side-grid {
-            grid-template-columns: 1fr;
+        .calendar-board {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .compliance-row {
-            grid-template-columns: 1fr;
+        .hero-meta-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
     @media (max-width: 640px) {
-        .executive-hero,
-        .dashboard-card.pad,
-        .owner-office {
-            padding: 20px;
-            border-radius: 24px;
+        .dashboard-grid-6 {
+            grid-template-columns: 1fr;
         }
 
-        .executive-copy h3 {
-            font-size: 1.72rem;
+        .hero-meta-grid {
+            grid-template-columns: 1fr;
         }
 
-        .hero-status-pill {
-            width: 100%;
+        .dashboard-hero,
+        .kpi-card,
+        .panel-card,
+        .module-card,
+        .stat-card,
+        .feed-card {
+            padding: 18px;
+        }
+
+        .calendar-board {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 {% endblock %}
 
-{% block hero %}
-<section class="executive-hero">
-    <div class="executive-grid">
-        <div class="executive-copy">
-            <h3>Integrated Executive Command Center</h3>
-            <p>
-                This dashboard is the premium control layer for the full UrbanHRPartners ecosystem. It is designed to give the owner a unified operational picture across consulting delivery, CRM revenue generation, HRIS workforce control, ATS recruiting flow, employee orientation, SG-SST compliance execution, finance oversight, inventory visibility, marketing activity, reporting output, and XIOMY-driven enterprise intelligence.
-            </p>
-            <div class="hero-status-row">
-                <div class="hero-status-pill">
-                    <span class="eyebrow">Platform State</span>
-                    <span class="value">Foundation Stable</span>
-                </div>
-                <div class="hero-status-pill">
-                    <span class="eyebrow">Project Depth</span>
-                    <span class="value">Enterprise Build</span>
-                </div>
-                <div class="hero-status-pill">
-                    <span class="eyebrow">Visual Standard</span>
-                    <span class="value">Premium 3D UI</span>
-                </div>
-                <div class="hero-status-pill">
-                    <span class="eyebrow">Deployment</span>
-                    <span class="value">Render Ready</span>
-                </div>
-            </div>
-        </div>
-        <aside class="executive-side-card">
-            <div>
-                <h4>Owner Executive Summary</h4>
+{% block content %}
+{% set metrics = metrics if metrics is defined and metrics else {} %}
+{% set dashboard = dashboard if dashboard is defined and dashboard else {} %}
+{% set ai_insights = ai_insights if ai_insights is defined and ai_insights else [] %}
+{% set alerts = alerts if alerts is defined and alerts else [] %}
+{% set recent_activity = recent_activity if recent_activity is defined and recent_activity else [] %}
+{% set client_pipeline = client_pipeline if client_pipeline is defined and client_pipeline else [] %}
+{% set ats_pipeline = ats_pipeline if ats_pipeline is defined and ats_pipeline else [] %}
+{% set tasks = tasks if tasks is defined and tasks else [] %}
+{% set finance_rows = finance_rows if finance_rows is defined and finance_rows else [] %}
+{% set inventory_rows = inventory_rows if inventory_rows is defined and inventory_rows else [] %}
+{% set hris_rows = hris_rows if hris_rows is defined and hris_rows else [] %}
+{% set sgsst_rows = sgsst_rows if sgsst_rows is defined and sgsst_rows else [] %}
+
+<div class="dashboard-shell">
+
+    <section class="dashboard-hero">
+        <div class="hero-header">
+            <div class="hero-title-group">
+                <h1>{{ system_name or "UrbanHRPartners Enterprise Suite" }}</h1>
                 <p>
-                    Juan Carlos Urbano’s enterprise suite is structured as an ecosystem platform with XIOMY as the strategic intelligence layer. This dashboard is prepared to hold live metrics from all modules without shrinking the operational visibility required for business growth.
+                    Executive command center for integrated organizational control across client growth, workforce management, recruiting operations, occupational safety, accounting, inventory governance, marketing performance, and predictive analytics. This page is structured for enterprise deployment and XIOMY AI orchestration.
                 </p>
             </div>
-            <div class="executive-side-grid">
-                <div class="executive-kpi">
-                    <span class="label">Modules</span>
-                    <span class="value">11 Active Views</span>
-                </div>
-                <div class="executive-kpi">
-                    <span class="label">Architecture</span>
-                    <span class="value">Flask + SQLAlchemy</span>
-                </div>
-                <div class="executive-kpi">
-                    <span class="label">Theme</span>
-                    <span class="value">Navy / Gold / Silver</span>
-                </div>
-                <div class="executive-kpi">
-                    <span class="label">Mode</span>
-                    <span class="value">Corrective Build</span>
-                </div>
+
+            <div class="pill-status">
+                <span class="pulse-dot"></span>
+                System Status: Operational
             </div>
-        </aside>
-    </div>
-</section>
-{% endblock %}
+        </div>
 
-{% block topbar_actions %}
-<a href="{{ url_for('crm') if 'crm' in current_app.view_functions else '#' }}" class="ghost-chip">Open CRM</a>
-<a href="{{ url_for('finance') if 'finance' in current_app.view_functions else '#' }}" class="ghost-chip">Open Finance</a>
-<a href="{{ url_for('analytics') if 'analytics' in current_app.view_functions else '#' }}" class="action-chip">Open Analytics</a>
-{% endblock %}
+        <div class="hero-meta-grid">
+            <div class="hero-meta-card">
+                <div class="hero-meta-label">Enterprise Owner</div>
+                <div class="hero-meta-value">{{ company_name or "UrbanHRPartners" }}</div>
+            </div>
+            <div class="hero-meta-card">
+                <div class="hero-meta-label">AI Layer</div>
+                <div class="hero-meta-value">XIOMY Executive Intelligence</div>
+            </div>
+            <div class="hero-meta-card">
+                <div class="hero-meta-label">Deployment Mode</div>
+                <div class="hero-meta-value">Render Production Ready</div>
+            </div>
+            <div class="hero-meta-card">
+                <div class="hero-meta-label">Business Scope</div>
+                <div class="hero-meta-value">CRM · HRIS · ATS · SG-SST · Finance</div>
+            </div>
+        </div>
+    </section>
 
-{% block content %}
-<section class="dashboard-shell">
-    <section class="dashboard-grid">
-        <article class="dashboard-card pad col-12">
-            <div class="section-head">
+    <section class="dashboard-grid-6">
+        <article class="kpi-card">
+            <div>
+                <div class="kpi-label">Revenue</div>
+                <div class="kpi-value">${{ metrics.get("revenue", 0) }}</div>
+            </div>
+            <div class="kpi-subtext">Monthly revenue visibility across invoicing, collections, consulting packages, subscriptions, and service expansion.</div>
+        </article>
+
+        <article class="kpi-card">
+            <div>
+                <div class="kpi-label">Active Clients</div>
+                <div class="kpi-value">{{ metrics.get("active_clients", 0) }}</div>
+            </div>
+            <div class="kpi-subtext">Organizations currently engaged across consulting, HR systems, recruiting support, or bundled enterprise services.</div>
+        </article>
+
+        <article class="kpi-card">
+            <div>
+                <div class="kpi-label">Employees</div>
+                <div class="kpi-value">{{ metrics.get("employees", 0) }}</div>
+            </div>
+            <div class="kpi-subtext">Workforce count tracked through HRIS records, active profiles, organizational roles, and internal operating capacity.</div>
+        </article>
+
+        <article class="kpi-card">
+            <div>
+                <div class="kpi-label">Open Requisitions</div>
+                <div class="kpi-value">{{ metrics.get("jobs", 0) }}</div>
+            </div>
+            <div class="kpi-subtext">ATS demand visibility covering open positions, urgent recruiting requests, and hiring workflow pressure.</div>
+        </article>
+
+        <article class="kpi-card">
+            <div>
+                <div class="kpi-label">SG-SST Incidents</div>
+                <div class="kpi-value">{{ metrics.get("incidents", 0) }}</div>
+            </div>
+            <div class="kpi-subtext">Operational safety signal tied to incidents, investigations, corrective actions, inspections, and legal compliance exposure.</div>
+        </article>
+
+        <article class="kpi-card">
+            <div>
+                <div class="kpi-label">Inventory Alerts</div>
+                <div class="kpi-value">{{ metrics.get("inventory_alerts", 0) }}</div>
+            </div>
+            <div class="kpi-subtext">Barcode and QR monitored asset movement, shortages, equipment provisioning, and enterprise stock control risks.</div>
+        </article>
+    </section>
+
+    <section class="dashboard-grid-2">
+        <article class="panel-card">
+            <div class="section-header">
                 <div>
-                    <h3>Enterprise Overview</h3>
-                    <p>
-                        Top-level command indicators designed to summarize operational scale, active workflows, performance visibility, compliance direction, and executive readiness across the full business ecosystem.
-                    </p>
+                    <h2 class="section-title">XIOMY Executive Intelligence</h2>
+                    <p class="section-subtitle">Strategic observations, predictive guidance, and operational attention points generated for leadership review.</p>
                 </div>
-                <span class="eyebrow-badge">Executive Metrics</span>
+                <div class="pill-status">AI Priority Queue</div>
             </div>
-            <div class="overview-kpi-grid">
-                <div class="overview-kpi-card">
-                    <div class="icon">◎</div>
-                    <div>
-                        <span class="label">CRM Pipeline</span>
-                        <span class="value">$248K</span>
+
+            <div class="list-stack">
+                {% if ai_insights %}
+                    {% for insight in ai_insights %}
+                    <div class="insight-banner">
+                        <strong>{{ insight.title if insight.title is defined else "Strategic Insight" }}:</strong>
+                        {{ insight.message if insight.message is defined else insight }}
                     </div>
-                    <div class="foot">Projected consulting and software revenue pipeline combining retained accounts, implementation opportunities, and expansion proposals.</div>
+                    {% endfor %}
+                {% else %}
+                    <div class="insight-banner">
+                        <strong>Revenue Intelligence:</strong>
+                        Financial activity indicates this dashboard is ready to connect invoice, cashflow, margin, and subscription data for executive forecasting.
+                    </div>
+                    <div class="insight-banner">
+                        <strong>Growth Signal:</strong>
+                        CRM and ATS modules should be synchronized to show how client acquisition correlates with hiring demand and service delivery capacity.
+                    </div>
+                    <div class="insight-banner">
+                        <strong>Compliance Watch:</strong>
+                        SG-SST and HRIS action records should be continuously reviewed together to reduce labor, safety, and disciplinary exposure.
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Alerts & Compliance Signals</h2>
+                    <p class="section-subtitle">Critical reminders requiring administrative, financial, legal, safety, or operational attention.</p>
                 </div>
-                <div class="overview-kpi-card">
-                    <div class="icon">◉</div>
-                    <div>
-                        <span class="label">Active Workforce</span>
-                        <span class="value">126</span>
+                <div class="pill-status">Review Required</div>
+            </div>
+
+            <div class="list-stack">
+                {% if alerts %}
+                    {% for alert in alerts %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">{{ alert.title if alert.title is defined else "Enterprise Alert" }}</div>
+                            <div class="list-item-badge">{{ alert.priority if alert.priority is defined else "Attention" }}</div>
+                        </div>
+                        <div class="list-item-text">{{ alert.message if alert.message is defined else alert }}</div>
                     </div>
-                    <div class="foot">Current employee population example for HRIS visibility, including labor, disciplinary, onboarding, and performance management oversight.</div>
+                    {% endfor %}
+                {% else %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Pending Invoice Review</div>
+                            <div class="list-item-badge">Finance</div>
+                        </div>
+                        <div class="list-item-text">Accounts receivable monitoring should surface invoices approaching overdue status for immediate client follow-up.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Safety Inspection Overdue</div>
+                            <div class="list-item-badge">SG-SST</div>
+                        </div>
+                        <div class="list-item-text">Inspection frequency, corrective actions, and minimum standards should remain visible from the executive layer.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Recruitment Bottleneck</div>
+                            <div class="list-item-badge">ATS</div>
+                        </div>
+                        <div class="list-item-text">Open requisitions should be reviewed against consultant bandwidth and onboarding readiness capacity.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+    </section>
+
+    <section class="panel-card">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Enterprise Module Navigation</h2>
+                <p class="section-subtitle">Central access to the full ecosystem. Route names below match the expected Flask endpoint structure.</p>
+            </div>
+            <div class="pill-status">8 Core Modules</div>
+        </div>
+
+        <div class="module-grid">
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('crm_dashboard') }}">
+                    <div class="module-icon">◎</div>
+                    <h3 class="module-title">CRM</h3>
+                    <p class="module-desc">Client hierarchy, opportunities, communications, proposals, projects, commitments, and revenue intelligence.</p>
+                    <div class="module-meta">
+                        <span>Salesforce-level direction</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('hris_dashboard') }}">
+                    <div class="module-icon">◈</div>
+                    <h3 class="module-title">HRIS</h3>
+                    <p class="module-desc">Employee records, disciplinary actions, labor relations workflows, SOP alignment, and workforce analytics.</p>
+                    <div class="module-meta">
+                        <span>Core workforce system</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('ats_dashboard') }}">
+                    <div class="module-icon">◇</div>
+                    <h3 class="module-title">ATS</h3>
+                    <p class="module-desc">Requisitions, candidate pipelines, resume strategy, interviews, offer conversion, and onboarding readiness.</p>
+                    <div class="module-meta">
+                        <span>Recruiting intelligence</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('sgsst_dashboard') }}">
+                    <div class="module-icon">⬢</div>
+                    <h3 class="module-title">SG-SST</h3>
+                    <p class="module-desc">Policy, risk matrix, inspections, incidents, investigations, trainings, PPE, audits, and improvement plans.</p>
+                    <div class="module-meta">
+                        <span>Compliance & safety</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('finance_dashboard') }}">
+                    <div class="module-icon">▣</div>
+                    <h3 class="module-title">Finance</h3>
+                    <p class="module-desc">QuickBooks-style accounting, ledger control, invoicing, receivables, payables, budgets, and forecasts.</p>
+                    <div class="module-meta">
+                        <span>Accounting engine</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('inventory_dashboard') }}">
+                    <div class="module-icon">▤</div>
+                    <h3 class="module-title">Inventory</h3>
+                    <p class="module-desc">Asset assignments, warehouse visibility, barcode and QR tracking, stock movement, and provisioning control.</p>
+                    <div class="module-meta">
+                        <span>Physical control layer</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('marketing_dashboard') }}">
+                    <div class="module-icon">✦</div>
+                    <h3 class="module-title">Marketing</h3>
+                    <p class="module-desc">Campaigns, funnels, social strategy, content opportunities, lead generation, and growth positioning.</p>
+                    <div class="module-meta">
+                        <span>Market expansion</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="module-card">
+                <a class="module-link" href="{{ url_for('reports_dashboard') }}">
+                    <div class="module-icon">◬</div>
+                    <h3 class="module-title">Reports & Analytics</h3>
+                    <p class="module-desc">Enterprise reporting, KPIs, performance indicators, exports, dashboards, and predictive intelligence review.</p>
+                    <div class="module-meta">
+                        <span>Executive visibility</span>
+                        <span>Open</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-grid-2">
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Revenue, Margin & Cashflow Visualization</h2>
+                    <p class="section-subtitle">Chart-ready space for finance plotting libraries and dynamic enterprise analytics.</p>
                 </div>
-                <div class="overview-kpi-card">
-                    <div class="icon">◌</div>
-                    <div>
-                        <span class="label">Open Requisitions</span>
-                        <span class="value">18</span>
-                    </div>
-                    <div class="foot">Hiring demand across consulting client accounts with readiness for resume optimization, candidate scoring, and interview scheduling.</div>
+                <div class="pill-status">Finance Layer</div>
+            </div>
+
+            <div class="chart-placeholder">
+                <div class="chart-grid-lines"></div>
+                <div class="chart-note">
+                    This section is prepared for line, area, or bar visualizations tied to revenue trends, expense curves, margin evolution, collections velocity, or package performance. For immediate deployment safety, this template renders without requiring JavaScript chart dependencies.
                 </div>
-                <div class="overview-kpi-card">
-                    <div class="icon">⬢</div>
-                    <div>
-                        <span class="label">Compliance Focus</span>
-                        <span class="value">92%</span>
-                    </div>
-                    <div class="foot">SG-SST and enterprise control posture showing strong program alignment with a remaining improvement window for high-priority actions.</div>
+                <div class="spark-row" aria-hidden="true">
+                    <div class="spark-bar" style="height: 38%;"></div>
+                    <div class="spark-bar" style="height: 47%;"></div>
+                    <div class="spark-bar" style="height: 53%;"></div>
+                    <div class="spark-bar" style="height: 62%;"></div>
+                    <div class="spark-bar" style="height: 58%;"></div>
+                    <div class="spark-bar" style="height: 72%;"></div>
+                    <div class="spark-bar" style="height: 85%;"></div>
+                    <div class="spark-bar" style="height: 79%;"></div>
+                    <div class="spark-bar" style="height: 92%;"></div>
+                    <div class="spark-bar" style="height: 88%;"></div>
+                    <div class="spark-bar" style="height: 96%;"></div>
+                    <div class="spark-bar" style="height: 100%;"></div>
                 </div>
             </div>
         </article>
 
-        <article class="dashboard-card pad col-7">
-            <div class="section-head">
+        <article class="panel-card">
+            <div class="section-header">
                 <div>
-                    <h3>Module Completion and Readiness</h3>
-                    <p>
-                        Visual project-level readiness tracker for the suite modules, aligned with your requirement to preserve milestone visibility and completion percentages as the build advances.
-                    </p>
+                    <h2 class="section-title">Operational Capacity Summary</h2>
+                    <p class="section-subtitle">Cross-functional performance indicators connecting clients, talent, service readiness, and safety control.</p>
                 </div>
-                <span class="eyebrow-badge">Progress Control</span>
+                <div class="pill-status">Enterprise Snapshot</div>
             </div>
-            <div class="module-score-grid">
-                <div class="module-score-card">
-                    <div class="module-score-head">
-                        <span class="module-score-title">Dashboard</span>
-                        <span class="module-score-percent">72%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:72%;"></div></div>
-                    <p>Executive presentation layer expanded with enterprise sections, but still ready for live data wiring and cross-module charts.</p>
+
+            <div class="metric-mini-grid">
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Consultant Load</div>
+                    <div class="mini-metric-value">{{ metrics.get("consultant_load", 0) }}</div>
                 </div>
-                <div class="module-score-card">
-                    <div class="module-score-head">
-                        <span class="module-score-title">CRM</span>
-                        <span class="module-score-percent">61%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:61%;"></div></div>
-                    <p>Client hierarchy, opportunities, communications, and project margin direction exist, but the page still needs its full no-shrink enterprise body.</p>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Open Tasks</div>
+                    <div class="mini-metric-value">{{ metrics.get("open_tasks", 0) }}</div>
                 </div>
-                <div class="module-score-card">
-                    <div class="module-score-head">
-                        <span class="module-score-title">HRIS</span>
-                        <span class="module-score-percent">58%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:58%;"></div></div>
-                    <p>Core employee logic exists conceptually, but the front-end needs complete workforce administration, labor actions, and formal records views.</p>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Upcoming Meetings</div>
+                    <div class="mini-metric-value">{{ metrics.get("meetings", 0) }}</div>
                 </div>
-                <div class="module-score-card">
-                    <div class="module-score-head">
-                        <span class="module-score-title">ATS + Orientation</span>
-                        <span class="module-score-percent">57%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:57%;"></div></div>
-                    <p>Recruiting and onboarding architecture is defined, including resume writing and onboarding readiness, but requires full page completion.</p>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Payroll Cycle</div>
+                    <div class="mini-metric-value">{{ metrics.get("payroll_cycle", "Pending") }}</div>
                 </div>
-                <div class="module-score-card">
-                    <div class="module-score-head">
-                        <span class="module-score-title">SG-SST</span>
-                        <span class="module-score-percent">54%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:54%;"></div></div>
-                    <p>Scope is broad and must still be expanded into a full operational compliance environment with all enterprise sections preserved.</p>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Accounts Receivable</div>
+                    <div class="mini-metric-value">${{ metrics.get("receivables", 0) }}</div>
                 </div>
-                <div class="module-score-card">
-                    <div class="module-score-head">
-                        <span class="module-score-title">Finance + Inventory + Marketing</span>
-                        <span class="module-score-percent">56%</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:56%;"></div></div>
-                    <p>Strategic direction is clear, including QuickBooks-grade finance ambition and scanning support, but templates still need full body completion.</p>
+                <div class="mini-metric">
+                    <div class="mini-metric-label">Risk Score</div>
+                    <div class="mini-metric-value">{{ metrics.get("risk_score", "N/A") }}</div>
                 </div>
             </div>
         </article>
+    </section>
 
-        <article class="dashboard-card pad col-5">
-            <div class="section-head">
+    <section class="dashboard-grid-2">
+        <article class="panel-card">
+            <div class="section-header">
                 <div>
-                    <h3>XIOMY Executive Intelligence Notes</h3>
-                    <p>
-                        A dedicated intelligence summary area prepared for future AI guidance, owner prompts, business pattern detection, and multilingual executive recommendations.
-                    </p>
+                    <h2 class="section-title">CRM Pipeline Overview</h2>
+                    <p class="section-subtitle">Pipeline intelligence from prospecting through proposal, negotiation, closing, and service execution.</p>
                 </div>
-                <span class="eyebrow-badge">XIOMY</span>
+                <div class="pill-status">Revenue Engine</div>
             </div>
-            <div class="intel-list">
-                <div class="intel-item">
-                    <div class="intel-bullet">01</div>
-                    <div>
-                        <h4>Revenue Mix Opportunity</h4>
-                        <p>Cross-selling consulting retainers with software subscriptions can be surfaced here to identify higher-margin bundled service packages for SMEs.</p>
-                    </div>
-                </div>
-                <div class="intel-item">
-                    <div class="intel-bullet">02</div>
-                    <div>
-                        <h4>Talent Bottleneck Alert</h4>
-                        <p>This area is designed to flag requisitions or job families where ATS conversion is weak and HRIS workload is likely to increase.</p>
-                    </div>
-                </div>
-                <div class="intel-item">
-                    <div class="intel-bullet">03</div>
-                    <div>
-                        <h4>Compliance Priority Signal</h4>
-                        <p>XIOMY can later highlight missing inspections, overdue trainings, unresolved incidents, or policy acknowledgment gaps in this panel.</p>
-                    </div>
-                </div>
-                <div class="intel-item">
-                    <div class="intel-bullet">04</div>
-                    <div>
-                        <h4>Owner Strategy View</h4>
-                        <p>Prepared for premium executive interpretation so the owner sees not only data, but direction, urgency, and next best business actions.</p>
-                    </div>
-                </div>
-            </div>
-        </article>
 
-        <article class="dashboard-card pad col-12">
-            <div class="section-head">
-                <div>
-                    <h3>Cross-Module Operational Priorities</h3>
-                    <p>
-                        This section gives a broad operational picture across the ecosystem, showing which areas should receive immediate corrective development attention or business follow-up.
-                    </p>
-                </div>
-                <span class="eyebrow-badge">Operations</span>
-            </div>
-            <div class="ops-grid">
-                <div class="ops-card">
-                    <h4>CRM Commercial Expansion</h4>
-                    <p>Complete the full client pipeline page, add structured opportunity boards, communication intelligence, task extraction, and project profitability blocks.</p>
-                </div>
-                <div class="ops-card">
-                    <h4>HRIS Labor and Discipline Depth</h4>
-                    <p>Expand employee administration to include USA and Colombia labor actions, disciplinary forms, compliance trails, point logs, and formal case management.</p>
-                </div>
-                <div class="ops-card">
-                    <h4>ATS Professional Resume Services</h4>
-                    <p>Build complete recruiter-facing resume writing, optimization, screening, interview workflow, and candidate conversion sections inside ATS.</p>
-                </div>
-                <div class="ops-card">
-                    <h4>Orientation Readiness Flow</h4>
-                    <p>Add onboarding schedules, document acknowledgments, welcome packages, asset assignment readiness, and pre-start compliance control.</p>
-                </div>
-                <div class="ops-card">
-                    <h4>SG-SST Enterprise Completion</h4>
-                    <p>Restore the full intended safety depth with legal matrix, risk matrix, incidents, investigations, audits, improvement plans, indicators, and minimum standards.</p>
-                </div>
-                <div class="ops-card">
-                    <h4>Finance and Inventory Strengthening</h4>
-                    <p>Expand accounting toward QuickBooks-grade workflows while preserving inventory, barcode, QR, procurement, and ledger integration.</p>
-                </div>
-            </div>
-        </article>
-
-        <article class="dashboard-card pad col-8">
-            <div class="section-head">
-                <div>
-                    <h3>Executive Quick Actions</h3>
-                    <p>
-                        Large premium action cards designed for fast navigation and future owner-centered task launching across the most important modules.
-                    </p>
-                </div>
-                <span class="eyebrow-badge">Fast Access</span>
-            </div>
-            <div class="quick-actions-grid">
-                <a class="quick-action" href="{{ url_for('crm') if 'crm' in current_app.view_functions else '#' }}">
-                    <div class="icon">◎</div>
-                    <h4>Open Full CRM Workspace</h4>
-                    <p>Go to client relationships, projects, communication history, pipeline controls, and revenue opportunity tracking.</p>
-                    <span class="cta">Launch CRM</span>
-                </a>
-                <a class="quick-action" href="{{ url_for('hris') if 'hris' in current_app.view_functions else '#' }}">
-                    <div class="icon">◉</div>
-                    <h4>Open Workforce Administration</h4>
-                    <p>Review employee files, organizational control, labor actions, discipline, and HR operations visibility.</p>
-                    <span class="cta">Launch HRIS</span>
-                </a>
-                <a class="quick-action" href="{{ url_for('ats') if 'ats' in current_app.view_functions else '#' }}">
-                    <div class="icon">◌</div>
-                    <h4>Open ATS Recruiting Center</h4>
-                    <p>View requisitions, applicant pipelines, resume strategy, interviews, and hiring conversion activity.</p>
-                    <span class="cta">Launch ATS</span>
-                </a>
-                <a class="quick-action" href="{{ url_for('orientation') if 'orientation' in current_app.view_functions else '#' }}">
-                    <div class="icon">◇</div>
-                    <h4>Open Orientation Flow</h4>
-                    <p>Control onboarding readiness, documents, acknowledgments, welcome sequencing, and equipment preparation.</p>
-                    <span class="cta">Launch Orientation</span>
-                </a>
-                <a class="quick-action" href="{{ url_for('sg_sst') if 'sg_sst' in current_app.view_functions else '#' }}">
-                    <div class="icon">⬢</div>
-                    <h4>Open SG-SST Module</h4>
-                    <p>Go to safety structure, risk matrices, inspections, investigations, training, indicators, and audits.</p>
-                    <span class="cta">Launch SG-SST</span>
-                </a>
-                <a class="quick-action" href="{{ url_for('finance') if 'finance' in current_app.view_functions else '#' }}">
-                    <div class="icon">◍</div>
-                    <h4>Open Finance Command</h4>
-                    <p>Review accounting, revenue, expenses, invoice controls, ledger movement, and budget intelligence.</p>
-                    <span class="cta">Launch Finance</span>
-                </a>
-            </div>
-        </article>
-
-        <article class="dashboard-card pad col-4">
-            <div class="section-head">
-                <div>
-                    <h3>Compliance Snapshot</h3>
-                    <p>
-                        This summary is structured to give immediate visibility to the most critical control areas across SG-SST, onboarding, and policy governance.
-                    </p>
-                </div>
-                <span class="eyebrow-badge">Control View</span>
-            </div>
-            <div class="compliance-matrix">
-                <div class="compliance-row">
-                    <div class="title">Policy Acknowledgments</div>
-                    <div class="detail">Prepared to track employee confirmations for conduct, safety, onboarding, and legal notices.</div>
-                    <span class="status-chip status-watch">Pending Expansion</span>
-                </div>
-                <div class="compliance-row">
-                    <div class="title">Safety Training</div>
-                    <div class="detail">Designed for training compliance dashboards, overdue renewals, and role-based requirement monitoring.</div>
-                    <span class="status-chip status-good">Structured</span>
-                </div>
-                <div class="compliance-row">
-                    <div class="title">Incident Control</div>
-                    <div class="detail">Section reserved for investigation workflows, corrective actions, and closure evidence.</div>
-                    <span class="status-chip status-watch">Needs Full UI</span>
-                </div>
-                <div class="compliance-row">
-                    <div class="title">Audit Readiness</div>
-                    <div class="detail">Prepared for audit schedules, minimum standards scoring, and improvement plan follow-up.</div>
-                    <span class="status-chip status-risk">High Priority</span>
-                </div>
-            </div>
-        </article>
-
-        <article class="dashboard-card pad col-12">
-            <div class="section-head">
-                <div>
-                    <h3>Executive Work Queue</h3>
-                    <p>
-                        A premium management table designed to summarize priority work items that affect project completion, deployment quality, and business operations.
-                    </p>
-                </div>
-                <span class="eyebrow-badge">Priority Queue</span>
-            </div>
             <div class="table-shell">
-                <table class="dashboard-table">
+                <table class="enterprise-table">
                     <thead>
                         <tr>
-                            <th>Priority</th>
-                            <th>Area</th>
-                            <th>Action Required</th>
-                            <th>Business Impact</th>
+                            <th>Stage</th>
+                            <th>Count</th>
+                            <th>Estimated Value</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Critical</td>
-                            <td>CRM Template</td>
-                            <td>Complete the full no-shrink enterprise CRM body with pipeline, project, communications, and profitability layers.</td>
-                            <td>Directly affects revenue visibility and consulting sales execution.</td>
-                            <td><span class="status-chip status-risk">Open</span></td>
-                        </tr>
-                        <tr>
-                            <td>Critical</td>
-                            <td>Finance Template</td>
-                            <td>Restore full accounting depth with stronger ledger, AP, AR, budgeting, reconciliation, and dashboard presentation.</td>
-                            <td>Essential for owner financial control and QuickBooks-level strategic ambition.</td>
-                            <td><span class="status-chip status-risk">Open</span></td>
-                        </tr>
-                        <tr>
-                            <td>High</td>
-                            <td>SG-SST Template</td>
-                            <td>Expand complete occupational safety program sections and restore the intended enterprise-wide compliance structure.</td>
-                            <td>Critical for legal defensibility, risk management, and Colombian compliance value.</td>
-                            <td><span class="status-chip status-watch">In Build</span></td>
-                        </tr>
-                        <tr>
-                            <td>High</td>
-                            <td>HRIS Template</td>
-                            <td>Add complete labor actions, disciplinary actions, forms, point system, employee relations, and formal control records.</td>
-                            <td>Core to HR consulting differentiation and legal case handling support.</td>
-                            <td><span class="status-chip status-watch">In Build</span></td>
-                        </tr>
-                        <tr>
-                            <td>High</td>
-                            <td>ATS + Orientation</td>
-                            <td>Complete recruiter and onboarding user flows, including resume writing, readiness tracking, and handoff to HRIS.</td>
-                            <td>Important for software product strength and consulting package differentiation.</td>
-                            <td><span class="status-chip status-watch">In Build</span></td>
-                        </tr>
-                        <tr>
-                            <td>Medium</td>
-                            <td>Analytics Layer</td>
-                            <td>Wire live metric sources and visualizations after the pages are fully stabilized.</td>
-                            <td>Improves owner insight and XIOMY intelligence quality.</td>
-                            <td><span class="status-chip status-good">Planned</span></td>
-                        </tr>
+                        {% if client_pipeline %}
+                            {% for row in client_pipeline %}
+                            <tr>
+                                <td>{{ row.stage if row.stage is defined else "Pipeline Stage" }}</td>
+                                <td>{{ row.count if row.count is defined else 0 }}</td>
+                                <td>${{ row.value if row.value is defined else 0 }}</td>
+                                <td class="status-soft">{{ row.status if row.status is defined else "Tracking" }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>Lead Qualification</td>
+                                <td>12</td>
+                                <td>$18,500</td>
+                                <td class="status-soft">Active</td>
+                            </tr>
+                            <tr>
+                                <td>Proposal in Review</td>
+                                <td>5</td>
+                                <td>$42,000</td>
+                                <td class="status-ok">Opportunity</td>
+                            </tr>
+                            <tr>
+                                <td>Negotiation</td>
+                                <td>3</td>
+                                <td>$27,500</td>
+                                <td class="status-ok">Warm</td>
+                            </tr>
+                            <tr>
+                                <td>Closing / Signature</td>
+                                <td>2</td>
+                                <td>$15,000</td>
+                                <td class="status-ok">Near Conversion</td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
         </article>
 
-        <article class="owner-office col-12">
-            <h3>XIOMY Executive Office Layer</h3>
-            <p>
-                This dashboard reserves a dedicated executive environment for XIOMY and the premium owner experience you requested. It is structured to become the strategic control room for advanced AI guidance, enterprise memory, multilingual executive support, voice interaction, and future owner-only decision tools across the UrbanHRPartners ecosystem.
-            </p>
-            <div class="owner-office-grid">
-                <div class="owner-office-card">
-                    <span class="label">Owner Identity</span>
-                    <span class="value">Juan Carlos Urbano, PhD(c) Business Psychology, MA-MHRM</span>
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">ATS Hiring Pipeline</h2>
+                    <p class="section-subtitle">Recruitment workflow visibility from requisition launch through onboarding conversion.</p>
                 </div>
-                <div class="owner-office-card">
-                    <span class="label">Strategic Layer</span>
-                    <span class="value">XIOMY Executive Intelligence Environment</span>
+                <div class="pill-status">Talent Acquisition</div>
+            </div>
+
+            <div class="table-shell">
+                <table class="enterprise-table">
+                    <thead>
+                        <tr>
+                            <th>Pipeline Stage</th>
+                            <th>Candidates</th>
+                            <th>Priority</th>
+                            <th>Readiness</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if ats_pipeline %}
+                            {% for row in ats_pipeline %}
+                            <tr>
+                                <td>{{ row.stage if row.stage is defined else "Stage" }}</td>
+                                <td>{{ row.count if row.count is defined else 0 }}</td>
+                                <td class="{{ 'priority-high' if (row.priority if row.priority is defined else '') in ['High', 'Critical'] else 'status-soft' }}">
+                                    {{ row.priority if row.priority is defined else "Normal" }}
+                                </td>
+                                <td>{{ row.readiness if row.readiness is defined else "In Progress" }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>Application Review</td>
+                                <td>26</td>
+                                <td class="status-soft">Normal</td>
+                                <td>Screening</td>
+                            </tr>
+                            <tr>
+                                <td>Interview Stage</td>
+                                <td>11</td>
+                                <td class="priority-high">High</td>
+                                <td>Manager Review</td>
+                            </tr>
+                            <tr>
+                                <td>Offer Pending</td>
+                                <td>4</td>
+                                <td class="priority-high">Critical</td>
+                                <td>Decision Window</td>
+                            </tr>
+                            <tr>
+                                <td>Orientation Queue</td>
+                                <td>3</td>
+                                <td class="status-ok">Ready</td>
+                                <td>Onboarding</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+
+    <section class="dashboard-grid-3">
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">HRIS Workforce Watch</h2>
+                    <p class="section-subtitle">Employee status, actions, documentation, and workforce governance tracking.</p>
                 </div>
-                <div class="owner-office-card">
-                    <span class="label">Platform Mission</span>
-                    <span class="value">Integrated AI-driven business ecosystem</span>
+                <div class="pill-status">People Ops</div>
+            </div>
+
+            <div class="list-stack">
+                {% if hris_rows %}
+                    {% for row in hris_rows[:4] %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">{{ row.name if row.name is defined else "Employee Record" }}</div>
+                            <div class="list-item-badge">{{ row.status if row.status is defined else "Active" }}</div>
+                        </div>
+                        <div class="list-item-text">
+                            {{ row.summary if row.summary is defined else "Employee profile, role alignment, labor action status, and HR compliance tracking available." }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Disciplinary and Labor Relations Tracking</div>
+                            <div class="list-item-badge">HRIS</div>
+                        </div>
+                        <div class="list-item-text">Prepared for FLRA-style workflows, formal actions, investigative notes, and Colombia labor code alignment.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Performance Documentation</div>
+                            <div class="list-item-badge">Records</div>
+                        </div>
+                        <div class="list-item-text">Ready for coaching, corrective action, recognition, and job description-to-SOP traceability.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">SG-SST Oversight</h2>
+                    <p class="section-subtitle">Safety action control, inspections, incidents, risk matrix monitoring, and legal structure.</p>
+                </div>
+                <div class="pill-status">Compliance</div>
+            </div>
+
+            <div class="list-stack">
+                {% if sgsst_rows %}
+                    {% for row in sgsst_rows[:4] %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">{{ row.title if row.title is defined else "SG-SST Action" }}</div>
+                            <div class="list-item-badge">{{ row.status if row.status is defined else "Open" }}</div>
+                        </div>
+                        <div class="list-item-text">{{ row.summary if row.summary is defined else "Safety monitoring record." }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Risk Matrix Maintenance</div>
+                            <div class="list-item-badge">Priority</div>
+                        </div>
+                        <div class="list-item-text">Prepared to track hazard classification, controls, exposure evaluation, and required follow-up actions.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Investigation Readiness</div>
+                            <div class="list-item-badge">Incident</div>
+                        </div>
+                        <div class="list-item-text">Supports incident reporting, root cause analysis, corrective actions, and audit traceability.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Inventory & Asset Control</h2>
+                    <p class="section-subtitle">Provisioning, stock health, barcode/QR visibility, and asset assignment readiness.</p>
+                </div>
+                <div class="pill-status">Physical Resources</div>
+            </div>
+
+            <div class="list-stack">
+                {% if inventory_rows %}
+                    {% for row in inventory_rows[:4] %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">{{ row.name if row.name is defined else "Inventory Item" }}</div>
+                            <div class="list-item-badge">{{ row.quantity if row.quantity is defined else 0 }}</div>
+                        </div>
+                        <div class="list-item-text">{{ row.summary if row.summary is defined else "Item movement and allocation tracking." }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Laptop Provisioning Queue</div>
+                            <div class="list-item-badge">Assets</div>
+                        </div>
+                        <div class="list-item-text">Device allocation can be tied to onboarding, employee assignment, and audit history.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Low Stock Monitoring</div>
+                            <div class="list-item-badge">Reorder</div>
+                        </div>
+                        <div class="list-item-text">Critical supply thresholds should feed into purchasing and finance forecasting workflows.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+    </section>
+
+    <section class="dashboard-grid-2">
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Finance Register Preview</h2>
+                    <p class="section-subtitle">QuickBooks-style transaction visibility for enterprise accounting review.</p>
+                </div>
+                <div class="pill-status">Ledger Control</div>
+            </div>
+
+            <div class="table-shell">
+                <table class="enterprise-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Entry</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if finance_rows %}
+                            {% for row in finance_rows[:8] %}
+                            <tr>
+                                <td>{{ row.date if row.date is defined else "-" }}</td>
+                                <td>{{ row.description if row.description is defined else "Ledger entry" }}</td>
+                                <td>{{ row.category if row.category is defined else "General" }}</td>
+                                <td>${{ row.amount if row.amount is defined else 0 }}</td>
+                                <td>{{ row.entry_type if row.entry_type is defined else "Transaction" }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>2026-03-19</td>
+                                <td>Consulting retainer invoice posted</td>
+                                <td>Revenue</td>
+                                <td>$4,500</td>
+                                <td>Invoice</td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-18</td>
+                                <td>Software subscription renewal</td>
+                                <td>Operating Expense</td>
+                                <td>$320</td>
+                                <td>Expense</td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-17</td>
+                                <td>Payroll reserve transfer</td>
+                                <td>Payroll</td>
+                                <td>$2,850</td>
+                                <td>Journal</td>
+                            </tr>
+                            <tr>
+                                <td>2026-03-16</td>
+                                <td>Client deposit received</td>
+                                <td>Receivable</td>
+                                <td>$1,800</td>
+                                <td>Payment</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="panel-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Marketing & Growth Signals</h2>
+                    <p class="section-subtitle">Campaign readiness, content opportunities, engagement direction, and business expansion visibility.</p>
+                </div>
+                <div class="pill-status">Market Intelligence</div>
+            </div>
+
+            <div class="chart-placeholder small">
+                <div class="chart-grid-lines"></div>
+                <div class="chart-note">
+                    This container is ready for campaign performance, funnel conversion, traffic quality, social engagement, and prospect source analytics. It is intentionally deploy-safe without requiring client-side chart libraries on first release.
+                </div>
+                <div class="spark-row" aria-hidden="true">
+                    <div class="spark-bar" style="height: 24%;"></div>
+                    <div class="spark-bar" style="height: 36%;"></div>
+                    <div class="spark-bar" style="height: 44%;"></div>
+                    <div class="spark-bar" style="height: 55%;"></div>
+                    <div class="spark-bar" style="height: 52%;"></div>
+                    <div class="spark-bar" style="height: 68%;"></div>
+                    <div class="spark-bar" style="height: 80%;"></div>
+                    <div class="spark-bar" style="height: 76%;"></div>
                 </div>
             </div>
         </article>
     </section>
-</section>
+
+    <section class="panel-card">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Tasks, Priorities & Calendar Coordination</h2>
+                <p class="section-subtitle">Cross-module work execution area connecting follow-ups, deadlines, meetings, and consultant activity.</p>
+            </div>
+            <div class="pill-status">Execution Layer</div>
+        </div>
+
+        <div class="tasks-grid">
+            <div class="list-stack">
+                {% if tasks %}
+                    {% for task in tasks[:6] %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">{{ task.title if task.title is defined else "Task" }}</div>
+                            <div class="list-item-badge">{{ task.priority if task.priority is defined else "Normal" }}</div>
+                        </div>
+                        <div class="list-item-text">
+                            {{ task.description if task.description is defined else "Operational task tracking item." }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Follow up on pending CRM proposals</div>
+                            <div class="list-item-badge">High</div>
+                        </div>
+                        <div class="list-item-text">Review negotiation status, update next step dates, and create communication reminders for consultant action.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Finalize onboarding documents</div>
+                            <div class="list-item-badge">ATS</div>
+                        </div>
+                        <div class="list-item-text">Ensure policy acknowledgements, equipment assignment, and SG-SST briefing dependencies are tracked.</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-head">
+                            <div class="list-item-title">Review cashflow forecast</div>
+                            <div class="list-item-badge">Finance</div>
+                        </div>
+                        <div class="list-item-text">Confirm receivables timing, payroll obligations, vendor commitments, and monthly liquidity buffer.</div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="calendar-board">
+                <div class="calendar-day">
+                    <div class="calendar-day-name">Mon</div>
+                    <div class="calendar-day-number">17</div>
+                    <div class="calendar-event">CRM follow-up block</div>
+                    <div class="calendar-event">Invoice review</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-name">Tue</div>
+                    <div class="calendar-day-number">18</div>
+                    <div class="calendar-event">ATS interviews</div>
+                </div>
+                <div class="calendar-day is-highlight">
+                    <div class="calendar-day-name">Wed</div>
+                    <div class="calendar-day-number">19</div>
+                    <div class="calendar-event">Executive dashboard review</div>
+                    <div class="calendar-event">Safety inspection checkpoint</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-name">Thu</div>
+                    <div class="calendar-day-number">20</div>
+                    <div class="calendar-event">Client strategy session</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-name">Fri</div>
+                    <div class="calendar-day-number">21</div>
+                    <div class="calendar-event">Payroll prep</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-name">Sat</div>
+                    <div class="calendar-day-number">22</div>
+                    <div class="calendar-event">Planning buffer</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-name">Sun</div>
+                    <div class="calendar-day-number">23</div>
+                    <div class="calendar-event">Executive review</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-grid-2">
+        <article class="feed-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Recent Activity Feed</h2>
+                    <p class="section-subtitle">Chronological stream for operational awareness across all modules.</p>
+                </div>
+                <div class="pill-status">Live Feed</div>
+            </div>
+
+            {% if recent_activity %}
+                {% for item in recent_activity[:7] %}
+                <div class="feed-item">
+                    <div class="feed-dot"></div>
+                    <div class="feed-content">
+                        <div class="feed-title">{{ item.title if item.title is defined else "Activity Event" }}</div>
+                        <div class="feed-text">{{ item.message if item.message is defined else item }}</div>
+                        <div class="feed-time">{{ item.time if item.time is defined else "Recently updated" }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="feed-item">
+                    <div class="feed-dot"></div>
+                    <div class="feed-content">
+                        <div class="feed-title">CRM update recorded</div>
+                        <div class="feed-text">A proposal stage movement, communication log, or client follow-up can appear here once connected to backend transactions.</div>
+                        <div class="feed-time">Moments ago</div>
+                    </div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-dot"></div>
+                    <div class="feed-content">
+                        <div class="feed-title">ATS workflow updated</div>
+                        <div class="feed-text">Candidate status changes, interviews, notes, and onboarding triggers should populate this timeline.</div>
+                        <div class="feed-time">Today</div>
+                    </div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-dot"></div>
+                    <div class="feed-content">
+                        <div class="feed-title">Finance movement posted</div>
+                        <div class="feed-text">Invoice creation, collection, expenses, and ledger adjustments can be displayed here for rapid oversight.</div>
+                        <div class="feed-time">Today</div>
+                    </div>
+                </div>
+            {% endif %}
+        </article>
+
+        <article class="feed-card">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Executive Notes</h2>
+                    <p class="section-subtitle">Leadership reminders for deployment integrity and enterprise expansion direction.</p>
+                </div>
+                <div class="pill-status">Owner View</div>
+            </div>
+
+            <div class="list-stack">
+                <div class="list-item">
+                    <div class="list-item-head">
+                        <div class="list-item-title">Deployment Safety</div>
+                        <div class="list-item-badge">Render</div>
+                    </div>
+                    <div class="list-item-text">
+                        This template avoids `current_app`, includes Jinja fallbacks for undefined variables, and is safe to render even before live data is fully populated.
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-head">
+                        <div class="list-item-title">Route Expectations</div>
+                        <div class="list-item-badge">Flask</div>
+                    </div>
+                    <div class="list-item-text">
+                        The module buttons assume existing endpoints named `crm_dashboard`, `hris_dashboard`, `ats_dashboard`, `sgsst_dashboard`, `finance_dashboard`, `inventory_dashboard`, `marketing_dashboard`, and `reports_dashboard`.
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="list-item-head">
+                        <div class="list-item-title">Enterprise Expansion</div>
+                        <div class="list-item-badge">Roadmap</div>
+                    </div>
+                    <div class="list-item-text">
+                        This page is structured so future JavaScript charts, live notifications, AI panels, exports, and deeper module metrics can be added without replacing the full layout.
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <div class="footer-note">
+        UrbanHRPartners Enterprise Dashboard · Full enterprise template layer · XIOMY-ready presentation
+    </div>
+
+</div>
 {% endblock %}
