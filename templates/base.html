@@ -1,1231 +1,248 @@
-{% set app_name = app_name if app_name is defined and app_name else "UrbanHRPartners Enterprise Suite" %}
-{% set company_name = company_name if company_name is defined and company_name else "UrbanHRPartners" %}
-{% set system_name = system_name if system_name is defined and system_name else "UrbanHRPartners Enterprise Suite" %}
-{% set request_path = request.path if request is defined and request.path is defined else "" %}
+{% set app_name = app_name if app_name is defined else "UrbanHRPartners Enterprise Suite" %}
+{% set system_name = system_name if system_name is defined else "UrbanHRPartners Enterprise Suite" %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ========================================================= -->
+    <!-- META / SYSTEM -->
+    <!-- ========================================================= -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ app_name }}{% endblock %}</title>
 
-    <meta name="description" content="UrbanHRPartners Enterprise Suite master interface for CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, Reports, Tasks, Calendar, Orientation, and XIOMY AI.">
-    <meta name="theme-color" content="#0b1f3a">
+    <meta name="description" content="UrbanHRPartners Enterprise Suite - CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, Reports, XIOMY AI.">
+    <meta name="theme-color" content="#07162a">
 
+    <!-- ========================================================= -->
+    <!-- FONTS -->
+    <!-- ========================================================= -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ========================================================= -->
+    <!-- GLOBAL STYLES -->
+    <!-- ========================================================= -->
     <style>
-        :root {
-            --navy-950: #07162a;
-            --navy-900: #0b1f3a;
-            --navy-850: #102847;
-            --navy-800: #17345c;
-            --navy-700: #204775;
-            --gold-500: #f0c85a;
-            --gold-600: #ddb141;
-            --orange-500: #e8891a;
-            --orange-600: #cf7412;
-            --silver-100: #f5f7fb;
-            --silver-200: #dde4ef;
-            --silver-300: #c5d0de;
-            --silver-400: #9eaec2;
-            --slate-soft: rgba(255,255,255,0.72);
-            --slate-faint: rgba(255,255,255,0.55);
-            --white: #ffffff;
-            --danger-soft: #ffbc7d;
-            --success-soft: #f3df8c;
-            --shadow-deep: 0 24px 60px rgba(0, 0, 0, 0.42);
-            --shadow-panel: 0 16px 36px rgba(0, 0, 0, 0.30);
-            --border-soft: rgba(255,255,255,0.08);
-            --border-faint: rgba(255,255,255,0.05);
-            --panel-bg:
-                linear-gradient(145deg, rgba(13, 31, 58, 0.98), rgba(7, 22, 42, 0.98));
-            --page-bg:
-                radial-gradient(circle at top right, rgba(240, 200, 90, 0.10), transparent 25%),
-                radial-gradient(circle at bottom left, rgba(232, 137, 26, 0.08), transparent 26%),
-                linear-gradient(180deg, #061222 0%, #081729 40%, #0b1f3a 100%);
-            --sidebar-width: 304px;
-            --topbar-height: 88px;
-            --radius-xl: 30px;
-            --radius-lg: 24px;
-            --radius-md: 18px;
-            --radius-sm: 14px;
-            --transition-fast: 0.2s ease;
-            --transition-medium: 0.28s ease;
-            --font-stack: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
 
-        * {
-            box-sizing: border-box;
-        }
+    /* =========================================================
+       ROOT THEME
+    ========================================================= */
+    :root {
+        --navy-900: #07162a;
+        --navy-800: #0b1f3a;
+        --navy-700: #17345c;
 
-        html {
-            scroll-behavior: smooth;
-        }
+        --gold: #f0c85a;
+        --orange: #e8891a;
+        --silver: #cfd8dc;
 
-        body {
-            margin: 0;
-            font-family: var(--font-stack);
-            background: var(--page-bg);
-            color: var(--white);
-            min-height: 100vh;
-        }
+        --bg-light: #f5f7fa;
+        --card-bg: #ffffff;
 
-        img {
-            max-width: 100%;
-            display: block;
-        }
+        --radius-lg: 18px;
+        --radius-md: 12px;
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+        --shadow-soft: 0 10px 25px rgba(0,0,0,0.15);
+        --shadow-strong: 0 18px 40px rgba(0,0,0,0.25);
+    }
 
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
 
-        button {
-            cursor: pointer;
-        }
+    body {
+        background: var(--bg-light);
+        color: #1a1a1a;
+        display: flex;
+    }
 
-        ::selection {
-            background: rgba(240, 200, 90, 0.35);
-            color: #ffffff;
-        }
+    /* =========================================================
+       SIDEBAR
+    ========================================================= */
+    .sidebar {
+        width: 260px;
+        height: 100vh;
+        position: fixed;
+        background: linear-gradient(180deg, var(--navy-900), var(--navy-800));
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: var(--shadow-strong);
+    }
 
-        .app-shell {
-            min-height: 100vh;
-            display: flex;
-            width: 100%;
-        }
+    .sidebar h2 {
+        color: var(--gold);
+        margin-bottom: 30px;
+        font-size: 18px;
+        text-align: center;
+    }
 
+    .nav-link {
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        border-radius: var(--radius-md);
+        color: white;
+        text-decoration: none;
+        display: block;
+        transition: 0.2s;
+    }
+
+    .nav-link:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* =========================================================
+       MAIN CONTENT
+    ========================================================= */
+    .main {
+        margin-left: 260px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* =========================================================
+       TOPBAR
+    ========================================================= */
+    .topbar {
+        background: white;
+        padding: 16px 24px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .topbar-title {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    /* =========================================================
+       HERO LOGO
+    ========================================================= */
+    .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+
+    .hero img {
+        height: 15vh;
+        max-height: 160px;
+        object-fit: contain;
+    }
+
+    /* =========================================================
+       CONTENT AREA
+    ========================================================= */
+    .content {
+        padding: 24px;
+    }
+
+    /* =========================================================
+       CARDS
+    ========================================================= */
+    .card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 20px;
+    }
+
+    /* =========================================================
+       BUTTONS (3D)
+    ========================================================= */
+    .btn {
+        background: linear-gradient(135deg, var(--gold), var(--orange));
+        color: #000;
+        padding: 12px 18px;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        box-shadow: var(--shadow-soft);
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-strong);
+    }
+
+    /* =========================================================
+       GRID
+    ========================================================= */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 768px) {
         .sidebar {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            background:
-                radial-gradient(circle at top right, rgba(240, 200, 90, 0.11), transparent 28%),
-                linear-gradient(180deg, rgba(9, 23, 43, 0.98) 0%, rgba(7, 22, 42, 0.99) 100%);
-            border-right: 1px solid var(--border-soft);
-            box-shadow:
-                12px 0 30px rgba(0,0,0,0.16),
-                inset -1px 0 0 rgba(255,255,255,0.03);
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 1200;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .sidebar-scroll {
-            overflow-y: auto;
-            padding: 22px 18px 24px 18px;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(240,200,90,0.35) transparent;
-        }
-
-        .sidebar-scroll::-webkit-scrollbar {
-            width: 9px;
-        }
-
-        .sidebar-scroll::-webkit-scrollbar-thumb {
-            background: rgba(240,200,90,0.22);
-            border-radius: 999px;
-        }
-
-        .brand-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 26px;
-            padding: 22px 20px;
-            background:
-                radial-gradient(circle at top right, rgba(240, 200, 90, 0.23), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(232, 137, 26, 0.16), transparent 30%),
-                linear-gradient(145deg, #0d2748 0%, #0a1f39 55%, #081729 100%);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow:
-                0 18px 34px rgba(0,0,0,0.30),
-                inset 0 1px 0 rgba(255,255,255,0.05);
-            margin-bottom: 18px;
-        }
-
-        .brand-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(115deg, rgba(255,255,255,0.04), transparent 45%, transparent 70%, rgba(255,255,255,0.03));
-            pointer-events: none;
-        }
-
-        .brand-top {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-logo {
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
-            background:
-                linear-gradient(145deg, rgba(240,200,90,0.20), rgba(232,137,26,0.18));
-            border: 1px solid rgba(240,200,90,0.28);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow:
-                0 10px 22px rgba(0,0,0,0.24),
-                inset 0 1px 0 rgba(255,255,255,0.06);
-            font-size: 1.18rem;
-            font-weight: 800;
-            color: var(--gold-500);
-            letter-spacing: 0.08em;
-        }
-
-        .brand-name {
-            margin: 0;
-            font-size: 1.02rem;
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.25;
-        }
-
-        .brand-subtitle {
-            margin: 4px 0 0 0;
-            font-size: 0.78rem;
-            color: var(--slate-soft);
-            line-height: 1.45;
-        }
-
-        .brand-meta {
-            margin-top: 16px;
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .brand-meta-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border-radius: 999px;
-            padding: 8px 12px;
-            width: fit-content;
-            max-width: 100%;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--slate-soft);
-            font-size: 0.76rem;
-            font-weight: 700;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        .brand-status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--gold-500);
-            box-shadow: 0 0 10px rgba(240,200,90,0.75);
-            flex-shrink: 0;
-        }
-
-        .sidebar-section {
-            margin-top: 16px;
-        }
-
-        .sidebar-section-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px 10px 8px 10px;
-            color: var(--gold-500);
-            font-size: 0.78rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .nav-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 15px;
-            border-radius: 18px;
-            color: var(--white);
-            background:
-                linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow:
-                0 10px 22px rgba(0,0,0,0.18),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-            transition:
-                transform var(--transition-fast),
-                box-shadow var(--transition-fast),
-                border-color var(--transition-fast),
-                background var(--transition-fast);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link:hover {
-            transform: translateY(-2px);
-            border-color: rgba(240,200,90,0.20);
-            box-shadow:
-                0 16px 26px rgba(0,0,0,0.26),
-                0 0 0 1px rgba(240,200,90,0.06);
-        }
-
-        .nav-link.is-active {
-            background:
-                radial-gradient(circle at right top, rgba(240,200,90,0.14), transparent 30%),
-                linear-gradient(145deg, rgba(240,200,90,0.10), rgba(232,137,26,0.08)),
-                linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-            border-color: rgba(240,200,90,0.25);
-            box-shadow:
-                0 16px 28px rgba(0,0,0,0.28),
-                inset 0 1px 0 rgba(255,255,255,0.06);
-        }
-
-        .nav-link.is-active .nav-label {
-            color: var(--gold-500);
-        }
-
-        .nav-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            background:
-                linear-gradient(145deg, rgba(240,200,90,0.12), rgba(232,137,26,0.10));
-            border: 1px solid rgba(240,200,90,0.18);
-            color: var(--gold-500);
-            font-size: 1rem;
-            font-weight: 800;
-            box-shadow:
-                0 8px 18px rgba(0,0,0,0.18),
-                inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-
-        .nav-copy {
-            min-width: 0;
-            flex: 1;
-        }
-
-        .nav-label {
-            display: block;
-            font-size: 0.94rem;
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.2;
-            margin-bottom: 4px;
-        }
-
-        .nav-desc {
-            display: block;
-            font-size: 0.78rem;
-            color: var(--slate-soft);
-            line-height: 1.4;
-        }
-
-        .nav-chevron {
-            color: rgba(255,255,255,0.34);
-            font-size: 0.92rem;
-            font-weight: 800;
-        }
-
-        .sidebar-footer {
-            margin-top: 18px;
-            border-radius: 22px;
-            padding: 18px;
-            background:
-                linear-gradient(145deg, rgba(240,200,90,0.10), rgba(232,137,26,0.08)),
-                linear-gradient(145deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-            border: 1px solid rgba(240,200,90,0.16);
-            box-shadow:
-                0 14px 26px rgba(0,0,0,0.20),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-        }
-
-        .sidebar-footer-title {
-            margin: 0 0 8px 0;
-            font-size: 0.92rem;
-            font-weight: 800;
-            color: var(--gold-500);
-        }
-
-        .sidebar-footer-text {
-            margin: 0;
-            color: var(--slate-soft);
-            line-height: 1.55;
-            font-size: 0.82rem;
-        }
-
-        .page-shell {
-            width: 100%;
-            min-height: 100vh;
-            margin-left: var(--sidebar-width);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 900;
-            min-height: var(--topbar-height);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 18px 26px;
-            backdrop-filter: blur(12px);
-            background:
-                linear-gradient(180deg, rgba(8, 23, 41, 0.88), rgba(8, 23, 41, 0.70));
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
-        }
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            min-width: 0;
-        }
-
-        .sidebar-toggle {
             display: none;
-            align-items: center;
-            justify-content: center;
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            border: 1px solid rgba(240,200,90,0.16);
-            background:
-                linear-gradient(145deg, rgba(240,200,90,0.12), rgba(232,137,26,0.10));
-            color: var(--gold-500);
-            box-shadow:
-                0 10px 22px rgba(0,0,0,0.22),
-                inset 0 1px 0 rgba(255,255,255,0.04);
         }
-
-        .topbar-title-wrap {
-            min-width: 0;
+        .main {
+            margin-left: 0;
         }
+    }
 
-        .topbar-title {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 0.01em;
-            color: #ffffff;
-            line-height: 1.2;
-        }
-
-        .topbar-subtitle {
-            margin: 6px 0 0 0;
-            font-size: 0.86rem;
-            color: var(--slate-soft);
-            line-height: 1.45;
-            max-width: 920px;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-        }
-
-        .topbar-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--slate-soft);
-            font-size: 0.78rem;
-            font-weight: 700;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        .topbar-chip strong {
-            color: var(--gold-500);
-        }
-
-        .main-viewport {
-            flex: 1;
-            padding: 26px;
-            width: 100%;
-        }
-
-        .content-frame {
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .flash-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .flash-card {
-            border-radius: 18px;
-            padding: 14px 16px;
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow:
-                0 12px 24px rgba(0,0,0,0.18),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-            line-height: 1.55;
-            font-size: 0.9rem;
-        }
-
-        .flash-card.info {
-            background:
-                linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-            color: #ffffff;
-        }
-
-        .flash-card.success {
-            background:
-                linear-gradient(145deg, rgba(240,200,90,0.14), rgba(232,137,26,0.10));
-            border-color: rgba(240,200,90,0.20);
-            color: #fff8e6;
-        }
-
-        .flash-card.warning {
-            background:
-                linear-gradient(145deg, rgba(232,137,26,0.16), rgba(255,173,85,0.08));
-            border-color: rgba(232,137,26,0.26);
-            color: #fff3e0;
-        }
-
-        .flash-card.danger,
-        .flash-card.error {
-            background:
-                linear-gradient(145deg, rgba(176,66,26,0.20), rgba(133,40,15,0.12));
-            border-color: rgba(255,188,125,0.24);
-            color: #fff0e3;
-        }
-
-        .page-card {
-            border-radius: 30px;
-            padding: 22px;
-            background:
-                linear-gradient(145deg, rgba(11,31,58,0.70), rgba(7,22,42,0.74));
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow:
-                0 18px 42px rgba(0,0,0,0.20),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-        }
-
-        .panel-grid {
-            display: grid;
-            gap: 18px;
-        }
-
-        .ui-card {
-            border-radius: 22px;
-            padding: 20px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-soft);
-            box-shadow:
-                var(--shadow-panel),
-                inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        .ui-card-title {
-            margin: 0 0 8px 0;
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--gold-500);
-        }
-
-        .ui-card-text {
-            margin: 0;
-            line-height: 1.6;
-            color: var(--slate-soft);
-            font-size: 0.9rem;
-        }
-
-        .btn-3d,
-        .btn-ghost,
-        .btn-danger {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            min-height: 46px;
-            padding: 12px 18px;
-            border-radius: 16px;
-            border: 0;
-            font-weight: 800;
-            font-size: 0.9rem;
-            letter-spacing: 0.01em;
-            transition:
-                transform var(--transition-fast),
-                box-shadow var(--transition-fast),
-                opacity var(--transition-fast);
-        }
-
-        .btn-3d {
-            color: #10213e;
-            background:
-                linear-gradient(180deg, #f4d77d 0%, #efc75a 55%, #ddb141 100%);
-            box-shadow:
-                0 10px 0 #a27c21,
-                0 16px 22px rgba(0,0,0,0.28);
-        }
-
-        .btn-3d:hover {
-            transform: translateY(1px);
-            box-shadow:
-                0 8px 0 #a27c21,
-                0 14px 20px rgba(0,0,0,0.26);
-        }
-
-        .btn-3d:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 5px 0 #a27c21,
-                0 10px 16px rgba(0,0,0,0.22);
-        }
-
-        .btn-ghost {
-            color: #ffffff;
-            background:
-                linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-            border: 1px solid rgba(255,255,255,0.10);
-            box-shadow:
-                0 10px 20px rgba(0,0,0,0.20),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-        }
-
-        .btn-ghost:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 14px 24px rgba(0,0,0,0.24);
-        }
-
-        .btn-danger {
-            color: #fff6ef;
-            background:
-                linear-gradient(180deg, #da8144 0%, #c76627 55%, #a8501d 100%);
-            box-shadow:
-                0 10px 0 #6e3615,
-                0 16px 22px rgba(0,0,0,0.28);
-        }
-
-        .btn-danger:hover {
-            transform: translateY(1px);
-            box-shadow:
-                0 8px 0 #6e3615,
-                0 14px 20px rgba(0,0,0,0.26);
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .form-grid.two {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .form-grid.three {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .field-label {
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--gold-500);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .field-input,
-        .field-select,
-        .field-textarea {
-            width: 100%;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.10);
-            background:
-                linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            color: #ffffff;
-            padding: 13px 14px;
-            outline: none;
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.03),
-                0 8px 18px rgba(0,0,0,0.12);
-            transition:
-                border-color var(--transition-fast),
-                box-shadow var(--transition-fast);
-        }
-
-        .field-input::placeholder,
-        .field-textarea::placeholder {
-            color: rgba(255,255,255,0.40);
-        }
-
-        .field-input:focus,
-        .field-select:focus,
-        .field-textarea:focus {
-            border-color: rgba(240,200,90,0.35);
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.03),
-                0 0 0 4px rgba(240,200,90,0.08),
-                0 10px 22px rgba(0,0,0,0.14);
-        }
-
-        .field-select option {
-            color: #081729;
-        }
-
-        .field-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.02);
-        }
-
-        table.enterprise-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 720px;
-        }
-
-        table.enterprise-table th,
-        table.enterprise-table td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        table.enterprise-table th {
-            font-size: 0.78rem;
-            color: var(--gold-500);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            background: rgba(255,255,255,0.03);
-        }
-
-        table.enterprise-table td {
-            color: rgba(255,255,255,0.84);
-            font-size: 0.9rem;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 11px;
-            border-radius: 999px;
-            font-size: 0.76rem;
-            font-weight: 800;
-            background: rgba(255,255,255,0.06);
-            color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .badge.gold {
-            background: rgba(240,200,90,0.12);
-            border-color: rgba(240,200,90,0.24);
-            color: var(--gold-500);
-        }
-
-        .badge.orange {
-            background: rgba(232,137,26,0.12);
-            border-color: rgba(232,137,26,0.24);
-            color: #ffcb9c;
-        }
-
-        .badge.silver {
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(255,255,255,0.10);
-            color: #f1f6ff;
-        }
-
-        .empty-state {
-            border-radius: 22px;
-            padding: 26px;
-            background:
-                linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-            border: 1px dashed rgba(240,200,90,0.22);
-            text-align: center;
-            color: var(--slate-soft);
-        }
-
-        .empty-state-title {
-            margin: 0 0 8px 0;
-            font-size: 1rem;
-            color: var(--gold-500);
-            font-weight: 800;
-        }
-
-        .empty-state-text {
-            margin: 0;
-            line-height: 1.6;
-            font-size: 0.9rem;
-        }
-
-        .mobile-sidebar-backdrop {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(4px);
-            z-index: 1100;
-        }
-
-        .mobile-bottom-nav {
-            display: none;
-            position: fixed;
-            left: 14px;
-            right: 14px;
-            bottom: 14px;
-            z-index: 1250;
-            padding: 10px;
-            border-radius: 22px;
-            background:
-                linear-gradient(145deg, rgba(8,23,41,0.92), rgba(11,31,58,0.90));
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow:
-                0 18px 40px rgba(0,0,0,0.34),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .mobile-bottom-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 60px;
-            border-radius: 16px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: var(--slate-soft);
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.04);
-        }
-
-        .mobile-bottom-link.active {
-            color: var(--gold-500);
-            border-color: rgba(240,200,90,0.22);
-            background: rgba(240,200,90,0.08);
-        }
-
-        .desktop-only {
-            display: inline-flex;
-        }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        @media (max-width: 1280px) {
-            .form-grid.two,
-            .form-grid.three {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 1100px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform var(--transition-medium);
-            }
-
-            .sidebar.is-open {
-                transform: translateX(0);
-            }
-
-            .page-shell {
-                margin-left: 0;
-            }
-
-            .sidebar-toggle {
-                display: inline-flex;
-            }
-
-            .mobile-sidebar-backdrop.is-open {
-                display: block;
-            }
-
-            .desktop-only {
-                display: none;
-            }
-
-            .topbar {
-                padding: 16px 18px;
-            }
-
-            .main-viewport {
-                padding: 18px 18px 92px 18px;
-            }
-
-            .mobile-bottom-nav {
-                display: grid;
-            }
-        }
-
-        @media (max-width: 720px) {
-            .topbar {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .topbar-left,
-            .topbar-right {
-                width: 100%;
-            }
-
-            .topbar-right {
-                justify-content: flex-start;
-            }
-
-            .topbar-title {
-                font-size: 1.05rem;
-            }
-
-            .topbar-subtitle {
-                font-size: 0.8rem;
-            }
-
-            .page-card {
-                padding: 16px;
-                border-radius: 22px;
-            }
-
-            .ui-card {
-                padding: 16px;
-                border-radius: 18px;
-            }
-        }
     </style>
 
     {% block head_extra %}{% endblock %}
 </head>
+
 <body>
-    <div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop" onclick="closeSidebar()"></div>
 
-    <div class="app-shell">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-scroll">
-                <div class="brand-card">
-                    <div class="brand-top">
-                        <div class="brand-logo">UH</div>
-                        <div>
-                            <h1 class="brand-name">{{ company_name }}</h1>
-                            <p class="brand-subtitle">{{ system_name }} · XIOMY Executive Ecosystem</p>
-                        </div>
-                    </div>
+<!-- ========================================================= -->
+<!-- SIDEBAR -->
+<!-- ========================================================= -->
+<div class="sidebar">
+    <h2>UrbanHRPartners</h2>
 
-                    <div class="brand-meta">
-                        <div class="brand-meta-pill">
-                            <span class="brand-status-dot"></span>
-                            System Live
-                        </div>
-                        <div class="brand-meta-pill">
-                            Enterprise Control Layer
-                        </div>
-                    </div>
-                </div>
+    <a href="/" class="nav-link">Dashboard</a>
+    <a href="/crm" class="nav-link">CRM</a>
+    <a href="/hris" class="nav-link">HRIS</a>
+    <a href="/ats" class="nav-link">ATS</a>
+    <a href="/orientation" class="nav-link">Orientation</a>
+    <a href="/sgsst" class="nav-link">SG-SST</a>
+    <a href="/finance" class="nav-link">Finance</a>
+    <a href="/inventory" class="nav-link">Inventory</a>
+    <a href="/marketing" class="nav-link">Marketing</a>
+    <a href="/reports" class="nav-link">Reports</a>
+</div>
 
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Core Navigation</div>
-                    <div class="nav-stack">
-                        <a href="{{ url_for('dashboard') }}" class="nav-link {% if request_path == url_for('dashboard') %}is-active{% endif %}">
-                            <div class="nav-icon">⌂</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Dashboard</span>
-                                <span class="nav-desc">Executive command center</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
+<!-- ========================================================= -->
+<!-- MAIN -->
+<!-- ========================================================= -->
+<div class="main">
 
-                        <a href="{{ url_for('crm_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('crm_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">◎</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">CRM</span>
-                                <span class="nav-desc">Clients, pipeline, projects</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('hris_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('hris_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">◈</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">HRIS</span>
-                                <span class="nav-desc">Employees, records, actions</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('ats_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('ats_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">◇</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">ATS</span>
-                                <span class="nav-desc">Hiring, resumes, onboarding</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('orientation_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('orientation_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">◍</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Orientation</span>
-                                <span class="nav-desc">Onboarding readiness layer</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('sgsst_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('sgsst_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">⬢</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">SG-SST</span>
-                                <span class="nav-desc">Safety, audits, compliance</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Business Systems</div>
-                    <div class="nav-stack">
-                        <a href="{{ url_for('finance_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('finance_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">▣</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Finance</span>
-                                <span class="nav-desc">Ledger, invoices, forecasts</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('inventory_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('inventory_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">▤</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Inventory</span>
-                                <span class="nav-desc">Assets, barcode, QR control</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('marketing_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('marketing_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">✦</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Marketing</span>
-                                <span class="nav-desc">Campaigns, leads, growth</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('reports_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('reports_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">◬</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Reports</span>
-                                <span class="nav-desc">KPIs, exports, analytics</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Operations</div>
-                    <div class="nav-stack">
-                        <a href="{{ url_for('tasks_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('tasks_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">☑</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Tasks</span>
-                                <span class="nav-desc">Action tracking & workflow</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-
-                        <a href="{{ url_for('calendar_dashboard') }}" class="nav-link {% if request_path.startswith(url_for('calendar_dashboard')) %}is-active{% endif %}">
-                            <div class="nav-icon">☷</div>
-                            <div class="nav-copy">
-                                <span class="nav-label">Calendar</span>
-                                <span class="nav-desc">Meetings, deadlines, planning</span>
-                            </div>
-                            <div class="nav-chevron">›</div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="sidebar-footer">
-                    <h3 class="sidebar-footer-title">XIOMY Executive Layer</h3>
-                    <p class="sidebar-footer-text">
-                        This layout is prepared for premium enterprise navigation, multi-module growth, and future AI-driven interactions without replacing the structural shell.
-                    </p>
-                </div>
-            </div>
-        </aside>
-
-        <div class="page-shell">
-            <header class="topbar">
-                <div class="topbar-left">
-                    <button class="sidebar-toggle" type="button" onclick="toggleSidebar()" aria-label="Toggle navigation">
-                        ☰
-                    </button>
-
-                    <div class="topbar-title-wrap">
-                        <h2 class="topbar-title">{% block page_title %}{{ app_name }}{% endblock %}</h2>
-                        <p class="topbar-subtitle">
-                            {% block topbar_subtitle %}
-                            Premium enterprise workspace for integrated operations, analytics, and organizational intelligence.
-                            {% endblock %}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="topbar-right">
-                    <div class="topbar-chip desktop-only">
-                        <strong>Mode</strong> Production
-                    </div>
-                    <div class="topbar-chip desktop-only">
-                        <strong>AI</strong> XIOMY Ready
-                    </div>
-                    <div class="topbar-chip">
-                        <strong>Suite</strong> Enterprise
-                    </div>
-                </div>
-            </header>
-
-            <main class="main-viewport">
-                <div class="content-frame">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            <div class="flash-stack">
-                                {% for category, message in messages %}
-                                    <div class="flash-card {{ category if category else 'info' }}">
-                                        {{ message }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    {% endwith %}
-
-                    {% block content %}
-                    <div class="page-card">
-                        <div class="empty-state">
-                            <h3 class="empty-state-title">Base Layout Ready</h3>
-                            <p class="empty-state-text">
-                                This master layout has loaded successfully. Child templates can now extend this file and render enterprise pages safely.
-                            </p>
-                        </div>
-                    </div>
-                    {% endblock %}
-                </div>
-            </main>
-        </div>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</div>
+        <div>User</div>
     </div>
 
-    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
-        <a href="{{ url_for('dashboard') }}" class="mobile-bottom-link {% if request_path == url_for('dashboard') %}active{% endif %}">
-            <span>⌂</span>
-            <span>Home</span>
-        </a>
-        <a href="{{ url_for('crm_dashboard') }}" class="mobile-bottom-link {% if request_path.startswith(url_for('crm_dashboard')) %}active{% endif %}">
-            <span>◎</span>
-            <span>CRM</span>
-        </a>
-        <a href="{{ url_for('finance_dashboard') }}" class="mobile-bottom-link {% if request_path.startswith(url_for('finance_dashboard')) %}active{% endif %}">
-            <span>▣</span>
-            <span>Finance</span>
-        </a>
-        <a href="{{ url_for('reports_dashboard') }}" class="mobile-bottom-link {% if request_path.startswith(url_for('reports_dashboard')) %}active{% endif %}">
-            <span>◬</span>
-            <span>Reports</span>
-        </a>
-    </nav>
+    <!-- HERO LOGO -->
+    <div class="hero">
+        <img src="{{ url_for('static', filename='logo.png') }}">
+    </div>
 
-    <script>
-        (function () {
-            const sidebar = document.getElementById("sidebar");
-            const backdrop = document.getElementById("mobileSidebarBackdrop");
+    <!-- CONTENT -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 
-            function syncDesktopState() {
-                if (window.innerWidth > 1100) {
-                    if (sidebar) {
-                        sidebar.classList.remove("is-open");
-                    }
-                    if (backdrop) {
-                        backdrop.classList.remove("is-open");
-                    }
-                }
-            }
+</div>
 
-            window.toggleSidebar = function () {
-                if (!sidebar || !backdrop) return;
-                sidebar.classList.toggle("is-open");
-                backdrop.classList.toggle("is-open");
-            };
-
-            window.closeSidebar = function () {
-                if (!sidebar || !backdrop) return;
-                sidebar.classList.remove("is-open");
-                backdrop.classList.remove("is-open");
-            };
-
-            window.addEventListener("resize", syncDesktopState);
-            document.addEventListener("keydown", function (event) {
-                if (event.key === "Escape") {
-                    window.closeSidebar();
-                }
-            });
-
-            syncDesktopState();
-        })();
-    </script>
-
-    {% block scripts %}{% endblock %}
 </body>
 </html>
