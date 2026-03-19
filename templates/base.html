@@ -1,337 +1,216 @@
-{% set app_name = app_name if app_name is defined else "UrbanHRPartners Enterprise Suite" %}
-{% set system_name = system_name if system_name is defined else "UrbanHRPartners Enterprise Suite" %}
+{% set app_name = "UrbanHRPartners Enterprise Suite" %}
+{% set owner_name = "Juan Carlos Urbano, PhD(c) Business Psychology, MA-MHRM" %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}UrbanHRPartners Enterprise Suite{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/xiomy.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/analytics.js') }}"></script>
-</head>
-<body>
-    <div class="app-shell">
-        <aside class="sidebar">
-            <div class="brand-panel">
-                <div class="brand-logo-wrap">
-                    <img
-                        src="{{ url_for('static', filename='img/logo.png') }}"
-                        alt="UrbanHRPartners Logo"
-                        class="brand-logo"
-                        onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
-                    >
-                    <div id="logo-fallback" class="logo-fallback" style="display:none;">
-                        UHP
-                    </div>
-                </div>
-                <div class="brand-text">
-                    <h1>UrbanHRPartners</h1>
-                    <p>Enterprise Suite + XIOMY</p>
-                </div>
-            </div>
 
-            <nav class="sidebar-nav">
-                <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-                <a class="nav-link" href="{{ url_for('crm') }}">CRM</a>
-                <a class="nav-link" href="{{ url_for('hris') }}">HRIS</a>
-                <a class="nav-link" href="{{ url_for('ats') }}">ATS</a>
-                <a class="nav-link" href="{{ url_for('orientation') }}">Orientation</a>
-                <a class="nav-link" href="{{ url_for('sgsst') }}">SG-SST</a>
-                <a class="nav-link" href="{{ url_for('finance') }}">Finance</a>
-                <a class="nav-link" href="{{ url_for('inventory') }}">Inventory</a>
-                <a class="nav-link" href="{{ url_for('marketing') }}">Marketing</a>
-                <a class="nav-link" href="{{ url_for('reports') }}">Reports</a>
-                <a class="nav-link" href="{{ url_for('chat_page') }}">Communication</a>
-                <a class="nav-link" href="{{ url_for('xiomy_dashboard') }}">XIOMY</a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="status-card">
-                    <span class="status-dot"></span>
-                    <div>
-                        <strong>System Status</strong>
-                        <p>Connected & Ready</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <main class="main-panel">
-            <header class="topbar">
-                <div class="topbar-left">
-                    <h2>{% block page_title %}UrbanHRPartners Enterprise Suite{% endblock %}</h2>
-                    <p>{% block page_subtitle %}Premium integrated business ecosystem{% endblock %}</p>
-                </div>
-
-                <div class="topbar-right">
-                    <button class="btn btn-3d btn-gold" type="button">Executive Mode</button>
-                    <button class="btn btn-3d btn-silver" type="button">XIOMY Live</button>
-                </div>
-            </header>
-
-            <section class="flash-wrapper">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="flash-message flash-{{ category }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-            </section>
-
-            <section class="content-area">
-                {% block content %}{% endblock %}
-            </section>
-        </main>
-    </div>
-=======
-    <!-- ========================================================= -->
-    <!-- META / SYSTEM -->
-    <!-- ========================================================= -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ app_name }}{% endblock %}</title>
 
-    <meta name="description" content="UrbanHRPartners Enterprise Suite - CRM, HRIS, ATS, SG-SST, Finance, Inventory, Marketing, Reports, XIOMY AI.">
-    <meta name="theme-color" content="#07162a">
-
-    <!-- ========================================================= -->
-    <!-- FONTS -->
-    <!-- ========================================================= -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- ========================================================= -->
-    <!-- GLOBAL STYLES -->
-    <!-- ========================================================= -->
     <style>
-
-    /* =========================================================
-       ROOT THEME
-    ========================================================= */
-    :root {
-        --navy-900: #07162a;
-        --navy-800: #0b1f3a;
-        --navy-700: #17345c;
-
-        --gold: #f0c85a;
-        --orange: #e8891a;
-        --silver: #cfd8dc;
-
-        --bg-light: #f5f7fa;
-        --card-bg: #ffffff;
-
-        --radius-lg: 18px;
-        --radius-md: 12px;
-
-        --shadow-soft: 0 10px 25px rgba(0,0,0,0.15);
-        --shadow-strong: 0 18px 40px rgba(0,0,0,0.25);
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-    }
-
-    body {
-        background: var(--bg-light);
-        color: #1a1a1a;
-        display: flex;
-    }
-
-    /* =========================================================
-       SIDEBAR
-    ========================================================= */
-    .sidebar {
-        width: 260px;
-        height: 100vh;
-        position: fixed;
-        background: linear-gradient(180deg, var(--navy-900), var(--navy-800));
-        color: white;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        box-shadow: var(--shadow-strong);
-    }
-
-    .sidebar h2 {
-        color: var(--gold);
-        margin-bottom: 30px;
-        font-size: 18px;
-        text-align: center;
-    }
-
-    .nav-link {
-        padding: 12px 14px;
-        margin-bottom: 8px;
-        border-radius: var(--radius-md);
-        color: white;
-        text-decoration: none;
-        display: block;
-        transition: 0.2s;
-    }
-
-    .nav-link:hover {
-        background: rgba(255,255,255,0.1);
-    }
-
-    /* =========================================================
-       MAIN CONTENT
-    ========================================================= */
-    .main {
-        margin-left: 260px;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* =========================================================
-       TOPBAR
-    ========================================================= */
-    .topbar {
-        background: white;
-        padding: 16px 24px;
-        box-shadow: var(--shadow-soft);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .topbar-title {
-        font-size: 18px;
-        font-weight: 600;
-    }
-
-    /* =========================================================
-       HERO LOGO
-    ========================================================= */
-    .hero {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 30px;
-    }
-
-    .hero img {
-        height: 15vh;
-        max-height: 160px;
-        object-fit: contain;
-    }
-
-    /* =========================================================
-       CONTENT AREA
-    ========================================================= */
-    .content {
-        padding: 24px;
-    }
-
-    /* =========================================================
-       CARDS
-    ========================================================= */
-    .card {
-        background: var(--card-bg);
-        border-radius: var(--radius-lg);
-        padding: 20px;
-        box-shadow: var(--shadow-soft);
-        margin-bottom: 20px;
-    }
-
-    /* =========================================================
-       BUTTONS (3D)
-    ========================================================= */
-    .btn {
-        background: linear-gradient(135deg, var(--gold), var(--orange));
-        color: #000;
-        padding: 12px 18px;
-        border: none;
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        box-shadow: var(--shadow-soft);
-        transition: 0.2s;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-strong);
-    }
-
-    /* =========================================================
-       GRID
-    ========================================================= */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 20px;
-    }
-
-    /* =========================================================
-       RESPONSIVE
-    ========================================================= */
-    @media (max-width: 768px) {
-        .sidebar {
-            display: none;
+        /* =========================================================
+           COLOR SYSTEM
+        ========================================================= */
+        :root {
+            --navy: #0b1f3a;
+            --navy-deep: #07162a;
+            --gold: #f0c85a;
+            --orange: #e8891a;
+            --silver: #c0c0c0;
+            --white: #ffffff;
+            --text: #e6ecf2;
         }
-        .main {
-            margin-left: 0;
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
         }
-    }
+
+        body {
+            background: linear-gradient(135deg, var(--navy-deep), var(--navy));
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* =========================================================
+           HEADER / HERO
+        ========================================================= */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            width: auto;
+            height: 20vh; /* ~1/5 of screen height */
+            object-fit: contain;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(240, 200, 90, 0.3));
+        }
+
+        .app-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .owner-name {
+            font-size: 1.2rem;
+            color: var(--silver);
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            max-width: 700px;
+            opacity: 0.85;
+        }
+
+        /* =========================================================
+           NAVIGATION
+        ========================================================= */
+        .nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .nav a {
+            text-decoration: none;
+        }
+
+        /* =========================================================
+           3D BUTTONS
+        ========================================================= */
+        .btn-3d {
+            padding: 14px 24px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #122a4d, #091b32);
+            color: var(--white);
+            font-weight: 600;
+            box-shadow:
+                4px 4px 12px rgba(0,0,0,0.6),
+                -2px -2px 8px rgba(255,255,255,0.05);
+            transition: all 0.25s ease;
+            border: 1px solid rgba(240, 200, 90, 0.2);
+        }
+
+        .btn-3d:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                6px 6px 16px rgba(0,0,0,0.7),
+                0 0 12px rgba(240, 200, 90, 0.4);
+            color: var(--gold);
+        }
+
+        /* =========================================================
+           CONTENT AREA
+        ========================================================= */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* =========================================================
+           CARDS
+        ========================================================= */
+        .card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(240,200,90,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .card h2 {
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
 
     </style>
-
-    {% block head_extra %}{% endblock %}
 </head>
 
 <body>
 
-<!-- ========================================================= -->
-<!-- SIDEBAR -->
-<!-- ========================================================= -->
-<div class="sidebar">
-    <h2>UrbanHRPartners</h2>
-
-    <a href="/" class="nav-link">Dashboard</a>
-    <a href="/crm" class="nav-link">CRM</a>
-    <a href="/hris" class="nav-link">HRIS</a>
-    <a href="/ats" class="nav-link">ATS</a>
-    <a href="/orientation" class="nav-link">Orientation</a>
-    <a href="/sgsst" class="nav-link">SG-SST</a>
-    <a href="/finance" class="nav-link">Finance</a>
-    <a href="/inventory" class="nav-link">Inventory</a>
-    <a href="/marketing" class="nav-link">Marketing</a>
-    <a href="/reports" class="nav-link">Reports</a>
-</div>
-
-<!-- ========================================================= -->
-<!-- MAIN -->
-<!-- ========================================================= -->
-<div class="main">
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</div>
-        <div>User</div>
-    </div>
-
-    <!-- HERO LOGO -->
+    <!-- =========================================================
+         HERO SECTION
+    ========================================================= -->
     <div class="hero">
-        <img src="{{ url_for('static', filename='logo.png') }}">
+
+        <!-- LOGO -->
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+
+        <!-- TITLE -->
+        <div class="app-title">UrbanHRPartners</div>
+
+        <!-- OWNER -->
+        <div class="owner-name">{{ owner_name }}</div>
+
+        <!-- SUBTITLE -->
+        <div class="subtitle">
+            Enterprise AI-powered ecosystem integrating CRM, HRIS, ATS, SG-SST,
+            Finance, Inventory, Marketing, and Analytics into a unified intelligent platform.
+        </div>
+
     </div>
 
-    <!-- CONTENT -->
-    <div class="content">
+    <!-- =========================================================
+         NAVIGATION
+    ========================================================= -->
+    <div class="nav">
+
+        <a href="/dashboard" class="btn-3d">Dashboard</a>
+        <a href="/crm" class="btn-3d">CRM</a>
+        <a href="/hris" class="btn-3d">HRIS</a>
+        <a href="/tasks" class="btn-3d">Tasks</a>
+        <a href="/projects" class="btn-3d">Projects</a>
+        <a href="/finance" class="btn-3d">Finance</a>
+        <a href="/inventory" class="btn-3d">Inventory</a>
+        <a href="/ats" class="btn-3d">ATS</a>
+        <a href="/sgsst" class="btn-3d">SG-SST</a>
+        <a href="/marketing" class="btn-3d">Marketing</a>
+
+    </div>
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================= -->
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
 
-</div>
+    <!-- =========================================================
+         FOOTER
+    ========================================================= -->
+    <div class="footer">
+        © {{ app_name }} — Built for enterprise intelligence & operational excellence
+    </div>
 
->>>>>>> 6a700036149ddd83079e5ef7c8be09236a086406
 </body>
 </html>
