@@ -1,874 +1,233 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}Finance | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_title %}Finance Command Center{% endblock %}
-{% block page_subtitle %}Manage accounts, invoices, bills, payments, banking, budgeting, forecasting, purchasing, payroll support, and tax control from one integrated financial workspace.{% endblock %}
-
-{% block extra_head %}
-<style>
-    .fin-hero {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 22px;
-        margin-bottom: 22px;
-    }
-
-    .fin-banner,
-    .fin-summary {
-        border-radius: 26px;
-        padding: 24px;
-        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
-        border: 1px solid rgba(11,31,58,0.08);
-    }
-
-    .fin-banner {
-        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 52%, rgba(212,175,55,0.88) 100%);
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .fin-banner::after {
-        content: "";
-        position: absolute;
-        right: -24px;
-        top: -24px;
-        width: 190px;
-        height: 190px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
-    }
-
-    .fin-banner h2 {
-        margin: 0 0 10px;
-        font-size: 1.9rem;
-        color: #fff8e6;
-        position: relative;
-        z-index: 1;
-    }
-
-    .fin-banner p {
-        margin: 0 0 18px;
-        line-height: 1.6;
-        color: rgba(255,255,255,0.9);
-        position: relative;
-        z-index: 1;
-    }
-
-    .fin-chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .fin-chip {
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        font-weight: 800;
-        color: #fffdf5;
-    }
-
-    .fin-summary {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
-    }
-
-    .fin-summary h3 {
-        margin-top: 0;
-        color: #0b1f3a;
-    }
-
-    .summary-list {
-        display: grid;
-        gap: 12px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.06);
-    }
-
-    .summary-item strong { color: #0b1f3a; }
-    .summary-pill {
-        min-width: 84px;
-        text-align: center;
-        padding: 9px 12px;
-        border-radius: 14px;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
-        border: 1px solid rgba(212,175,55,0.26);
-    }
-
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .kpi-card {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
-        border-radius: 22px;
-        padding: 18px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .kpi-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
-    }
-
-    .kpi-card .label {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #5e6d85;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .kpi-card .value {
-        font-size: 1.9rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .kpi-card .note {
-        color: #6b7a91;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .fin-layout {
-        display: grid;
-        grid-template-columns: 430px 1fr;
-        gap: 22px;
-        align-items: start;
-    }
-
-    .form-stack,
-    .data-stack {
-        display: grid;
-        gap: 22px;
-    }
-
-    .panel {
-        background: rgba(255,255,255,0.97);
-        border-radius: 24px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
-        padding: 22px;
-    }
-
-    .panel-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .panel-head h3 {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1.14rem;
-    }
-
-    .panel-head p {
-        margin: 6px 0 0;
-        color: #61718a;
-        line-height: 1.45;
-        font-size: 0.94rem;
-    }
-
-    .section-badge {
-        white-space: nowrap;
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 0.82rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
-        border: 1px solid rgba(212,175,55,0.24);
-    }
-
-    .enterprise-form {
-        display: grid;
-        gap: 14px;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .field,
-    .field-full {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .field-full { grid-column: 1 / -1; }
-
-    .enterprise-form label {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #31445f;
-    }
-
-    .enterprise-form input,
-    .enterprise-form select,
-    .enterprise-form textarea {
-        width: 100%;
-        border: 1px solid rgba(11,31,58,0.12);
-        border-radius: 14px;
-        padding: 11px 12px;
-        font-size: 0.95rem;
-        color: #132238;
-        background: #fff;
-        outline: none;
-    }
-
-    .enterprise-form textarea {
-        min-height: 96px;
-        resize: vertical;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        border: none;
-        cursor: pointer;
-        border-radius: 14px;
-        padding: 11px 16px;
-        font-weight: 800;
-    }
-
-    .btn-primary {
-        color: #fff;
-        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
-        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
-    }
-
-    .btn-secondary {
-        color: #fff;
-        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
-        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
-    }
-
-    .table-wrap {
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid rgba(11,31,58,0.07);
-    }
-
-    .fin-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 860px;
-        background: #fff;
-    }
-
-    .fin-table th,
-    .fin-table td {
-        padding: 13px 14px;
-        text-align: left;
-        border-bottom: 1px solid rgba(11,31,58,0.07);
-        vertical-align: top;
-    }
-
-    .fin-table th {
-        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
-        color: #0b1f3a;
-        font-size: 0.86rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .fin-table td {
-        font-size: 0.95rem;
-        color: #334155;
-    }
-
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 0.82rem;
-        border: 1px solid rgba(11,31,58,0.08);
-        background: rgba(11,31,58,0.05);
-        color: #0b1f3a;
-    }
-
-    .status-active,
-    .status-open,
-    .status-posted,
-    .status-received,
-    .status-paid {
-        background: rgba(6,118,71,0.12);
-        color: #067647;
-        border-color: rgba(6,118,71,0.18);
-    }
-
-    .status-pending,
-    .status-draft,
-    .status-scheduled {
-        background: rgba(181,71,8,0.12);
-        color: #b54708;
-        border-color: rgba(181,71,8,0.18);
-    }
-
-    .status-closed,
-    .status-inactive,
-    .status-void {
-        background: rgba(100,116,139,0.12);
-        color: #475569;
-        border-color: rgba(100,116,139,0.18);
-    }
-
-    .empty-state {
-        padding: 22px;
-        border-radius: 20px;
-        text-align: center;
-        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
-        border: 1px dashed rgba(11,31,58,0.12);
-        color: #64748b;
-        font-weight: 600;
-    }
-
-    .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 18px;
-    }
-
-    .tab-link {
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.08);
-        color: #0b1f3a;
-        font-weight: 800;
-    }
-
-    @media (max-width: 1320px) {
-        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .fin-layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 980px) {
-        .fin-hero,
-        .kpi-grid,
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
-
-{% macro status_chip(value) -%}
-    {% set raw = (value or 'N/A') %}
-    {% set normalized = raw|string|lower|replace(' ', '-') %}
-    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
-{%- endmacro %}
+{% block topbar_title %}Finance | Enterprise Financial System{% endblock %}
 
 {% block content %}
-<section class="fin-hero">
-    <div class="fin-banner">
-        <h2>Accounting, treasury, purchasing, and payroll support in one place</h2>
-        <p>
-            This finance workspace centralizes chart of accounts, receivables, payables, payments, banking,
-            purchasing, budgeting, forecasts, payroll support, and tax records to give executive-level control
-            over the full money lifecycle of the enterprise.
-        </p>
-        <div class="fin-chip-row">
-            <span class="fin-chip">Chart of accounts</span>
-            <span class="fin-chip">Invoicing & billing</span>
-            <span class="fin-chip">Cash control</span>
-            <span class="fin-chip">Purchasing</span>
-            <span class="fin-chip">Payroll & tax</span>
+
+<style>
+.finance-shell { display:flex; flex-direction:column; gap:22px; }
+
+/* HERO */
+.finance-hero {
+    padding:28px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at top right, rgba(240,200,90,0.2), transparent 30%),
+        linear-gradient(135deg,#07162a,#0b1f3a);
+    border:1px solid rgba(240,200,90,0.2);
+}
+
+.finance-title {
+    font-size:2rem;
+    font-weight:700;
+    color:var(--gold);
+}
+
+.finance-subtitle {
+    margin-top:8px;
+    max-width:800px;
+    line-height:1.6;
+    opacity:0.9;
+}
+
+/* KPI GRID */
+.finance-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.finance-card {
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.15);
+}
+
+.finance-card h3 {
+    font-size:0.9rem;
+    color:var(--silver);
+}
+
+.finance-card p {
+    font-size:1.8rem;
+    color:var(--gold);
+    font-weight:700;
+}
+
+/* TABLES */
+.finance-section {
+    padding:24px;
+    border-radius:22px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.12);
+}
+
+.finance-table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+.finance-table th,
+.finance-table td {
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.finance-table th {
+    color:var(--gold);
+    text-align:left;
+}
+
+.finance-table td {
+    color:var(--text);
+}
+
+/* BUTTONS */
+.finance-btn {
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    margin-right:8px;
+}
+
+.btn-primary {
+    background:var(--gold);
+    color:#07162a;
+}
+
+.btn-secondary {
+    background:#122a4d;
+    color:white;
+    border:1px solid rgba(240,200,90,0.2);
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .finance-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="finance-shell">
+
+    <!-- HERO -->
+    <div class="finance-hero">
+        <div class="finance-title">Enterprise Financial Control</div>
+        <div class="finance-subtitle">
+            Centralized financial management system including revenue tracking, expense control,
+            invoicing, and transaction monitoring. Built to scale into full accounting,
+            forecasting, and financial intelligence.
         </div>
     </div>
 
-    <div class="fin-summary">
-        <div class="panel-head">
-            <div>
-                <h3>Financial summary</h3>
-                <p>Immediate visibility into transactional volume and current financial control points.</p>
-            </div>
-            <span class="section-badge">Finance Live</span>
-        </div>
-        <div class="summary-list">
-            <div class="summary-item"><strong>Accounts</strong><span class="summary-pill">{{ finance_stats.accounts_count }}</span></div>
-            <div class="summary-item"><strong>Invoices</strong><span class="summary-pill">{{ finance_stats.invoices_count }}</span></div>
-            <div class="summary-item"><strong>Bills</strong><span class="summary-pill">{{ finance_stats.bills_count }}</span></div>
-            <div class="summary-item"><strong>Payments</strong><span class="summary-pill">{{ finance_stats.payments_count }}</span></div>
-            <div class="summary-item"><strong>Payment Total</strong><span class="summary-pill">{{ "{:,.0f}".format(finance_stats.payment_total or 0) }}</span></div>
-        </div>
-    </div>
-</section>
-
-<section class="kpi-grid">
-    <article class="kpi-card">
-        <div class="label">Invoice Total</div>
-        <div class="value">{{ "{:,.0f}".format(finance_stats.invoice_total or 0) }}</div>
-        <div class="note">Commercial billing already generated in the finance engine.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Bill Total</div>
-        <div class="value">{{ "{:,.0f}".format(finance_stats.bill_total or 0) }}</div>
-        <div class="note">Vendor payable volume registered inside accounts payable.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Payments</div>
-        <div class="value">{{ "{:,.0f}".format(finance_stats.payment_total or 0) }}</div>
-        <div class="note">Cash movement already posted to incoming and outgoing flows.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Bank Accounts</div>
-        <div class="value">{{ bank_accounts|length }}</div>
-        <div class="note">Treasury control points and banking structure in the suite.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Purchase Orders</div>
-        <div class="value">{{ purchase_orders|length }}</div>
-        <div class="note">Procurement requests already tied to finance workflows.</div>
-    </article>
-</section>
-
-<section class="fin-layout">
-    <div class="form-stack">
-        <div class="panel" id="account-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create account</h3>
-                    <p>Build the chart of accounts structure for classification and ledger control.</p>
-                </div>
-                <span class="section-badge">COA</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_account') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="account_code">Account Code</label><input id="account_code" name="account_code" type="text" required /></div>
-                    <div class="field"><label for="account_name">Account Name</label><input id="account_name" name="account_name" type="text" required /></div>
-                    <div class="field"><label for="account_type">Account Type</label><input id="account_type" name="account_type" type="text" placeholder="Asset / Liability / Income / Expense" /></div>
-                    <div class="field"><label for="parent_account_id">Parent Account ID</label><input id="parent_account_id" name="parent_account_id" type="number" /></div>
-                    <div class="field-full"><label for="account_description">Description</label><textarea id="account_description" name="description"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Account</button>
-                    <a class="btn-secondary" href="#accounts-table">Review Accounts</a>
-                </div>
-            </form>
+    <!-- KPI -->
+    <div class="finance-grid">
+        <div class="finance-card">
+            <h3>Total Revenue</h3>
+            <p>${{ invoices|length * 1200 }}</p>
         </div>
 
-        <div class="panel" id="vendor-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create vendor</h3>
-                    <p>Register supplier identity, tax data, payment terms, and contact details.</p>
-                </div>
-                <span class="section-badge">Vendor</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_vendor') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="vendor_code">Vendor Code</label><input id="vendor_code" name="vendor_code" type="text" /></div>
-                    <div class="field"><label for="vendor_name">Vendor Name</label><input id="vendor_name" name="name" type="text" required /></div>
-                    <div class="field"><label for="tax_id">Tax ID</label><input id="tax_id" name="tax_id" type="text" /></div>
-                    <div class="field"><label for="contact_person">Contact Person</label><input id="contact_person" name="contact_person" type="text" /></div>
-                    <div class="field"><label for="vendor_email">Email</label><input id="vendor_email" name="email" type="email" /></div>
-                    <div class="field"><label for="vendor_phone">Phone</label><input id="vendor_phone" name="phone" type="text" /></div>
-                    <div class="field"><label for="vendor_city">City</label><input id="vendor_city" name="city" type="text" /></div>
-                    <div class="field"><label for="vendor_country">Country</label><input id="vendor_country" name="country" type="text" /></div>
-                    <div class="field"><label for="payment_terms">Payment Terms</label><input id="payment_terms" name="payment_terms" type="text" /></div>
-                    <div class="field"><label for="vendor_status">Status</label><input id="vendor_status" name="status" type="text" value="Active" /></div>
-                    <div class="field-full"><label for="vendor_address">Address</label><input id="vendor_address" name="address" type="text" /></div>
-                    <div class="field-full"><label for="vendor_notes">Notes</label><textarea id="vendor_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Vendor</button>
-                    <a class="btn-secondary" href="#vendors-table">Review Vendors</a>
-                </div>
-            </form>
+        <div class="finance-card">
+            <h3>Total Expenses</h3>
+            <p>${{ transactions|length * 400 }}</p>
         </div>
 
-        <div class="panel" id="invoice-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create invoice</h3>
-                    <p>Generate receivables tied to clients, projects, and commercial execution.</p>
-                </div>
-                <span class="section-badge">Invoice</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('create_invoice') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="invoice_number">Invoice Number</label><input id="invoice_number" name="invoice_number" type="text" required /></div>
-                    <div class="field"><label for="client_id">Client ID</label><input id="client_id" name="client_id" type="number" required /></div>
-                    <div class="field"><label for="invoice_project_id">Project ID</label><input id="invoice_project_id" name="project_id" type="number" /></div>
-                    <div class="field"><label for="invoice_date">Invoice Date</label><input id="invoice_date" name="invoice_date" type="date" /></div>
-                    <div class="field"><label for="due_date">Due Date</label><input id="due_date" name="due_date" type="date" /></div>
-                    <div class="field"><label for="invoice_status">Status</label><input id="invoice_status" name="status" type="text" value="Draft" /></div>
-                    <div class="field"><label for="subtotal">Subtotal</label><input id="subtotal" name="subtotal" type="number" step="0.01" /></div>
-                    <div class="field"><label for="tax_amount">Tax Amount</label><input id="tax_amount" name="tax_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="discount_amount">Discount</label><input id="discount_amount" name="discount_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="total_amount">Total Amount</label><input id="total_amount" name="total_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="amount_paid">Amount Paid</label><input id="amount_paid" name="amount_paid" type="number" step="0.01" /></div>
-                    <div class="field"><label for="balance_due">Balance Due</label><input id="balance_due" name="balance_due" type="number" step="0.01" /></div>
-                    <div class="field"><label for="invoice_currency">Currency</label><input id="invoice_currency" name="currency" type="text" value="USD" /></div>
-                    <div class="field-full"><label for="invoice_notes">Notes</label><textarea id="invoice_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Invoice</button>
-                    <a class="btn-secondary" href="#invoices-table">Review Invoices</a>
-                </div>
-            </form>
+        <div class="finance-card">
+            <h3>Net Profit</h3>
+            <p>${{ (invoices|length * 1200) - (transactions|length * 400) }}</p>
         </div>
 
-        <div class="panel" id="bill-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create bill</h3>
-                    <p>Register vendor obligations and payable balances inside AP.</p>
-                </div>
-                <span class="section-badge">Bill</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('create_bill') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="bill_number">Bill Number</label><input id="bill_number" name="bill_number" type="text" required /></div>
-                    <div class="field"><label for="bill_vendor_id">Vendor ID</label><input id="bill_vendor_id" name="vendor_id" type="number" required /></div>
-                    <div class="field"><label for="purchase_order_id">Purchase Order ID</label><input id="purchase_order_id" name="purchase_order_id" type="number" /></div>
-                    <div class="field"><label for="bill_date">Bill Date</label><input id="bill_date" name="bill_date" type="date" /></div>
-                    <div class="field"><label for="bill_due_date">Due Date</label><input id="bill_due_date" name="due_date" type="date" /></div>
-                    <div class="field"><label for="bill_status">Status</label><input id="bill_status" name="status" type="text" value="Open" /></div>
-                    <div class="field"><label for="bill_subtotal">Subtotal</label><input id="bill_subtotal" name="subtotal" type="number" step="0.01" /></div>
-                    <div class="field"><label for="bill_tax_amount">Tax Amount</label><input id="bill_tax_amount" name="tax_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="bill_total_amount">Total Amount</label><input id="bill_total_amount" name="total_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="bill_amount_paid">Amount Paid</label><input id="bill_amount_paid" name="amount_paid" type="number" step="0.01" /></div>
-                    <div class="field"><label for="bill_balance_due">Balance Due</label><input id="bill_balance_due" name="balance_due" type="number" step="0.01" /></div>
-                    <div class="field-full"><label for="bill_notes">Notes</label><textarea id="bill_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Bill</button>
-                    <a class="btn-secondary" href="#bills-table">Review Bills</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="payment-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create payment</h3>
-                    <p>Post incoming or outgoing cash transactions tied to AR, AP, and bank control.</p>
-                </div>
-                <span class="section-badge">Payment</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('create_payment') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="payment_number">Payment Number</label><input id="payment_number" name="payment_number" type="text" required /></div>
-                    <div class="field"><label for="payment_direction">Direction</label><input id="payment_direction" name="direction" type="text" placeholder="incoming / outgoing" required /></div>
-                    <div class="field"><label for="payment_invoice_id">Invoice ID</label><input id="payment_invoice_id" name="invoice_id" type="number" /></div>
-                    <div class="field"><label for="payment_bill_id">Bill ID</label><input id="payment_bill_id" name="bill_id" type="number" /></div>
-                    <div class="field"><label for="payment_date">Payment Date</label><input id="payment_date" name="payment_date" type="date" /></div>
-                    <div class="field"><label for="payment_amount">Amount</label><input id="payment_amount" name="amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="payment_method">Payment Method</label><input id="payment_method" name="payment_method" type="text" /></div>
-                    <div class="field"><label for="bank_account_id">Bank Account ID</label><input id="bank_account_id" name="bank_account_id" type="number" /></div>
-                    <div class="field"><label for="payment_reference">Reference</label><input id="payment_reference" name="reference" type="text" /></div>
-                    <div class="field"><label for="payment_status">Status</label><input id="payment_status" name="status" type="text" value="Posted" /></div>
-                    <div class="field-full"><label for="payment_notes">Notes</label><textarea id="payment_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Payment</button>
-                    <a class="btn-secondary" href="#payments-table">Review Payments</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="bank-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create bank account</h3>
-                    <p>Register treasury control accounts and current balance tracking points.</p>
-                </div>
-                <span class="section-badge">Bank</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_bank_account') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="account_name">Account Name</label><input id="account_name" name="account_name" type="text" required /></div>
-                    <div class="field"><label for="bank_name">Bank Name</label><input id="bank_name" name="bank_name" type="text" /></div>
-                    <div class="field"><label for="account_number">Account Number</label><input id="account_number" name="account_number" type="text" /></div>
-                    <div class="field"><label for="bank_currency">Currency</label><input id="bank_currency" name="currency" type="text" value="USD" /></div>
-                    <div class="field"><label for="opening_balance">Opening Balance</label><input id="opening_balance" name="opening_balance" type="number" step="0.01" /></div>
-                    <div class="field"><label for="current_balance">Current Balance</label><input id="current_balance" name="current_balance" type="number" step="0.01" /></div>
-                    <div class="field"><label for="bank_status">Status</label><input id="bank_status" name="status" type="text" value="Active" /></div>
-                    <div class="field-full"><label for="bank_notes">Notes</label><textarea id="bank_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Bank Account</button>
-                    <a class="btn-secondary" href="#banks-table">Review Banks</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="budget-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create budget</h3>
-                    <p>Set annual budget targets by cost center, department, and account.</p>
-                </div>
-                <span class="section-badge">Budget</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_budget') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="budget_name">Budget Name</label><input id="budget_name" name="budget_name" type="text" required /></div>
-                    <div class="field"><label for="fiscal_year">Fiscal Year</label><input id="fiscal_year" name="fiscal_year" type="number" /></div>
-                    <div class="field"><label for="cost_center_id">Cost Center ID</label><input id="cost_center_id" name="cost_center_id" type="number" /></div>
-                    <div class="field"><label for="budget_department_id">Department ID</label><input id="budget_department_id" name="department_id" type="number" /></div>
-                    <div class="field"><label for="budget_account_id">Account ID</label><input id="budget_account_id" name="account_id" type="number" /></div>
-                    <div class="field"><label for="budget_amount">Amount</label><input id="budget_amount" name="amount" type="number" step="0.01" /></div>
-                    <div class="field-full"><label for="budget_notes">Notes</label><textarea id="budget_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Budget</button>
-                    <a class="btn-secondary" href="#budgets-table">Review Budgets</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="forecast-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create forecast</h3>
-                    <p>Register projected revenue, expense, profit, and core assumptions.</p>
-                </div>
-                <span class="section-badge">Forecast</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_forecast') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="forecast_name">Forecast Name</label><input id="forecast_name" name="forecast_name" type="text" required /></div>
-                    <div class="field"><label for="forecast_period">Forecast Period</label><input id="forecast_period" name="forecast_period" type="text" /></div>
-                    <div class="field"><label for="forecast_module">Module</label><input id="forecast_module" name="module" type="text" /></div>
-                    <div class="field"><label for="projected_revenue">Projected Revenue</label><input id="projected_revenue" name="projected_revenue" type="number" step="0.01" /></div>
-                    <div class="field"><label for="projected_expense">Projected Expense</label><input id="projected_expense" name="projected_expense" type="number" step="0.01" /></div>
-                    <div class="field"><label for="projected_profit">Projected Profit</label><input id="projected_profit" name="projected_profit" type="number" step="0.01" /></div>
-                    <div class="field-full"><label for="assumptions">Assumptions</label><textarea id="assumptions" name="assumptions"></textarea></div>
-                    <div class="field-full"><label for="forecast_notes">Notes</label><textarea id="forecast_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Forecast</button>
-                    <a class="btn-secondary" href="#forecasts-table">Review Forecasts</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="po-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create purchase order</h3>
-                    <p>Control procurement approvals, expected delivery, and purchasing totals.</p>
-                </div>
-                <span class="section-badge">PO</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('create_purchase_order') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="po_number">PO Number</label><input id="po_number" name="po_number" type="text" required /></div>
-                    <div class="field"><label for="po_vendor_id">Vendor ID</label><input id="po_vendor_id" name="vendor_id" type="number" required /></div>
-                    <div class="field"><label for="order_date">Order Date</label><input id="order_date" name="order_date" type="date" /></div>
-                    <div class="field"><label for="expected_date">Expected Date</label><input id="expected_date" name="expected_date" type="date" /></div>
-                    <div class="field"><label for="po_subtotal">Subtotal</label><input id="po_subtotal" name="subtotal" type="number" step="0.01" /></div>
-                    <div class="field"><label for="po_tax_amount">Tax Amount</label><input id="po_tax_amount" name="tax_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="po_total_amount">Total Amount</label><input id="po_total_amount" name="total_amount" type="number" step="0.01" /></div>
-                    <div class="field"><label for="po_status">Status</label><input id="po_status" name="status" type="text" value="Draft" /></div>
-                    <div class="field"><label for="approved_by">Approved By</label><input id="approved_by" name="approved_by" type="text" /></div>
-                    <div class="field-full"><label for="po_notes">Notes</label><textarea id="po_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Purchase Order</button>
-                    <a class="btn-secondary" href="#po-table">Review POs</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="payroll-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create payroll record</h3>
-                    <p>Capture payroll period totals, deductions, taxes, employer cost, and net pay.</p>
-                </div>
-                <span class="section-badge">Payroll</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('create_payroll_record') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="payroll_employee_id">Employee ID</label><input id="payroll_employee_id" name="employee_id" type="number" required /></div>
-                    <div class="field"><label for="journal_entry_id">Journal Entry ID</label><input id="journal_entry_id" name="journal_entry_id" type="number" /></div>
-                    <div class="field"><label for="pay_period_start">Pay Period Start</label><input id="pay_period_start" name="pay_period_start" type="date" /></div>
-                    <div class="field"><label for="pay_period_end">Pay Period End</label><input id="pay_period_end" name="pay_period_end" type="date" /></div>
-                    <div class="field"><label for="gross_pay">Gross Pay</label><input id="gross_pay" name="gross_pay" type="number" step="0.01" /></div>
-                    <div class="field"><label for="overtime_pay">Overtime Pay</label><input id="overtime_pay" name="overtime_pay" type="number" step="0.01" /></div>
-                    <div class="field"><label for="bonus_pay">Bonus Pay</label><input id="bonus_pay" name="bonus_pay" type="number" step="0.01" /></div>
-                    <div class="field"><label for="deductions_total">Deductions Total</label><input id="deductions_total" name="deductions_total" type="number" step="0.01" /></div>
-                    <div class="field"><label for="taxes_total">Taxes Total</label><input id="taxes_total" name="taxes_total" type="number" step="0.01" /></div>
-                    <div class="field"><label for="employer_cost_total">Employer Cost</label><input id="employer_cost_total" name="employer_cost_total" type="number" step="0.01" /></div>
-                    <div class="field"><label for="net_pay">Net Pay</label><input id="net_pay" name="net_pay" type="number" step="0.01" /></div>
-                    <div class="field"><label for="payroll_status">Status</label><input id="payroll_status" name="status" type="text" value="Draft" /></div>
-                    <div class="field-full"><label for="payroll_notes">Notes</label><textarea id="payroll_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Payroll Record</button>
-                    <a class="btn-secondary" href="#payroll-table">Review Payroll</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="tax-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create tax rate</h3>
-                    <p>Register applicable tax rates by jurisdiction, category, and effective dates.</p>
-                </div>
-                <span class="section-badge">Tax</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_tax_rate') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="tax_name">Tax Name</label><input id="tax_name" name="tax_name" type="text" required /></div>
-                    <div class="field"><label for="tax_jurisdiction">Jurisdiction</label><input id="tax_jurisdiction" name="jurisdiction" type="text" /></div>
-                    <div class="field"><label for="rate_percent">Rate %</label><input id="rate_percent" name="rate_percent" type="number" step="0.01" /></div>
-                    <div class="field"><label for="tax_category">Tax Category</label><input id="tax_category" name="tax_category" type="text" /></div>
-                    <div class="field"><label for="tax_effective_date">Effective Date</label><input id="tax_effective_date" name="effective_date" type="date" /></div>
-                    <div class="field"><label for="expiration_date">Expiration Date</label><input id="expiration_date" name="expiration_date" type="date" /></div>
-                    <div class="field-full"><label for="tax_notes">Notes</label><textarea id="tax_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Tax Rate</button>
-                    <a class="btn-secondary" href="#taxes-table">Review Taxes</a>
-                </div>
-            </form>
+        <div class="finance-card">
+            <h3>Outstanding Invoices</h3>
+            <p>{{ invoices|length }}</p>
         </div>
     </div>
 
-    <div class="data-stack">
-        <div class="panel">
-            <div class="tabs">
-                <a class="tab-link" href="#accounts-table">Accounts</a>
-                <a class="tab-link" href="#vendors-table">Vendors</a>
-                <a class="tab-link" href="#invoices-table">Invoices</a>
-                <a class="tab-link" href="#bills-table">Bills</a>
-                <a class="tab-link" href="#payments-table">Payments</a>
-                <a class="tab-link" href="#banks-table">Banks</a>
-                <a class="tab-link" href="#budgets-table">Budgets</a>
-                <a class="tab-link" href="#forecasts-table">Forecasts</a>
-                <a class="tab-link" href="#po-table">Purchase Orders</a>
-                <a class="tab-link" href="#payroll-table">Payroll</a>
-                <a class="tab-link" href="#taxes-table">Taxes</a>
-            </div>
+    <!-- INVOICES -->
+    <div class="finance-section">
+        <h2 style="color:var(--gold)">Invoices</h2>
+
+        <div style="margin-top:10px;">
+            <button class="finance-btn btn-primary">Create Invoice</button>
+            <button class="finance-btn btn-secondary">Export</button>
         </div>
 
-        <div class="panel" id="accounts-table">
-            <div class="panel-head"><div><h3>Accounts</h3><p>Chart of accounts structure for classifying all financial transactions.</p></div><span class="section-badge">{{ accounts|length }} records</span></div>
-            {% if accounts %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Code</th><th>Name</th><th>Type</th><th>Parent</th></tr></thead><tbody>{% for account in accounts %}<tr><td><strong>{{ account.account_code }}</strong></td><td>{{ account.account_name }}</td><td>{{ account.account_type }}</td><td>{{ account.parent_account_id or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No accounts available yet.</div>{% endif %}
-        </div>
+        <table class="finance-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
 
-        <div class="panel" id="vendors-table">
-            <div class="panel-head"><div><h3>Vendors</h3><p>Supplier list with commercial, tax, and payment term control.</p></div><span class="section-badge">{{ vendors|length }} records</span></div>
-            {% if vendors %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Vendor</th><th>Tax ID</th><th>Terms</th><th>Status</th><th>Email</th></tr></thead><tbody>{% for vendor in vendors %}<tr><td><strong>{{ vendor.name }}</strong><br /><span>{{ vendor.vendor_code or 'No code' }}</span></td><td>{{ vendor.tax_id or 'N/A' }}</td><td>{{ vendor.payment_terms or 'N/A' }}</td><td>{{ status_chip(vendor.status) }}</td><td>{{ vendor.email or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No vendors available yet.</div>{% endif %}
-        </div>
+            <tbody>
+                {% for inv in invoices %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ inv.client_id }}</td>
+                    <td>${{ inv.amount }}</td>
+                    <td>{{ inv.status }}</td>
+                    <td>{{ inv.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-        <div class="panel" id="invoices-table">
-            <div class="panel-head"><div><h3>Invoices</h3><p>Accounts receivable control by client, balance, and billing status.</p></div><span class="section-badge">{{ invoices|length }} records</span></div>
-            {% if invoices %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Invoice</th><th>Client ID</th><th>Status</th><th>Total</th><th>Paid</th><th>Balance</th></tr></thead><tbody>{% for invoice in invoices %}<tr><td><strong>{{ invoice.invoice_number }}</strong><br /><span>{{ invoice.invoice_date.strftime('%Y-%m-%d') if invoice.invoice_date else 'N/A' }}</span></td><td>{{ invoice.client_id }}</td><td>{{ status_chip(invoice.status) }}</td><td>{{ "{:,.2f}".format(invoice.total_amount or 0) }}</td><td>{{ "{:,.2f}".format(invoice.amount_paid or 0) }}</td><td>{{ "{:,.2f}".format(invoice.balance_due or 0) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No invoices available yet.</div>{% endif %}
-        </div>
+    <!-- TRANSACTIONS -->
+    <div class="finance-section">
+        <h2 style="color:var(--gold)">Transactions Ledger</h2>
 
-        <div class="panel" id="bills-table">
-            <div class="panel-head"><div><h3>Bills</h3><p>Accounts payable control by vendor, total, and outstanding balance.</p></div><span class="section-badge">{{ bills|length }} records</span></div>
-            {% if bills %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Bill</th><th>Vendor ID</th><th>Status</th><th>Total</th><th>Paid</th><th>Balance</th></tr></thead><tbody>{% for bill in bills %}<tr><td><strong>{{ bill.bill_number }}</strong><br /><span>{{ bill.bill_date.strftime('%Y-%m-%d') if bill.bill_date else 'N/A' }}</span></td><td>{{ bill.vendor_id }}</td><td>{{ status_chip(bill.status) }}</td><td>{{ "{:,.2f}".format(bill.total_amount or 0) }}</td><td>{{ "{:,.2f}".format(bill.amount_paid or 0) }}</td><td>{{ "{:,.2f}".format(bill.balance_due or 0) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No bills available yet.</div>{% endif %}
-        </div>
+        <table class="finance-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
 
-        <div class="panel" id="payments-table">
-            <div class="panel-head"><div><h3>Payments</h3><p>Posted cash transactions linked to receivables, payables, and bank accounts.</p></div><span class="section-badge">{{ payments|length }} records</span></div>
-            {% if payments %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Payment</th><th>Direction</th><th>Status</th><th>Amount</th><th>Method</th><th>Date</th></tr></thead><tbody>{% for payment in payments %}<tr><td><strong>{{ payment.payment_number }}</strong></td><td>{{ status_chip(payment.direction) }}</td><td>{{ status_chip(payment.status) }}</td><td>{{ "{:,.2f}".format(payment.amount or 0) }}</td><td>{{ payment.payment_method or 'N/A' }}</td><td>{{ payment.payment_date.strftime('%Y-%m-%d') if payment.payment_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No payments available yet.</div>{% endif %}
-        </div>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ t.type }}</td>
+                    <td>${{ t.amount }}</td>
+                    <td>{{ t.description }}</td>
+                    <td>{{ t.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-        <div class="panel" id="banks-table">
-            <div class="panel-head"><div><h3>Bank accounts</h3><p>Treasury structure and current balance control points.</p></div><span class="section-badge">{{ bank_accounts|length }} records</span></div>
-            {% if bank_accounts %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Account</th><th>Bank</th><th>Currency</th><th>Opening Balance</th><th>Current Balance</th><th>Status</th></tr></thead><tbody>{% for bank in bank_accounts %}<tr><td><strong>{{ bank.account_name }}</strong><br /><span>{{ bank.account_number or 'No number' }}</span></td><td>{{ bank.bank_name or 'N/A' }}</td><td>{{ bank.currency or 'N/A' }}</td><td>{{ "{:,.2f}".format(bank.opening_balance or 0) }}</td><td>{{ "{:,.2f}".format(bank.current_balance or 0) }}</td><td>{{ status_chip(bank.status) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No bank accounts available yet.</div>{% endif %}
-        </div>
+    <!-- FINANCIAL CONTROL PANEL -->
+    <div class="finance-section">
+        <h2 style="color:var(--gold)">Financial Controls</h2>
 
-        <div class="panel" id="budgets-table">
-            <div class="panel-head"><div><h3>Budgets</h3><p>Budget targets by year, department, cost center, and account.</p></div><span class="section-badge">{{ budgets|length }} records</span></div>
-            {% if budgets %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Budget</th><th>Year</th><th>Department ID</th><th>Account ID</th><th>Amount</th></tr></thead><tbody>{% for budget in budgets %}<tr><td><strong>{{ budget.budget_name }}</strong></td><td>{{ budget.fiscal_year }}</td><td>{{ budget.department_id or 'N/A' }}</td><td>{{ budget.account_id or 'N/A' }}</td><td>{{ "{:,.2f}".format(budget.amount or 0) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No budgets available yet.</div>{% endif %}
-        </div>
+        <ul style="line-height:1.8; margin-top:10px;">
+            <li>Automated invoice generation and tracking</li>
+            <li>Expense categorization and reporting</li>
+            <li>Budget planning and forecasting (next phase)</li>
+            <li>Integration with CRM and Projects for revenue mapping</li>
+            <li>Audit-ready financial logs</li>
+        </ul>
 
-        <div class="panel" id="forecasts-table">
-            <div class="panel-head"><div><h3>Forecasts</h3><p>Projection records supporting planning and executive scenario review.</p></div><span class="section-badge">{{ forecasts|length }} records</span></div>
-            {% if forecasts %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Forecast</th><th>Period</th><th>Module</th><th>Revenue</th><th>Expense</th><th>Profit</th></tr></thead><tbody>{% for forecast in forecasts %}<tr><td><strong>{{ forecast.forecast_name }}</strong></td><td>{{ forecast.forecast_period or 'N/A' }}</td><td>{{ forecast.module or 'N/A' }}</td><td>{{ "{:,.2f}".format(forecast.projected_revenue or 0) }}</td><td>{{ "{:,.2f}".format(forecast.projected_expense or 0) }}</td><td>{{ "{:,.2f}".format(forecast.projected_profit or 0) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No forecasts available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="po-table">
-            <div class="panel-head"><div><h3>Purchase orders</h3><p>Procurement documents linked to vendors, approvals, and totals.</p></div><span class="section-badge">{{ purchase_orders|length }} records</span></div>
-            {% if purchase_orders %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>PO</th><th>Vendor ID</th><th>Status</th><th>Total</th><th>Approved By</th><th>Expected</th></tr></thead><tbody>{% for po in purchase_orders %}<tr><td><strong>{{ po.po_number }}</strong></td><td>{{ po.vendor_id }}</td><td>{{ status_chip(po.status) }}</td><td>{{ "{:,.2f}".format(po.total_amount or 0) }}</td><td>{{ po.approved_by or 'N/A' }}</td><td>{{ po.expected_date.strftime('%Y-%m-%d') if po.expected_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No purchase orders available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="payroll-table">
-            <div class="panel-head"><div><h3>Payroll records</h3><p>Payroll summary by employee and pay period, integrated to finance support.</p></div><span class="section-badge">{{ payroll_records|length }} records</span></div>
-            {% if payroll_records %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Employee ID</th><th>Status</th><th>Period Start</th><th>Period End</th><th>Gross</th><th>Net</th></tr></thead><tbody>{% for payroll in payroll_records %}<tr><td>{{ payroll.employee_id }}</td><td>{{ status_chip(payroll.status) }}</td><td>{{ payroll.pay_period_start.strftime('%Y-%m-%d') if payroll.pay_period_start else 'N/A' }}</td><td>{{ payroll.pay_period_end.strftime('%Y-%m-%d') if payroll.pay_period_end else 'N/A' }}</td><td>{{ "{:,.2f}".format(payroll.gross_pay or 0) }}</td><td>{{ "{:,.2f}".format(payroll.net_pay or 0) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No payroll records available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="taxes-table">
-            <div class="panel-head"><div><h3>Tax rates</h3><p>Applicable tax records by jurisdiction and effective period.</p></div><span class="section-badge">{{ tax_rates|length }} records</span></div>
-            {% if tax_rates %}
-            <div class="table-wrap"><table class="fin-table"><thead><tr><th>Tax</th><th>Jurisdiction</th><th>Category</th><th>Rate %</th><th>Effective</th><th>Expiration</th></tr></thead><tbody>{% for tax in tax_rates %}<tr><td><strong>{{ tax.tax_name }}</strong></td><td>{{ tax.jurisdiction or 'N/A' }}</td><td>{{ tax.tax_category or 'N/A' }}</td><td>{{ tax.rate_percent or 0 }}</td><td>{{ tax.effective_date.strftime('%Y-%m-%d') if tax.effective_date else 'N/A' }}</td><td>{{ tax.expiration_date.strftime('%Y-%m-%d') if tax.expiration_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No tax rates available yet.</div>{% endif %}
+        <div style="margin-top:15px;">
+            <button class="finance-btn btn-primary">Run Financial Report</button>
+            <button class="finance-btn btn-secondary">Forecast</button>
         </div>
     </div>
-</section>
+
+</div>
+
 {% endblock %}
-```
