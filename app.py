@@ -1,12 +1,11 @@
 # =========================================================
 # UrbanHRPartners Enterprise Suite
-# app.py (FULL FIXED - NO SHRINK)
+# CLEAN app.py (NO CONFLICTS / READY TO RUN)
 # =========================================================
 
 import os
 from datetime import datetime, date
-from decimal import Decimal, InvalidOperation
-from functools import wraps
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -14,139 +13,87 @@ from flask import (
     Flask, flash, jsonify, redirect, render_template,
     request, session, url_for, send_from_directory
 )
-from jinja2 import TemplateNotFound
-from sqlalchemy import inspect, func
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 
-from models import *
+from models import db, User
 
 # =========================================================
-# BASE PATHS (MERGED CORRECTLY)
+# PATHS
 # =========================================================
 
 BASE_DIR = Path(__file__).resolve().parent
-DEFAULT_SQLITE_PATH = BASE_DIR / "urbanhrpartners.db"
+DB_PATH = BASE_DIR / "urbanhrpartners.db"
 
 UPLOAD_FOLDER = BASE_DIR / "uploads"
-CLIENT_PROGRAMS_FOLDER = BASE_DIR / "client_programs"
 STATIC_FOLDER = BASE_DIR / "static"
 TEMPLATES_FOLDER = BASE_DIR / "templates"
 
 UPLOAD_FOLDER.mkdir(exist_ok=True)
-CLIENT_PROGRAMS_FOLDER.mkdir(exist_ok=True)
 
 ALLOWED_EXTENSIONS = {
     "pdf","png","jpg","jpeg","gif",
-    "doc","docx","xls","xlsx",
-    "txt","csv","json",
+    "doc","docx","xls","xlsx","txt","csv"
 }
 
 # =========================================================
-# XIOMY SAFE SYSTEM
+# HELPERS
 # =========================================================
 
-class SafeXiomyAI:
-    def greeting(self):
-        return "XIOMY Enterprise AI ready."
-    def insight(self):
-        return "Enterprise monitoring active."
-    def system_status(self):
-        return {"status": "active"}
+def normalize_db(url):
+    if not url:
+        return f"sqlite:///{DB_PATH}"
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql://")
+    return url
 
-def build_xiomy_instance(db):
-    return SafeXiomyAI()
+def allowed_file(name):
+    return "." in name and name.rsplit(".",1)[1].lower() in ALLOWED_EXTENSIONS
 
-# =========================================================
-# CORE HELPERS
-# =========================================================
-
-def normalize_database_url(raw_url):
-    if not raw_url:
-        return f"sqlite:///{DEFAULT_SQLITE_PATH}"
-    if raw_url.startswith("postgres://"):
-        return raw_url.replace("postgres://", "postgresql://")
-    return raw_url
-
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def safe_count(model):
+def parse_date(val):
     try:
-        return db.session.query(model).count()
-    except:
-        return 0
-
-def safe_all(model, limit=None):
-    try:
-        q = model.query
-        if hasattr(model, "id"):
-            q = q.order_by(model.id.desc())
-        if limit:
-            q = q.limit(limit)
-        return q.all()
-    except:
-        return []
-
-def parse_date(value):
-    try:
-        return datetime.strptime(value, "%Y-%m-%d").date()
+        return datetime.strptime(val, "%Y-%m-%d").date()
     except:
         return None
 
-def parse_datetime(value):
-    if not value:
+def parse_datetime(val):
+    if not val:
         return None
-    formats = [
-        "%Y-%m-%dT%H:%M",
-        "%Y-%m-%d %H:%M",
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%d %H:%M:%S",
-        "%Y-%m-%d",
-    ]
-    for fmt in formats:
+    for f in ("%Y-%m-%dT%H:%M","%Y-%m-%d %H:%M","%Y-%m-%d"):
         try:
-            return datetime.strptime(value, fmt)
+            return datetime.strptime(val,f)
         except:
-            continue
+            pass
     return None
 
-def as_float(v, default=0.0):
-    try:
-        return float(v)
-    except:
-        return default
-
-def commit_with_feedback(success, error, redirect_to):
+def commit_ok(msg, fail, route):
     try:
         db.session.commit()
-        flash(success, "success")
+        flash(msg,"success")
     except Exception as e:
         db.session.rollback()
-        flash(f"{error}: {e}", "danger")
-    return redirect(url_for(redirect_to))
+        flash(f"{fail}: {e}","danger")
+    return redirect(url_for(route))
 
 # =========================================================
-# BOOTSTRAP (FIXED)
+# BOOTSTRAP ADMIN
 # =========================================================
 
-def bootstrap_admin():
-    admin_email = "admin@urbanhrconsulting.cloud"
-    existing = User.query.filter_by(email=admin_email).first()
-    if existing:
-        return existing
-
-    admin = User(
-        email=admin_email,
+def ensure_admin():
+    email = "admin@urbanhrconsulting.cloud"
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return
+    db.session.add(User(
+        email=email,
         password_hash=generate_password_hash("Admin123!"),
         role="Admin"
-    )
-    db.session.add(admin)
+    ))
     db.session.commit()
-    return admin
 
 # =========================================================
-# APP FACTORY (MERGED + FIXED)
+# APP FACTORY
 # =========================================================
 
 def create_app():
@@ -158,23 +105,21 @@ def create_app():
     )
 
     app.config["SECRET_KEY"] = "enterprise-secret"
-    app.config["SQLALCHEMY_DATABASE_URI"] = normalize_database_url(os.getenv("DATABASE_URL"))
+    app.config["SQLALCHEMY_DATABASE_URI"] = normalize_db(os.getenv("DATABASE_URL"))
     app.config["UPLOAD_FOLDER"] = str(UPLOAD_FOLDER)
 
     db.init_app(app)
 
-    xiomy = build_xiomy_instance(db)
-
     with app.app_context():
         db.create_all()
-        bootstrap_admin()
+        ensure_admin()
 
     # =====================================================
-    # ROUTES (ALL PRESERVED)
+    # ROUTES
     # =====================================================
 
     @app.route("/")
-    def index():
+    def home():
         return redirect("/dashboard")
 
     @app.route("/dashboard")
@@ -218,12 +163,25 @@ def create_app():
         return render_template("reports_analytics.html")
 
     # =====================================================
-    # FILES
+    # FILE UPLOAD
     # =====================================================
 
-    @app.route("/uploads/<path:filename>")
-    def uploaded_file(filename):
-        return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    @app.route("/upload", methods=["POST"])
+    def upload():
+        f = request.files.get("file")
+        if not f or not allowed_file(f.filename):
+            flash("Invalid file","danger")
+            return redirect("/dashboard")
+
+        name = secure_filename(f.filename)
+        f.save(UPLOAD_FOLDER / name)
+
+        flash("Uploaded","success")
+        return redirect("/dashboard")
+
+    @app.route("/uploads/<path:name>")
+    def files(name):
+        return send_from_directory(app.config["UPLOAD_FOLDER"], name)
 
     # =====================================================
     # ERROR HANDLING
@@ -231,12 +189,12 @@ def create_app():
 
     @app.errorhandler(404)
     def not_found(e):
-        return "404 Not Found", 404
+        return "404 Not Found",404
 
     @app.errorhandler(500)
     def server_error(e):
         db.session.rollback()
-        return "500 Internal Server Error", 500
+        return "500 Internal Server Error",500
 
     return app
 
