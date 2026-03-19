@@ -4,213 +4,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ app_name }}{% endblock %}</title>
 
-    <title>{% block title %}{{ app_name }}{% endblock %}</title>
+<style>
+/* =========================================================
+   COLOR SYSTEM
+========================================================= */
+:root {
+    --navy:#0b1f3a;
+    --navy-deep:#07162a;
+    --gold:#f0c85a;
+    --orange:#e8891a;
+    --silver:#c0c0c0;
+    --white:#ffffff;
+    --text:#e6ecf2;
+}
 
-    <style>
-        /* =========================================================
-           COLOR SYSTEM
-        ========================================================= */
-        :root {
-            --navy: #0b1f3a;
-            --navy-deep: #07162a;
-            --gold: #f0c85a;
-            --orange: #e8891a;
-            --silver: #c0c0c0;
-            --white: #ffffff;
-            --text: #e6ecf2;
-        }
+/* =========================================================
+   GLOBAL
+========================================================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
 
-        /* =========================================================
-           GLOBAL
-        ========================================================= */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", Tahoma, sans-serif;
-        }
+body{
+    background:linear-gradient(135deg,var(--navy-deep),var(--navy));
+    color:var(--text);
+    display:flex;
+    min-height:100vh;
+}
 
-        body {
-            background: linear-gradient(135deg, var(--navy-deep), var(--navy));
-            color: var(--text);
-            min-height: 100vh;
-        }
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar{
+    width:260px;
+    background:linear-gradient(180deg,#07162a,#0b1f3a);
+    padding:25px;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid rgba(240,200,90,0.15);
+}
 
-        /* =========================================================
-           HEADER / HERO
-        ========================================================= */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            text-align: center;
-        }
+.logo-large{
+    height:18vh;
+    margin-bottom:20px;
+    object-fit:contain;
+}
 
-        .logo {
-            width: auto;
-            height: 20vh; /* ~1/5 of screen height */
-            object-fit: contain;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px rgba(240, 200, 90, 0.3));
-        }
+.brand{
+    color:var(--gold);
+    font-size:1.4rem;
+    font-weight:700;
+    margin-bottom:5px;
+}
 
-        .app-title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
+.owner{
+    font-size:0.8rem;
+    color:var(--silver);
+    margin-bottom:30px;
+}
 
-        .owner-name {
-            font-size: 1.2rem;
-            color: var(--silver);
-            margin-bottom: 20px;
-        }
+/* NAV */
+.nav a{
+    display:block;
+    padding:12px 15px;
+    margin-bottom:10px;
+    border-radius:12px;
+    text-decoration:none;
+    color:var(--text);
+    background:rgba(255,255,255,0.02);
+    transition:.25s;
+    border:1px solid transparent;
+}
 
-        .subtitle {
-            font-size: 1rem;
-            max-width: 700px;
-            opacity: 0.85;
-        }
+.nav a:hover{
+    background:rgba(240,200,90,0.08);
+    border:1px solid rgba(240,200,90,0.3);
+    color:var(--gold);
+}
 
-        /* =========================================================
-           NAVIGATION
-        ========================================================= */
-        .nav {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            padding: 20px;
-        }
+/* =========================================================
+   MAIN AREA
+========================================================= */
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
 
-        .nav a {
-            text-decoration: none;
-        }
+/* =========================================================
+   TOPBAR
+========================================================= */
+.topbar{
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    border-bottom:1px solid rgba(240,200,90,0.1);
+    background:rgba(255,255,255,0.02);
+}
 
-        /* =========================================================
-           3D BUTTONS
-        ========================================================= */
-        .btn-3d {
-            padding: 14px 24px;
-            border-radius: 14px;
-            background: linear-gradient(145deg, #122a4d, #091b32);
-            color: var(--white);
-            font-weight: 600;
-            box-shadow:
-                4px 4px 12px rgba(0,0,0,0.6),
-                -2px -2px 8px rgba(255,255,255,0.05);
-            transition: all 0.25s ease;
-            border: 1px solid rgba(240, 200, 90, 0.2);
-        }
+.topbar-title{
+    font-size:1.3rem;
+    font-weight:600;
+}
 
-        .btn-3d:hover {
-            transform: translateY(-3px);
-            box-shadow:
-                6px 6px 16px rgba(0,0,0,0.7),
-                0 0 12px rgba(240, 200, 90, 0.4);
-            color: var(--gold);
-        }
+.topbar-right{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
 
-        /* =========================================================
-           CONTENT AREA
-        ========================================================= */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px;
-        }
+.badge{
+    background:var(--orange);
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:0.75rem;
+}
 
-        /* =========================================================
-           CARDS
-        ========================================================= */
-        .card {
-            background: rgba(255,255,255,0.03);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(240,200,90,0.15);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
+/* =========================================================
+   KPI STRIP
+========================================================= */
+.kpi-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    padding:20px;
+}
 
-        .card h2 {
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
+.kpi{
+    background:rgba(255,255,255,0.03);
+    border-radius:15px;
+    padding:18px;
+    border:1px solid rgba(240,200,90,0.15);
+}
 
-        /* =========================================================
-           FOOTER
-        ========================================================= */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            opacity: 0.6;
-        }
+.kpi h3{
+    font-size:0.85rem;
+    color:var(--silver);
+}
 
-    </style>
+.kpi p{
+    font-size:1.6rem;
+    color:var(--gold);
+    font-weight:700;
+}
+
+/* =========================================================
+   CONTENT GRID
+========================================================= */
+.container{
+    padding:20px;
+    display:grid;
+    grid-template-columns:3fr 1fr;
+    gap:20px;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+.card{
+    background:rgba(255,255,255,0.03);
+    padding:20px;
+    border-radius:18px;
+    border:1px solid rgba(240,200,90,0.1);
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* =========================================================
+   XIOMY PANEL
+========================================================= */
+.xiomy{
+    background:linear-gradient(180deg,#091b32,#07162a);
+    border-radius:20px;
+    padding:20px;
+    border:1px solid rgba(240,200,90,0.2);
+}
+
+.xiomy h2{
+    color:var(--gold);
+    margin-bottom:10px;
+}
+
+.xiomy p{
+    font-size:0.9rem;
+    opacity:0.8;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+.footer{
+    text-align:center;
+    padding:10px;
+    font-size:0.8rem;
+    opacity:0.6;
+}
+</style>
 </head>
 
 <body>
 
-    <!-- =========================================================
-         HERO SECTION
-    ========================================================= -->
-    <div class="hero">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo-large">
 
-        <!-- LOGO -->
-        <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+    <div class="brand">UrbanHRPartners</div>
+    <div class="owner">{{ owner_name }}</div>
 
-        <!-- TITLE -->
-        <div class="app-title">UrbanHRPartners</div>
+    <div class="nav">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/crm">CRM</a>
+        <a href="/hris">HRIS</a>
+        <a href="/tasks">Tasks</a>
+        <a href="/projects">Projects</a>
+        <a href="/finance">Finance</a>
+        <a href="/inventory">Inventory</a>
+        <a href="/ats">ATS</a>
+        <a href="/sgsst">SG-SST</a>
+        <a href="/marketing">Marketing</a>
+    </div>
+</div>
 
-        <!-- OWNER -->
-        <div class="owner-name">{{ owner_name }}</div>
+<!-- MAIN -->
+<div class="main">
 
-        <!-- SUBTITLE -->
-        <div class="subtitle">
-            Enterprise AI-powered ecosystem integrating CRM, HRIS, ATS, SG-SST,
-            Finance, Inventory, Marketing, and Analytics into a unified intelligent platform.
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</div>
+
+        <div class="topbar-right">
+            <div class="badge">LIVE</div>
+            <div>Admin</div>
+        </div>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-row">
+        <div class="kpi"><h3>Revenue</h3><p>$0</p></div>
+        <div class="kpi"><h3>Clients</h3><p>0</p></div>
+        <div class="kpi"><h3>Employees</h3><p>0</p></div>
+        <div class="kpi"><h3>Tasks</h3><p>0</p></div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+
+        <!-- MAIN CONTENT -->
+        <div>
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- XIOMY PANEL -->
+        <div class="xiomy">
+            <h2>XIOMY AI</h2>
+            <p>Executive Intelligence Assistant ready to control CRM, HRIS, ATS, SG-SST, Finance, and Analytics.</p>
         </div>
 
     </div>
 
-    <!-- =========================================================
-         NAVIGATION
-    ========================================================= -->
-    <div class="nav">
-
-        <a href="/dashboard" class="btn-3d">Dashboard</a>
-        <a href="/crm" class="btn-3d">CRM</a>
-        <a href="/hris" class="btn-3d">HRIS</a>
-        <a href="/tasks" class="btn-3d">Tasks</a>
-        <a href="/projects" class="btn-3d">Projects</a>
-        <a href="/finance" class="btn-3d">Finance</a>
-        <a href="/inventory" class="btn-3d">Inventory</a>
-        <a href="/ats" class="btn-3d">ATS</a>
-        <a href="/sgsst" class="btn-3d">SG-SST</a>
-        <a href="/marketing" class="btn-3d">Marketing</a>
-
-    </div>
-
-    <!-- =========================================================
-         MAIN CONTENT
-    ========================================================= -->
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-
-    <!-- =========================================================
-         FOOTER
-    ========================================================= -->
     <div class="footer">
-        © {{ app_name }} — Built for enterprise intelligence & operational excellence
+        © {{ app_name }} — Enterprise Intelligence System
     </div>
+
+</div>
 
 </body>
 </html>
