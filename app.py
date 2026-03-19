@@ -1,9 +1,9 @@
 # =========================================================
 # UrbanHRPartners Enterprise Suite
 # app.py
-# Full enterprise-safe application controller
+# FULL ENTERPRISE-SAFE APPLICATION CONTROLLER
 # Render-ready / HTML deploy-ready / no shrinking
-# Single-file controller with safe model integration
+# Fully synchronized with enterprise base.html + dashboard.html
 # =========================================================
 
 import os
@@ -57,6 +57,7 @@ ALLOWED_EXTENSIONS = {
     "xlsx",
     "txt",
     "csv",
+    "json",
 }
 
 # =========================================================
@@ -93,13 +94,16 @@ class SafeXiomyAI:
             period = "Good afternoon"
         else:
             period = "Good evening"
-        return f"{period}. XIOMY Executive AI is ready to assist UrbanHRPartners Enterprise operations."
+        return (
+            f"{period}. XIOMY Executive AI is ready to assist "
+            f"UrbanHRPartners Enterprise operations."
+        )
 
     def insight(self):
         return (
             "Cross-module intelligence is active. Monitor CRM pipeline, HR performance, "
-            "recruiting velocity, SG-SST compliance, finance forecasting, and enterprise "
-            "growth indicators from one executive environment."
+            "recruiting velocity, SG-SST compliance, finance forecasting, inventory status, "
+            "marketing activity, and enterprise growth indicators from one executive environment."
         )
 
 
@@ -108,8 +112,7 @@ def build_xiomy_instance(db_instance):
         return SafeXiomyAI(db_instance)
 
     try:
-        instance = ImportedXiomyAI(db_instance)
-        return instance
+        return ImportedXiomyAI(db_instance)
     except Exception:
         return SafeXiomyAI(db_instance)
 
@@ -214,6 +217,8 @@ def safe_all(model: Any, limit: int | None = None, order_attr: str | None = None
         query = model.query
         if order_attr and hasattr(model, order_attr):
             query = query.order_by(getattr(model, order_attr).desc())
+        elif hasattr(model, "id"):
+            query = query.order_by(model.id.desc())
         if limit:
             query = query.limit(limit)
         return query.all()
@@ -236,7 +241,7 @@ def parse_date(value: str | None):
     value = value.strip()
     if not value:
         return None
-    for fmt in ("%Y-%m-%d", "%m/%d/%Y"):
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y"):
         try:
             return datetime.strptime(value, fmt).date()
         except ValueError:
@@ -302,7 +307,11 @@ def render_or_fallback(template_name: str, **context):
 
     fallback_template = "template_missing.html"
     if template_exists(fallback_template):
-        return render_template(template_name=fallback_template, missing_template=template_name, **context)
+        return render_template(
+            fallback_template,
+            missing_template=template_name,
+            **context,
+        )
     return f"Missing template: {template_name}", 500
 
 
@@ -339,8 +348,8 @@ def safe_xiomy_insight(xiomy_ai):
 
     return (
         "Executive enterprise monitoring is active. Review CRM performance, workforce data, "
-        "recruiting progress, SG-SST compliance, financial health, and growth indicators "
-        "from the dashboard."
+        "recruiting progress, SG-SST compliance, financial health, inventory condition, "
+        "marketing growth, and strategic indicators from the dashboard."
     )
 
 
@@ -378,7 +387,36 @@ def filter_payload_by_columns(model: Any, payload: dict) -> dict:
 
 
 # =========================================================
-# DASHBOARD / MODULE CONTEXT BUILDERS
+# GENERIC SERIALIZATION HELPERS
+# =========================================================
+
+def get_attr(obj: Any, *names: str, default: Any = None) -> Any:
+    for name in names:
+        try:
+            if hasattr(obj, name):
+                value = getattr(obj, name)
+                if value is not None:
+                    return value
+        except Exception:
+            continue
+    return default
+
+
+def money(value: Any) -> float:
+    return round(as_float(value, 0.0), 2)
+
+
+def isoish(value: Any) -> str:
+    try:
+        if isinstance(value, (datetime, date)):
+            return value.isoformat()
+    except Exception:
+        pass
+    return str(value or "")
+
+
+# =========================================================
+# DASHBOARD BUILDERS
 # =========================================================
 
 def build_dashboard_stats():
@@ -391,9 +429,14 @@ def build_dashboard_stats():
     total_incidents = safe_count(IncidentRecord)
     total_invoices = safe_count(Invoice)
     inventory_items = safe_count(InventoryItem)
+    total_events = safe_count(CalendarEvent)
 
     open_tasks = 0
     total_revenue = 0.0
+    outstanding_total = 0.0
+    low_stock_items = 0
+    payroll_cycle = "Pending"
+    risk_score = "N/A"
 
     try:
         if Task is not None:
@@ -411,8 +454,37 @@ def build_dashboard_stats():
         if Invoice is not None:
             invoices = Invoice.query.all()
             total_revenue = sum(as_float(getattr(i, "amount", 0.0), 0.0) for i in invoices)
+            outstanding_total = sum(
+                as_float(getattr(i, "amount", 0.0), 0.0)
+                for i in invoices
+                if str(getattr(i, "status", "")).lower() not in {"paid", "closed", "collected"}
+            )
     except Exception:
         total_revenue = 0.0
+        outstanding_total = 0.0
+
+    try:
+        if InventoryItem is not None:
+            items = InventoryItem.query.all()
+            low_stock_items = len(
+                [
+                    item for item in items
+                    if as_float(getattr(item, "quantity", 0), 0)
+                    <= as_float(getattr(item, "reorder_level", 0), 0)
+                ]
+            )
+    except Exception:
+        low_stock_items = 0
+
+    try:
+        if total_incidents == 0:
+            risk_score = "Low"
+        elif total_incidents < 5:
+            risk_score = "Moderate"
+        else:
+            risk_score = "High"
+    except Exception:
+        risk_score = "N/A"
 
     return {
         "total_clients": total_clients,
@@ -420,14 +492,435 @@ def build_dashboard_stats():
         "total_tasks": total_tasks,
         "open_tasks": open_tasks,
         "inventory_items": inventory_items,
+        "low_stock_items": low_stock_items,
         "total_invoices": total_invoices,
         "total_revenue": round(total_revenue, 2),
+        "outstanding_total": round(outstanding_total, 2),
         "total_candidates": total_candidates,
         "total_employees": total_employees,
         "total_campaigns": total_campaigns,
         "total_incidents": total_incidents,
+        "total_events": total_events,
+        "payroll_cycle": payroll_cycle,
+        "risk_score": risk_score,
     }
 
+
+def build_dashboard_metrics(dashboard_stats: dict) -> dict:
+    return {
+        "revenue": dashboard_stats.get("total_revenue", 0),
+        "active_clients": dashboard_stats.get("total_clients", 0),
+        "employees": dashboard_stats.get("total_employees", 0),
+        "jobs": dashboard_stats.get("total_candidates", 0),
+        "incidents": dashboard_stats.get("total_incidents", 0),
+        "inventory_alerts": dashboard_stats.get("low_stock_items", 0),
+        "consultant_load": dashboard_stats.get("total_clients", 0),
+        "open_tasks": dashboard_stats.get("open_tasks", 0),
+        "meetings": dashboard_stats.get("total_events", 0),
+        "payroll_cycle": dashboard_stats.get("payroll_cycle", "Pending"),
+        "receivables": dashboard_stats.get("outstanding_total", 0),
+        "risk_score": dashboard_stats.get("risk_score", "N/A"),
+    }
+
+
+def build_dashboard_ai_insights(dashboard_stats: dict, xiomy_ai) -> list[dict]:
+    insights = [
+        {
+            "title": "XIOMY Status",
+            "message": safe_xiomy_greeting(xiomy_ai),
+        },
+        {
+            "title": "Executive Insight",
+            "message": safe_xiomy_insight(xiomy_ai),
+        },
+    ]
+
+    revenue = dashboard_stats.get("total_revenue", 0)
+    open_tasks = dashboard_stats.get("open_tasks", 0)
+    incidents = dashboard_stats.get("total_incidents", 0)
+    candidates = dashboard_stats.get("total_candidates", 0)
+
+    insights.append(
+        {
+            "title": "Revenue Overview",
+            "message": (
+                f"Current posted invoice value is ${revenue}. "
+                f"Use Finance and CRM together to monitor collection timing and margins."
+            ),
+        }
+    )
+
+    insights.append(
+        {
+            "title": "Execution Load",
+            "message": (
+                f"There are {open_tasks} open tasks and {candidates} candidates in the ATS flow. "
+                f"Review consultant capacity, hiring demand, and onboarding readiness."
+            ),
+        }
+    )
+
+    insights.append(
+        {
+            "title": "Compliance Watch",
+            "message": (
+                f"SG-SST currently reflects {incidents} incident records. "
+                f"Track inspections, corrective actions, and training cadence to reduce risk."
+            ),
+        }
+    )
+
+    return insights
+
+
+def build_dashboard_alerts(dashboard_stats: dict) -> list[dict]:
+    alerts = []
+
+    if dashboard_stats.get("outstanding_total", 0) > 0:
+        alerts.append(
+            {
+                "title": "Outstanding Invoices",
+                "priority": "Finance",
+                "message": (
+                    f"${dashboard_stats.get('outstanding_total', 0)} remains outstanding. "
+                    "Review Finance for receivables follow-up."
+                ),
+            }
+        )
+
+    if dashboard_stats.get("low_stock_items", 0) > 0:
+        alerts.append(
+            {
+                "title": "Inventory Reorder Needed",
+                "priority": "Inventory",
+                "message": (
+                    f"{dashboard_stats.get('low_stock_items', 0)} inventory items are at or below reorder level."
+                ),
+            }
+        )
+
+    if dashboard_stats.get("total_incidents", 0) > 0:
+        alerts.append(
+            {
+                "title": "Safety / Incident Review",
+                "priority": "SG-SST",
+                "message": (
+                    f"{dashboard_stats.get('total_incidents', 0)} incident records require visibility "
+                    "across safety and workforce leadership."
+                ),
+            }
+        )
+
+    if dashboard_stats.get("open_tasks", 0) > 0:
+        alerts.append(
+            {
+                "title": "Open Task Queue",
+                "priority": "Operations",
+                "message": (
+                    f"{dashboard_stats.get('open_tasks', 0)} open tasks remain active across modules."
+                ),
+            }
+        )
+
+    if not alerts:
+        alerts.append(
+            {
+                "title": "No Critical Alerts",
+                "priority": "System",
+                "message": "No immediate alert conditions were detected in the current enterprise snapshot.",
+            }
+        )
+
+    return alerts
+
+
+def build_dashboard_recent_activity(limit: int = 7) -> list[dict]:
+    activity = []
+
+    try:
+        for log in safe_all(CommunicationLog, limit=3, order_attr="id"):
+            activity.append(
+                {
+                    "title": get_attr(log, "subject", "channel", default="CRM communication logged"),
+                    "message": get_attr(log, "summary", "message", default="New client communication was recorded."),
+                    "time": isoish(get_attr(log, "log_date", "created_at", default="Recently")),
+                }
+            )
+    except Exception:
+        pass
+
+    try:
+        for invoice in safe_all(Invoice, limit=2, order_attr="id"):
+            activity.append(
+                {
+                    "title": f"Invoice {get_attr(invoice, 'invoice_number', default='created')}",
+                    "message": (
+                        f"Amount ${money(get_attr(invoice, 'amount', default=0))} "
+                        f"with status {get_attr(invoice, 'status', default='Pending')}."
+                    ),
+                    "time": isoish(get_attr(invoice, "created_at", "due_date", default="Recently")),
+                }
+            )
+    except Exception:
+        pass
+
+    try:
+        for incident in safe_all(IncidentRecord, limit=2, order_attr="id"):
+            activity.append(
+                {
+                    "title": get_attr(incident, "incident_type", default="Incident record updated"),
+                    "message": get_attr(
+                        incident,
+                        "description",
+                        "corrective_action",
+                        default="Safety activity requires review.",
+                    ),
+                    "time": isoish(get_attr(incident, "incident_date", "created_at", default="Recently")),
+                }
+            )
+    except Exception:
+        pass
+
+    if not activity:
+        activity = [
+            {
+                "title": "System initialized",
+                "message": "Dashboard is ready to receive live CRM, HRIS, ATS, SG-SST, Finance, and Inventory activity.",
+                "time": "Now",
+            }
+        ]
+
+    return activity[:limit]
+
+
+def build_client_pipeline() -> list[dict]:
+    rows = []
+    projects = safe_all(Project, order_attr="id")
+
+    if not projects:
+        return []
+
+    stage_map: dict[str, dict[str, float | int | str]] = {}
+
+    for project in projects:
+        stage = str(
+            get_attr(project, "status", default="Pipeline")
+        ).strip() or "Pipeline"
+        amount = as_float(
+            get_attr(project, "budget", "estimated_value", default=0.0),
+            0.0,
+        )
+        key = stage
+        if key not in stage_map:
+            stage_map[key] = {"stage": stage, "count": 0, "value": 0.0, "status": "Tracking"}
+        stage_map[key]["count"] = int(stage_map[key]["count"]) + 1
+        stage_map[key]["value"] = float(stage_map[key]["value"]) + amount
+
+    for _, row in stage_map.items():
+        rows.append(
+            {
+                "stage": row["stage"],
+                "count": int(row["count"]),
+                "value": round(float(row["value"]), 2),
+                "status": row["status"],
+            }
+        )
+
+    return rows[:8]
+
+
+def build_ats_pipeline() -> list[dict]:
+    rows = []
+    candidates = safe_all(Candidate, order_attr="id")
+
+    if not candidates:
+        return []
+
+    stage_map: dict[str, dict[str, Any]] = {}
+
+    for candidate in candidates:
+        stage = str(get_attr(candidate, "stage", default="Applied")).strip() or "Applied"
+        priority = "Normal"
+        if stage.lower() in {"offer", "offered", "interview", "orientation"}:
+            priority = "High"
+        readiness = "In Progress"
+        if stage.lower() in {"orientation", "hired", "onboarding"}:
+            readiness = "Ready"
+
+        if stage not in stage_map:
+            stage_map[stage] = {
+                "stage": stage,
+                "count": 0,
+                "priority": priority,
+                "readiness": readiness,
+            }
+
+        stage_map[stage]["count"] += 1
+
+    for _, row in stage_map.items():
+        rows.append(row)
+
+    return rows[:8]
+
+
+def build_finance_rows(limit: int = 8) -> list[dict]:
+    rows = []
+
+    try:
+        for entry in safe_all(Finance, limit=limit, order_attr="id"):
+            rows.append(
+                {
+                    "date": isoish(get_attr(entry, "entry_date", "created_at", default="-")),
+                    "description": get_attr(entry, "description", default="Ledger entry"),
+                    "category": get_attr(entry, "category", default="General"),
+                    "amount": money(get_attr(entry, "amount", default=0)),
+                    "entry_type": get_attr(entry, "entry_type", default="Transaction"),
+                }
+            )
+    except Exception:
+        pass
+
+    if not rows:
+        try:
+            for invoice in safe_all(Invoice, limit=limit, order_attr="id"):
+                rows.append(
+                    {
+                        "date": isoish(get_attr(invoice, "created_at", "due_date", default="-")),
+                        "description": f"Invoice {get_attr(invoice, 'invoice_number', default='')}".strip(),
+                        "category": "Revenue",
+                        "amount": money(get_attr(invoice, "amount", default=0)),
+                        "entry_type": get_attr(invoice, "status", default="Invoice"),
+                    }
+                )
+        except Exception:
+            pass
+
+    return rows[:limit]
+
+
+def build_inventory_rows(limit: int = 6) -> list[dict]:
+    rows = []
+
+    for item in safe_all(InventoryItem, limit=limit, order_attr="id"):
+        rows.append(
+            {
+                "name": get_attr(item, "name", default="Inventory Item"),
+                "quantity": as_float(get_attr(item, "quantity", default=0), 0),
+                "summary": (
+                    f"SKU: {get_attr(item, 'sku', default='N/A')} | "
+                    f"Location: {get_attr(item, 'location', default='Unassigned')} | "
+                    f"Status: {get_attr(item, 'status', default='Available')}"
+                ),
+            }
+        )
+
+    return rows
+
+
+def build_hris_rows(limit: int = 6) -> list[dict]:
+    rows = []
+
+    for employee in safe_all(EmployeeProfile, limit=limit, order_attr="id"):
+        full_name = get_attr(
+            employee,
+            "full_name",
+            default=f"{get_attr(employee, 'first_name', default='')} {get_attr(employee, 'last_name', default='')}".strip(),
+        )
+        rows.append(
+            {
+                "name": full_name or "Employee Record",
+                "status": get_attr(employee, "status", default="Active"),
+                "summary": (
+                    f"Position: {get_attr(employee, 'position', default='Not set')} | "
+                    f"Department: {get_attr(employee, 'department', default='Not set')} | "
+                    f"Email: {get_attr(employee, 'email', default='N/A')}"
+                ),
+            }
+        )
+
+    return rows
+
+
+def build_sgsst_rows(limit: int = 6) -> list[dict]:
+    rows = []
+
+    for incident in safe_all(IncidentRecord, limit=limit, order_attr="id"):
+        rows.append(
+            {
+                "title": get_attr(incident, "incident_type", default="Incident"),
+                "status": get_attr(incident, "status", default="Open"),
+                "summary": get_attr(
+                    incident,
+                    "description",
+                    "corrective_action",
+                    default="Incident monitoring record available.",
+                ),
+            }
+        )
+
+    if not rows:
+        for inspection in safe_all(InspectionRecord, limit=limit, order_attr="id"):
+            rows.append(
+                {
+                    "title": get_attr(inspection, "inspection_name", default="Inspection"),
+                    "status": get_attr(inspection, "status", default="Open"),
+                    "summary": get_attr(
+                        inspection,
+                        "findings",
+                        default="Inspection record available for follow-up.",
+                    ),
+                }
+            )
+
+    return rows
+
+
+def build_dashboard_tasks(limit: int = 6) -> list[dict]:
+    rows = []
+
+    for task in safe_all(Task, limit=limit, order_attr="id"):
+        rows.append(
+            {
+                "title": get_attr(task, "title", default="Task"),
+                "priority": get_attr(task, "priority", default="Normal"),
+                "description": get_attr(task, "description", "notes", default="Operational task item."),
+            }
+        )
+
+    return rows
+
+
+def build_dashboard_payload(xiomy_ai):
+    dashboard_stats = build_dashboard_stats()
+    payload = {
+        "dashboard_stats": dashboard_stats,
+        "metrics": build_dashboard_metrics(dashboard_stats),
+        "dashboard": dashboard_stats,
+        "ai_insights": build_dashboard_ai_insights(dashboard_stats, xiomy_ai),
+        "alerts": build_dashboard_alerts(dashboard_stats),
+        "recent_activity": build_dashboard_recent_activity(),
+        "client_pipeline": build_client_pipeline(),
+        "ats_pipeline": build_ats_pipeline(),
+        "tasks": build_dashboard_tasks(),
+        "finance_rows": build_finance_rows(),
+        "inventory_rows": build_inventory_rows(),
+        "hris_rows": build_hris_rows(),
+        "sgsst_rows": build_sgsst_rows(),
+        "xiomy_greeting": safe_xiomy_greeting(xiomy_ai),
+        "xiomy_insight": safe_xiomy_insight(xiomy_ai),
+        "xiomy_status": safe_xiomy_status(xiomy_ai),
+        "recent_clients": safe_all(Client, limit=5, order_attr="id"),
+        "recent_projects": safe_all(Project, limit=5, order_attr="id"),
+        "recent_candidates": safe_all(Candidate, limit=5, order_attr="id"),
+        "recent_invoices": safe_all(Invoice, limit=5, order_attr="id"),
+        "recent_incidents": safe_all(IncidentRecord, limit=5, order_attr="id"),
+    }
+    return payload
+
+
+# =========================================================
+# MODULE CONTEXT BUILDERS
+# =========================================================
 
 def build_crm_context():
     clients = safe_all(Client, order_attr="id")
@@ -656,6 +1149,23 @@ def build_calendar_context():
     }
 
 
+def build_tasks_context():
+    tasks = safe_all(Task, limit=200, order_attr="id")
+    task_stats = {
+        "total_tasks": len(tasks),
+        "open_tasks": len(
+            [
+                t for t in tasks
+                if str(getattr(t, "status", "")).lower() not in {"completed", "closed", "done"}
+            ]
+        ),
+    }
+    return {
+        "tasks": tasks,
+        "task_stats": task_stats,
+    }
+
+
 def build_reports_context():
     dashboard_stats = build_dashboard_stats()
     return {
@@ -691,6 +1201,9 @@ def create_app():
             "current_year": datetime.utcnow().year,
             "today": date.today(),
             "dashboard_quick_stats": build_dashboard_stats(),
+            "app_name": "UrbanHRPartners Enterprise Suite",
+            "company_name": "UrbanHRPartners",
+            "system_name": "UrbanHRPartners Enterprise Suite",
         }
 
     @flask_app.before_request
@@ -763,38 +1276,24 @@ def create_app():
 
     @flask_app.route("/dashboard")
     def dashboard():
-        dashboard_stats = build_dashboard_stats()
-        recent_clients = safe_all(Client, limit=5, order_attr="id")
-        recent_projects = safe_all(Project, limit=5, order_attr="id")
-        recent_candidates = safe_all(Candidate, limit=5, order_attr="id")
-        recent_invoices = safe_all(Invoice, limit=5, order_attr="id")
-        recent_incidents = safe_all(IncidentRecord, limit=5, order_attr="id")
-
         return render_or_fallback(
             "dashboard.html",
-            dashboard_stats=dashboard_stats,
-            recent_clients=recent_clients,
-            recent_projects=recent_projects,
-            recent_candidates=recent_candidates,
-            recent_invoices=recent_invoices,
-            recent_incidents=recent_incidents,
-            xiomy_greeting=safe_xiomy_greeting(xiomy_ai),
-            xiomy_insight=safe_xiomy_insight(xiomy_ai),
+            **build_dashboard_payload(xiomy_ai),
         )
 
     # =====================================================
     # CRM ROUTES
     # =====================================================
 
-    @flask_app.route("/crm")
-    def crm():
+    @flask_app.route("/crm", endpoint="crm_dashboard")
+    def crm_dashboard():
         return render_or_fallback("crm.html", **build_crm_context())
 
     @flask_app.route("/crm/client/create", methods=["POST"])
     def create_client():
         if Client is None:
             flash("Client model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         raw_payload = {
             "name": (request.form.get("name") or "").strip(),
@@ -817,7 +1316,7 @@ def create_app():
 
         if not raw_payload["name"] and not raw_payload["company_name"]:
             flash("Client name or company name is required.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         payload = filter_payload_by_columns(Client, raw_payload)
         client_columns = model_columns(Client)
@@ -832,24 +1331,28 @@ def create_app():
             payload["language"] = "Spanish"
 
         db.session.add(Client(**payload))
-        return commit_with_feedback("Client created successfully.", "Unable to create client", "crm")
+        return commit_with_feedback(
+            "Client created successfully.",
+            "Unable to create client",
+            "crm_dashboard",
+        )
 
     @flask_app.route("/crm/communication-log/create", methods=["POST"])
     def create_communication_log():
         if CommunicationLog is None:
             flash("CommunicationLog model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         client_id = request.form.get("client_id", type=int)
         if not client_id:
             flash("Client is required before saving a communication log.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         if Client is not None:
             client = Client.query.get(client_id)
             if not client:
                 flash("Selected client was not found.", "danger")
-                return redirect(url_for("crm"))
+                return redirect(url_for("crm_dashboard"))
 
         raw_payload = {
             "client_id": client_id,
@@ -872,14 +1375,14 @@ def create_app():
         return commit_with_feedback(
             "Communication log created successfully.",
             "Unable to save communication log",
-            "crm",
+            "crm_dashboard",
         )
 
     @flask_app.route("/crm/project/create", methods=["POST"])
     def create_project():
         if Project is None:
             flash("Project model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         raw_payload = {
             "client_id": request.form.get("client_id", type=int),
@@ -896,13 +1399,17 @@ def create_app():
 
         payload = filter_payload_by_columns(Project, raw_payload)
         db.session.add(Project(**payload))
-        return commit_with_feedback("Project created successfully.", "Unable to create project", "crm")
+        return commit_with_feedback(
+            "Project created successfully.",
+            "Unable to create project",
+            "crm_dashboard",
+        )
 
     @flask_app.route("/crm/task/create", methods=["POST"])
     def create_task():
         if Task is None:
             flash("Task model is not available in models.py.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         raw_payload = {
             "title": (request.form.get("title") or "").strip(),
@@ -918,25 +1425,29 @@ def create_app():
 
         if not raw_payload["title"]:
             flash("Task title is required.", "danger")
-            return redirect(url_for("crm"))
+            return redirect(url_for("crm_dashboard"))
 
         payload = filter_payload_by_columns(Task, raw_payload)
         db.session.add(Task(**payload))
-        return commit_with_feedback("Task created successfully.", "Unable to create task", "crm")
+        return commit_with_feedback(
+            "Task created successfully.",
+            "Unable to create task",
+            "crm_dashboard",
+        )
 
     # =====================================================
     # HRIS ROUTES
     # =====================================================
 
-    @flask_app.route("/hris")
-    def hris():
+    @flask_app.route("/hris", endpoint="hris_dashboard")
+    def hris_dashboard():
         return render_or_fallback("hris.html", **build_hris_context())
 
     @flask_app.route("/hris/employee/create", methods=["POST"])
     def create_employee_profile():
         if EmployeeProfile is None:
             flash("EmployeeProfile model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
+            return redirect(url_for("hris_dashboard"))
 
         raw_payload = {
             "employee_id": (request.form.get("employee_id") or "").strip(),
@@ -961,14 +1472,14 @@ def create_app():
         return commit_with_feedback(
             "Employee profile created successfully.",
             "Unable to create employee profile",
-            "hris",
+            "hris_dashboard",
         )
 
     @flask_app.route("/hris/point-log/create", methods=["POST"])
     def create_point_log():
         if PointLog is None:
             flash("PointLog model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
+            return redirect(url_for("hris_dashboard"))
 
         raw_payload = {
             "employee_id": request.form.get("employee_id", type=int),
@@ -980,13 +1491,17 @@ def create_app():
 
         payload = filter_payload_by_columns(PointLog, raw_payload)
         db.session.add(PointLog(**payload))
-        return commit_with_feedback("Point log created successfully.", "Unable to create point log", "hris")
+        return commit_with_feedback(
+            "Point log created successfully.",
+            "Unable to create point log",
+            "hris_dashboard",
+        )
 
     @flask_app.route("/hris/disciplinary-record/create", methods=["POST"])
     def create_disciplinary_record():
         if DisciplinaryRecord is None:
             flash("DisciplinaryRecord model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
+            return redirect(url_for("hris_dashboard"))
 
         raw_payload = {
             "employee_id": request.form.get("employee_id", type=int),
@@ -1002,14 +1517,14 @@ def create_app():
         return commit_with_feedback(
             "Disciplinary record created successfully.",
             "Unable to create disciplinary record",
-            "hris",
+            "hris_dashboard",
         )
 
     @flask_app.route("/hris/sop-requirement/create", methods=["POST"])
     def create_sop_requirement():
         if SOPRequirement is None:
             flash("SOPRequirement model is not available in models.py.", "danger")
-            return redirect(url_for("hris"))
+            return redirect(url_for("hris_dashboard"))
 
         raw_payload = {
             "job_title": (request.form.get("job_title") or "").strip(),
@@ -1024,22 +1539,22 @@ def create_app():
         return commit_with_feedback(
             "SOP requirement created successfully.",
             "Unable to create SOP requirement",
-            "hris",
+            "hris_dashboard",
         )
 
     # =====================================================
     # ATS ROUTES
     # =====================================================
 
-    @flask_app.route("/ats")
-    def ats():
+    @flask_app.route("/ats", endpoint="ats_dashboard")
+    def ats_dashboard():
         return render_or_fallback("ats.html", **build_ats_context())
 
     @flask_app.route("/ats/candidate/create", methods=["POST"])
     def create_candidate():
         if Candidate is None:
             flash("Candidate model is not available in models.py.", "danger")
-            return redirect(url_for("ats"))
+            return redirect(url_for("ats_dashboard"))
 
         resume_filename = None
         uploaded_resume = request.files.get("resume")
@@ -1066,13 +1581,17 @@ def create_app():
 
         payload = filter_payload_by_columns(Candidate, raw_payload)
         db.session.add(Candidate(**payload))
-        return commit_with_feedback("Candidate created successfully.", "Unable to create candidate", "ats")
+        return commit_with_feedback(
+            "Candidate created successfully.",
+            "Unable to create candidate",
+            "ats_dashboard",
+        )
 
     @flask_app.route("/ats/candidate/<int:candidate_id>/promote", methods=["POST"])
     def promote_candidate_to_orientation(candidate_id: int):
         if Candidate is None:
             flash("Candidate model is not available in models.py.", "danger")
-            return redirect(url_for("ats"))
+            return redirect(url_for("ats_dashboard"))
 
         candidate = Candidate.query.get_or_404(candidate_id)
 
@@ -1099,21 +1618,21 @@ def create_app():
             db.session.rollback()
             flash(f"Unable to promote candidate: {exc}", "danger")
 
-        return redirect(url_for("ats"))
+        return redirect(url_for("ats_dashboard"))
 
     # =====================================================
     # ORIENTATION ROUTES
     # =====================================================
 
-    @flask_app.route("/orientation")
-    def orientation():
+    @flask_app.route("/orientation", endpoint="orientation_dashboard")
+    def orientation_dashboard():
         return render_or_fallback("orientation.html", **build_orientation_context())
 
     @flask_app.route("/orientation/checklist/create", methods=["POST"])
     def create_orientation_checklist():
         if OrientationChecklist is None:
             flash("OrientationChecklist model is not available in models.py.", "danger")
-            return redirect(url_for("orientation"))
+            return redirect(url_for("orientation_dashboard"))
 
         raw_payload = {
             "candidate_id": request.form.get("candidate_id", type=int),
@@ -1130,14 +1649,14 @@ def create_app():
         return commit_with_feedback(
             "Orientation checklist item created successfully.",
             "Unable to create orientation checklist item",
-            "orientation",
+            "orientation_dashboard",
         )
 
     @flask_app.route("/orientation/policy-acknowledgement/create", methods=["POST"])
     def create_policy_acknowledgement():
         if PolicyAcknowledgement is None:
             flash("PolicyAcknowledgement model is not available in models.py.", "danger")
-            return redirect(url_for("orientation"))
+            return redirect(url_for("orientation_dashboard"))
 
         raw_payload = {
             "employee_id": request.form.get("employee_id", type=int),
@@ -1152,14 +1671,14 @@ def create_app():
         return commit_with_feedback(
             "Policy acknowledgement saved successfully.",
             "Unable to save policy acknowledgement",
-            "orientation",
+            "orientation_dashboard",
         )
 
     @flask_app.route("/orientation/asset-assignment/create", methods=["POST"])
     def create_asset_assignment():
         if AssetAssignment is None:
             flash("AssetAssignment model is not available in models.py.", "danger")
-            return redirect(url_for("orientation"))
+            return redirect(url_for("orientation_dashboard"))
 
         raw_payload = {
             "employee_id": request.form.get("employee_id", type=int),
@@ -1175,22 +1694,22 @@ def create_app():
         return commit_with_feedback(
             "Asset assignment created successfully.",
             "Unable to create asset assignment",
-            "orientation",
+            "orientation_dashboard",
         )
 
     # =====================================================
     # SG-SST ROUTES
     # =====================================================
 
-    @flask_app.route("/sgsst")
-    def sgsst():
+    @flask_app.route("/sgsst", endpoint="sgsst_dashboard")
+    def sgsst_dashboard():
         return render_or_fallback("sgsst.html", **build_sgsst_context())
 
     @flask_app.route("/sgsst/risk/create", methods=["POST"])
     def create_risk_item():
         if RiskMatrixItem is None:
             flash("RiskMatrixItem model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
+            return redirect(url_for("sgsst_dashboard"))
 
         raw_payload = {
             "area": (request.form.get("area") or "").strip(),
@@ -1205,14 +1724,14 @@ def create_app():
         return commit_with_feedback(
             "Risk matrix item created successfully.",
             "Unable to create risk matrix item",
-            "sgsst",
+            "sgsst_dashboard",
         )
 
     @flask_app.route("/sgsst/inspection/create", methods=["POST"])
     def create_inspection_record():
         if InspectionRecord is None:
             flash("InspectionRecord model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
+            return redirect(url_for("sgsst_dashboard"))
 
         raw_payload = {
             "inspection_name": (request.form.get("inspection_name") or "").strip(),
@@ -1228,14 +1747,14 @@ def create_app():
         return commit_with_feedback(
             "Inspection record created successfully.",
             "Unable to create inspection record",
-            "sgsst",
+            "sgsst_dashboard",
         )
 
     @flask_app.route("/sgsst/incident/create", methods=["POST"])
     def create_incident_record():
         if IncidentRecord is None:
             flash("IncidentRecord model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
+            return redirect(url_for("sgsst_dashboard"))
 
         raw_payload = {
             "employee_id": request.form.get("employee_id", type=int),
@@ -1251,14 +1770,14 @@ def create_app():
         return commit_with_feedback(
             "Incident record created successfully.",
             "Unable to create incident record",
-            "sgsst",
+            "sgsst_dashboard",
         )
 
     @flask_app.route("/sgsst/training/create", methods=["POST"])
     def create_training_record():
         if TrainingRecord is None:
             flash("TrainingRecord model is not available in models.py.", "danger")
-            return redirect(url_for("sgsst"))
+            return redirect(url_for("sgsst_dashboard"))
 
         raw_payload = {
             "employee_id": request.form.get("employee_id", type=int),
@@ -1274,22 +1793,22 @@ def create_app():
         return commit_with_feedback(
             "Training record created successfully.",
             "Unable to create training record",
-            "sgsst",
+            "sgsst_dashboard",
         )
 
     # =====================================================
     # INVENTORY ROUTES
     # =====================================================
 
-    @flask_app.route("/inventory")
-    def inventory():
+    @flask_app.route("/inventory", endpoint="inventory_dashboard")
+    def inventory_dashboard():
         return render_or_fallback("inventory.html", **build_inventory_context())
 
     @flask_app.route("/inventory/item/create", methods=["POST"])
     def create_inventory_item():
         if InventoryItem is None:
             flash("InventoryItem model is not available in models.py.", "danger")
-            return redirect(url_for("inventory"))
+            return redirect(url_for("inventory_dashboard"))
 
         raw_payload = {
             "name": (request.form.get("name") or "").strip(),
@@ -1308,22 +1827,22 @@ def create_app():
         return commit_with_feedback(
             "Inventory item created successfully.",
             "Unable to create inventory item",
-            "inventory",
+            "inventory_dashboard",
         )
 
     # =====================================================
     # FINANCE ROUTES
     # =====================================================
 
-    @flask_app.route("/finance")
-    def finance():
+    @flask_app.route("/finance", endpoint="finance_dashboard")
+    def finance_dashboard():
         return render_or_fallback("finance.html", **build_finance_context())
 
     @flask_app.route("/finance/invoice/create", methods=["POST"])
     def create_invoice():
         if Invoice is None:
             flash("Invoice model is not available in models.py.", "danger")
-            return redirect(url_for("finance"))
+            return redirect(url_for("finance_dashboard"))
 
         raw_payload = {
             "invoice_number": (request.form.get("invoice_number") or "").strip(),
@@ -1356,13 +1875,17 @@ def create_app():
             except Exception:
                 pass
 
-        return commit_with_feedback("Invoice created successfully.", "Unable to create invoice", "finance")
+        return commit_with_feedback(
+            "Invoice created successfully.",
+            "Unable to create invoice",
+            "finance_dashboard",
+        )
 
     @flask_app.route("/finance/ledger/create", methods=["POST"])
     def create_ledger_entry():
         if Finance is None:
             flash("Finance model is not available in models.py.", "danger")
-            return redirect(url_for("finance"))
+            return redirect(url_for("finance_dashboard"))
 
         raw_payload = {
             "entry_type": (request.form.get("entry_type") or "General").strip(),
@@ -1378,22 +1901,22 @@ def create_app():
         return commit_with_feedback(
             "Ledger entry created successfully.",
             "Unable to create ledger entry",
-            "finance",
+            "finance_dashboard",
         )
 
     # =====================================================
     # MARKETING ROUTES
     # =====================================================
 
-    @flask_app.route("/marketing")
-    def marketing():
+    @flask_app.route("/marketing", endpoint="marketing_dashboard")
+    def marketing_dashboard():
         return render_or_fallback("marketing.html", **build_marketing_context())
 
     @flask_app.route("/marketing/campaign/create", methods=["POST"])
     def create_marketing_campaign():
         if MarketingCampaign is None:
             flash("MarketingCampaign model is not available in models.py.", "danger")
-            return redirect(url_for("marketing"))
+            return redirect(url_for("marketing_dashboard"))
 
         raw_payload = {
             "name": (request.form.get("name") or "").strip(),
@@ -1411,22 +1934,22 @@ def create_app():
         return commit_with_feedback(
             "Marketing campaign created successfully.",
             "Unable to create marketing campaign",
-            "marketing",
+            "marketing_dashboard",
         )
 
     # =====================================================
     # CALENDAR ROUTES
     # =====================================================
 
-    @flask_app.route("/calendar")
-    def calendar_page():
+    @flask_app.route("/calendar", endpoint="calendar_dashboard")
+    def calendar_dashboard():
         return render_or_fallback("calendar.html", **build_calendar_context())
 
     @flask_app.route("/calendar/event/create", methods=["POST"])
     def create_calendar_event():
         if CalendarEvent is None:
             flash("CalendarEvent model is not available in models.py.", "danger")
-            return redirect(url_for("calendar_page"))
+            return redirect(url_for("calendar_dashboard"))
 
         raw_payload = {
             "title": (request.form.get("title") or "").strip(),
@@ -1442,20 +1965,32 @@ def create_app():
         return commit_with_feedback(
             "Calendar event created successfully.",
             "Unable to create calendar event",
-            "calendar_page",
+            "calendar_dashboard",
         )
+
+    # =====================================================
+    # TASK ROUTES
+    # =====================================================
+
+    @flask_app.route("/tasks", endpoint="tasks_dashboard")
+    def tasks_dashboard():
+        return render_or_fallback("tasks.html", **build_tasks_context())
 
     # =====================================================
     # REPORTS / ANALYTICS
     # =====================================================
 
-    @flask_app.route("/reports-analytics")
-    def reports_analytics():
+    @flask_app.route("/reports-analytics", endpoint="reports_dashboard")
+    def reports_dashboard():
         return render_or_fallback("reports_analytics.html", **build_reports_context())
 
     @flask_app.route("/api/dashboard-stats")
     def api_dashboard_stats():
         return jsonify(build_dashboard_stats())
+
+    @flask_app.route("/api/dashboard")
+    def api_dashboard():
+        return jsonify(build_dashboard_payload(xiomy_ai))
 
     # =====================================================
     # XIOMY ROUTES
@@ -1567,6 +2102,51 @@ def create_app():
             pass
 
         return render_or_fallback("search_results.html", query=query, results=results)
+
+    # =====================================================
+    # LEGACY ALIAS ROUTES
+    # These help older templates or code continue working.
+    # =====================================================
+
+    @flask_app.route("/crm-legacy")
+    def crm():
+        return redirect(url_for("crm_dashboard"))
+
+    @flask_app.route("/hris-legacy")
+    def hris():
+        return redirect(url_for("hris_dashboard"))
+
+    @flask_app.route("/ats-legacy")
+    def ats():
+        return redirect(url_for("ats_dashboard"))
+
+    @flask_app.route("/orientation-legacy")
+    def orientation():
+        return redirect(url_for("orientation_dashboard"))
+
+    @flask_app.route("/sgsst-legacy")
+    def sgsst():
+        return redirect(url_for("sgsst_dashboard"))
+
+    @flask_app.route("/finance-legacy")
+    def finance():
+        return redirect(url_for("finance_dashboard"))
+
+    @flask_app.route("/inventory-legacy")
+    def inventory():
+        return redirect(url_for("inventory_dashboard"))
+
+    @flask_app.route("/marketing-legacy")
+    def marketing():
+        return redirect(url_for("marketing_dashboard"))
+
+    @flask_app.route("/calendar-legacy")
+    def calendar_page():
+        return redirect(url_for("calendar_dashboard"))
+
+    @flask_app.route("/reports-legacy")
+    def reports_analytics():
+        return redirect(url_for("reports_dashboard"))
 
     # =====================================================
     # ERROR HANDLERS
