@@ -1,8 +1,7 @@
-flask
-flask-sqlalchemy
-flask-migrate
+Flask
+Flask-SQLAlchemy
+gunicorn
+psycopg2-binary
 pandas
 twilio
 nylas
-gunicorn
-psycopg2-binary
