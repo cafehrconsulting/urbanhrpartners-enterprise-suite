@@ -1,860 +1,252 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}SG-SST | UrbanHRPartners Enterprise Suite{% endblock %}
-{% block page_title %}SG-SST Command Center{% endblock %}
-{% block page_subtitle %}Manage safety policy, legal compliance, hazards, incidents, inspections, medical surveillance, PPE, audits, and minimum standards from one integrated occupational health and safety workspace.{% endblock %}
-
-{% block extra_head %}
-<style>
-    .sg-hero {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 22px;
-        margin-bottom: 22px;
-    }
-
-    .sg-banner,
-    .sg-summary {
-        border-radius: 26px;
-        padding: 24px;
-        box-shadow: 0 16px 34px rgba(11, 31, 58, 0.14);
-        border: 1px solid rgba(11,31,58,0.08);
-    }
-
-    .sg-banner {
-        background: linear-gradient(135deg, rgba(11,31,58,0.98) 0%, rgba(16,41,77,0.96) 52%, rgba(217,123,23,0.9) 100%);
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .sg-banner::after {
-        content: "";
-        position: absolute;
-        right: -24px;
-        top: -24px;
-        width: 190px;
-        height: 190px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.02) 70%);
-    }
-
-    .sg-banner h2 {
-        margin: 0 0 10px;
-        font-size: 1.9rem;
-        color: #fff8e6;
-        position: relative;
-        z-index: 1;
-    }
-
-    .sg-banner p {
-        margin: 0 0 18px;
-        line-height: 1.6;
-        color: rgba(255,255,255,0.9);
-        position: relative;
-        z-index: 1;
-    }
-
-    .sg-chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .sg-chip {
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        font-weight: 800;
-        color: #fffdf5;
-    }
-
-    .sg-summary {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(244,247,252,0.98) 100%);
-    }
-
-    .sg-summary h3 {
-        margin-top: 0;
-        color: #0b1f3a;
-    }
-
-    .summary-list {
-        display: grid;
-        gap: 12px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(248,250,253,0.98) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.06);
-    }
-
-    .summary-item strong { color: #0b1f3a; }
-    .summary-pill {
-        min-width: 64px;
-        text-align: center;
-        padding: 9px 12px;
-        border-radius: 14px;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.26) 0%, rgba(217,123,23,0.16) 100%);
-        border: 1px solid rgba(212,175,55,0.26);
-    }
-
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-
-    .kpi-card {
-        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,245,250,0.96) 100%);
-        border-radius: 22px;
-        padding: 18px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .kpi-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, #d4af37 0%, #d97b17 100%);
-    }
-
-    .kpi-card .label {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #5e6d85;
-        font-weight: 800;
-        margin-bottom: 10px;
-    }
-
-    .kpi-card .value {
-        font-size: 1.9rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .kpi-card .note {
-        color: #6b7a91;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .sg-layout {
-        display: grid;
-        grid-template-columns: 430px 1fr;
-        gap: 22px;
-        align-items: start;
-    }
-
-    .form-stack,
-    .data-stack {
-        display: grid;
-        gap: 22px;
-    }
-
-    .panel {
-        background: rgba(255,255,255,0.97);
-        border-radius: 24px;
-        border: 1px solid rgba(11,31,58,0.08);
-        box-shadow: 0 12px 28px rgba(11,31,58,0.12);
-        padding: 22px;
-    }
-
-    .panel-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .panel-head h3 {
-        margin: 0;
-        color: #0b1f3a;
-        font-size: 1.14rem;
-    }
-
-    .panel-head p {
-        margin: 6px 0 0;
-        color: #61718a;
-        line-height: 1.45;
-        font-size: 0.94rem;
-    }
-
-    .section-badge {
-        white-space: nowrap;
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 0.82rem;
-        font-weight: 900;
-        color: #0b1f3a;
-        background: linear-gradient(180deg, rgba(212,175,55,0.24) 0%, rgba(217,123,23,0.14) 100%);
-        border: 1px solid rgba(212,175,55,0.24);
-    }
-
-    .enterprise-form {
-        display: grid;
-        gap: 14px;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .field,
-    .field-full {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .field-full { grid-column: 1 / -1; }
-
-    .enterprise-form label {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #31445f;
-    }
-
-    .enterprise-form input,
-    .enterprise-form select,
-    .enterprise-form textarea {
-        width: 100%;
-        border: 1px solid rgba(11,31,58,0.12);
-        border-radius: 14px;
-        padding: 11px 12px;
-        font-size: 0.95rem;
-        color: #132238;
-        background: #fff;
-        outline: none;
-    }
-
-    .enterprise-form textarea {
-        min-height: 96px;
-        resize: vertical;
-    }
-
-    .checkbox-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 700;
-        color: #31445f;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        border: none;
-        cursor: pointer;
-        border-radius: 14px;
-        padding: 11px 16px;
-        font-weight: 800;
-    }
-
-    .btn-primary {
-        color: #fff;
-        background: linear-gradient(180deg, #d4af37 0%, #d97b17 100%);
-        box-shadow: 0 8px 18px rgba(217,123,23,0.22);
-    }
-
-    .btn-secondary {
-        color: #fff;
-        background: linear-gradient(180deg, #10294d 0%, #0b1f3a 100%);
-        box-shadow: 0 8px 18px rgba(11,31,58,0.18);
-    }
-
-    .table-wrap {
-        overflow-x: auto;
-        border-radius: 18px;
-        border: 1px solid rgba(11,31,58,0.07);
-    }
-
-    .sg-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 820px;
-        background: #fff;
-    }
-
-    .sg-table th,
-    .sg-table td {
-        padding: 13px 14px;
-        text-align: left;
-        border-bottom: 1px solid rgba(11,31,58,0.07);
-        vertical-align: top;
-    }
-
-    .sg-table th {
-        background: linear-gradient(180deg, #f3f6fb 0%, #e8edf5 100%);
-        color: #0b1f3a;
-        font-size: 0.86rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .sg-table td {
-        font-size: 0.95rem;
-        color: #334155;
-    }
-
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 7px 11px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 0.82rem;
-        border: 1px solid rgba(11,31,58,0.08);
-        background: rgba(11,31,58,0.05);
-        color: #0b1f3a;
-    }
-
-    .status-active,
-    .status-open,
-    .status-completed,
-    .status-compliant,
-    .status-received {
-        background: rgba(6,118,71,0.12);
-        color: #067647;
-        border-color: rgba(6,118,71,0.18);
-    }
-
-    .status-pending,
-    .status-draft,
-    .status-scheduled {
-        background: rgba(181,71,8,0.12);
-        color: #b54708;
-        border-color: rgba(181,71,8,0.18);
-    }
-
-    .status-closed,
-    .status-inactive,
-    .status-non-compliant {
-        background: rgba(100,116,139,0.12);
-        color: #475569;
-        border-color: rgba(100,116,139,0.18);
-    }
-
-    .empty-state {
-        padding: 22px;
-        border-radius: 20px;
-        text-align: center;
-        background: linear-gradient(180deg, rgba(243,246,251,0.96) 0%, rgba(255,255,255,0.96) 100%);
-        border: 1px dashed rgba(11,31,58,0.12);
-        color: #64748b;
-        font-weight: 600;
-    }
-
-    .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 18px;
-    }
-
-    .tab-link {
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(212,175,55,0.18) 0%, rgba(255,255,255,0.98) 100%);
-        border: 1px solid rgba(11,31,58,0.08);
-        color: #0b1f3a;
-        font-weight: 800;
-    }
-
-    @media (max-width: 1320px) {
-        .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .sg-layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 980px) {
-        .sg-hero,
-        .kpi-grid,
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
-
-{% macro status_chip(value) -%}
-    {% set raw = (value or 'N/A') %}
-    {% set normalized = raw|string|lower|replace(' ', '-') %}
-    <span class="status-chip status-{{ normalized }}">{{ raw }}</span>
-{%- endmacro %}
+{% block topbar_title %}SG-SST | Occupational Health & Safety{% endblock %}
 
 {% block content %}
-<section class="sg-hero">
-    <div class="sg-banner">
-        <h2>Occupational safety, compliance, and risk control center</h2>
-        <p>
-            This SG-SST workspace centralizes safety policy, legal matrix tracking, hazard identification,
-            annual work planning, incidents, inspections, corrective action, PPE control, medical surveillance,
-            audits, and minimum standard compliance evidence.
+
+<style>
+.sgsst-shell { display:flex; flex-direction:column; gap:22px; }
+
+/* HERO */
+.sgsst-hero {
+    padding:28px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at top right, rgba(240,200,90,0.2), transparent 30%),
+        linear-gradient(135deg,#07162a,#0b1f3a);
+    border:1px solid rgba(240,200,90,0.2);
+}
+
+.sgsst-title {
+    font-size:2rem;
+    font-weight:700;
+    color:var(--gold);
+}
+
+.sgsst-subtitle {
+    margin-top:8px;
+    max-width:820px;
+    line-height:1.6;
+    opacity:0.9;
+}
+
+/* GRID */
+.sgsst-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.sgsst-card {
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.15);
+}
+
+.sgsst-card h3 {
+    color:var(--silver);
+    font-size:0.9rem;
+}
+
+.sgsst-card p {
+    font-size:1.6rem;
+    color:var(--gold);
+    font-weight:700;
+}
+
+/* SECTION */
+.sgsst-section {
+    padding:24px;
+    border-radius:22px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(240,200,90,0.12);
+}
+
+/* TABLE */
+.sgsst-table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+.sgsst-table th,
+.sgsst-table td {
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.sgsst-table th {
+    color:var(--gold);
+    text-align:left;
+}
+
+.sgsst-table td {
+    color:var(--text);
+}
+
+/* BADGE */
+.badge {
+    padding:6px 10px;
+    border-radius:10px;
+    background:rgba(240,200,90,0.1);
+    color:var(--gold);
+    font-size:0.8rem;
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+    .sgsst-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div class="sgsst-shell">
+
+    <!-- HERO -->
+    <div class="sgsst-hero">
+        <div class="sgsst-title">SG-SST Compliance System</div>
+        <div class="sgsst-subtitle">
+            Occupational Health and Safety Management System aligned with Colombian regulations.
+            Designed for risk prevention, legal compliance, incident control, and continuous improvement.
+        </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="sgsst-grid">
+        <div class="sgsst-card">
+            <h3>Risk Level</h3>
+            <p>Medium</p>
+        </div>
+
+        <div class="sgsst-card">
+            <h3>Incidents</h3>
+            <p>{{ incidents|length }}</p>
+        </div>
+
+        <div class="sgsst-card">
+            <h3>Compliance</h3>
+            <p>92%</p>
+        </div>
+    </div>
+
+    <!-- POLICY -->
+    <div class="sgsst-section">
+        <h2 style="color:var(--gold)">Policy</h2>
+        <p style="margin-top:10px;line-height:1.6;">
+            UrbanHRPartners is committed to protecting the health and safety of all employees,
+            ensuring compliance with legal standards, and promoting a safe work environment.
         </p>
-        <div class="sg-chip-row">
-            <span class="sg-chip">Policy management</span>
-            <span class="sg-chip">Hazard matrix</span>
-            <span class="sg-chip">Incident control</span>
-            <span class="sg-chip">PPE oversight</span>
-            <span class="sg-chip">Audits & standards</span>
-        </div>
     </div>
 
-    <div class="sg-summary">
-        <div class="panel-head">
-            <div>
-                <h3>Safety operations summary</h3>
-                <p>Immediate visibility into risk exposure, events, and compliance activity.</p>
-            </div>
-            <span class="section-badge">SG-SST Live</span>
-        </div>
-        <div class="summary-list">
-            <div class="summary-item"><strong>Hazards</strong><span class="summary-pill">{{ sgsst_stats.hazards_count }}</span></div>
-            <div class="summary-item"><strong>Incidents</strong><span class="summary-pill">{{ sgsst_stats.incidents_count }}</span></div>
-            <div class="summary-item"><strong>Inspections</strong><span class="summary-pill">{{ sgsst_stats.inspections_count }}</span></div>
-            <div class="summary-item"><strong>Corrective Actions</strong><span class="summary-pill">{{ sgsst_stats.corrective_actions_count }}</span></div>
-            <div class="summary-item"><strong>Audits</strong><span class="summary-pill">{{ sgsst_stats.audits_count }}</span></div>
-        </div>
-    </div>
-</section>
+    <!-- LEGAL MATRIX -->
+    <div class="sgsst-section">
+        <h2 style="color:var(--gold)">Legal Matrix</h2>
 
-<section class="kpi-grid">
-    <article class="kpi-card">
-        <div class="label">Policies</div>
-        <div class="value">{{ safety_policies|length }}</div>
-        <div class="note">Controlled policy records and review cycles.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Legal Matrix</div>
-        <div class="value">{{ legal_requirements|length }}</div>
-        <div class="note">Applicable laws and requirement monitoring.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Hazards</div>
-        <div class="value">{{ sgsst_stats.hazards_count }}</div>
-        <div class="note">Risk sources currently tracked in the system.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Medical</div>
-        <div class="value">{{ medical_surveillance_records|length }}</div>
-        <div class="note">Medical surveillance records and exam tracking.</div>
-    </article>
-    <article class="kpi-card">
-        <div class="label">Minimum Standards</div>
-        <div class="value">{{ minimum_standard_assessments|length }}</div>
-        <div class="note">Minimum standards assessments and compliance evidence.</div>
-    </article>
-</section>
+        <table class="sgsst-table">
+            <thead>
+                <tr>
+                    <th>Law</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
 
-<section class="sg-layout">
-    <div class="form-stack">
-        <div class="panel" id="policy-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create safety policy</h3>
-                    <p>Register official policy versions, approvals, and effective review dates.</p>
-                </div>
-                <span class="section-badge">Policy</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_safety_policy') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="policy_title">Title</label><input id="policy_title" name="title" type="text" required /></div>
-                    <div class="field"><label for="policy_version">Version</label><input id="policy_version" name="version" type="text" /></div>
-                    <div class="field"><label for="effective_date">Effective Date</label><input id="effective_date" name="effective_date" type="date" /></div>
-                    <div class="field"><label for="review_date">Review Date</label><input id="review_date" name="review_date" type="date" /></div>
-                    <div class="field"><label for="approved_by">Approved By</label><input id="approved_by" name="approved_by" type="text" /></div>
-                    <div class="field-full"><label for="policy_file_path">File Path</label><input id="policy_file_path" name="file_path" type="text" /></div>
-                    <div class="field-full"><label for="policy_description">Description</label><textarea id="policy_description" name="description"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Policy</button>
-                    <a class="btn-secondary" href="#policies-table">Review Policies</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="legal-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create legal requirement</h3>
-                    <p>Track law, article, compliance status, evidence, and responsible owner.</p>
-                </div>
-                <span class="section-badge">Legal</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_legal_requirement') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="jurisdiction">Jurisdiction</label><input id="jurisdiction" name="jurisdiction" type="text" value="Colombia" /></div>
-                    <div class="field"><label for="law_name">Law Name</label><input id="law_name" name="law_name" type="text" required /></div>
-                    <div class="field"><label for="article_or_section">Article / Section</label><input id="article_or_section" name="article_or_section" type="text" /></div>
-                    <div class="field"><label for="compliance_status">Compliance Status</label><input id="compliance_status" name="compliance_status" type="text" value="Pending" /></div>
-                    <div class="field"><label for="responsible_person">Responsible Person</label><input id="responsible_person" name="responsible_person" type="text" /></div>
-                    <div class="field"><label for="legal_review_date">Review Date</label><input id="legal_review_date" name="review_date" type="date" /></div>
-                    <div class="field-full"><label for="requirement_description">Requirement Description</label><textarea id="requirement_description" name="requirement_description" required></textarea></div>
-                    <div class="field-full"><label for="evidence_path">Evidence Path</label><input id="evidence_path" name="evidence_path" type="text" /></div>
-                    <div class="field-full"><label for="legal_notes">Notes</label><textarea id="legal_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Legal Requirement</button>
-                    <a class="btn-secondary" href="#legal-table">Review Legal Matrix</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="hazard-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create hazard</h3>
-                    <p>Register hazards, probability, consequence, controls, and review dates.</p>
-                </div>
-                <span class="section-badge">Hazard</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_hazard') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="hazard_code">Hazard Code</label><input id="hazard_code" name="hazard_code" type="text" /></div>
-                    <div class="field"><label for="area">Area</label><input id="area" name="area" type="text" /></div>
-                    <div class="field"><label for="process">Process</label><input id="process" name="process" type="text" /></div>
-                    <div class="field"><label for="activity">Activity</label><input id="activity" name="activity" type="text" /></div>
-                    <div class="field"><label for="hazard_type">Hazard Type</label><input id="hazard_type" name="hazard_type" type="text" /></div>
-                    <div class="field"><label for="exposed_population">Exposed Population</label><input id="exposed_population" name="exposed_population" type="text" /></div>
-                    <div class="field"><label for="probability">Probability</label><input id="probability" name="probability" type="number" value="1" /></div>
-                    <div class="field"><label for="consequence">Consequence</label><input id="consequence" name="consequence" type="number" value="1" /></div>
-                    <div class="field"><label for="risk_level">Risk Level</label><input id="risk_level" name="risk_level" type="text" /></div>
-                    <div class="field"><label for="hazard_status">Status</label><input id="hazard_status" name="status" type="text" value="Open" /></div>
-                    <div class="field"><label for="hazard_responsible_person">Responsible Person</label><input id="hazard_responsible_person" name="responsible_person" type="text" /></div>
-                    <div class="field"><label for="next_review_date">Next Review Date</label><input id="next_review_date" name="next_review_date" type="date" /></div>
-                    <div class="field-full"><label for="hazard_description">Description</label><textarea id="hazard_description" name="description" required></textarea></div>
-                    <div class="field-full"><label for="existing_controls">Existing Controls</label><textarea id="existing_controls" name="existing_controls"></textarea></div>
-                    <div class="field-full"><label for="control_measures">Control Measures</label><textarea id="control_measures" name="control_measures"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Hazard</button>
-                    <a class="btn-secondary" href="#hazards-table">Review Hazards</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="workplan-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create annual work plan item</h3>
-                    <p>Plan activities, deadlines, owners, and progress for SG-SST execution.</p>
-                </div>
-                <span class="section-badge">Plan</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_annual_work_plan') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="plan_year">Year</label><input id="plan_year" name="year" type="number" value="{{ current_year if current_year is defined else '' }}" /></div>
-                    <div class="field"><label for="plan_status">Status</label><input id="plan_status" name="status" type="text" value="Pending" /></div>
-                    <div class="field-full"><label for="activity_name">Activity</label><input id="activity_name" name="activity" type="text" required /></div>
-                    <div class="field-full"><label for="objective">Objective</label><textarea id="objective" name="objective"></textarea></div>
-                    <div class="field"><label for="plan_responsible_person">Responsible Person</label><input id="plan_responsible_person" name="responsible_person" type="text" /></div>
-                    <div class="field"><label for="plan_due_date">Due Date</label><input id="plan_due_date" name="due_date" type="date" /></div>
-                    <div class="field"><label for="progress_percent">Progress %</label><input id="progress_percent" name="progress_percent" type="number" step="0.01" /></div>
-                    <div class="field"><label for="indicator_name">Indicator Name</label><input id="indicator_name" name="indicator_name" type="text" /></div>
-                    <div class="field-full"><label for="plan_evidence_path">Evidence Path</label><input id="plan_evidence_path" name="evidence_path" type="text" /></div>
-                    <div class="field-full"><label for="plan_notes">Notes</label><textarea id="plan_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Work Plan Item</button>
-                    <a class="btn-secondary" href="#plans-table">Review Work Plan</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="incident-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create incident</h3>
-                    <p>Report events, classify severity, and trigger investigation and corrective action.</p>
-                </div>
-                <span class="section-badge">Incident</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_incident') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="incident_code">Incident Code</label><input id="incident_code" name="incident_code" type="text" /></div>
-                    <div class="field"><label for="incident_employee_id">Employee ID</label><input id="incident_employee_id" name="employee_id" type="number" /></div>
-                    <div class="field"><label for="hazard_id">Hazard ID</label><input id="hazard_id" name="hazard_id" type="number" /></div>
-                    <div class="field"><label for="project_id">Project ID</label><input id="project_id" name="project_id" type="number" /></div>
-                    <div class="field"><label for="incident_date">Incident Date</label><input id="incident_date" name="incident_date" type="date" /></div>
-                    <div class="field"><label for="incident_time">Incident Time</label><input id="incident_time" name="incident_time" type="text" /></div>
-                    <div class="field"><label for="incident_location">Location</label><input id="incident_location" name="location" type="text" /></div>
-                    <div class="field"><label for="incident_type">Incident Type</label><input id="incident_type" name="incident_type" type="text" /></div>
-                    <div class="field"><label for="severity">Severity</label><input id="severity" name="severity" type="text" /></div>
-                    <div class="field"><label for="reported_by">Reported By</label><input id="reported_by" name="reported_by" type="text" /></div>
-                    <div class="field"><label for="incident_status">Status</label><input id="incident_status" name="status" type="text" value="Open" /></div>
-                    <div class="field checkbox-row"><label><input name="lost_time" type="checkbox" /> Lost Time</label></div>
-                    <div class="field-full"><label for="incident_description">Description</label><textarea id="incident_description" name="description" required></textarea></div>
-                    <div class="field-full"><label for="immediate_actions">Immediate Actions</label><textarea id="immediate_actions" name="immediate_actions"></textarea></div>
-                    <div class="field-full"><label for="incident_evidence_path">Evidence Path</label><input id="incident_evidence_path" name="evidence_path" type="text" /></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Incident</button>
-                    <a class="btn-secondary" href="#incidents-table">Review Incidents</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="inspection-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create inspection</h3>
-                    <p>Register inspections, findings, risk rating, and corrective action needs.</p>
-                </div>
-                <span class="section-badge">Inspection</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_inspection') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="inspection_hazard_id">Hazard ID</label><input id="inspection_hazard_id" name="hazard_id" type="number" /></div>
-                    <div class="field"><label for="inspection_type">Inspection Type</label><input id="inspection_type" name="inspection_type" type="text" /></div>
-                    <div class="field"><label for="inspection_location">Location</label><input id="inspection_location" name="location" type="text" /></div>
-                    <div class="field"><label for="inspection_date">Inspection Date</label><input id="inspection_date" name="inspection_date" type="date" /></div>
-                    <div class="field"><label for="inspector_name">Inspector Name</label><input id="inspector_name" name="inspector_name" type="text" /></div>
-                    <div class="field"><label for="checklist_used">Checklist Used</label><input id="checklist_used" name="checklist_used" type="text" /></div>
-                    <div class="field"><label for="inspection_risk_level">Risk Level</label><input id="inspection_risk_level" name="risk_level" type="text" /></div>
-                    <div class="field"><label for="inspection_status">Status</label><input id="inspection_status" name="status" type="text" value="Completed" /></div>
-                    <div class="field checkbox-row"><label><input name="corrective_actions_required" type="checkbox" /> Corrective Actions Required</label></div>
-                    <div class="field-full"><label for="findings">Findings</label><textarea id="findings" name="findings"></textarea></div>
-                    <div class="field-full"><label for="inspection_evidence_path">Evidence Path</label><input id="inspection_evidence_path" name="evidence_path" type="text" /></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Inspection</button>
-                    <a class="btn-secondary" href="#inspections-table">Review Inspections</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="action-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create corrective action</h3>
-                    <p>Track CAPA, preventive actions, and improvement plan execution.</p>
-                </div>
-                <span class="section-badge">Action</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_corrective_action') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="action_incident_id">Incident ID</label><input id="action_incident_id" name="incident_id" type="number" /></div>
-                    <div class="field"><label for="source_type">Source Type</label><input id="source_type" name="source_type" type="text" /></div>
-                    <div class="field"><label for="source_id">Source ID</label><input id="source_id" name="source_id" type="number" /></div>
-                    <div class="field"><label for="action_type">Action Type</label><input id="action_type" name="action_type" type="text" /></div>
-                    <div class="field"><label for="action_responsible_person">Responsible Person</label><input id="action_responsible_person" name="responsible_person" type="text" /></div>
-                    <div class="field"><label for="action_due_date">Due Date</label><input id="action_due_date" name="due_date" type="date" /></div>
-                    <div class="field"><label for="completion_date">Completion Date</label><input id="completion_date" name="completion_date" type="date" /></div>
-                    <div class="field"><label for="action_status">Status</label><input id="action_status" name="status" type="text" value="Open" /></div>
-                    <div class="field-full"><label for="action_description">Description</label><textarea id="action_description" name="description" required></textarea></div>
-                    <div class="field-full"><label for="effectiveness_review">Effectiveness Review</label><textarea id="effectiveness_review" name="effectiveness_review"></textarea></div>
-                    <div class="field-full"><label for="action_evidence_path">Evidence Path</label><input id="action_evidence_path" name="evidence_path" type="text" /></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Corrective Action</button>
-                    <a class="btn-secondary" href="#actions-table">Review Actions</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="medical-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create medical surveillance record</h3>
-                    <p>Track occupational exams, fitness results, restrictions, and next control date.</p>
-                </div>
-                <span class="section-badge">Medical</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_medical_surveillance') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="medical_employee_id">Employee ID</label><input id="medical_employee_id" name="employee_id" type="number" required /></div>
-                    <div class="field"><label for="exam_type">Exam Type</label><input id="exam_type" name="exam_type" type="text" required /></div>
-                    <div class="field"><label for="exam_date">Exam Date</label><input id="exam_date" name="exam_date" type="date" /></div>
-                    <div class="field"><label for="medical_provider">Provider</label><input id="medical_provider" name="provider" type="text" /></div>
-                    <div class="field"><label for="fitness_status">Fitness Status</label><input id="fitness_status" name="fitness_status" type="text" /></div>
-                    <div class="field"><label for="next_exam_date">Next Exam Date</label><input id="next_exam_date" name="next_exam_date" type="date" /></div>
-                    <div class="field-full"><label for="restrictions">Restrictions</label><textarea id="restrictions" name="restrictions"></textarea></div>
-                    <div class="field-full"><label for="confidential_notes">Confidential Notes</label><textarea id="confidential_notes" name="confidential_notes"></textarea></div>
-                    <div class="field-full"><label for="medical_file_path">File Path</label><input id="medical_file_path" name="file_path" type="text" /></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Medical Record</button>
-                    <a class="btn-secondary" href="#medical-table">Review Medical</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="ppe-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create PPE assignment</h3>
-                    <p>Control protective equipment issuance, receipts, and return tracking.</p>
-                </div>
-                <span class="section-badge">PPE</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_ppe_assignment') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="ppe_employee_id">Employee ID</label><input id="ppe_employee_id" name="employee_id" type="number" required /></div>
-                    <div class="field"><label for="inventory_item_id">Inventory Item ID</label><input id="inventory_item_id" name="inventory_item_id" type="number" required /></div>
-                    <div class="field"><label for="assignment_date">Assignment Date</label><input id="assignment_date" name="assignment_date" type="date" /></div>
-                    <div class="field"><label for="return_date">Return Date</label><input id="return_date" name="return_date" type="date" /></div>
-                    <div class="field"><label for="condition_on_delivery">Condition on Delivery</label><input id="condition_on_delivery" name="condition_on_delivery" type="text" /></div>
-                    <div class="field checkbox-row"><label><input name="signed_receipt" type="checkbox" /> Signed Receipt</label></div>
-                    <div class="field-full"><label for="ppe_notes">Notes</label><textarea id="ppe_notes" name="notes"></textarea></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create PPE Assignment</button>
-                    <a class="btn-secondary" href="#ppe-table">Review PPE</a>
-                </div>
-            </form>
-        </div>
-
-        <div class="panel" id="audit-form">
-            <div class="panel-head">
-                <div>
-                    <h3>Create safety audit</h3>
-                    <p>Track audit scope, findings, scoring, and supporting report file path.</p>
-                </div>
-                <span class="section-badge">Audit</span>
-            </div>
-            <form class="enterprise-form" method="post" action="{{ url_for('add_safety_audit') }}">
-                <div class="form-grid">
-                    <div class="field"><label for="audit_name">Audit Name</label><input id="audit_name" name="audit_name" type="text" required /></div>
-                    <div class="field"><label for="audit_type">Audit Type</label><input id="audit_type" name="audit_type" type="text" /></div>
-                    <div class="field"><label for="audit_date">Audit Date</label><input id="audit_date" name="audit_date" type="date" /></div>
-                    <div class="field"><label for="auditor_name">Auditor Name</label><input id="auditor_name" name="auditor_name" type="text" /></div>
-                    <div class="field"><label for="audit_score">Score</label><input id="audit_score" name="score" type="number" step="0.01" /></div>
-                    <div class="field"><label for="audit_status">Status</label><input id="audit_status" name="status" type="text" value="Open" /></div>
-                    <div class="field-full"><label for="audit_scope">Scope</label><textarea id="audit_scope" name="scope"></textarea></div>
-                    <div class="field-full"><label for="audit_findings">Findings</label><textarea id="audit_findings" name="findings"></textarea></div>
-                    <div class="field-full"><label for="report_path">Report Path</label><input id="report_path" name="report_path" type="text" /></div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn-primary" type="submit">Create Audit</button>
-                    <a class="btn-secondary" href="#audits-table">Review Audits</a>
-                </div>
-            </form>
-        </div>
+            <tbody>
+                <tr>
+                    <td>Resolution 0312/2019</td>
+                    <td>Minimum SG-SST standards</td>
+                    <td><span class="badge">Compliant</span></td>
+                </tr>
+                <tr>
+                    <td>Decree 1072/2015</td>
+                    <td>Labor regulation framework</td>
+                    <td><span class="badge">Compliant</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="data-stack">
-        <div class="panel">
-            <div class="tabs">
-                <a class="tab-link" href="#policies-table">Policies</a>
-                <a class="tab-link" href="#legal-table">Legal Matrix</a>
-                <a class="tab-link" href="#hazards-table">Hazards</a>
-                <a class="tab-link" href="#plans-table">Work Plan</a>
-                <a class="tab-link" href="#incidents-table">Incidents</a>
-                <a class="tab-link" href="#inspections-table">Inspections</a>
-                <a class="tab-link" href="#actions-table">Actions</a>
-                <a class="tab-link" href="#medical-table">Medical</a>
-                <a class="tab-link" href="#ppe-table">PPE</a>
-                <a class="tab-link" href="#audits-table">Audits</a>
-                <a class="tab-link" href="#standards-table">Minimum Standards</a>
-            </div>
-        </div>
+    <!-- RISK MATRIX -->
+    <div class="sgsst-section">
+        <h2 style="color:var(--gold)">Risk Matrix</h2>
 
-        <div class="panel" id="policies-table">
-            <div class="panel-head"><div><h3>Safety policies</h3><p>Policy documents, approvals, and review cycle control.</p></div><span class="section-badge">{{ safety_policies|length }} records</span></div>
-            {% if safety_policies %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Title</th><th>Version</th><th>Approved By</th><th>Effective</th><th>Review</th></tr></thead><tbody>{% for item in safety_policies %}<tr><td><strong>{{ item.title }}</strong></td><td>{{ item.version or 'N/A' }}</td><td>{{ item.approved_by or 'N/A' }}</td><td>{{ item.effective_date.strftime('%Y-%m-%d') if item.effective_date else 'N/A' }}</td><td>{{ item.review_date.strftime('%Y-%m-%d') if item.review_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No safety policies available yet.</div>{% endif %}
-        </div>
+        <table class="sgsst-table">
+            <thead>
+                <tr>
+                    <th>Risk</th>
+                    <th>Probability</th>
+                    <th>Impact</th>
+                    <th>Level</th>
+                </tr>
+            </thead>
 
-        <div class="panel" id="legal-table">
-            <div class="panel-head"><div><h3>Legal matrix</h3><p>Applicable law control, status, ownership, and evidence visibility.</p></div><span class="section-badge">{{ legal_requirements|length }} records</span></div>
-            {% if legal_requirements %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Law</th><th>Jurisdiction</th><th>Article</th><th>Status</th><th>Responsible</th><th>Review</th></tr></thead><tbody>{% for item in legal_requirements %}<tr><td><strong>{{ item.law_name }}</strong></td><td>{{ item.jurisdiction or 'N/A' }}</td><td>{{ item.article_or_section or 'N/A' }}</td><td>{{ status_chip(item.compliance_status) }}</td><td>{{ item.responsible_person or 'N/A' }}</td><td>{{ item.review_date.strftime('%Y-%m-%d') if item.review_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No legal requirements available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="hazards-table">
-            <div class="panel-head"><div><h3>Hazards</h3><p>Risk source registry with controls, risk scoring, and ownership.</p></div><span class="section-badge">{{ hazards|length }} records</span></div>
-            {% if hazards %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Hazard</th><th>Area</th><th>Type</th><th>Risk Level</th><th>Score</th><th>Status</th></tr></thead><tbody>{% for hazard in hazards %}<tr><td><strong>{{ hazard.hazard_code or 'No code' }}</strong><br /><span>{{ hazard.description[:70] ~ ('...' if hazard.description and hazard.description|length > 70 else '') if hazard.description else 'No description' }}</span></td><td>{{ hazard.area or 'N/A' }}</td><td>{{ hazard.hazard_type or 'N/A' }}</td><td>{{ status_chip(hazard.risk_level) }}</td><td>{{ hazard.risk_score or 0 }}</td><td>{{ status_chip(hazard.status) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No hazards available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="plans-table">
-            <div class="panel-head"><div><h3>Annual work plan</h3><p>Execution planning for SG-SST actions, owners, and progress.</p></div><span class="section-badge">{{ annual_work_plans|length }} records</span></div>
-            {% if annual_work_plans %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Year</th><th>Activity</th><th>Responsible</th><th>Due Date</th><th>Progress</th><th>Status</th></tr></thead><tbody>{% for item in annual_work_plans %}<tr><td>{{ item.year }}</td><td><strong>{{ item.activity }}</strong></td><td>{{ item.responsible_person or 'N/A' }}</td><td>{{ item.due_date.strftime('%Y-%m-%d') if item.due_date else 'N/A' }}</td><td>{{ item.progress_percent or 0 }}%</td><td>{{ status_chip(item.status) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No annual work plan items available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="incidents-table">
-            <div class="panel-head"><div><h3>Incidents</h3><p>Event reporting with severity, location, and investigation trigger visibility.</p></div><span class="section-badge">{{ incidents|length }} records</span></div>
-            {% if incidents %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Incident</th><th>Type</th><th>Severity</th><th>Status</th><th>Location</th><th>Date</th></tr></thead><tbody>{% for item in incidents %}<tr><td><strong>{{ item.incident_code or 'No code' }}</strong></td><td>{{ item.incident_type or 'N/A' }}</td><td>{{ status_chip(item.severity) }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.location or 'N/A' }}</td><td>{{ item.incident_date.strftime('%Y-%m-%d') if item.incident_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No incidents available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="inspections-table">
-            <div class="panel-head"><div><h3>Inspections</h3><p>Inspection execution and findings tied to risk level and corrective need.</p></div><span class="section-badge">{{ inspections|length }} records</span></div>
-            {% if inspections %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Type</th><th>Location</th><th>Inspector</th><th>Risk Level</th><th>Status</th><th>Date</th></tr></thead><tbody>{% for item in inspections %}<tr><td>{{ item.inspection_type or 'N/A' }}</td><td>{{ item.location or 'N/A' }}</td><td>{{ item.inspector_name or 'N/A' }}</td><td>{{ status_chip(item.risk_level) }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.inspection_date.strftime('%Y-%m-%d') if item.inspection_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No inspections available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="actions-table">
-            <div class="panel-head"><div><h3>Corrective actions</h3><p>CAPA execution visibility by source, owner, and due date.</p></div><span class="section-badge">{{ corrective_actions|length }} records</span></div>
-            {% if corrective_actions %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Action Type</th><th>Source</th><th>Responsible</th><th>Due Date</th><th>Status</th><th>Completion</th></tr></thead><tbody>{% for item in corrective_actions %}<tr><td>{{ item.action_type or 'N/A' }}</td><td>{{ item.source_type or 'N/A' }} / {{ item.source_id or 'N/A' }}</td><td>{{ item.responsible_person or 'N/A' }}</td><td>{{ item.due_date.strftime('%Y-%m-%d') if item.due_date else 'N/A' }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.completion_date.strftime('%Y-%m-%d') if item.completion_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No corrective actions available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="medical-table">
-            <div class="panel-head"><div><h3>Medical surveillance</h3><p>Occupational exam control, restrictions, and next due date tracking.</p></div><span class="section-badge">{{ medical_surveillance_records|length }} records</span></div>
-            {% if medical_surveillance_records %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Employee ID</th><th>Exam Type</th><th>Provider</th><th>Fitness Status</th><th>Exam Date</th><th>Next Exam</th></tr></thead><tbody>{% for item in medical_surveillance_records %}<tr><td>{{ item.employee_id }}</td><td>{{ item.exam_type }}</td><td>{{ item.provider or 'N/A' }}</td><td>{{ status_chip(item.fitness_status) }}</td><td>{{ item.exam_date.strftime('%Y-%m-%d') if item.exam_date else 'N/A' }}</td><td>{{ item.next_exam_date.strftime('%Y-%m-%d') if item.next_exam_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No medical surveillance records available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="ppe-table">
-            <div class="panel-head"><div><h3>PPE assignments</h3><p>Protective equipment issuance and signed receipt evidence tracking.</p></div><span class="section-badge">{{ ppe_assignments|length }} records</span></div>
-            {% if ppe_assignments %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Employee ID</th><th>Item ID</th><th>Assigned</th><th>Return</th><th>Receipt</th><th>Condition</th></tr></thead><tbody>{% for item in ppe_assignments %}<tr><td>{{ item.employee_id }}</td><td>{{ item.inventory_item_id }}</td><td>{{ item.assignment_date.strftime('%Y-%m-%d') if item.assignment_date else 'N/A' }}</td><td>{{ item.return_date.strftime('%Y-%m-%d') if item.return_date else 'N/A' }}</td><td>{{ status_chip('Signed' if item.signed_receipt else 'Pending') }}</td><td>{{ item.condition_on_delivery or 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No PPE assignments available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="audits-table">
-            <div class="panel-head"><div><h3>Safety audits</h3><p>Audit program control including score, findings, and status.</p></div><span class="section-badge">{{ safety_audits|length }} records</span></div>
-            {% if safety_audits %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Audit</th><th>Type</th><th>Auditor</th><th>Score</th><th>Status</th><th>Date</th></tr></thead><tbody>{% for item in safety_audits %}<tr><td><strong>{{ item.audit_name }}</strong></td><td>{{ item.audit_type or 'N/A' }}</td><td>{{ item.auditor_name or 'N/A' }}</td><td>{{ item.score or 0 }}</td><td>{{ status_chip(item.status) }}</td><td>{{ item.audit_date.strftime('%Y-%m-%d') if item.audit_date else 'N/A' }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No safety audits available yet.</div>{% endif %}
-        </div>
-
-        <div class="panel" id="standards-table">
-            <div class="panel-head"><div><h3>Minimum standards assessments</h3><p>Minimum standards scoring and evidence-backed compliance control.</p></div><span class="section-badge">{{ minimum_standard_assessments|length }} records</span></div>
-            {% if minimum_standard_assessments %}
-            <div class="table-wrap"><table class="sg-table"><thead><tr><th>Year</th><th>Standard</th><th>Company Size</th><th>Score</th><th>Status</th></tr></thead><tbody>{% for item in minimum_standard_assessments %}<tr><td>{{ item.year }}</td><td><strong>{{ item.standard_name }}</strong></td><td>{{ item.company_size or 'N/A' }}</td><td>{{ item.score or 0 }}</td><td>{{ status_chip(item.compliance_status) }}</td></tr>{% endfor %}</tbody></table></div>
-            {% else %}<div class="empty-state">No minimum standard assessments available yet.</div>{% endif %}
-        </div>
+            <tbody>
+                <tr>
+                    <td>Physical Injury</td>
+                    <td>Medium</td>
+                    <td>High</td>
+                    <td><span class="badge">High</span></td>
+                </tr>
+                <tr>
+                    <td>Ergonomic Risk</td>
+                    <td>Low</td>
+                    <td>Medium</td>
+                    <td><span class="badge">Medium</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-</section>
+
+    <!-- INCIDENTS -->
+    <div class="sgsst-section">
+        <h2 style="color:var(--gold)">Incident Log</h2>
+
+        <table class="sgsst-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for i in incidents %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ i.description }}</td>
+                    <td>{{ i.date }}</td>
+                    <td><span class="badge">{{ i.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- TRAINING -->
+    <div class="sgsst-section">
+        <h2 style="color:var(--gold)">Training & Certification</h2>
+
+        <ul style="margin-top:10px;line-height:1.8;">
+            <li>Safety training programs</li>
+            <li>Emergency drills</li>
+            <li>Certification tracking</li>
+        </ul>
+    </div>
+
+    <!-- AUDITS -->
+    <div class="sgsst-section">
+        <h2 style="color:var(--gold)">Audits & Improvements</h2>
+
+        <ul style="margin-top:10px;line-height:1.8;">
+            <li>Internal audits</li>
+            <li>Corrective actions</li>
+            <li>Continuous improvement plans</li>
+        </ul>
+    </div>
+
+</div>
+
 {% endblock %}
-```
